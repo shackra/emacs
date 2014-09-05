@@ -1,0 +1,23 @@
+elpa/*
+eshell/*
+ac-comphist.dat
+\#*\#
+*~
+*.elc
+image-dired/*
+semanticdb/*
+url/*
+.python-env*
+*/.git/*
+*/.bzr/*
+gerson-emacs.d.tar.xz
+vieja\ configuración/*
+.achievements
+.mc-lists.el
+files-backup/
+flycheck_*.el
+*.cache
+projectile-*.eld
+emacs-init.el
+srecode-map.el
+var/*

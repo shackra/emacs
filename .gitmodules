@@ -1,0 +1,3 @@
+[submodule "site-packages/cedet"]
+	path = site-packages/cedet
+	url = http://git.randomsample.de/cedet.git

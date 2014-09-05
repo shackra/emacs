@@ -1,0 +1,722 @@
+#+TITLE: Mi configuración de GNU Emacs
+#+AUTHOR: Jorge Javier Araya Navarro (Shackra Sislock)
+#+EMAIL: elcorreo@deshackra.com
+#+OPTIONS: toc:3 num:nil ^:nil
+
+#+begin_quote
+Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam
+repleamur. (Te encomendamos, Señor, nuestras actividades para que las
+realicemos a mayor gloria tuya.)
+#+end_quote
+
+* Configuración de GNU Emacs en un archivo de org-mode
+  He decidido mover mi configuración a un sólo archivo. Anteriormente mi
+  configuración estaba dividida en varios archivos =.el=, esto no era malo, sin
+  embargo debo estar visitando diferentes archivos si deseo realizar varios
+  cambios en mi configuración creándome una plétora de buffers en
+  Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi
+  configuración, sí, sí... ya sé que esto se puede hacer con comentarios en el
+  código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de
+  contraer o expandir varias secciones de la configuración, o navegar
+  rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no
+  me veo restringido a ejecutar solamente código elisp ¡también puedo correr
+  código Python!.
+  
+* La Configuración
+  Pasemos a la materia. Esta configuración se carga de la siguiente
+  manera desde el archivo =~/.emacs.d/init.el=:
+
+#+begin_src emacs-lisp :tangle no
+  ;; init.el para esta configuración. Tu Emacs debe ser versión 24.
+  (package-initialize)
+  (require 'ob-tangle)
+  (org-babel-load-file
+   (expand-file-name "emacs-init.org"
+                     user-emacs-directory))
+#+end_src
+
+  Cualquier modificación de Emacs que se haga a través de =customize= ira en
+  éste archivo:
+
+#+begin_src emacs-lisp
+  (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
+#+end_src
+
+  Cargamos paquetes que no se instalan con ELPA.
+
+#+begin_src emacs-lisp
+  (add-to-list 'load-path (expand-file-name "site-packages"
+                                            user-emacs-directory))
+  
+  ;; carga condicionalmente CEDET
+  (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
+    (load-file (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
+    )
+  
+  ;; carga un agregado para cuando se escriben correos usando mu4e
+  (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
+#+end_src
+
+** Información personal
+#+begin_src emacs-lisp
+  (setf user-full-name "Jorge Araya Navarro"
+        user-mail-address "elcorreo@deshackra.com")
+#+end_src
+
+** Repositorio de paquetes
+   Desde la versión 24 Emacs permite la instalación de paquetes de la misma
+   manera como se realiza en distribuciones de GNU/Linux.
+
+   El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes
+   funcionen como deben, aun debes poner algunas cosas en tu configuración de
+   Emacs y tal. Lo posible es que las mismas instrucciones estén dadas en la
+   descripción del paquete.
+
+#+begin_src emacs-lisp
+  (setf package-archives (list (quote ("gnu" . "http://elpa.gnu.org/packages/"))
+                               (quote ("marmalade" . "http://marmalade-repo.org/packages/"))
+                               (quote ("melpa" . "http://melpa.milkbox.net/packages/"))
+                               (quote ("org" . "http://orgmode.org/elpa/"))))
+#+end_src
+
+   Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer
+   uso del comando =M-x package-list-packages=
+
+** Paquetes requeridos con =require=
+   Existen algunos paquetes que deben ser "requeridos" para la correcta
+   activación de algunos modos mayores, funcionalidades, y demás cosas
+   proveídas por Emacs o paquetes instalados en Emacs.
+
+#+begin_src emacs-lisp
+  (require 'uniquify)
+  (require 'helm)
+  (require 'helm-config)
+  (require 'helm-files)
+  (require 'helm-grep)
+  (require 'helm-buffers)
+  (require 'helm-org)
+  (require 'htmlize)
+  (require 'company)
+  (require 'hlinum)
+  (require 'fixmee)
+  (require 'expand-region)
+  (require 'web-mode)
+  (require 'epa-file)
+  (epa-file-enable) ;; no deberia ir acá, pero bueh...
+  (require 'cedet)
+  (require 'cedet-cscope)
+  (require 'semantic/ia)
+  (require 'semantic/bovine/gcc)
+#+end_src
+
+** Emacs, no hagas éstas cosas...
+
+*** Dejar el tema por defecto de Emacs; ¡jamas!
+
+#+begin_src emacs-lisp
+(load-theme 'monokai t)
+#+end_src
+
+*** Usar el mode-line común y corriente
+    Quiero usar el mode-line que ofrece =powerline= :)
+
+    #+begin_src emacs-lisp
+      (powerline-center-theme)
+    #+end_src
+
+*** Usar un mode-line que gaste espacio
+    Hace la información en el mode line legible con smart-mode-line
+
+    #+begin_src emacs-lisp
+      ;;(sml/setup)
+      ;; Emacs no deja de preguntarme si en verdad deseo activar el tema
+      ;;(setf sml/no-confirm-load-theme t)
+      ;;(sml/apply-theme 'dark)
+    #+end_src
+
+*** Nada de "Splash Screens"
+
+#+begin_src emacs-lisp
+(setf inhibit-startup-message t)
+#+end_src
+
+*** Nada de mensajes para mi sobre la inicialización
+
+#+begin_src emacs-lisp
+(setf inhibit-startup-echo-area-message "jorge")
+#+end_src
+
+*** Por el momento, nada de mensajes en el buffer =*scratch*=
+
+#+begin_src emacs-lisp
+(setf initial-scratch-message nil)
+#+end_src
+
+*** sobre la ventana
+    Quitamos la barra de menú, de herramientas y de desplazamiento. Estas cosas
+    no las necesitan los expertos de Emacs ¿Cierto? ;) (aunque con F10 se puede
+    acceder a un menú despegable)
+
+#+begin_src emacs-lisp
+(when window-system
+ (menu-bar-mode -1)
+ (tool-bar-mode -1)
+ (scroll-bar-mode -1)
+ (tooltip-mode -1))
+#+end_src
+
+*** tipografía
+    Establezcamos la tipografía a usar. A mi me gusta mucho la tipografía libre
+    que publico Adobe no hace mucho, llamada [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]]. Es muy posible que
+    esta tipografía venga en el repositorio de software de su distribución de
+    GNU/Linux.
+
+#+begin_src emacs-lisp
+(set-frame-font "SourceCodePro 11")
+(add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-11")))
+#+end_src
+
+*** responder preguntas
+   En lugar de escribir *"yes"* o *"no"* para algunas preguntas que puedan
+   surgir en algunos modos o funciones de algunos paquetes, responder
+   presionando las teclas *"y"* o *"n"*.
+
+#+begin_src emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+*** El espaciado entre lineas puede ser cambiado
+
+#+begin_src emacs-lisp
+(setf line-spacing 1)
+#+end_src
+
+*** Nada de archivos de respaldo que terminan con "~"
+
+#+begin_src emacs-lisp
+(setf make-backup-files nil)
+#+end_src
+
+*** Auto regresion de archivos
+    Cuando un archivo es modificado por otra aplicación, y esta visitado por Emacs
+    en un buffer, lo revierte (actualiza) en el buffer.
+
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+#+end_src
+
+*** Mostrar la columna 
+    Emacs no muestra la columna sobre la cual esta el cursor por
+    defecto. Cambiemos este comportamiento.
+
+#+begin_src emacs-lisp
+(column-number-mode 1)
+#+end_src
+
+*** Palabras ComoJorobasDeCamello
+    El siguiente modo nos permite para el cursor al principio de cada palabra en
+    una frase EscritaEnMayusculasComoJororbaDeCamello.
+
+#+begin_src emacs-lisp
+(global-subword-mode 1)
+#+end_src
+
+*** Ignoramos algunas advertencias byte-compile
+
+#+begin_src emacs-lisp
+(setf byte-compile-warnings (quote 
+    (not nresolved
+         free-vars
+         callargs
+         redefine
+         obsolete
+         noruntime
+         cl-functions
+         interactive-only)))
+#+end_src
+
+*** relleno de columna
+    Hay que hacer obvio donde es que la columna 80 esta
+
+#+begin_src emacs-lisp
+(setf fill-column 80)
+#+end_src
+
+*** Que en todas partes haya resaltado de sintaxis!
+
+#+begin_src emacs-lisp
+(global-font-lock-mode 1)
+#+end_src
+
+*** Parentesis
+    Con respecto a los paréntesis, desactivamos el parpadeo que sucede cuando
+    los paréntesis coinciden y activamos un modo que hace posible visualizar
+    fácilmente cual paréntesis coincide con cuál.
+
+#+begin_src emacs-lisp
+(setf blink-matching-paren nil)
+(show-paren-mode t)
+#+end_src
+
+*** Borrar/reemplazar selección de texto
+   El texto que este seleccionado, al escribir o pegar algo, debe de ser
+   reemplazado por ese contenido
+
+#+begin_src emacs-lisp
+(delete-selection-mode 1)
+#+end_src
+
+*** Resolver el problema de los buffers con nombres iguales
+    Los buffers con nombres iguales deben ser diferenciados en lo posible
+
+#+begin_src emacs-lisp
+(setf uniquify-buffer-name-style (quote forward))
+#+end_src
+
+*** Internacionalización internacional
+    Usamos la codificación UTF-8 para todo
+
+#+begin_src emacs-lisp
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(if
+    (boundp 'buffer-file-coding-system)
+    (setq-default buffer-file-coding-system 'utf-8)
+  (setf default-buffer-file-coding-system 'utf-8))
+
+(setf x-select-request-type
+      '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+#+end_src
+
+** Modos de Emacs
+   La configuración especifica a cada modo mayor, menor, o paquete con
+   funcionalidades. Dividió por secciones.
+
+   - Después de que Emacs cargue la configuración por completo
+     #+begin_src emacs-lisp
+       (add-hook (quote after-init-hook)
+            (lambda ()
+              (helm-mode 1)
+              (helm-descbinds-mode)
+              ;;(yas-global-mode 1)
+              (projectile-global-mode)
+              ;;(global-flycheck-mode)
+              (auto-indent-global-mode)
+              (autopair-global-mode)
+              (global-pretty-mode t)
+              (global-company-mode)
+              (global-fixmee-mode 1)
+              ;;(semantic-mode 1)
+              ;;(global-move-dup-mode)
+              (global-relative-buffers-mode)
+              ;;(global-auto-highlight-symbol-mode)
+              ))
+       (global-set-key (kbd "C-ç") 'undo)
+       (global-set-key (kbd "M-¡") 'text-scale-increase)
+       (global-set-key (kbd "M-'") 'text-scale-decrease)
+       (define-key global-map (kbd "M-o") 'other-window)
+       ;; salta a la nueva ventana creada despues de dividir la actual
+       (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
+       (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
+     #+end_src
+
+   - Org-mode
+     ¡Organiza tu vida usando Emacs!
+
+     #+begin_src emacs-lisp
+       (setf org-todo-keywords
+             (quote (secuence "POR HACER" "EN PROGRESO" "EN ESPERA" "EN REVISIÓN" "TERMINADO" "CANCELADO")))
+       (setf org-footnote-auto-adjust t
+             org-directory (expand-file-name
+                            "anotaciones" user-emacs-directory)
+             org-archive-location (expand-file-name
+                                   "anotaciones-archivadas" user-emacs-directory)
+             org-special-ctrl-k t
+             org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
+             org-catch-invisible-edits 'show
+             org-return-follow-link t
+             org-blank-before-new-entry t)
+       (global-set-key (kbd "C-c l") 'org-store-link)
+       (global-set-key (kbd "C-c a") 'org-agenda)
+     #+end_src
+
+   - text-mode
+     Esta configuración afecta a todos los modos texto en los buffers.
+     
+     #+begin_src emacs-lisp
+     (add-hook 'text-mode-hook
+                (lambda ()
+                  (turn-on-auto-fill)
+                  (flyspell-mode)
+                  ))
+     #+end_src
+
+   - HELM
+     Es un paquete que esta en su propia liga. Éste paquete te
+     ayudara a aumentar tu productividad, reducir tu calvicie y hará
+     que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de
+     amor por vos ;)
+
+     #+begin_src emacs-lisp
+       ;; re-une la tecla TAB con el comando para ejecutar la acción persistente
+       (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+       ;; Hace que la tecla TAB en la terminal funcione nuevamente
+       (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+       (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+       ;; Lista las acciones disponibles usando C-z en lugar de TAB
+       (define-key helm-map (kbd "C-z")  'helm-select-action) 
+       
+       (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
+       (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+       (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
+       
+       (setf
+        helm-google-suggest-use-curl-p t
+        helm-scroll-amount 4
+        helm-quick-update t
+        helm-idle-delay 0.01
+        helm-input-idle-delay 0.01
+        helm-ff-search-library-in-sexp t
+        
+        helm-split-window-default-side 'other
+        helm-split-window-in-side-p t
+        helm-candidate-number-limit 200
+        helm-M-x-requires-pattern 0
+        helm-ff-file-name-history-use-recentf t
+        helm-move-to-line-cycle-in-source t
+        
+        helm-buffers-fuzzy-matching t
+        helm-boring-buffer-regexp-list '("\\` "
+                                         "\\*helm"
+                                         "\\*helm-mode"
+                                         "\\*Echo Area"
+                                         "\\*Minibuf"
+                                         "\\*monky-cmd-process\\*"
+                                         "\\*epc con"
+                                         "\\*Compile-Log\\*"
+                                         "\\*monky-process\\*"
+                                         "\\*CEDET CScope\\*"
+                                         "\\*Messages\\*"
+                                         "\\*Flycheck error"
+                                         "\\*Elpy"
+                                         "\\*elpy-rpc"
+                                         "\\*magit"
+                                         "\\*.+(.+)"
+                                         "elpa/.+")
+        
+        helm-boring-file-regexp-list (quote
+                                      ("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
+                                       "\\._darcs$" "\\.la$" "\\.o$" "~$"
+                                       "\\.pyc$" "\\.elc$" "TAGS" "\#*\#"
+                                       "\\.exe$" "\\.jar$" "\\.img$" "\\.iso$"
+                                       "\\.xlsx$" "\\.epub$" "\\.docx$"))
+        helm-ff-skip-boring-buffers t
+        helm-truncate-lines t)
+       
+       (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
+       (global-set-key (kbd "C-x f") 'helm-recentf)
+       (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+       (global-set-key (kbd "C-c i") 'helm-imenu)
+       (define-key global-map (kbd "C-x C-f") 'helm-find-files)
+       (define-key global-map (kbd "C-x b") 'helm-buffers-list)
+     #+end_src
+     
+   - Projectile
+     Es un paquete que nos permite el manejo de archivos en
+     proyectos. Un proyecto, por definición, puede ser cualquier
+     repositorio de código fuente de software, como =mercurial=,
+     =git=, etc. También es posible definir un proyecto en una
+     carpeta dejando caer en él un archivo =.projectile=, dentro de
+     este archivo se puede definir qué archivos/carpetas ignorar y
+     cuales no. Para más información ver la [[http://batsov.com/projectile/][pagina del proyecto]].
+
+     #+begin_src emacs-lisp
+       (setf
+        projectile-completion-system 'helm
+        projectile-file-exists-remote-cache-expire (* 10 60)
+        projectile-globally-ignored-files (quote ("TAGS" "\#*\#" "*~" "*.la"
+                                            "*.o" "~" "*.pyc" "*.elc" "*.exe"
+                                            "*.zip" "*.tar.*" "*.rar" "*.7z"))
+        )
+       (global-set-key (kbd "C-c h") 'helm-projectile)
+     #+end_src
+
+   - Multi-term
+     Ofrece un excelente emulador de terminal *dentro* de Emacs
+
+     #+begin_src emacs-lisp
+       (setf multi-term-buffer-name "terminal "
+             multi-term-program "/bin/bash"
+             term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
+                                       (cons "C-p" 'previous-line)
+                                       (cons "C-n" 'next-line)
+                                       (cons "M-f" 'term-send-forward-word)
+                                       (cons "M-b" 'term-send-backward-word)
+                                       (cons "C-c C-j" 'term-line-mode)
+                                       (cons "C-c C-k" 'term-char-mode)
+                                       (cons "M-DEL" 'term-send-backward-kill-word)
+                                       (cons "M-d" 'term-send-forward-kill-word)
+                                       (cons "<C-left>" 'term-send-backward-word)
+                                       (cons "<C-right>" 'term-send-forward-word)
+                                       (cons "C-r" 'term-send-reverse-search-history)
+                                       (cons "M-p" 'term-send-raw-meta)
+                                       (cons "M-y" 'term-send-raw-meta)
+                                       (cons "C-y" 'term-send-raw)))
+       (add-hook 'term-mode-hook
+                 (lambda ()
+                   (yas-minor-mode -1)))
+       (global-set-key [f1] 'multi-term)
+       (global-set-key [C-next] 'multi-term-next)
+       (global-set-key [C-prior] 'multi-term-prev)
+     #+end_src
+
+   - company
+     El paquete da funcionalidades de auto completado. Esta opcion es
+     cada día más popular como remplazo a =auto-complete=.
+
+     #+begin_src emacs-lisp
+       (setf company-idle-delay 0.3
+             company-tooltip-limit 20
+             company-minimum-prefix-length 2
+             company-echo-delay 0
+             company-auto-complete nil)
+       
+       (add-to-list 'company-backends 'company-dabbrev t)
+       (add-to-list 'company-backends 'company-ispell t)
+       (add-to-list 'company-backends 'company-files t)
+       (add-to-list 'company-backends 'company-yasnippet t)
+     #+end_src
+     
+   - Python
+     Configuraciones para mi modo estrella: Python-mode!
+
+     #+begin_src emacs-lisp
+       (package-initialize)
+       (elpy-enable)
+       
+       (add-hook 'python-mode-hook
+                 (lambda ()
+                   (toggle-truncate-lines)
+                   (nlinum-mode)
+                   (hlinum-activate)))
+     #+end_src
+
+   - discover-my-major
+     Éste paquete nos muestra las combinaciones de teclas posibles
+     para el modo mayor en el que estamos actualmente, todo lo que hay
+     que hacer es recordar una combinación especifica de teclas.
+
+     Esta combinación por defecto es C-h C-m ;)
+
+     #+begin_src emacs-lisp
+       (global-set-key (kbd "C-h C-m") 'discover-my-major)
+     #+end_src
+
+   - Expand-region
+     Provee una manera fácil de hacer selección de elementos en el
+     buffer con presionar solo una tecla. Puede ver éste paquete en
+     acción en este episodio de
+     [[http://emacsrocks.com/e09.html][Emacs Rocks]].
+
+     #+begin_src emacs-lisp
+       (global-set-key (kbd "C-¡") 'er/expand-region)
+     #+end_src
+
+   - multiple-cursos
+     Marca varias partes del buffer dependiendo de la selección que
+     hagas.
+     
+     #+begin_src emacs-lisp
+       (define-key global-map (kbd "C-+") 'mc/mark-next-like-this)
+       (define-key global-map (kbd "M-+") 'mc/mark-previous-like-this)
+       (define-key global-map (kbd "C-M-+") 'mc/mark-all-like-this)
+       ;; Para diseñadores web, marca la etiqueta de apertura y cierre
+       ;;(define-key sgml-mode-map (kbd "C-'") 'mc/mark-sgml-tag-pair) ;;Symbol's value as variable is void: sgml-mode-map
+     #+end_src
+
+     este paquete puedes tener configuraciones de teclas muy variadas,
+     lo mejor es que visites la pagina del proyecto en Github para más
+     [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las
+     teclas usadas reflejan la reducida cantidad que existen en mi laptop.
+     
+   - flycheck-mode
+     revisión-al-vuelo de la sintaxis mientras editas código. Hace una
+     selección automática del mejor revisor de sintaxis que dispongas.
+     
+     Tiene soporte para muchos lenguajes. Lo recomiendo por encima de
+     flymake.
+
+     #+begin_src emacs-lisp
+       (setf
+        flycheck-disabled-checkers '(emacs-lisp-checkdoc) ;; deshabilita el majadero revisor de documentación
+        flycheck-indication-mode 'right-fringe
+        )
+     #+end_src
+
+   - web-mode
+     Un modo mayor autónomo que permite la edición de plantillas web:
+     documentos HTML con partes embebidas (CSS/Javascript) y bloques
+     (del lado de cliente/servidor)
+
+     #+begin_src emacs-lisp
+       (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.[gj]sp\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+       (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode)) ;; para plantillas de Django.
+       (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)) ;; para editar archivos HTML
+     #+end_src
+
+   - mu4e
+     Un versátil cliente de correo electrónico. Éste paquete se carga
+     de manera condicional si esta instalado en el sistema del
+     usuario. Desgraciadamente no puedes instalarlo desde Melpa o
+     algún otro repositorio de paquetes de Emacs.
+
+     Correos electrónicos y otros datos son traídos de un archivo
+     secreto ;)
+
+     Para saber como configurar mu4e para escribir correos con
+     diferentes cuentas de correo, puedes mirar la
+     [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]]
+     es aconsejable que esa configuración viva en el archivo secreto...
+
+     #+begin_src emacs-lisp
+       (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e/")
+         (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
+         (autoload 'mu4e "mu4e" "Mail client based on mu (maildir-utils)." t)
+         (require 'org-mu4e)
+         (setf mu4e-view-show-images t)
+         (when (fboundp 'imagemagick-register-types)
+           (imagemagick-register-types))
+         (setf
+          ;; html2text es un paquete que debe estar instalado en tu sistema
+          mu4e-html2text-command "html2text -utf8 -width 80"
+          mu4e-get-mail-command "offlineimap"
+          mu4e-maildir "/home/jorge/correo"
+          mu4e-update-interval 60
+          mu4e-auto-retrieve-keys t
+          mu4e-headers-leave-behavior 'apply
+          mu4e-headers-visible-lines 20
+          mu4e-hide-index-messages t
+          message-kill-buffer-on-exit t
+          mu4e-attachment-dir  "~/Descargas"
+          mu4e-maildir       "~/correo" ;; top-level Maildir
+          mu4e-sent-folder   "/principal/INBOX/Sent" ;; folder for sent messages
+          mu4e-drafts-folder "/principal/INBOX/Drafts" ;; unfinished messages
+          mu4e-trash-folder  "/principal/INBOX/Trash"  ;; trashed messages
+          mu4e-refile-folder "/principal/INBOX/Archives" ;; Mensajes salvados
+          smtpmail-stream-type  'ssl
+          smtpmail-smtp-service 465
+          message-send-mail-function 'smtpmail-send-it
+          )
+         (load (expand-file-name "mu4e-conf.secret.gpg" user-emacs-directory) t)
+       
+         ;; funcion para seleccionar la cuenta con la que se va a responder a un email
+         (defun my-mu4e-set-account ()
+           "Set the account for composing a message."
+           (let* ((account
+                   (if mu4e-compose-parent-message
+                       (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+                         (string-match "/\\(.*?\\)/" maildir)
+                         (match-string 1 maildir))
+                     (completing-read (format "Componer correo con la cuenta: (%s) "
+                                              (mapconcat #'(lambda (var) (car var))
+                                                         my-mu4e-account-alist "/"))
+                                      (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+                                      nil t nil nil (caar my-mu4e-account-alist))))
+                  (account-vars (cdr (assoc account my-mu4e-account-alist))))
+             (if account-vars
+                 (mapc #'(lambda (var)
+                           (set (car var) (cadr var)))
+                       account-vars)
+               (error "Cuenta de correo no encontrada"))))
+       
+         ;; y enganchamos la funcion
+         (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+         )
+     #+end_src
+
+   - dired+
+     Extiende funcionalidades de =dired=
+
+     #+begin_src emacs-lisp
+       (define-key ctl-x-map   "d" 'diredp-dired-files)
+       (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
+     #+end_src
+
+   - ace-jump
+     hace que el cursor se mueva por todo el buffer con presionar
+     pocas teclas.
+
+     #+begin_src emacs-lisp
+       (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
+       (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
+     #+end_src
+
+   - magit
+     Git en Emacs.
+
+     A decir verdad, amo a Mercurial y odio a Git.
+
+     #+begin_src emacs-lisp
+       (define-key global-map [C-f12] 'magit-status)
+     #+end_src
+
+   - monky
+     Mercurial en Emacs
+
+     Amo Mercurial ;)
+
+     #+begin_src emacs-lisp
+       (define-key global-map [f12] 'monky-status)
+       (setf monky-process-type 'cmdserver)
+     #+end_src
+
+   - CEDET
+     Convierte a Emacs en todo un IDE. La configuración se carga de manera condicional
+
+     #+begin_src emacs-lisp
+       (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
+         (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+         (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
+         (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode -1)
+         (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
+         (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode -1)
+         (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+         (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+         
+         (when (cedet-cscope-version-check t)
+           (semanticdb-enable-cscope-databases))
+         
+         ;; Symbol's function definition is void: semantic-load-enable-primary-exuberent-ctags-support
+         ;;(when (cedet-ectag-version-check t)
+         ;;  (semantic-load-enable-primary-exuberent-ctags-support))
+         ;; configuración de algunos proyectos
+         (ede-cpp-root-project "SantoTomas"
+                               :name "santo Tomás de Aquino"
+                               :file "/home/jorge/coders/desarrollo/tomasdeaquino/CMakeLists.txt"
+                               :include-path '("/include"))
+         
+         (ede-cpp-root-project "GodotEngine"
+                               :name "Godot Engine"
+                               :file "/home/jorge/coders/desarrollo/godot/README.md"
+                               :include-path '("/include")))
+     #+end_src
+
+   - Para todos los modos mayores de programación
+     En lo personal, me gustaría que al escribir los comentarios en mi
+     código fuente, las lineas se rompan al llegar a la columna 79.
+
+     #+begin_src emacs-lisp
+       (add-hook 'prog-mode-hook
+                 (lambda ()
+                   (setf fill-column 79)
+                   (set (make-local-variable 'comment-auto-fill-only-comments) t)
+                   (auto-fill-mode t))
+                 )
+     #+end_src
