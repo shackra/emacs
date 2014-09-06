@@ -358,7 +358,8 @@ realicemos a mayor gloria tuya.)
              org-return-follow-link t
              org-blank-before-new-entry t
              org-startup-indented t
-             org-startup-folded t)
+             org-startup-folded t
+             org-imenu-depth 5)
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
      #+end_src
