@@ -46,7 +46,7 @@ realicemos a mayor gloria tuya.)
   falle en cargar la configuración.
 
 #+begin_src emacs-lisp
-  (toggle-debug-on-error)
+  ;; (toggle-debug-on-error)
   ;; (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+end_src
 
@@ -334,8 +334,18 @@ realicemos a mayor gloria tuya.)
      ¡Organiza tu vida usando Emacs!
 
      #+begin_src emacs-lisp
+       (setf org-todo-keyword-faces
+             '(
+               ("POR HACER" . (:foreground "black" :background "#ff4500" :weight bold))
+               ("EN PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
+               ("EN ESPERA" . (:foreground "black" :background "#0000ff" :weight bold))
+               ("EN REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
+               ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))
+               ("CANCELADO" . (:foreground "black" :background "#8b0000" :weight bold))
+               ))
+       
        (setf org-todo-keywords
-             (quote (secuence "POR HACER" "EN PROGRESO" "EN ESPERA" "EN REVISIÓN" "TERMINADO" "CANCELADO")))
+             '((sequence "POR HACER" "EN PROGRESO" "EN ESPERA" "EN REVISIÓN" "TERMINADO" "CANCELADO")))
        
        (setf org-footnote-auto-adjust t
              org-directory (expand-file-name
