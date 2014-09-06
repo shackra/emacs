@@ -302,7 +302,7 @@ realicemos a mayor gloria tuya.)
    La configuración especifica a cada modo mayor, menor, o paquete con
    funcionalidades. Dividió por secciones.
 
-   - Después de que Emacs cargue la configuración por completo
+   1. Después de que Emacs cargue la configuración por completo
      #+begin_src emacs-lisp
        (add-hook (quote after-init-hook)
             (lambda ()
@@ -330,7 +330,7 @@ realicemos a mayor gloria tuya.)
        (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
      #+end_src
 
-   - Org-mode
+   2. Org-mode
      ¡Organiza tu vida usando Emacs!
 
      #+begin_src emacs-lisp
@@ -364,8 +364,8 @@ realicemos a mayor gloria tuya.)
        (global-set-key (kbd "C-c a") 'org-agenda)
      #+end_src
 
-   - text-mode
-     Esta configuración afecta a todos los modos texto en los buffers.
+   3. text-mode
+      Esta configuración afecta a todos los modos texto en los buffers.
      
      #+begin_src emacs-lisp
      (add-hook 'text-mode-hook
@@ -375,7 +375,7 @@ realicemos a mayor gloria tuya.)
                   ))
      #+end_src
 
-   - HELM
+   4. HELM
      Es un paquete que esta en su propia liga. Éste paquete te
      ayudara a aumentar tu productividad, reducir tu calvicie y hará
      que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de
@@ -445,7 +445,7 @@ realicemos a mayor gloria tuya.)
        (define-key global-map (kbd "C-x b") 'helm-buffers-list)
      #+end_src
      
-   - Projectile
+   5. Projectile
      Es un paquete que nos permite el manejo de archivos en
      proyectos. Un proyecto, por definición, puede ser cualquier
      repositorio de código fuente de software, como =mercurial=,
@@ -465,7 +465,7 @@ realicemos a mayor gloria tuya.)
        (global-set-key (kbd "C-c h") 'helm-projectile)
      #+end_src
 
-   - Multi-term
+   6. Multi-term
      Ofrece un excelente emulador de terminal *dentro* de Emacs
 
      #+begin_src emacs-lisp
@@ -494,7 +494,7 @@ realicemos a mayor gloria tuya.)
        (global-set-key [C-prior] 'multi-term-prev)
      #+end_src
 
-   - company
+   7. company
      El paquete da funcionalidades de auto completado. Esta opcion es
      cada día más popular como remplazo a =auto-complete=.
 
@@ -511,7 +511,7 @@ realicemos a mayor gloria tuya.)
        (add-to-list 'company-backends 'company-yasnippet t)
      #+end_src
      
-   - Python
+   8. Python
      Configuraciones para mi modo estrella: Python-mode!
 
      #+begin_src emacs-lisp
@@ -525,7 +525,7 @@ realicemos a mayor gloria tuya.)
                    (hlinum-activate)))
      #+end_src
 
-   - discover-my-major
+   9. discover-my-major
      Éste paquete nos muestra las combinaciones de teclas posibles
      para el modo mayor en el que estamos actualmente, todo lo que hay
      que hacer es recordar una combinación especifica de teclas.
@@ -536,7 +536,7 @@ realicemos a mayor gloria tuya.)
        (global-set-key (kbd "C-h C-m") 'discover-my-major)
      #+end_src
 
-   - Expand-region
+   10. Expand-region
      Provee una manera fácil de hacer selección de elementos en el
      buffer con presionar solo una tecla. Puede ver éste paquete en
      acción en este episodio de
@@ -546,7 +546,7 @@ realicemos a mayor gloria tuya.)
        (global-set-key (kbd "C-¡") 'er/expand-region)
      #+end_src
 
-   - multiple-cursos
+   11. multiple-cursos
      Marca varias partes del buffer dependiendo de la selección que
      hagas.
      
@@ -563,7 +563,7 @@ realicemos a mayor gloria tuya.)
      [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las
      teclas usadas reflejan la reducida cantidad que existen en mi laptop.
      
-   - flycheck-mode
+   12. flycheck-mode
      revisión-al-vuelo de la sintaxis mientras editas código. Hace una
      selección automática del mejor revisor de sintaxis que dispongas.
      
@@ -577,7 +577,7 @@ realicemos a mayor gloria tuya.)
         )
      #+end_src
 
-   - web-mode
+   13. web-mode
      Un modo mayor autónomo que permite la edición de plantillas web:
      documentos HTML con partes embebidas (CSS/Javascript) y bloques
      (del lado de cliente/servidor)
@@ -593,7 +593,7 @@ realicemos a mayor gloria tuya.)
        (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)) ;; para editar archivos HTML
      #+end_src
 
-   - mu4e
+   14. mu4e
      Un versátil cliente de correo electrónico. Éste paquete se carga
      de manera condicional si esta instalado en el sistema del
      usuario. Desgraciadamente no puedes instalarlo desde Melpa o
@@ -663,7 +663,7 @@ realicemos a mayor gloria tuya.)
          )
      #+end_src
 
-   - dired+
+   15. dired+
      Extiende funcionalidades de =dired=
 
      #+begin_src emacs-lisp
@@ -671,7 +671,7 @@ realicemos a mayor gloria tuya.)
        (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
      #+end_src
 
-   - ace-jump
+   16. ace-jump
      hace que el cursor se mueva por todo el buffer con presionar
      pocas teclas.
 
@@ -680,7 +680,7 @@ realicemos a mayor gloria tuya.)
        (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
      #+end_src
 
-   - magit
+   17. magit
      Git en Emacs.
 
      A decir verdad, amo a Mercurial y odio a Git.
@@ -689,7 +689,7 @@ realicemos a mayor gloria tuya.)
        (define-key global-map [C-f12] 'magit-status)
      #+end_src
 
-   - monky
+   18. monky
      Mercurial en Emacs
 
      Amo Mercurial ;)
@@ -699,7 +699,7 @@ realicemos a mayor gloria tuya.)
        (setf monky-process-type 'cmdserver)
      #+end_src
 
-   - CEDET
+   19. CEDET
      Convierte a Emacs en todo un IDE. La configuración se carga de manera condicional
 
      #+begin_src emacs-lisp
@@ -730,7 +730,7 @@ realicemos a mayor gloria tuya.)
                                :include-path '("/include")))
      #+end_src
 
-   - Para todos los modos mayores de programación
+   20. Para todos los modos mayores de programación
      En lo personal, me gustaría que al escribir los comentarios en mi
      código fuente, las lineas se rompan al llegar a la columna 79.
 
@@ -743,3 +743,12 @@ realicemos a mayor gloria tuya.)
                    (toggle-truncate-lines))
                  )
      #+end_src
+       
+   21. gancho para antes de guardar el archivo
+       puede que gustemos de hacer algo con el archivo antes de
+       guardarlo. Acá se enganchan un par de funciones.
+
+       #+begin_src emacs-lisp
+         (add-hook 'before-save-hook 'py-autopep8-before-save)
+         (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
+       #+end_src
