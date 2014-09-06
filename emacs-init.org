@@ -305,13 +305,13 @@ realicemos a mayor gloria tuya.)
    1. Después de que Emacs cargue la configuración por completo
      #+begin_src emacs-lisp
        (add-hook (quote after-init-hook)
-            (lambda ()
+                 (lambda ()
               (helm-mode 1)
               (helm-descbinds-mode)
               ;;(yas-global-mode 1)
               (projectile-global-mode)
               ;;(global-flycheck-mode)
-              (auto-indent-global-mode)
+              ;;(auto-indent-global-mode)
               (autopair-global-mode)
               (global-pretty-mode t)
               (global-company-mode)
@@ -512,16 +512,21 @@ realicemos a mayor gloria tuya.)
      #+end_src
      
    8. Python
-     Configuraciones para mi modo estrella: Python-mode!
+      Configuraciones para mi modo estrella: Python-mode!
+      Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]] en el
+      modo Python. Por lo tanto, estoy reuniendo la tecla RET con la
+      función =reindent-then-newline-and-indent= que funciona de lo más bien.
 
      #+begin_src emacs-lisp
        (package-initialize)
        (elpy-enable)
-       
+       (setf python-indent-guess-indent-offset nil
+             python-indent 4
+             python-indent-offset 4)
        (add-hook 'python-mode-hook
                  (lambda ()
-                   (toggle-truncate-lines)
                    (nlinum-mode)
+                   (define-key python-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
                    (hlinum-activate)))
      #+end_src
 
