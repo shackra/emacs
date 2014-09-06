@@ -42,6 +42,14 @@ realicemos a mayor gloria tuya.)
   (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
 #+end_src
 
+  activamos algunas opciones para depuración en caso de que Emacs
+  falle en cargar la configuración.
+
+#+begin_src emacs-lisp
+  (toggle-debug-on-error)
+  ;; (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
+#+end_src
+
   Cargamos paquetes que no se instalan con ELPA.
 
 #+begin_src emacs-lisp
@@ -328,6 +336,7 @@ realicemos a mayor gloria tuya.)
      #+begin_src emacs-lisp
        (setf org-todo-keywords
              (quote (secuence "POR HACER" "EN PROGRESO" "EN ESPERA" "EN REVISIÓN" "TERMINADO" "CANCELADO")))
+       
        (setf org-footnote-auto-adjust t
              org-directory (expand-file-name
                             "anotaciones" user-emacs-directory)
@@ -337,7 +346,9 @@ realicemos a mayor gloria tuya.)
              org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
              org-catch-invisible-edits 'show
              org-return-follow-link t
-             org-blank-before-new-entry t)
+             org-blank-before-new-entry t
+             org-startup-indented t
+             org-startup-folded t)
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
      #+end_src
@@ -717,6 +728,7 @@ realicemos a mayor gloria tuya.)
                  (lambda ()
                    (setf fill-column 79)
                    (set (make-local-variable 'comment-auto-fill-only-comments) t)
-                   (auto-fill-mode t))
+                   (auto-fill-mode t)
+                   (toggle-truncate-lines))
                  )
      #+end_src
