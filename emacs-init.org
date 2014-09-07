@@ -35,13 +35,6 @@ realicemos a mayor gloria tuya.)
                      user-emacs-directory))
 #+end_src
 
-  Cualquier modificación de Emacs que se haga a través de =customize= ira en
-  éste archivo:
-
-#+begin_src emacs-lisp
-  (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
-#+end_src
-
   activamos algunas opciones para depuración en caso de que Emacs
   falle en cargar la configuración.
 
@@ -757,3 +750,14 @@ realicemos a mayor gloria tuya.)
          (add-hook 'before-save-hook 'py-autopep8-before-save)
          (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
        #+end_src
+** Customize
+ El archivo customize sera éste. Cualquier modificación de Emacs que
+ se haga a través de =customize= ira en éste archivo:
+
+#+begin_src emacs-lisp
+  (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
+#+end_src
+
+ Me da la impresión que estas modificaciones pueden ser sobre-escritas
+ si se cargan al puro inicio. De ahí que sean movidas a la ultima
+ parte de la configuración.
