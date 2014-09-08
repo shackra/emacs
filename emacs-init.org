@@ -291,6 +291,24 @@ realicemos a mayor gloria tuya.)
       '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 #+end_src
 
+** Customize
+ El archivo customize sera éste. Cualquier modificación de Emacs que
+ se haga a través de =customize= ira en éste archivo:
+
+#+begin_src emacs-lisp
+  (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
+#+end_src
+
+ Me da la impresión que estas modificaciones pueden ser sobre-escritas
+ si se cargan al puro inicio. De ahí que sean movidas a la ultima
+ parte de la configuración.
+
+Y cargamos el archivo, ¡No lo olvide!.
+
+ #+begin_src emacs-lisp
+   (load custom-file)
+ #+end_src
+
 ** Modos de Emacs
    La configuración especifica a cada modo mayor, menor, o paquete con
    funcionalidades. Dividió por secciones.
@@ -508,18 +526,18 @@ realicemos a mayor gloria tuya.)
       Configuraciones para mi modo estrella: Python-mode!
       Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]] en el
       modo Python. Por lo tanto, estoy reuniendo la tecla RET con la
-      función =reindent-then-newline-and-indent= que funciona de lo más bien.
+      función =newline-and-indent= que funciona de lo más bien.
 
      #+begin_src emacs-lisp
-       (package-initialize)
        (elpy-enable)
+       (elpy-use-ipython)
        (setf python-indent-guess-indent-offset nil
              python-indent 4
              python-indent-offset 4)
        (add-hook 'python-mode-hook
                  (lambda ()
                    (nlinum-mode)
-                   (define-key python-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
+                   (define-key python-mode-map (kbd "RET") 'newline-and-indent)
                    (hlinum-activate)))
      #+end_src
 
@@ -541,7 +559,7 @@ realicemos a mayor gloria tuya.)
      [[http://emacsrocks.com/e09.html][Emacs Rocks]].
 
      #+begin_src emacs-lisp
-       (global-set-key (kbd "C-¡") 'er/expand-region)
+       (global-set-key (kbd "C-'") 'er/expand-region)
      #+end_src
 
    11. multiple-cursos
@@ -602,8 +620,8 @@ realicemos a mayor gloria tuya.)
 
      Para saber como configurar mu4e para escribir correos con
      diferentes cuentas de correo, puedes mirar la
-     [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]]
-     es aconsejable que esa configuración viva en el archivo secreto...
+     [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]] es aconsejable que esa configuración viva en el
+     archivo secreto...
 
      #+begin_src emacs-lisp
        (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e/")
@@ -728,7 +746,18 @@ realicemos a mayor gloria tuya.)
                                :include-path '("/include")))
      #+end_src
 
-   20. Para todos los modos mayores de programación
+   20. Smart modeline
+       el modeline, pero más inteligente.
+
+       #+begin_src emacs-lisp
+         (sml/setup)
+         (sml/apply-theme 'dark)
+         
+         (add-to-list 'sml/replacer-regexp-list '("^~/coders/" ":Código:") t)
+         (add-to-list 'sml/replacer-regexp-list '("^~/coders/PPH" ":PPH:") t)
+       #+end_src
+
+   21. Para todos los modos mayores de programación
      En lo personal, me gustaría que al escribir los comentarios en mi
      código fuente, las lineas se rompan al llegar a la columna 79.
 
@@ -742,7 +771,7 @@ realicemos a mayor gloria tuya.)
                  )
      #+end_src
        
-   21. gancho para antes de guardar el archivo
+   22. gancho para antes de guardar el archivo
        puede que gustemos de hacer algo con el archivo antes de
        guardarlo. Acá se enganchan un par de funciones.
 
@@ -750,14 +779,3 @@ realicemos a mayor gloria tuya.)
          (add-hook 'before-save-hook 'py-autopep8-before-save)
          (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
        #+end_src
-** Customize
- El archivo customize sera éste. Cualquier modificación de Emacs que
- se haga a través de =customize= ira en éste archivo:
-
-#+begin_src emacs-lisp
-  (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
-#+end_src
-
- Me da la impresión que estas modificaciones pueden ser sobre-escritas
- si se cargan al puro inicio. De ahí que sean movidas a la ultima
- parte de la configuración.
