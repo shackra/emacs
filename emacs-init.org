@@ -48,6 +48,7 @@ realicemos a mayor gloria tuya.)
 #+begin_src emacs-lisp
   (add-to-list 'load-path (expand-file-name "site-packages"
                                             user-emacs-directory))
+  (load-file "~/.emacs.d/site-packages/golang/company-go.el")
   
   ;; carga condicionalmente CEDET
   (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
@@ -103,11 +104,15 @@ realicemos a mayor gloria tuya.)
   (require 'expand-region)
   (require 'web-mode)
   (require 'epa-file)
-  (epa-file-enable) ;; no deberia ir acá, pero bueh...
+  (require 'visual-regexp)
+  (require 'visual-regexp-steroids)
   (require 'cedet)
   (require 'cedet-cscope)
   (require 'semantic/ia)
   (require 'semantic/bovine/gcc)
+  (when (file-exists-p "/usr/share/emacs/site-lisp/go-mode.el")
+    (require 'go-mode-load))
+  (require 'company-go)
 #+end_src
 
 ** Emacs, no hagas éstas cosas...
@@ -123,16 +128,6 @@ realicemos a mayor gloria tuya.)
 
     #+begin_src emacs-lisp
       (powerline-center-theme)
-    #+end_src
-
-*** Usar un mode-line que gaste espacio
-    Hace la información en el mode line legible con smart-mode-line
-
-    #+begin_src emacs-lisp
-      ;;(sml/setup)
-      ;; Emacs no deja de preguntarme si en verdad deseo activar el tema
-      ;;(setf sml/no-confirm-load-theme t)
-      ;;(sml/apply-theme 'dark)
     #+end_src
 
 *** Nada de "Splash Screens"
@@ -159,11 +154,10 @@ realicemos a mayor gloria tuya.)
     acceder a un menú despegable)
 
 #+begin_src emacs-lisp
-(when window-system
- (menu-bar-mode -1)
- (tool-bar-mode -1)
- (scroll-bar-mode -1)
- (tooltip-mode -1))
+  (menu-bar-mode -1)
+  (tool-bar-mode -1)
+  (scroll-bar-mode -1)
+  (tooltip-mode -1)
 #+end_src
 
 *** tipografía
@@ -735,15 +729,16 @@ Y cargamos el archivo, ¡No lo olvide!.
          ;;(when (cedet-ectag-version-check t)
          ;;  (semantic-load-enable-primary-exuberent-ctags-support))
          ;; configuración de algunos proyectos
-         (ede-cpp-root-project "SantoTomas"
-                               :name "santo Tomás de Aquino"
-                               :file "/home/jorge/coders/desarrollo/tomasdeaquino/CMakeLists.txt"
-                               :include-path '("/include"))
+         ;; (ede-cpp-root-project "SantoTomas"
+         ;;                       :name "santo Tomás de Aquino"
+         ;;                       :file "/home/jorge/coders/desarrollo/tomasdeaquino/CMakeLists.txt"
+         ;;                       :include-path '("/include"))
          
-         (ede-cpp-root-project "GodotEngine"
-                               :name "Godot Engine"
-                               :file "/home/jorge/coders/desarrollo/godot/README.md"
-                               :include-path '("/include")))
+         ;; (ede-cpp-root-project "GodotEngine"
+         ;;                       :name "Godot Engine"
+         ;;                       :file "/home/jorge/coders/desarrollo/godot/README.md"
+         ;;                       :include-path '("/include"))
+       )
      #+end_src
 
    20. Smart modeline
@@ -757,25 +752,67 @@ Y cargamos el archivo, ¡No lo olvide!.
          (add-to-list 'sml/replacer-regexp-list '("^~/coders/PPH" ":PPH:") t)
        #+end_src
 
-   21. Para todos los modos mayores de programación
-     En lo personal, me gustaría que al escribir los comentarios en mi
-     código fuente, las lineas se rompan al llegar a la columna 79.
-
-     #+begin_src emacs-lisp
-       (add-hook 'prog-mode-hook
-                 (lambda ()
-                   (setf fill-column 79)
-                   (set (make-local-variable 'comment-auto-fill-only-comments) t)
-                   (auto-fill-mode t)
-                   (toggle-truncate-lines))
-                 )
-     #+end_src
-       
-   22. gancho para antes de guardar el archivo
-       puede que gustemos de hacer algo con el archivo antes de
-       guardarlo. Acá se enganchan un par de funciones.
+   21. Visual-regexp y Visual-regexp-steroids
+       expresiones regulares con algo más moderno que lo ofrecido por
+       Emacs:
 
        #+begin_src emacs-lisp
-         (add-hook 'before-save-hook 'py-autopep8-before-save)
-         (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
+         (define-key global-map (kbd "C-c r") 'vr/replace)
+         (define-key global-map (kbd "C-c q") 'vr/query-replace)
+         (define-key global-map (kbd "C-c m") 'vr/mc-mark)
+         (define-key esc-map (kbd "C-r") 'vr/isearch-backward) ;; C-M-r
+         (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s
        #+end_src
+
+   22. Para todos los modos mayores de programación
+    En lo personal, me gustaría que al escribir los comentarios en mi
+    código fuente, las lineas se rompan al llegar a la columna 79.
+
+    #+begin_src emacs-lisp
+      (add-hook 'prog-mode-hook
+                (lambda ()
+                  (setf fill-column 79)
+                  (set (make-local-variable 'comment-auto-fill-only-comments) t)
+                  (auto-fill-mode t)
+                  (toggle-truncate-lines))
+                )
+    #+end_src
+
+   23. golang
+       configuración para golang en emacs.
+
+       #+begin_src emacs-lisp
+         (add-hook 'go-mode-hook (lambda ()
+                                   (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
+                                   (local-set-key (kbd "C-c i") 'go-goto-imports)
+                                   (local-set-key (kbd \"M-.\") 'godef-jump)
+                                   (set (make-local-variable 'company-backends) '(company-go))
+                                   (go-eldoc-setup)
+         ))
+       #+end_src
+       
+   24. rustlang
+       configuración para rustlang en Emacs. Yo aun no olvido lo
+       hipócrita que es Mozilla y "su web abierta" por lo que le
+       hicieron (o no hicieron, si quiere) con Brendan Eich. LAS
+       PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU DINERO AQUELLAS
+       CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN
+       PARA QUE SEAN PERSEGUIDAS Y PIERDAN SUS TRABAJOS PORQUE LOS
+       FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN
+       DISTINTOS DE ELLOS SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL
+       MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla,
+       hipócrita, cuanta tolerancia y respeto hacía los demás!.
+       
+       #+begin_src emacs-lisp
+         ;;nada por agregar, aun...
+       #+end_src
+
+   25. gancho para antes de guardar el archivo
+      puede que gustemos de hacer algo con el archivo antes de
+      guardarlo. Acá se enganchan un par de funciones.
+
+      #+begin_src emacs-lisp
+        (add-hook 'before-save-hook 'py-autopep8-before-save)
+        (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
+        (add-hook 'before-save-hook 'gofmt-before-save)
+      #+end_src

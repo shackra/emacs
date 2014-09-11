@@ -8,7 +8,9 @@
  '(elpy-modules (quote (elpy-module-company elpy-module-eldoc elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-sane-defaults)))
  '(elpy-rpc-backend "jedi")
  '(elpy-rpc-python-command "python2")
- '(magit-use-overlays nil))
+ '(magit-use-overlays nil)
+ '(safe-local-variable-values (quote ((encoding . utf-8))))
+ '(vr/default-replace-preview t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
