@@ -51,9 +51,12 @@ realicemos a mayor gloria tuya.)
   (load-file "~/.emacs.d/site-packages/golang/company-go.el")
   
   ;; carga condicionalmente CEDET
-  (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
-    (load-file (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
-    )
+  ;; ERROR: eieio is already loaded.  Removing CEDET now would be unwise.
+  ;; ERROR: ver http://sourceforge.net/p/cedet/mailman/message/30794049/
+  ;; lo desactivare temporalmente...
+  ;; (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
+  ;;   (load-file (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
+  ;;   )
   
   ;; carga un agregado para cuando se escriben correos usando mu4e
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
@@ -106,13 +109,14 @@ realicemos a mayor gloria tuya.)
   (require 'epa-file)
   (require 'visual-regexp)
   (require 'visual-regexp-steroids)
-  (require 'cedet)
-  (require 'cedet-cscope)
-  (require 'semantic/ia)
-  (require 'semantic/bovine/gcc)
+  ;; (require 'cedet)
+  ;; (require 'cedet-cscope)
+  ;; (require 'semantic/ia)
+  ;; (require 'semantic/bovine/gcc)
   (when (file-exists-p "/usr/share/emacs/site-lisp/go-mode.el")
     (require 'go-mode-load))
   (require 'company-go)
+  (require 'org)
 #+end_src
 
 ** Emacs, no hagas éstas cosas...
@@ -313,9 +317,8 @@ Y cargamos el archivo, ¡No lo olvide!.
                  (lambda ()
               (helm-mode 1)
               (helm-descbinds-mode)
-              ;;(yas-global-mode 1)
               (projectile-global-mode)
-              ;;(global-flycheck-mode)
+              (global-flycheck-mode)
               ;;(auto-indent-global-mode)
               (autopair-global-mode)
               (global-pretty-mode t)
@@ -325,6 +328,9 @@ Y cargamos el archivo, ¡No lo olvide!.
               ;;(global-move-dup-mode)
               (global-relative-buffers-mode)
               ;;(global-auto-highlight-symbol-mode)
+              ;; abre la agenda
+              (org-agenda-list 1)
+              (delete-other-windows)
               ))
        (global-set-key (kbd "C-ç") 'undo)
        (global-set-key (kbd "M-¡") 'text-scale-increase)
@@ -350,13 +356,11 @@ Y cargamos el archivo, ¡No lo olvide!.
                ))
        
        (setf org-todo-keywords
-             '((sequence "POR HACER" "EN PROGRESO" "EN ESPERA" "EN REVISIÓN" "TERMINADO" "CANCELADO")))
+             '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "TERMINADO(t!)" "CANCELADO(c@)")))
        
        (setf org-footnote-auto-adjust t
-             org-directory (expand-file-name
-                            "anotaciones" user-emacs-directory)
-             org-archive-location (expand-file-name
-                                   "anotaciones-archivadas" user-emacs-directory)
+             org-directory (expand-file-name "~/org")
+             org-archive-location (expand-file-name "~/org/archivado")
              org-special-ctrl-k t
              org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
              org-catch-invisible-edits 'show
@@ -364,9 +368,16 @@ Y cargamos el archivo, ¡No lo olvide!.
              org-blank-before-new-entry t
              org-startup-indented t
              org-startup-folded t
-             org-imenu-depth 5)
+             org-imenu-depth 5
+             org-agenda-files (list "~/org/trabajo.org"
+                                    "~/org/casa.org"
+                                    "~/org/otros.org")
+             org-log-done 'time
+             org-clock-persist 'history)
+       
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
+       (org-clock-persistence-insinuate)
      #+end_src
 
    3. text-mode
@@ -570,8 +581,7 @@ Y cargamos el archivo, ¡No lo olvide!.
 
      este paquete puedes tener configuraciones de teclas muy variadas,
      lo mejor es que visites la pagina del proyecto en Github para más
-     [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las
-     teclas usadas reflejan la reducida cantidad que existen en mi laptop.
+     [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las teclas usadas reflejan la reducida cantidad que existen en mi laptop.
      
    12. flycheck-mode
      revisión-al-vuelo de la sintaxis mientras editas código. Hace una
@@ -623,11 +633,12 @@ Y cargamos el archivo, ¡No lo olvide!.
          (autoload 'mu4e "mu4e" "Mail client based on mu (maildir-utils)." t)
          (require 'org-mu4e)
          (setf mu4e-view-show-images t)
+         (global-key-binding (kbd "[f7]") 'mu4e)
          (when (fboundp 'imagemagick-register-types)
            (imagemagick-register-types))
          (setf
           ;; html2text es un paquete que debe estar instalado en tu sistema
-          mu4e-html2text-command "html2text -utf8 -width 80"
+          mu4e-html2text-command "html2text -width 100 -style pretty -nobs"
           mu4e-get-mail-command "offlineimap"
           mu4e-maildir "/home/jorge/correo"
           mu4e-update-interval 60
@@ -713,17 +724,17 @@ Y cargamos el archivo, ¡No lo olvide!.
      Convierte a Emacs en todo un IDE. La configuración se carga de manera condicional
 
      #+begin_src emacs-lisp
-       (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
-         (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
-         (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
-         (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode -1)
-         (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
-         (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode -1)
-         (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
-         (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
+       ;; (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
+       ;;   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
+       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
+       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode -1)
+       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
+       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode -1)
+       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
+       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
          
-         (when (cedet-cscope-version-check t)
-           (semanticdb-enable-cscope-databases))
+       ;;   (when (cedet-cscope-version-check t)
+       ;;     (semanticdb-enable-cscope-databases))
          
          ;; Symbol's function definition is void: semantic-load-enable-primary-exuberent-ctags-support
          ;;(when (cedet-ectag-version-check t)
@@ -738,7 +749,7 @@ Y cargamos el archivo, ¡No lo olvide!.
          ;;                       :name "Godot Engine"
          ;;                       :file "/home/jorge/coders/desarrollo/godot/README.md"
          ;;                       :include-path '("/include"))
-       )
+       ;;)
      #+end_src
 
    20. Smart modeline
@@ -774,7 +785,10 @@ Y cargamos el archivo, ¡No lo olvide!.
                   (setf fill-column 79)
                   (set (make-local-variable 'comment-auto-fill-only-comments) t)
                   (auto-fill-mode t)
-                  (toggle-truncate-lines))
+                  (toggle-truncate-lines)
+                  ;; redefinimos la tecla RET para que inserte un salto de linea y la
+                  ;; idente de manera adecuada.
+                  (define-key prog-mode-map (kbd "RET") 'newline-and-indent))
                 )
     #+end_src
 
@@ -785,7 +799,7 @@ Y cargamos el archivo, ¡No lo olvide!.
          (add-hook 'go-mode-hook (lambda ()
                                    (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
                                    (local-set-key (kbd "C-c i") 'go-goto-imports)
-                                   (local-set-key (kbd \"M-.\") 'godef-jump)
+                                   (local-set-key (kbd "M-.") 'godef-jump)
                                    (set (make-local-variable 'company-backends) '(company-go))
                                    (go-eldoc-setup)
          ))
@@ -807,7 +821,59 @@ Y cargamos el archivo, ¡No lo olvide!.
          ;;nada por agregar, aun...
        #+end_src
 
-   25. gancho para antes de guardar el archivo
+   25. C++
+       configuración para habilitar auto-completado en Emacs para la
+       programación en el lenguaje C++
+
+       #+begin_src emacs-lisp
+         (require 'cmake-project)
+         
+         (defun maybe-cmake-project-hook ()
+           (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
+         
+         (defun my-irony-mode-hook ()
+           (define-key irony-mode-map [remap completion-at-point]
+             'irony-completion-at-point-async)
+           (define-key irony-mode-map [remap complete-symbol]
+             'irony-completion-at-point-async))
+         
+         (add-hook 'c++-mode-hook
+                   (lambda ()
+                     (irony-mode)
+                     (set (make-local-variable 'company-backends) '(company-c-headers 
+                                                                    company-irony
+                                                                    company-yasnippet
+                                                                    ))
+                     (maybe-cmake-project-hook)
+         ))
+         
+         (add-hook 'irony-mode-hook 
+                   (lambda ()
+                     (company-irony-setup-begin-commands)
+                     (my-irony-mode-hook)
+         ))
+       #+end_src
+
+   26. CMake
+       configuración de CMake para Emacs
+       
+       #+begin_src emacs-lisp
+         (require 'cmake-mode)
+         
+         (setq auto-mode-alist
+               (append
+                '(("CMakeLists\\.txt\\'" . cmake-mode))
+                '(("\\.cmake\\'" . cmake-mode))
+                auto-mode-alist))
+         
+         (add-hook 'cmake-mode-hook 
+                   (lambda ()
+                     (set (make-local-variable 'company-backends) '(company-cmake
+                                                                    company-yasnippet))
+                     ))
+       #+end_src
+
+   27. gancho para antes de guardar el archivo
       puede que gustemos de hacer algo con el archivo antes de
       guardarlo. Acá se enganchan un par de funciones.
 
@@ -815,4 +881,4 @@ Y cargamos el archivo, ¡No lo olvide!.
         (add-hook 'before-save-hook 'py-autopep8-before-save)
         (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
         (add-hook 'before-save-hook 'gofmt-before-save)
-      #+end_src
+       #+end_src
