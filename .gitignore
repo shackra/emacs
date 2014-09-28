@@ -21,3 +21,6 @@ projectile-*.eld
 emacs-init.el
 srecode-map.el
 var/*
+tramp
+org-clock-save.el
+irony/*
