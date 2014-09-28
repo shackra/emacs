@@ -126,6 +126,15 @@ realicemos a mayor gloria tuya.)
 #+begin_src emacs-lisp
 (load-theme 'monokai t)
 #+end_src
+*** Usar otro buffer que no sea el \*scratch*
+Quiero visualizar otro buffer cada vez que creo un frame por primera vez, en emacs 24 y adelante es posible cambiar susodicho
+comportamiento, como todo en Emacs ;). Sin embargo en Emacs 23 y anteriores siempre se abrira el frame con el buffer \*scratch* por
+defecto. ¡Siempre es bueno actualizar tu Emacs!
+
+#+BEGIN_SRC emacs-lisp
+  (setf initial-buffer-choice "*Org Agenda*")
+#+END_SRC
+
 
 *** Usar el mode-line común y corriente
     Quiero usar el mode-line que ofrece =powerline= :)
