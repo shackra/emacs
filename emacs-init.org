@@ -294,17 +294,18 @@ Quitamos algunas cosas del modeline para hacer espacio. Sinceramente
 hay datos que no me interesan conocer.
 
 #+BEGIN_SRC emacs-lisp
-  ;;(diminish 'yas/minor-mode) ;; diminish: yas/minor-mode is not currently registered as a minor mode
-  (diminish 'button-lock-mode)
-  (diminish 'org-indent-mode)
-  (diminish 'helm-mode)
-  (diminish 'fixmee-mode)
-  (diminish 'elpy-mode)
-  (diminish 'highlight-indentation-mode)
-  (diminish 'autopair-mode)
-  (diminish 'flycheck-mode)
-  (diminish 'auto-fill-function)
-  (diminish 'company-mode)
+  ;;(eval-after-load "yasnippet" '(diminish 'yas/minor-mode))
+  (eval-after-load "button-lock" '(diminish 'button-lock-mode))
+  (eval-after-load "org-indent" '(diminish 'org-indent-mode))
+  (eval-after-load "helm-mode" '(diminish 'helm-mode))
+  (eval-after-load "fixmee" '(diminish 'fixmee-mode))
+  (eval-after-load "elpy" '(diminish 'elpy-mode))
+  (eval-after-load "highlight-indentation" '(diminish 'highlight-indentation-mode))
+  (eval-after-load "autopair" '(diminish 'autopair-mode))
+  (eval-after-load "flycheck" '(diminish 'flycheck-mode))
+  (eval-after-load "flyspell" '(diminish 'flyspell-mode))
+  (eval-after-load "simple" '(diminish 'auto-fill-function))
+  (eval-after-load "company" '(diminish 'company-mode))
 #+END_SRC
 ** Customize
  El archivo customize sera éste. Cualquier modificación de Emacs que
@@ -371,10 +372,10 @@ Y cargamos el archivo, ¡No lo olvide!.
                ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))
                ("CANCELADO" . (:foreground "black" :background "#8b0000" :weight bold))
                ))
-       
+
        (setf org-todo-keywords
-             '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "TERMINADO(t!)" "CANCELADO(c@)")))
-       
+             '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)")))
+
        (setf org-footnote-auto-adjust t
              org-directory (expand-file-name "~/org")
              org-archive-location (expand-file-name "~/org/archivado")
@@ -384,14 +385,14 @@ Y cargamos el archivo, ¡No lo olvide!.
              org-return-follow-link t
              org-blank-before-new-entry t
              org-startup-indented t
-             org-startup-folded t
+             org-startup-folded nil
              org-imenu-depth 5
              org-agenda-files (list "~/org/trabajo.org"
                                     "~/org/casa.org"
                                     "~/org/otros.org")
              org-log-done 'time
              org-clock-persist 'history)
-       
+
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
        (org-clock-persistence-insinuate)
