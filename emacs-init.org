@@ -131,8 +131,11 @@ Quiero visualizar otro buffer cada vez que creo un frame por primera vez, en ema
 comportamiento, como todo en Emacs ;). Sin embargo en Emacs 23 y anteriores siempre se abrira el frame con el buffer \*scratch* por
 defecto. ¡Siempre es bueno actualizar tu Emacs!
 
+**** EN REVISIÓN 
+- State "EN REVISIÓN" from ""           [2014-09-28 dom 11:49] \\
+  ésta opción visita un archivo en lugar de usar un buffer ya existente dentro de emacs
 #+BEGIN_SRC emacs-lisp
-  (setf initial-buffer-choice "*Org Agenda*")
+  ;;(setf initial-buffer-choice "*Org Agenda*")
 #+END_SRC
 
 
@@ -315,7 +318,9 @@ hay datos que no me interesan conocer.
   (eval-after-load "flyspell" '(diminish 'flyspell-mode))
   (eval-after-load "simple" '(diminish 'auto-fill-function))
   (eval-after-load "company" '(diminish 'company-mode))
+  (eval-after-load "magit" '(diminish 'magit-auto-revert-mode))
 #+END_SRC
+
 ** Customize
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira en éste archivo:
@@ -786,9 +791,9 @@ Y cargamos el archivo, ¡No lo olvide!.
        #+begin_src emacs-lisp
          (sml/setup)
          (sml/apply-theme 'dark)
-         
+
          (add-to-list 'sml/replacer-regexp-list '("^~/coders/" ":Código:") t)
-         (add-to-list 'sml/replacer-regexp-list '("^~/coders/PPH" ":PPH:") t)
+         (add-to-list 'sml/replacer-regexp-list '("^:Código:PPH/clientes" ":PPH:") t)
        #+end_src
 
    21. Visual-regexp y Visual-regexp-steroids
