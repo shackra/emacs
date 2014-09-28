@@ -8,7 +8,11 @@
  '(elpy-modules (quote (elpy-module-company elpy-module-eldoc elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-sane-defaults)))
  '(elpy-rpc-backend "jedi")
  '(elpy-rpc-python-command "python2")
+ '(flycheck-check-syntax-automatically (quote (new-line mode-enabled)))
+ '(flycheck-indication-mode (quote right-fringe))
+ '(global-flycheck-mode t nil (flycheck))
  '(magit-use-overlays nil)
+ '(py-autopep8-options (quote ("--ignore E711,E712,E24" "--aggressive --aggressive --aggressive")))
  '(safe-local-variable-values (quote ((encoding . utf-8))))
  '(vr/default-replace-preview t))
 (custom-set-faces

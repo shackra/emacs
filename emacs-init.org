@@ -289,6 +289,23 @@ realicemos a mayor gloria tuya.)
       '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 #+end_src
 
+*** Limpia el mode-line por favor
+Quitamos algunas cosas del modeline para hacer espacio. Sinceramente
+hay datos que no me interesan conocer.
+
+#+BEGIN_SRC emacs-lisp
+  ;;(diminish 'yas/minor-mode) ;; diminish: yas/minor-mode is not currently registered as a minor mode
+  (diminish 'button-lock-mode)
+  (diminish 'org-indent-mode)
+  (diminish 'helm-mode)
+  (diminish 'fixmee-mode)
+  (diminish 'elpy-mode)
+  (diminish 'highlight-indentation-mode)
+  (diminish 'autopair-mode)
+  (diminish 'flycheck-mode)
+  (diminish 'auto-fill-function)
+  (diminish 'company-mode)
+#+END_SRC
 ** Customize
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira en éste archivo:
@@ -384,11 +401,12 @@ Y cargamos el archivo, ¡No lo olvide!.
       Esta configuración afecta a todos los modos texto en los buffers.
      
      #+begin_src emacs-lisp
-     (add-hook 'text-mode-hook
-                (lambda ()
-                  (turn-on-auto-fill)
-                  (flyspell-mode)
-                  ))
+       (add-hook 'text-mode-hook
+                  (lambda ()
+                    (turn-on-auto-fill)
+                    (flyspell-mode)
+                    (set (make-local-variable 'fill-column) 140)
+                    ))
      #+end_src
 
    4. HELM
@@ -782,10 +800,13 @@ Y cargamos el archivo, ¡No lo olvide!.
     #+begin_src emacs-lisp
       (add-hook 'prog-mode-hook
                 (lambda ()
-                  (setf fill-column 79)
+                  (set (make-local-variable 'fill-column) 79)
                   (set (make-local-variable 'comment-auto-fill-only-comments) t)
                   (auto-fill-mode t)
                   (toggle-truncate-lines)
+                  (highlight-numbers-mode)
+                  (hes-mode)
+                  (highlight-blocks-mode)
                   ;; redefinimos la tecla RET para que inserte un salto de linea y la
                   ;; idente de manera adecuada.
                   (define-key prog-mode-map (kbd "RET") 'newline-and-indent))
