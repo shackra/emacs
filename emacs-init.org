@@ -46,18 +46,8 @@ realicemos a mayor gloria tuya.)
   Cargamos paquetes que no se instalan con ELPA.
 
 #+begin_src emacs-lisp
-  (add-to-list 'load-path (expand-file-name "site-packages"
-                                            user-emacs-directory))
-  (load-file "~/.emacs.d/site-packages/golang/company-go.el")
-  
-  ;; carga condicionalmente CEDET
-  ;; ERROR: eieio is already loaded.  Removing CEDET now would be unwise.
-  ;; ERROR: ver http://sourceforge.net/p/cedet/mailman/message/30794049/
-  ;; lo desactivare temporalmente...
-  ;; (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
-  ;;   (load-file (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
-  ;;   )
-  
+  (load-file (expand-file-name "site-packages/golang/company-go.el" user-emacs-directory))
+  (load-file (expand-file-name "site-packages/erosiond-theme/erosiond-theme.el" user-emacs-directory))
   ;; carga un agregado para cuando se escriben correos usando mu4e
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
 #+end_src
@@ -124,7 +114,7 @@ realicemos a mayor gloria tuya.)
 *** Dejar el tema por defecto de Emacs; ¡jamas!
 
 #+begin_src emacs-lisp
-(load-theme 'monokai t)
+  ;;(load-theme 'monokai t)
 #+end_src
 *** Usar otro buffer que no sea el \*scratch*
 Quiero visualizar otro buffer cada vez que creo un frame por primera vez, en emacs 24 y adelante es posible cambiar susodicho
@@ -392,7 +382,7 @@ Y cargamos el archivo, ¡No lo olvide!.
 
        (setf org-footnote-auto-adjust t
              org-directory (expand-file-name "~/org")
-             org-archive-location (expand-file-name "~/org/archivado")
+             org-archive-location (expand-file-name "~/org/archivado.org")
              org-special-ctrl-k t
              org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
              org-catch-invisible-edits 'show
@@ -405,24 +395,26 @@ Y cargamos el archivo, ¡No lo olvide!.
                                     "~/org/casa.org"
                                     "~/org/otros.org")
              org-log-done 'time
+             org-default-notes-file (concat org-directory "/notes.org")
              org-clock-persist 'history)
 
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
+       (define-key global-map (kbd "C-c c") 'org-capture)
        (org-clock-persistence-insinuate)
      #+end_src
 
    3. text-mode
       Esta configuración afecta a todos los modos texto en los buffers.
      
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (add-hook 'text-mode-hook
                   (lambda ()
                     (turn-on-auto-fill)
                     (flyspell-mode)
-                    (set (make-local-variable 'fill-column) 140)
+                    (set (make-local-variable 'fill-column) 110)
                     ))
-     #+end_src
+     #+END_SRC
 
    4. HELM
      Es un paquete que esta en su propia liga. Éste paquete te
@@ -790,10 +782,10 @@ Y cargamos el archivo, ¡No lo olvide!.
 
        #+begin_src emacs-lisp
          (sml/setup)
-         (sml/apply-theme 'dark)
+         (sml/apply-theme 'respectful)
 
          (add-to-list 'sml/replacer-regexp-list '("^~/coders/" ":Código:") t)
-         (add-to-list 'sml/replacer-regexp-list '("^:Código:PPH/clientes" ":PPH:") t)
+         (add-to-list 'sml/replacer-regexp-list '("^:Código:PPH/clientes/" ":PPH:") t)
        #+end_src
 
    21. Visual-regexp y Visual-regexp-steroids

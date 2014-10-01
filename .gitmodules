@@ -1,3 +1,6 @@
 [submodule "site-packages/cedet"]
 	path = site-packages/cedet
 	url = http://git.randomsample.de/cedet.git
+[submodule "site-packages/erosiond-theme"]
+	path = site-packages/erosiond-theme
+	url = https://github.com/darrik/erosiond-theme.git
