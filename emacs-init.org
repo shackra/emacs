@@ -404,7 +404,48 @@ Y cargamos el archivo, ¡No lo olvide!.
        (org-clock-persistence-insinuate)
      #+end_src
 
-   3. text-mode
+   3. org-page
+      Genera un blog estatico con [[https://github.com/kelvinh/org-page][org-page]].
+      la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porque de verdad quiero
+      castellanizar los enlaces y sus títulos en el blog.
+
+      #+BEGIN_SRC emacs-lisp
+        (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com"
+              op/site-domain "http://elblog.deshackra.com/"
+              op/site-main-title "El blog de Shackra"
+              op/site-sub-title "«No seas tan abierto de mente o tu cerebro se caerá» ~G.K. Chesterton"
+              op/category-config-alist '(("entradas" 
+                                          :show-meta t 
+                                          :show-comment: t 
+                                          :uri-generator op/generate-uri
+                                          :uri-template "/entrada/%y/%m/%d/%t/"
+                                          :sort-by :date
+                                          :category-index t)
+                                         ("índice"    
+                                          :show-meta nil
+                                          :show-comment nil
+                                          :uri-generator op/generate-uri
+                                          :uri-template "/"
+                                          :sort-by :date
+                                          :category-index nil)
+                                         ("acerca de"
+                                          :show-meta nil
+                                          :show-comment nil
+                                          :uri-generator op/generate-uri
+                                          :uri-template "/acerca-de/"
+                                          :sort-by :date
+                                          :category-index nil)
+                                         )
+        )
+
+        (defun op/do-publication-all ()
+          "You could re-publish all org source files. To publish all files use this function"
+          (op/do-publication t nil nil t)
+        )
+      #+END_SRC
+   
+
+   4. text-mode
       Esta configuración afecta a todos los modos texto en los buffers.
      
      #+BEGIN_SRC emacs-lisp
@@ -416,7 +457,7 @@ Y cargamos el archivo, ¡No lo olvide!.
                     ))
      #+END_SRC
 
-   4. HELM
+   5. HELM
      Es un paquete que esta en su propia liga. Éste paquete te
      ayudara a aumentar tu productividad, reducir tu calvicie y hará
      que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de
@@ -486,7 +527,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (define-key global-map (kbd "C-x b") 'helm-buffers-list)
      #+end_src
      
-   5. Projectile
+   6. Projectile
      Es un paquete que nos permite el manejo de archivos en
      proyectos. Un proyecto, por definición, puede ser cualquier
      repositorio de código fuente de software, como =mercurial=,
@@ -506,7 +547,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (global-set-key (kbd "C-c h") 'helm-projectile)
      #+end_src
 
-   6. Multi-term
+   7. Multi-term
      Ofrece un excelente emulador de terminal *dentro* de Emacs
 
      #+begin_src emacs-lisp
@@ -535,7 +576,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (global-set-key [C-prior] 'multi-term-prev)
      #+end_src
 
-   7. company
+   8. company
      El paquete da funcionalidades de auto completado. Esta opcion es
      cada día más popular como remplazo a =auto-complete=.
 
@@ -552,7 +593,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (add-to-list 'company-backends 'company-yasnippet t)
      #+end_src
      
-   8. Python
+   9. Python
       Configuraciones para mi modo estrella: Python-mode!
       Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]] en el
       modo Python. Por lo tanto, estoy reuniendo la tecla RET con la
@@ -571,18 +612,18 @@ Y cargamos el archivo, ¡No lo olvide!.
                    (hlinum-activate)))
      #+end_src
 
-   9. discover-my-major
-     Éste paquete nos muestra las combinaciones de teclas posibles
-     para el modo mayor en el que estamos actualmente, todo lo que hay
-     que hacer es recordar una combinación especifica de teclas.
+   10. discover-my-major
+      Éste paquete nos muestra las combinaciones de teclas posibles
+      para el modo mayor en el que estamos actualmente, todo lo que hay
+      que hacer es recordar una combinación especifica de teclas.
 
-     Esta combinación por defecto es C-h C-m ;)
+      Esta combinación por defecto es C-h C-m ;)
 
-     #+begin_src emacs-lisp
-       (global-set-key (kbd "C-h C-m") 'discover-my-major)
-     #+end_src
+      #+begin_src emacs-lisp
+        (global-set-key (kbd "C-h C-m") 'discover-my-major)
+      #+end_src
 
-   10. Expand-region
+   11. Expand-region
      Provee una manera fácil de hacer selección de elementos en el
      buffer con presionar solo una tecla. Puede ver éste paquete en
      acción en este episodio de
@@ -592,7 +633,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (global-set-key (kbd "C-'") 'er/expand-region)
      #+end_src
 
-   11. multiple-cursos
+   12. multiple-cursos
      Marca varias partes del buffer dependiendo de la selección que
      hagas.
      
@@ -608,7 +649,7 @@ Y cargamos el archivo, ¡No lo olvide!.
      lo mejor es que visites la pagina del proyecto en Github para más
      [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las teclas usadas reflejan la reducida cantidad que existen en mi laptop.
      
-   12. flycheck-mode
+   13. flycheck-mode
      revisión-al-vuelo de la sintaxis mientras editas código. Hace una
      selección automática del mejor revisor de sintaxis que dispongas.
      
@@ -622,7 +663,7 @@ Y cargamos el archivo, ¡No lo olvide!.
         )
      #+end_src
 
-   13. web-mode
+   14. web-mode
      Un modo mayor autónomo que permite la edición de plantillas web:
      documentos HTML con partes embebidas (CSS/Javascript) y bloques
      (del lado de cliente/servidor)
@@ -638,7 +679,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)) ;; para editar archivos HTML
      #+end_src
 
-   14. mu4e
+   15. mu4e
      Un versátil cliente de correo electrónico. Éste paquete se carga
      de manera condicional si esta instalado en el sistema del
      usuario. Desgraciadamente no puedes instalarlo desde Melpa o
@@ -709,7 +750,7 @@ Y cargamos el archivo, ¡No lo olvide!.
          )
      #+end_src
 
-   15. dired+
+   16. dired+
      Extiende funcionalidades de =dired=
 
      #+begin_src emacs-lisp
@@ -717,7 +758,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
      #+end_src
 
-   16. ace-jump
+   17. ace-jump
      hace que el cursor se mueva por todo el buffer con presionar
      pocas teclas.
 
@@ -726,7 +767,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
      #+end_src
 
-   17. magit
+   18. magit
      Git en Emacs.
 
      A decir verdad, amo a Mercurial y odio a Git.
@@ -735,7 +776,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (define-key global-map [C-f12] 'magit-status)
      #+end_src
 
-   18. monky
+   19. monky
      Mercurial en Emacs
 
      Amo Mercurial ;)
@@ -745,7 +786,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        (setf monky-process-type 'cmdserver)
      #+end_src
 
-   19. CEDET
+   20. CEDET
      Convierte a Emacs en todo un IDE. La configuración se carga de manera condicional
 
      #+begin_src emacs-lisp
@@ -777,7 +818,7 @@ Y cargamos el archivo, ¡No lo olvide!.
        ;;)
      #+end_src
 
-   20. Smart modeline
+   21. Smart modeline
        el modeline, pero más inteligente.
 
        #+begin_src emacs-lisp
@@ -788,7 +829,7 @@ Y cargamos el archivo, ¡No lo olvide!.
          (add-to-list 'sml/replacer-regexp-list '("^:Código:PPH/clientes/" ":PPH:") t)
        #+end_src
 
-   21. Visual-regexp y Visual-regexp-steroids
+   22. Visual-regexp y Visual-regexp-steroids
        expresiones regulares con algo más moderno que lo ofrecido por
        Emacs:
 
@@ -800,7 +841,7 @@ Y cargamos el archivo, ¡No lo olvide!.
          (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s
        #+end_src
 
-   22. Para todos los modos mayores de programación
+   23. Para todos los modos mayores de programación
     En lo personal, me gustaría que al escribir los comentarios en mi
     código fuente, las lineas se rompan al llegar a la columna 79.
 
@@ -820,7 +861,7 @@ Y cargamos el archivo, ¡No lo olvide!.
                 )
     #+end_src
 
-   23. golang
+   24. golang
        configuración para golang en emacs.
 
        #+begin_src emacs-lisp
@@ -833,7 +874,7 @@ Y cargamos el archivo, ¡No lo olvide!.
          ))
        #+end_src
        
-   24. rustlang
+   25. rustlang
        configuración para rustlang en Emacs. Yo aun no olvido lo
        hipócrita que es Mozilla y "su web abierta" por lo que le
        hicieron (o no hicieron, si quiere) con Brendan Eich. LAS
@@ -849,7 +890,7 @@ Y cargamos el archivo, ¡No lo olvide!.
          ;;nada por agregar, aun...
        #+end_src
 
-   25. C++
+   26. C++
        configuración para habilitar auto-completado en Emacs para la
        programación en el lenguaje C++
 
@@ -882,7 +923,7 @@ Y cargamos el archivo, ¡No lo olvide!.
          ))
        #+end_src
 
-   26. CMake
+   27. CMake
        configuración de CMake para Emacs
        
        #+begin_src emacs-lisp
@@ -901,7 +942,7 @@ Y cargamos el archivo, ¡No lo olvide!.
                      ))
        #+end_src
 
-   27. gancho para antes de guardar el archivo
+   28. gancho para antes de guardar el archivo
       puede que gustemos de hacer algo con el archivo antes de
       guardarlo. Acá se enganchan un par de funciones.
 
