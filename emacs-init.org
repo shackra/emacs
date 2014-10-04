@@ -39,11 +39,9 @@ realicemos a mayor gloria tuya.)
   falle en cargar la configuración.
 
 #+begin_src emacs-lisp
-  ;; (toggle-debug-on-error)
+  (toggle-debug-on-error)
   ;; (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+end_src
-
-
 
 ** Información personal
 #+begin_src emacs-lisp
