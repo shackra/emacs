@@ -75,7 +75,79 @@ realicemos a mayor gloria tuya.)
 #+end_src
 
    Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer
-   uso del comando =M-x package-list-packages=
+   uso del comando =M-x package-list-pactares=
+
+** Listado, revisión e instalación de paquetes con Melpa
+*La situación es la siguiente:* Quiero poder usar mi configuración en muchas partes, o quizás otros usuarios
+de GNU Emacs desean usar mi configuración. Sin embargo, no cuento con una lista de paquetes que tengo
+instalado en mi Emacs, y si alguien desea usar mi configuración puede tener errores debido a que no tiene los
+paquetes instalados que yo tengo.
+
+*Solución:* usar org-babel para correr un trozo de código Python que genere un código Elisp que se encargue
+del problema :D.
+
+#+name: codigopython
+#+BEGIN_SRC python :results output :file paquetes.el
+  import os
+  import textwrap
+
+  elisp_template = """;; Install extensions if they're missing
+  (defun init--install-packages ()
+    (packages-install
+     '({firstpackage}
+  {packages})))
+
+  (condition-case nil
+      (init--install-packages)
+    (error
+     (package-refresh-contents)
+     (init--install-packages)))
+  """
+
+  if os.path.isdir(os.path.expanduser("~/.emacs.d/elpa/")):
+      melpapackages = os.listdir(os.path.expanduser("~/.emacs.d/elpa/"))
+      packagestoinstall = []
+      for package in melpapackages:
+          if os.path.isdir(os.path.expanduser("~/.emacs.d/elpa/") + package):
+              name = package[:package.rfind("-")]
+              packagestoinstall.append(name)
+
+      # Remove any repeated package. This can happen if different directories
+      # with the same package name exists in the elpa/ directory
+      packagestoinstall = list(set(packagestoinstall))
+      packagestoinstall.remove("archive")  # This is not a package!
+
+      # Sort things, please!
+      packagestoinstall.sort()
+      print(elisp_template.format(firstpackage=packagestoinstall[0],
+                                  packages=textwrap.indent(
+                                      "\n".join(packagestoinstall[1:]), "     ")))
+#+END_SRC
+
+#+RESULTS: codigopython
+[[file:paquetes.el]]
+
+Y cargamos ese archivo :)
+
+#+BEGIN_SRC emacs-lisp :results silent
+  (unless (file-exists-p (expand-file-name "elpa/archives/melpa" user-emacs-directory))
+    (package-refresh-contents))
+
+  (when (not (package-installed-p 'dash))
+    (package-install 'dash))
+
+  (require 'dash)
+  (defun packages-install (packages)
+    (--each packages
+            (when (not (package-installed-p it))
+              (package-install it)))
+    (delete-other-windows))
+
+  (load-file (expand-file-name "paquetes.el" user-emacs-directory))
+#+END_SRC
+
+Así es como, por el momento y de manera no muy elegante, resolvemos esta deficiencia! Código elisp para la
+instalación de los paquetes extraído de [[https://github.com/adamrt/emacs.d/][ésta otra configuración]] de Emacs.
 
 ** Paquetes requeridos con =require=
    Existen algunos paquetes que deben ser "requeridos" para la correcta
@@ -99,14 +171,12 @@ realicemos a mayor gloria tuya.)
   (require 'epa-file)
   (require 'visual-regexp)
   (require 'visual-regexp-steroids)
-  ;; (require 'cedet)
-  ;; (require 'cedet-cscope)
-  ;; (require 'semantic/ia)
-  ;; (require 'semantic/bovine/gcc)
   (when (file-exists-p "/usr/share/emacs/site-lisp/go-mode.el")
     (require 'go-mode-load))
+
   (require 'company-go)
   (require 'org)
+  (require 'org-page)
 #+end_src
 
 ** Emacs, no hagas éstas cosas...
