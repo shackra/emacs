@@ -43,14 +43,7 @@ realicemos a mayor gloria tuya.)
   ;; (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+end_src
 
-  Cargamos paquetes que no se instalan con ELPA.
 
-#+begin_src emacs-lisp
-  (load-file (expand-file-name "site-packages/golang/company-go.el" user-emacs-directory))
-  (load-file (expand-file-name "site-packages/erosiond-theme/erosiond-theme.el" user-emacs-directory))
-  ;; carga un agregado para cuando se escriben correos usando mu4e
-  (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
-#+end_src
 
 ** Información personal
 #+begin_src emacs-lisp
@@ -89,20 +82,6 @@ del problema :D.
 #+name: codigopython
 #+BEGIN_SRC python :results output :file paquetes.el
   import os
-  import textwrap
-
-  elisp_template = """;; Install extensions if they're missing
-  (defun init--install-packages ()
-    (packages-install
-     '({firstpackage}
-  {packages})))
-
-  (condition-case nil
-      (init--install-packages)
-    (error
-     (package-refresh-contents)
-     (init--install-packages)))
-  """
 
   if os.path.isdir(os.path.expanduser("~/.emacs.d/elpa/")):
       melpapackages = os.listdir(os.path.expanduser("~/.emacs.d/elpa/"))
@@ -110,18 +89,17 @@ del problema :D.
       for package in melpapackages:
           if os.path.isdir(os.path.expanduser("~/.emacs.d/elpa/") + package):
               name = package[:package.rfind("-")]
-              packagestoinstall.append(name)
+              if not name == "archive":
+                  packagestoinstall.append(
+                      "(use-package {0}\n  :ensure {0})".format(name))
 
       # Remove any repeated package. This can happen if different directories
       # with the same package name exists in the elpa/ directory
       packagestoinstall = list(set(packagestoinstall))
-      packagestoinstall.remove("archive")  # This is not a package!
 
       # Sort things, please!
       packagestoinstall.sort()
-      print(elisp_template.format(firstpackage=packagestoinstall[0],
-                                  packages=textwrap.indent(
-                                      "\n".join(packagestoinstall[1:]), "     ")))
+      print("\n".join(packagestoinstall))
 #+END_SRC
 
 #+RESULTS: codigopython
@@ -133,21 +111,24 @@ Y cargamos ese archivo :)
   (unless (file-exists-p (expand-file-name "elpa/archives/melpa" user-emacs-directory))
     (package-refresh-contents))
 
-  (when (not (package-installed-p 'dash))
-    (package-install 'dash))
+  (when (not (package-installed-p 'use-package))
+    (package-install 'use-package))
 
-  (require 'dash)
-  (defun packages-install (packages)
-    (--each packages
-            (when (not (package-installed-p it))
-              (package-install it)))
-    (delete-other-windows))
-
+  (require 'use-package)
   (load-file (expand-file-name "paquetes.el" user-emacs-directory))
 #+END_SRC
 
 Así es como, por el momento y de manera no muy elegante, resolvemos esta deficiencia! Código elisp para la
 instalación de los paquetes extraído de [[https://github.com/adamrt/emacs.d/][ésta otra configuración]] de Emacs.
+
+Cargamos paquetes que no se instalan con ELPA.
+
+#+begin_src emacs-lisp
+  (load-file (expand-file-name "site-packages/golang/company-go.el" user-emacs-directory))
+  (load-file (expand-file-name "site-packages/erosiond-theme/erosiond-theme.el" user-emacs-directory))
+  ;; carga un agregado para cuando se escriben correos usando mu4e
+  (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
+#+end_src
 
 ** Paquetes requeridos con =require=
    Existen algunos paquetes que deben ser "requeridos" para la correcta
