@@ -22,6 +22,8 @@
  '(magit-use-overlays nil)
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
  '(py-autopep8-options (quote ("--ignore E711,E712,E24" "--aggressive --aggressive --aggressive")))
+ '(python-shell-interpreter "python2")
+ '(pyvenv-virtualenvwrapper-python "/usr/bin/python2")
  '(safe-local-variable-values (quote ((encoding . utf-8))))
  '(tramp-default-method "ssh")
  '(tramp-encoding-shell "/bin/bash")
