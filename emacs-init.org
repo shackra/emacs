@@ -39,7 +39,7 @@ realicemos a mayor gloria tuya.)
   falle en cargar la configuración.
 
 #+begin_src emacs-lisp
-  (toggle-debug-on-error)
+  ;;(toggle-debug-on-error)
   ;; (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+end_src
 
@@ -165,6 +165,7 @@ Cargamos paquetes que no se instalan con ELPA.
 #+begin_src emacs-lisp
   ;;(load-theme 'monokai t)
 #+end_src
+
 *** Usar otro buffer que no sea el \*scratch*
 Quiero visualizar otro buffer cada vez que creo un frame por primera vez, en emacs 24 y adelante es posible cambiar susodicho
 comportamiento, como todo en Emacs ;). Sin embargo en Emacs 23 y anteriores siempre se abrira el frame con el buffer \*scratch* por
@@ -177,6 +178,14 @@ defecto. ¡Siempre es bueno actualizar tu Emacs!
   ;;(setf initial-buffer-choice "*Org Agenda*")
 #+END_SRC
 
+*** ensuciar mi carpeta personal con /bookmarks/
+
+#+BEGIN_SRC emacs-lisp
+  (setf
+   bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
+   bookmark-save-flag 1
+  )
+#+END_SRC
 
 *** Usar el mode-line común y corriente
     Quiero usar el mode-line que ofrece =powerline= :)
