@@ -638,15 +638,12 @@ Y cargamos el archivo, ¡No lo olvide!.
 
      #+begin_src emacs-lisp
        (elpy-enable)
-       (elpy-use-cpython)
        (setf python-indent-guess-indent-offset nil
              python-indent 4
              python-indent-offset 4)
        (add-hook 'python-mode-hook
                  (lambda ()
                    (nlinum-mode)
-                   (pyvenv-mode)
-                   (define-key python-mode-map (kbd "RET") 'newline-and-indent)
                    (hlinum-activate)))
      #+end_src
 
