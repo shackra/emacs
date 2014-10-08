@@ -40,7 +40,7 @@ realicemos a mayor gloria tuya.)
 
 #+begin_src emacs-lisp
   ;;(toggle-debug-on-error)
-  ;; (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
+  ;;(toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+end_src
 
 ** Información personal
@@ -76,6 +76,19 @@ paquetes instalados que yo tengo.
 
 *Solución:* usar org-babel para correr un trozo de código Python que genere un código Elisp que se encargue
 del problema :D.
+
+Pero primero nos aseguramos de decirle a babel que nos habilite Python para usar ejecutar desde el archivo
+org!
+
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '(
+     (emacs-lisp . t)
+     (python . t)
+     )
+  )
+#+END_SRC
 
 #+name: codigopython
 #+BEGIN_SRC python :results output :file paquetes.el
