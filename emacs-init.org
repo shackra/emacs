@@ -50,13 +50,13 @@ realicemos a mayor gloria tuya.)
 #+end_src
 
 ** Repositorio de paquetes
-   Desde la versión 24 Emacs permite la instalación de paquetes de la misma
-   manera como se realiza en distribuciones de GNU/Linux.
+Desde la versión 24 Emacs permite la instalación de paquetes de la misma
+manera como se realiza en distribuciones de GNU/Linux.
 
-   El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes
-   funcionen como deben, aun debes poner algunas cosas en tu configuración de
-   Emacs y tal. Lo posible es que las mismas instrucciones estén dadas en la
-   descripción del paquete.
+El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes
+funcionen como deben, aun debes poner algunas cosas en tu configuración de
+Emacs y tal. Lo posible es que las mismas instrucciones estén dadas en la
+descripción del paquete.
 
 #+begin_src emacs-lisp
   (setf package-archives (list (quote ("gnu" . "http://elpa.gnu.org/packages/"))
@@ -65,8 +65,8 @@ realicemos a mayor gloria tuya.)
                                (quote ("org" . "http://orgmode.org/elpa/"))))
 #+end_src
 
-   Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer
-   uso del comando =M-x package-list-pactares=
+Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer
+uso del comando =M-x package-list-pactares=
 
 ** Listado, revisión e instalación de paquetes con Melpa
 *La situación es la siguiente:* Quiero poder usar mi configuración en muchas partes, o quizás otros usuarios
@@ -142,9 +142,9 @@ Cargamos paquetes que no se instalan con ELPA.
 #+end_src
 
 ** Paquetes requeridos con =require=
-   Existen algunos paquetes que deben ser "requeridos" para la correcta
-   activación de algunos modos mayores, funcionalidades, y demás cosas
-   proveídas por Emacs o paquetes instalados en Emacs.
+Existen algunos paquetes que deben ser "requeridos" para la correcta
+activación de algunos modos mayores, funcionalidades, y demás cosas
+proveídas por Emacs o paquetes instalados en Emacs.
 
 #+begin_src emacs-lisp
   (require 'uniquify)
@@ -170,6 +170,7 @@ Cargamos paquetes que no se instalan con ELPA.
   (require 'org)
   (require 'org-page)
   (require 'undo-tree)
+  (require 'dired+)
 #+end_src
 
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
@@ -691,14 +692,24 @@ Y cargamos el archivo, ¡No lo olvide!.
      #+end_src
 
    16. dired y dired+
-     Extiende funcionalidades de =dired=
+     Extiende funcionalidades de =dired=. Se agrega una función personalizada que mata el buffer al presionar
+       =q=, porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
 
      #+begin_src emacs-lisp
+       (defun dired-quit-window-kill-buffer ()
+         "Además de matar el buffer, cierra la ventana"
+         (interactive)
+         (let ((win-curr (selected-window))
+               (win-other (next-window)))
+           (select-window win-other)
+           (kill-this-buffer)
+           (select-window win-curr)))
+
        (setf dired-dwim-target t)
-       (define-key ctl-x-map   "d" 'diredp-dired-files)
-       (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
+       (define-key ctl-x-map   "d" 'dired)
+       (define-key ctl-x-4-map "d" 'diredp-dired-for-files-other-window)
        (define-key dired-mode-map (kbd ".") 'dired-up-directory)
-       (define-key dired-mode-map (kbd "q") 'quit-window)
+       (define-key dired-mode-map (kbd "q") 'dired-quit-window-kill-buffer)
      #+end_src
 
    17. ace-jump
