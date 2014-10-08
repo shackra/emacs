@@ -158,6 +158,8 @@
   :ensure string-utils)
 (use-package ucs-utils
   :ensure ucs-utils)
+(use-package undo-tree
+  :ensure undo-tree)
 (use-package use-package
   :ensure use-package)
 (use-package visual-regexp

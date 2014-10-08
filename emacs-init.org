@@ -156,204 +156,82 @@ Cargamos paquetes que no se instalan con ELPA.
   (require 'company-go)
   (require 'org)
   (require 'org-page)
+  (require 'undo-tree)
 #+end_src
 
-** Emacs, no hagas éstas cosas...
+** Emacs, no hagas éstas cosas... AKA "sane defaults"
+Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
+defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
+innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
 
-*** Dejar el tema por defecto de Emacs; ¡jamas!
-
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
   ;;(load-theme 'monokai t)
-#+end_src
-
-*** Usar otro buffer que no sea el \*scratch*
-Quiero visualizar otro buffer cada vez que creo un frame por primera vez, en emacs 24 y adelante es posible cambiar susodicho
-comportamiento, como todo en Emacs ;). Sin embargo en Emacs 23 y anteriores siempre se abrira el frame con el buffer \*scratch* por
-defecto. ¡Siempre es bueno actualizar tu Emacs!
-
-**** EN REVISIÓN 
-- State "EN REVISIÓN" from ""           [2014-09-28 dom 11:49] \\
-  ésta opción visita un archivo en lugar de usar un buffer ya existente dentro de emacs
-#+BEGIN_SRC emacs-lisp
   ;;(setf initial-buffer-choice "*Org Agenda*")
-#+END_SRC
-
-*** ensuciar mi carpeta personal con /bookmarks/
-
-#+BEGIN_SRC emacs-lisp
-  (setf
-   bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
-   bookmark-save-flag 1
-  )
-#+END_SRC
-
-*** Usar el mode-line común y corriente
-    Quiero usar el mode-line que ofrece =powerline= :)
-
-    #+begin_src emacs-lisp
-      (powerline-center-theme)
-    #+end_src
-
-*** Nada de "Splash Screens"
-
-#+begin_src emacs-lisp
-(setf inhibit-startup-message t)
-#+end_src
-
-*** Nada de mensajes para mi sobre la inicialización
-
-#+begin_src emacs-lisp
-(setf inhibit-startup-echo-area-message "jorge")
-#+end_src
-
-*** Por el momento, nada de mensajes en el buffer =*scratch*=
-
-#+begin_src emacs-lisp
-(setf initial-scratch-message nil)
-#+end_src
-
-*** sobre la ventana
-    Quitamos la barra de menú, de herramientas y de desplazamiento. Estas cosas
-    no las necesitan los expertos de Emacs ¿Cierto? ;) (aunque con F10 se puede
-    acceder a un menú despegable)
-
-#+begin_src emacs-lisp
+  (powerline-center-theme)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (tooltip-mode -1)
-#+end_src
+  (recentf-mode 1)
+  (savehist-mode 1)
+  (set-frame-font "SourceCodePro 11")
+  (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-11")))
+  (fset 'yes-or-no-p 'y-or-n-p)
+  (global-auto-revert-mode 1)
+  (column-number-mode 1)
+  (global-subword-mode 1)
+  (global-font-lock-mode 1)
+  (show-paren-mode t)
+  (delete-selection-mode 1)
 
-*** tipografía
-    Establezcamos la tipografía a usar. A mi me gusta mucho la tipografía libre
-    que publico Adobe no hace mucho, llamada [[https://github.com/adobe-fonts/source-code-pro][Source Code Pro]]. Es muy posible que
-    esta tipografía venga en el repositorio de software de su distribución de
-    GNU/Linux.
+  (setf
+   bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
+   bookmark-save-flag 1
+   inhibit-startup-message t
+   inhibit-startup-echo-area-message "jorge"
+   initial-scratch-message nil
+   line-spacing 1
+   make-backup-files nil
+   global-auto-revert-non-file-buffers t
+   auto-revert-verbose nil
+   echo-keystrokes 0.1
+   shift-select-mode nil
+   byte-compile-warnings '(not nresolved
+                             free-vars
+                             callargs
+                             redefine
+                             obsolete
+                             noruntime
+                             cl-functions
+                             interactive-only)
+   fill-column 80
+   blink-matching-paren nil
+   uniquify-buffer-name-style (quote forward)
+   recentf-max-saved-items 100
+   history-length 1000
+   x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)
+   enable-recursive-minibuffers t
+   gc-cons-percentage 0.125
+   undo-tree-mode-lighter ""
+   ediff-diff-options "-w"
+   ediff-split-window-function 'split-window-horizontally
+   ediff-window-setup-function 'ediff-setup-windows-plain
+   )
 
-#+begin_src emacs-lisp
-(set-frame-font "SourceCodePro 11")
-(add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-11")))
-#+end_src
+  (set-default 'indent-tabs-mode nil)
+  (set-default 'indicate-empty-lines t)
+  (setq-default truncate-lines t)
 
-*** responder preguntas
-   En lugar de escribir *"yes"* o *"no"* para algunas preguntas que puedan
-   surgir en algunos modos o funciones de algunos paquetes, responder
-   presionando las teclas *"y"* o *"n"*.
+  (prefer-coding-system 'utf-8)
+  (set-default-coding-systems 'utf-8)
+  (set-terminal-coding-system 'utf-8)
+  (set-keyboard-coding-system 'utf-8)
 
-#+begin_src emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
-#+end_src
+  (if
+      (boundp 'buffer-file-coding-system)
+      (setq-default buffer-file-coding-system 'utf-8)
+    (setf default-buffer-file-coding-system 'utf-8))
 
-*** El espaciado entre lineas puede ser cambiado
-
-#+begin_src emacs-lisp
-(setf line-spacing 1)
-#+end_src
-
-*** Nada de archivos de respaldo que terminan con "~"
-
-#+begin_src emacs-lisp
-(setf make-backup-files nil)
-#+end_src
-
-*** Auto regresion de archivos
-    Cuando un archivo es modificado por otra aplicación, y esta visitado por Emacs
-    en un buffer, lo revierte (actualiza) en el buffer.
-
-#+begin_src emacs-lisp
-(global-auto-revert-mode 1)
-#+end_src
-
-*** Mostrar la columna 
-    Emacs no muestra la columna sobre la cual esta el cursor por
-    defecto. Cambiemos este comportamiento.
-
-#+begin_src emacs-lisp
-(column-number-mode 1)
-#+end_src
-
-*** Palabras ComoJorobasDeCamello
-    El siguiente modo nos permite para el cursor al principio de cada palabra en
-    una frase EscritaEnMayusculasComoJororbaDeCamello.
-
-#+begin_src emacs-lisp
-(global-subword-mode 1)
-#+end_src
-
-*** Ignoramos algunas advertencias byte-compile
-
-#+begin_src emacs-lisp
-(setf byte-compile-warnings (quote 
-    (not nresolved
-         free-vars
-         callargs
-         redefine
-         obsolete
-         noruntime
-         cl-functions
-         interactive-only)))
-#+end_src
-
-*** relleno de columna
-    Hay que hacer obvio donde es que la columna 80 esta
-
-#+begin_src emacs-lisp
-(setf fill-column 80)
-#+end_src
-
-*** Que en todas partes haya resaltado de sintaxis!
-
-#+begin_src emacs-lisp
-(global-font-lock-mode 1)
-#+end_src
-
-*** Parentesis
-    Con respecto a los paréntesis, desactivamos el parpadeo que sucede cuando
-    los paréntesis coinciden y activamos un modo que hace posible visualizar
-    fácilmente cual paréntesis coincide con cuál.
-
-#+begin_src emacs-lisp
-(setf blink-matching-paren nil)
-(show-paren-mode t)
-#+end_src
-
-*** Borrar/reemplazar selección de texto
-   El texto que este seleccionado, al escribir o pegar algo, debe de ser
-   reemplazado por ese contenido
-
-#+begin_src emacs-lisp
-(delete-selection-mode 1)
-#+end_src
-
-*** Resolver el problema de los buffers con nombres iguales
-    Los buffers con nombres iguales deben ser diferenciados en lo posible
-
-#+begin_src emacs-lisp
-(setf uniquify-buffer-name-style (quote forward))
-#+end_src
-
-*** Internacionalización internacional
-    Usamos la codificación UTF-8 para todo
-
-#+begin_src emacs-lisp
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(if
-    (boundp 'buffer-file-coding-system)
-    (setq-default buffer-file-coding-system 'utf-8)
-  (setf default-buffer-file-coding-system 'utf-8))
-
-(setf x-select-request-type
-      '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-#+end_src
-
-*** Limpia el mode-line por favor
-Quitamos algunas cosas del modeline para hacer espacio. Sinceramente
-hay datos que no me interesan conocer.
-
-#+BEGIN_SRC emacs-lisp
   ;;(eval-after-load "yasnippet" '(diminish 'yas/minor-mode))
   (eval-after-load "button-lock" '(diminish 'button-lock-mode))
   (eval-after-load "org-indent" '(diminish 'org-indent-mode))
@@ -398,6 +276,7 @@ Y cargamos el archivo, ¡No lo olvide!.
               (helm-mode 1)
               (helm-descbinds-mode)
               (projectile-global-mode)
+              (helm-projectile-on)
               (global-flycheck-mode)
               ;;(auto-indent-global-mode)
               (autopair-global-mode)
@@ -422,25 +301,12 @@ Y cargamos el archivo, ¡No lo olvide!.
      #+end_src
 
    2. Org-mode
-     ¡Organiza tu vida usando Emacs!
+      ¡Organiza tu vida usando Emacs!
 
       Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que org-mode usa la
       combinación C-' para otra cosa.
 
      #+begin_src emacs-lisp
-       (setf org-todo-keyword-faces
-             '(
-               ("POR HACER" . (:foreground "black" :background "#ff4500" :weight bold))
-               ("EN PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
-               ("EN ESPERA" . (:foreground "black" :background "#0000ff" :weight bold))
-               ("EN REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
-               ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))
-               ("CANCELADO" . (:foreground "black" :background "#8b0000" :weight bold))
-               ))
-
-       (setf org-todo-keywords
-             '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)")))
-
        (setf org-footnote-auto-adjust t
              org-directory (expand-file-name "~/org")
              org-archive-location (concat org-directory "/archivado.org::* Entradas viejas y archivadas")
@@ -452,26 +318,37 @@ Y cargamos el archivo, ¡No lo olvide!.
              org-startup-indented t
              org-startup-folded nil
              org-imenu-depth 5
+             org-log-done 'time
+             org-clock-persist 'history
              org-agenda-files (list (concat org-directory "/trabajo.org")
                                     (concat org-directory "/notas.org")
                                     (concat org-directory "/otros.org")
                                     (concat org-directory "/agenda.org"))
-             org-log-done 'time
              org-default-notes-file (concat org-directory "/notas.org")
-             org-capture-templates '(("p" "Cosas por hacer" entry (file+headline (concat org-directory "/otros.org") "Tareas")
+             org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/otros.org") "Tareas")
                                       "* Tareas %?\n  %i\n  %a")
-                                     ("d" "Diario" entry (file+datatree (concat org-directory "/diario.org"))
+                                     ("d" "Diario" entry (file+datatree ,(concat org-directory "/diario.org"))
                                       "* %?\nInsertado el %U\n  %i\n  %a")
                                      ("a" "Apuntes importantes" entry (file+datatree "")
                                       "* Notas importantes %?\nNota importante del %U\n  %i\n  %a")
-                                     ("g" "Agenda" entry (file+datetree+prompt (concat org-directory "/agenda.org"))
+                                     ("g" "Agenda" entry (file+datetree+prompt ,(concat org-directory "/agenda.org"))
                                       "* Agenda %?\n Ingresado el %T\nProgramado para el %:date\n  %i\n"))
-             org-clock-persist 'history)
+             org-todo-keywords '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))
+             org-todo-keyword-faces '(
+                                      ("POR HACER" . (:foreground "black" :background "#ff4500" :weight bold))
+                                      ("EN PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
+                                      ("EN ESPERA" . (:foreground "black" :background "#0000ff" :weight bold))
+                                      ("EN REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
+                                      ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))
+                                      ("CANCELADO" . (:foreground "black" :background "#8b0000" :weight bold))
+                                      )
+             )
 
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
        (define-key global-map (kbd "C-c c") 'org-capture)
        (define-key org-mode-map (kbd "C-¡") 'er/expand-region)
+
        (org-clock-persistence-insinuate)
      #+end_src
 
@@ -521,11 +398,11 @@ Y cargamos el archivo, ¡No lo olvide!.
        (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
        ;; Lista las acciones disponibles usando C-z en lugar de TAB
        (define-key helm-map (kbd "C-z")  'helm-select-action) 
-       
+
        (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
        (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
        (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
-       
+
        (setf
         helm-google-suggest-use-curl-p t
         helm-scroll-amount 4
@@ -567,8 +444,10 @@ Y cargamos el archivo, ¡No lo olvide!.
                                        "\\.exe$" "\\.jar$" "\\.img$" "\\.iso$"
                                        "\\.xlsx$" "\\.epub$" "\\.docx$"))
         helm-ff-skip-boring-buffers t
-        helm-truncate-lines t)
-       
+        helm-truncate-lines t
+        helm-projectile-sources-list '(helm-source-projectile-files-list
+                                       helm-source-projectile-projects))
+
        (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
        (global-set-key (kbd "C-x f") 'helm-recentf)
        (global-set-key (kbd "M-y") 'helm-show-kill-ring)
@@ -593,8 +472,8 @@ Y cargamos el archivo, ¡No lo olvide!.
         projectile-globally-ignored-files (quote ("TAGS" "\#*\#" "*~" "*.la"
                                             "*.o" "~" "*.pyc" "*.elc" "*.exe"
                                             "*.zip" "*.tar.*" "*.rar" "*.7z"))
+        projectile-switch-project-action  'helm-projectile-find-file
         )
-       (global-set-key (kbd "C-c h") 'helm-projectile)
      #+end_src
 
    7. Multi-term
@@ -798,12 +677,15 @@ Y cargamos el archivo, ¡No lo olvide!.
          )
      #+end_src
 
-   16. dired+
+   16. dired y dired+
      Extiende funcionalidades de =dired=
 
      #+begin_src emacs-lisp
+       (setf dired-dwim-target t)
        (define-key ctl-x-map   "d" 'diredp-dired-files)
        (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
+       (define-key dired-mode-map (kbd ".") 'dired-up-directory)
+       (define-key dired-mode-map (kbd "q") 'quit-window)
      #+end_src
 
    17. ace-jump
