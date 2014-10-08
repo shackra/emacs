@@ -424,6 +424,9 @@ Y cargamos el archivo, ¡No lo olvide!.
    2. Org-mode
      ¡Organiza tu vida usando Emacs!
 
+      Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que org-mode usa la
+      combinación C-' para otra cosa.
+
      #+begin_src emacs-lisp
        (setf org-todo-keyword-faces
              '(
@@ -440,7 +443,7 @@ Y cargamos el archivo, ¡No lo olvide!.
 
        (setf org-footnote-auto-adjust t
              org-directory (expand-file-name "~/org")
-             org-archive-location (expand-file-name "~/org/archivado.org")
+             org-archive-location (concat org-directory "/archivado.org::* Entradas viejas y archivadas")
              org-special-ctrl-k t
              org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
              org-catch-invisible-edits 'show
@@ -449,16 +452,26 @@ Y cargamos el archivo, ¡No lo olvide!.
              org-startup-indented t
              org-startup-folded nil
              org-imenu-depth 5
-             org-agenda-files (list "~/org/trabajo.org"
-                                    "~/org/casa.org"
-                                    "~/org/otros.org")
+             org-agenda-files (list (concat org-directory "/trabajo.org")
+                                    (concat org-directory "/notas.org")
+                                    (concat org-directory "/otros.org")
+                                    (concat org-directory "/agenda.org"))
              org-log-done 'time
-             org-default-notes-file (concat org-directory "/notes.org")
+             org-default-notes-file (concat org-directory "/notas.org")
+             org-capture-templates '(("p" "Cosas por hacer" entry (file+headline (concat org-directory "/otros.org") "Tareas")
+                                      "* Tareas %?\n  %i\n  %a")
+                                     ("d" "Diario" entry (file+datatree (concat org-directory "/diario.org"))
+                                      "* %?\nInsertado el %U\n  %i\n  %a")
+                                     ("a" "Apuntes importantes" entry (file+datatree "")
+                                      "* Notas importantes %?\nNota importante del %U\n  %i\n  %a")
+                                     ("g" "Agenda" entry (file+datetree+prompt (concat org-directory "/agenda.org"))
+                                      "* Agenda %?\n Ingresado el %T\nProgramado para el %:date\n  %i\n"))
              org-clock-persist 'history)
 
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
        (define-key global-map (kbd "C-c c") 'org-capture)
+       (define-key org-mode-map (kbd "C-¡") 'er/expand-region)
        (org-clock-persistence-insinuate)
      #+end_src
 
