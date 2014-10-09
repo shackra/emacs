@@ -643,20 +643,23 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
        (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e/")
          (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
          (autoload 'mu4e "mu4e" "Mail client based on mu (maildir-utils)." t)
+
          (require 'org-mu4e)
          (setf mu4e-view-show-images t)
          (global-key-binding (kbd "[f7]") 'mu4e)
          (when (fboundp 'imagemagick-register-types)
            (imagemagick-register-types))
+
          (setf
           ;; html2text es un paquete que debe estar instalado en tu sistema
+          mu4e-confirm-quit nil
           mu4e-html2text-command "html2text -width 100 -style pretty -nobs"
           mu4e-get-mail-command "offlineimap"
           mu4e-maildir "/home/jorge/correo"
           mu4e-update-interval 60
           mu4e-auto-retrieve-keys t
           mu4e-headers-leave-behavior 'apply
-          mu4e-headers-visible-lines 20
+          mu4e-headers-visible-lines 5
           mu4e-hide-index-messages t
           message-kill-buffer-on-exit t
           mu4e-attachment-dir  "~/Descargas"
@@ -670,7 +673,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
           message-send-mail-function 'smtpmail-send-it
           )
          (load (expand-file-name "mu4e-conf.secret.gpg" user-emacs-directory) t)
-       
+
          ;; funcion para seleccionar la cuenta con la que se va a responder a un email
          (defun my-mu4e-set-account ()
            "Set the account for composing a message."
@@ -690,7 +693,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
                            (set (car var) (cadr var)))
                        account-vars)
                (error "Cuenta de correo no encontrada"))))
-       
+
          ;; y enganchamos la funcion
          (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
          )
