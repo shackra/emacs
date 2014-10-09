@@ -10,21 +10,18 @@ realicemos a mayor gloria tuya.)
 #+end_quote
 
 * Configuración de GNU Emacs en un archivo de org-mode
-  He decidido mover mi configuración a un sólo archivo. Anteriormente mi
-  configuración estaba dividida en varios archivos =.el=, esto no era malo, sin
-  embargo debo estar visitando diferentes archivos si deseo realizar varios
-  cambios en mi configuración creándome una plétora de buffers en
-  Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi
-  configuración, sí, sí... ya sé que esto se puede hacer con comentarios en el
-  código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de
-  contraer o expandir varias secciones de la configuración, o navegar
-  rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no
-  me veo restringido a ejecutar solamente código elisp ¡también puedo correr
-  código Python!.
+He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios
+archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar
+varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es
+posible documentar varios aspectos de mi configuración, sí, sí... ya sé que esto se puede hacer con
+comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir
+varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer),
+además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código
+Python!.
   
 * La Configuración
-  Pasemos a la materia. Esta configuración se carga de la siguiente
-  manera desde el archivo =~/.emacs.d/init.el=:
+Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
+=~/.emacs.d/init.el=:
 
 #+begin_src emacs-lisp :tangle no
   ;; init.el para esta configuración. Tu Emacs debe ser versión 24.
@@ -35,8 +32,7 @@ realicemos a mayor gloria tuya.)
                      user-emacs-directory))
 #+end_src
 
-  activamos algunas opciones para depuración en caso de que Emacs
-  falle en cargar la configuración.
+activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
 
 #+begin_src emacs-lisp
   ;;(toggle-debug-on-error)
@@ -50,13 +46,12 @@ realicemos a mayor gloria tuya.)
 #+end_src
 
 ** Repositorio de paquetes
-Desde la versión 24 Emacs permite la instalación de paquetes de la misma
-manera como se realiza en distribuciones de GNU/Linux.
+Desde la versión 24 Emacs permite la instalación de paquetes de la misma manera como se realiza en
+distribuciones de GNU/Linux.
 
-El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes
-funcionen como deben, aun debes poner algunas cosas en tu configuración de
-Emacs y tal. Lo posible es que las mismas instrucciones estén dadas en la
-descripción del paquete.
+El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben, aun debes
+poner algunas cosas en tu configuración de Emacs y tal. Lo posible es que las mismas instrucciones estén dadas
+en la descripción del paquete.
 
 #+begin_src emacs-lisp
   (setf package-archives (list (quote ("gnu" . "http://elpa.gnu.org/packages/"))
@@ -65,8 +60,8 @@ descripción del paquete.
                                (quote ("org" . "http://orgmode.org/elpa/"))))
 #+end_src
 
-Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer
-uso del comando =M-x package-list-pactares=
+Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x
+package-list-pactares=
 
 ** Listado, revisión e instalación de paquetes con Melpa
 *La situación es la siguiente:* Quiero poder usar mi configuración en muchas partes, o quizás otros usuarios
@@ -259,6 +254,27 @@ innecesariamente de entras decidí colocar todas las opciones dentro de un sólo
   (eval-after-load "simple" '(diminish 'auto-fill-function))
   (eval-after-load "company" '(diminish 'company-mode))
   (eval-after-load "magit" '(diminish 'magit-auto-revert-mode))
+#+END_SRC
+
+*** Mover el cursos de manera inteligente al inicio de la linea
+He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0
+en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando
+se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
+
+#+BEGIN_SRC emacs-lisp
+  (defun smart-beginning-of-line ()
+    "Move point to first non-whitespace character or beginning-of-line.
+
+  Move point to the first non-whitespace character on this line.
+  If point was already at that position, move point to beginning of line."
+    (interactive)
+    (let ((oldpos (point)))
+      (back-to-indentation)
+      (and (= oldpos (point))
+         (beginning-of-line))))
+
+  (global-set-key [home] 'smart-beginning-of-line)
+  (global-set-key (kbd "C-a") 'smart-beginning-of-line)
 #+END_SRC
 
 ** Customize
