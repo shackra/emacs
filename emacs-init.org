@@ -283,7 +283,9 @@ Y cargamos el archivo, ¡No lo olvide!.
    La configuración especifica a cada modo mayor, menor, o paquete con
    funcionalidades. Dividió por secciones.
 
-   1. Después de que Emacs cargue la configuración por completo
+*** Después de que Emacs cargue la configuración por completo
+modos que se activan luego de que emacs carga
+
      #+begin_src emacs-lisp
        (add-hook (quote after-init-hook)
                  (lambda ()
@@ -314,11 +316,14 @@ Y cargamos el archivo, ¡No lo olvide!.
        (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
      #+end_src
 
-   2. Org-mode
-      ¡Organiza tu vida usando Emacs!
+*** EN REVISIÓN Org-mode
+- State "EN REVISIÓN" from ""           [2014-10-08 mié 20:19] \\
+  No puedo hacer uso de la función para capturar anotaciones, [[http://emacs.stackexchange.com/questions/847/whats-wrong-with-my-org-mode-capture-settings][en el stack exchange de Emacs]] estoy tratando de
+  conseguir ayuda para este problema
+¡Organiza tu vida usando Emacs!
 
-      Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que org-mode usa la
-      combinación C-' para otra cosa.
+Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que org-mode usa la
+combinación C-' para otra cosa.
 
      #+begin_src emacs-lisp
        (setf org-footnote-auto-adjust t
@@ -366,10 +371,10 @@ Y cargamos el archivo, ¡No lo olvide!.
        (org-clock-persistence-insinuate)
      #+end_src
 
-   3. org-page
-      Genera un blog estatico con [[https://github.com/kelvinh/org-page][org-page]].
-      la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porque de verdad quiero
-      castellanizar los enlaces y sus títulos en el blog.
+*** org-page
+Genera un blog estatico con [[https://github.com/kelvinh/org-page][org-page]].
+la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porque de verdad quiero
+castellanizar los enlaces y sus títulos en el blog.
 
       #+BEGIN_SRC emacs-lisp
         (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com"
@@ -386,8 +391,8 @@ Y cargamos el archivo, ¡No lo olvide!.
       #+END_SRC
    
 
-   4. text-mode
-      Esta configuración afecta a todos los modos texto en los buffers.
+*** text-mode
+Esta configuración afecta a todos los modos texto en los buffers.
      
      #+BEGIN_SRC emacs-lisp
        (add-hook 'text-mode-hook
@@ -398,11 +403,9 @@ Y cargamos el archivo, ¡No lo olvide!.
                     ))
      #+END_SRC
 
-   5. HELM
-     Es un paquete que esta en su propia liga. Éste paquete te
-     ayudara a aumentar tu productividad, reducir tu calvicie y hará
-     que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de
-     amor por vos ;)
+*** HELM
+Es un paquete que esta en su propia liga. Éste paquete te ayudara a aumentar tu productividad, reducir tu
+calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de amor por vos ;)
 
      #+begin_src emacs-lisp
        ;; re-une la tecla TAB con el comando para ejecutar la acción persistente
@@ -470,14 +473,11 @@ Y cargamos el archivo, ¡No lo olvide!.
        (define-key global-map (kbd "C-x b") 'helm-buffers-list)
      #+end_src
      
-   6. Projectile
-     Es un paquete que nos permite el manejo de archivos en
-     proyectos. Un proyecto, por definición, puede ser cualquier
-     repositorio de código fuente de software, como =mercurial=,
-     =git=, etc. También es posible definir un proyecto en una
-     carpeta dejando caer en él un archivo =.projectile=, dentro de
-     este archivo se puede definir qué archivos/carpetas ignorar y
-     cuales no. Para más información ver la [[http://batsov.com/projectile/][pagina del proyecto]].
+*** Projectile
+Es un paquete que nos permite el manejo de archivos en proyectos. Un proyecto, por definición, puede ser
+cualquier repositorio de código fuente de software, como =mercurial=, =git=, etc. También es posible definir
+un proyecto en una carpeta dejando caer en él un archivo =.projectile=, dentro de este archivo se puede
+definir qué archivos/carpetas ignorar y cuales no. Para más información ver la [[http://batsov.com/projectile/][pagina del proyecto]].
 
      #+begin_src emacs-lisp
        (setf
@@ -490,8 +490,8 @@ Y cargamos el archivo, ¡No lo olvide!.
         )
      #+end_src
 
-   7. Multi-term
-     Ofrece un excelente emulador de terminal *dentro* de Emacs
+*** Multi-term
+Ofrece un excelente emulador de terminal *dentro* de Emacs
 
      #+begin_src emacs-lisp
        (setf multi-term-buffer-name "terminal "
@@ -519,9 +519,9 @@ Y cargamos el archivo, ¡No lo olvide!.
        (global-set-key [C-prior] 'multi-term-prev)
      #+end_src
 
-   8. company
-     El paquete da funcionalidades de auto completado. Esta opcion es
-     cada día más popular como remplazo a =auto-complete=.
+*** company
+El paquete da funcionalidades de auto completado. Esta opcion es
+cada día más popular como remplazo a =auto-complete=.
 
      #+begin_src emacs-lisp
        (setf company-idle-delay 0.3
@@ -536,11 +536,10 @@ Y cargamos el archivo, ¡No lo olvide!.
        (add-to-list 'company-backends 'company-yasnippet t)
      #+end_src
      
-   9. Python
-      Configuraciones para mi modo estrella: Python-mode!
-      Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]] en el
-      modo Python. Por lo tanto, estoy reuniendo la tecla RET con la
-      función =newline-and-indent= que funciona de lo más bien.
+*** Python
+Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]]
+en el modo Python. Por lo tanto, estoy reuniendo la tecla RET con la función =newline-and-indent= que funciona
+de lo más bien.
 
      #+begin_src emacs-lisp
        (elpy-enable)
@@ -553,30 +552,26 @@ Y cargamos el archivo, ¡No lo olvide!.
                    (hlinum-activate)))
      #+end_src
 
-   10. discover-my-major
-      Éste paquete nos muestra las combinaciones de teclas posibles
-      para el modo mayor en el que estamos actualmente, todo lo que hay
-      que hacer es recordar una combinación especifica de teclas.
+*** discover-my-major
+Éste paquete nos muestra las combinaciones de teclas posibles para el modo mayor en el que estamos
+actualmente, todo lo que hay que hacer es recordar una combinación especifica de teclas.
 
-      Esta combinación por defecto es C-h C-m ;)
+Esta combinación por defecto es C-h C-m ;)
 
       #+begin_src emacs-lisp
         (global-set-key (kbd "C-h C-m") 'discover-my-major)
       #+end_src
 
-   11. Expand-region
-     Provee una manera fácil de hacer selección de elementos en el
-     buffer con presionar solo una tecla. Puede ver éste paquete en
-     acción en este episodio de
-     [[http://emacsrocks.com/e09.html][Emacs Rocks]].
+*** Expand-region
+Provee una manera fácil de hacer selección de elementos en el buffer con presionar solo una tecla. Puede ver
+éste paquete en acción en este episodio de [[http://emacsrocks.com/e09.html][Emacs Rocks]].
 
      #+begin_src emacs-lisp
        (global-set-key (kbd "C-'") 'er/expand-region)
      #+end_src
 
-   12. multiple-cursos
-     Marca varias partes del buffer dependiendo de la selección que
-     hagas.
+*** multiple-cursos
+Marca varias partes del buffer dependiendo de la selección que hagas.
      
      #+begin_src emacs-lisp
        (define-key global-map (kbd "C-+") 'mc/mark-next-like-this)
@@ -586,16 +581,15 @@ Y cargamos el archivo, ¡No lo olvide!.
        ;;(define-key sgml-mode-map (kbd "C-'") 'mc/mark-sgml-tag-pair) ;;Symbol's value as variable is void: sgml-mode-map
      #+end_src
 
-     este paquete puedes tener configuraciones de teclas muy variadas,
-     lo mejor es que visites la pagina del proyecto en Github para más
-     [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las teclas usadas reflejan la reducida cantidad que existen en mi laptop.
+este paquete puedes tener configuraciones de teclas muy variadas, lo mejor es que visites la pagina del
+proyecto en Github para más [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las teclas usadas reflejan la reducida cantidad que existen en mi
+laptop.
      
-   13. flycheck-mode
-     revisión-al-vuelo de la sintaxis mientras editas código. Hace una
-     selección automática del mejor revisor de sintaxis que dispongas.
+*** flycheck-mode
+revisión-al-vuelo de la sintaxis mientras editas código. Hace una selección automática del mejor revisor de
+sintaxis que dispongas.
      
-     Tiene soporte para muchos lenguajes. Lo recomiendo por encima de
-     flymake.
+Tiene soporte para muchos lenguajes. Lo recomiendo por encima de flymake.
 
      #+begin_src emacs-lisp
        (setf
@@ -604,10 +598,9 @@ Y cargamos el archivo, ¡No lo olvide!.
         )
      #+end_src
 
-   14. web-mode
-     Un modo mayor autónomo que permite la edición de plantillas web:
-     documentos HTML con partes embebidas (CSS/Javascript) y bloques
-     (del lado de cliente/servidor)
+*** web-mode
+Un modo mayor autónomo que permite la edición de plantillas web: documentos HTML con partes embebidas
+(CSS/Javascript) y bloques (del lado de cliente/servidor)
 
      #+begin_src emacs-lisp
        (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -620,19 +613,15 @@ Y cargamos el archivo, ¡No lo olvide!.
        (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)) ;; para editar archivos HTML
      #+end_src
 
-   15. mu4e
-     Un versátil cliente de correo electrónico. Éste paquete se carga
-     de manera condicional si esta instalado en el sistema del
-     usuario. Desgraciadamente no puedes instalarlo desde Melpa o
-     algún otro repositorio de paquetes de Emacs.
+*** mu4e
+Un versátil cliente de correo electrónico. Éste paquete se carga de manera condicional si esta instalado en el
+sistema del usuario. Desgraciadamente no puedes instalarlo desde Melpa o algún otro repositorio de paquetes de
+Emacs.
 
-     Correos electrónicos y otros datos son traídos de un archivo
-     secreto ;)
+Correos electrónicos y otros datos son traídos de un archivo secreto ;)
 
-     Para saber como configurar mu4e para escribir correos con
-     diferentes cuentas de correo, puedes mirar la
-     [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]] es aconsejable que esa configuración viva en el
-     archivo secreto...
+Para saber como configurar mu4e para escribir correos con diferentes cuentas de correo, puedes mirar la
+[[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]] es aconsejable que esa configuración viva en el archivo secreto...
 
      #+begin_src emacs-lisp
        (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e/")
@@ -691,9 +680,9 @@ Y cargamos el archivo, ¡No lo olvide!.
          )
      #+end_src
 
-   16. dired y dired+
-     Extiende funcionalidades de =dired=. Se agrega una función personalizada que mata el buffer al presionar
-       =q=, porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
+*** dired y dired+
+Extiende funcionalidades de =dired=. Se agrega una función personalizada que mata el buffer al presionar =q=,
+porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
 
      #+begin_src emacs-lisp
        (defun dired-quit-window-kill-buffer ()
@@ -712,68 +701,35 @@ Y cargamos el archivo, ¡No lo olvide!.
        (define-key dired-mode-map (kbd "q") 'dired-quit-window-kill-buffer)
      #+end_src
 
-   17. ace-jump
-     hace que el cursor se mueva por todo el buffer con presionar
-     pocas teclas.
+*** ace-jump
+hace que el cursor se mueva por todo el buffer con presionar pocas teclas.
 
      #+begin_src emacs-lisp
        (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
        (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
      #+end_src
 
-   18. magit
-     Git en Emacs.
+*** magit
+Git en Emacs.
 
-     A decir verdad, amo a Mercurial y odio a Git.
+A decir verdad, amo a Mercurial y odio a Git.
 
      #+begin_src emacs-lisp
        (define-key global-map [C-f12] 'magit-status)
      #+end_src
 
-   19. monky
-     Mercurial en Emacs
+*** monky
+Mercurial en Emacs
 
-     Amo Mercurial ;)
+Amo Mercurial ;)
 
      #+begin_src emacs-lisp
        (define-key global-map [f12] 'monky-status)
        (setf monky-process-type 'cmdserver)
      #+end_src
 
-   20. CEDET
-     Convierte a Emacs en todo un IDE. La configuración se carga de manera condicional
-
-     #+begin_src emacs-lisp
-       ;; (when (file-exists-p (expand-file-name "site-packages/cedet/cedet-devel-load.el" user-emacs-directory))
-       ;;   (add-to-list 'semantic-default-submodes 'global-semanticdb-minor-mode)
-       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-mru-bookmark-mode)
-       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-highlight-func-mode -1)
-       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-decoration-mode)
-       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-idle-local-symbol-highlight-mode -1)
-       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-idle-scheduler-mode)
-       ;;   (add-to-list 'semantic-default-submodes 'global-semantic-idle-summary-mode)
-         
-       ;;   (when (cedet-cscope-version-check t)
-       ;;     (semanticdb-enable-cscope-databases))
-         
-         ;; Symbol's function definition is void: semantic-load-enable-primary-exuberent-ctags-support
-         ;;(when (cedet-ectag-version-check t)
-         ;;  (semantic-load-enable-primary-exuberent-ctags-support))
-         ;; configuración de algunos proyectos
-         ;; (ede-cpp-root-project "SantoTomas"
-         ;;                       :name "santo Tomás de Aquino"
-         ;;                       :file "/home/jorge/coders/desarrollo/tomasdeaquino/CMakeLists.txt"
-         ;;                       :include-path '("/include"))
-         
-         ;; (ede-cpp-root-project "GodotEngine"
-         ;;                       :name "Godot Engine"
-         ;;                       :file "/home/jorge/coders/desarrollo/godot/README.md"
-         ;;                       :include-path '("/include"))
-       ;;)
-     #+end_src
-
-   21. Smart modeline
-       el modeline, pero más inteligente.
+*** Smart modeline
+el modeline, pero más inteligente.
 
        #+begin_src emacs-lisp
          (sml/setup)
@@ -783,9 +739,8 @@ Y cargamos el archivo, ¡No lo olvide!.
          (add-to-list 'sml/replacer-regexp-list '("^:Código:PPH/clientes/" ":PPH:") t)
        #+end_src
 
-   22. Visual-regexp y Visual-regexp-steroids
-       expresiones regulares con algo más moderno que lo ofrecido por
-       Emacs:
+*** Visual-regexp y Visual-regexp-steroids
+expresiones regulares con algo más moderno que lo ofrecido por Emacs:
 
        #+begin_src emacs-lisp
          (define-key global-map (kbd "C-c r") 'vr/replace)
@@ -795,9 +750,9 @@ Y cargamos el archivo, ¡No lo olvide!.
          (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s
        #+end_src
 
-   23. Para todos los modos mayores de programación
-    En lo personal, me gustaría que al escribir los comentarios en mi
-    código fuente, las lineas se rompan al llegar a la columna 79.
+*** Para todos los modos mayores de programación
+En lo personal, me gustaría que al escribir los comentarios en mi código fuente, las lineas se rompan al
+llegar a la columna 79.
 
     #+begin_src emacs-lisp
       (add-hook 'prog-mode-hook
@@ -815,8 +770,8 @@ Y cargamos el archivo, ¡No lo olvide!.
                 )
     #+end_src
 
-   24. golang
-       configuración para golang en emacs.
+*** golang
+configuración para golang en emacs.
 
        #+begin_src emacs-lisp
          (add-hook 'go-mode-hook (lambda ()
@@ -828,25 +783,21 @@ Y cargamos el archivo, ¡No lo olvide!.
          ))
        #+end_src
        
-   25. rustlang
-       configuración para rustlang en Emacs. Yo aun no olvido lo
-       hipócrita que es Mozilla y "su web abierta" por lo que le
-       hicieron (o no hicieron, si quiere) con Brendan Eich. LAS
-       PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU DINERO AQUELLAS
-       CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN
-       PARA QUE SEAN PERSEGUIDAS Y PIERDAN SUS TRABAJOS PORQUE LOS
-       FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN
-       DISTINTOS DE ELLOS SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL
-       MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla,
-       hipócrita, cuanta tolerancia y respeto hacía los demás!.
+*** rustlang
+configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Mozilla y "su web abierta" por lo
+que le hicieron (o no hicieron, si quiere) con Brendan Eich. LAS PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU
+DINERO AQUELLAS CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN PARA QUE SEAN PERSEGUIDAS Y
+PIERDAN SUS TRABAJOS PORQUE LOS FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN DISTINTOS DE ELLOS
+SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla, hipócrita,
+cuanta tolerancia y respeto hacía los demás!.
        
        #+begin_src emacs-lisp
          ;;nada por agregar, aun...
        #+end_src
 
-   26. C++
-       configuración para habilitar auto-completado en Emacs para la
-       programación en el lenguaje C++
+*** C++
+configuración para habilitar auto-completado en Emacs para la
+programación en el lenguaje C++
 
        #+begin_src emacs-lisp
          (require 'cmake-project)
@@ -877,8 +828,8 @@ Y cargamos el archivo, ¡No lo olvide!.
          ))
        #+end_src
 
-   27. CMake
-       configuración de CMake para Emacs
+*** CMake
+configuración de CMake para Emacs
        
        #+begin_src emacs-lisp
          (require 'cmake-mode)
@@ -896,9 +847,8 @@ Y cargamos el archivo, ¡No lo olvide!.
                      ))
        #+end_src
 
-   28. gancho para antes de guardar el archivo
-      puede que gustemos de hacer algo con el archivo antes de
-      guardarlo. Acá se enganchan un par de funciones.
+*** gancho para antes de guardar el archivo
+puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enganchan un par de funciones.
 
       #+begin_src emacs-lisp
         (add-hook 'before-save-hook 'py-autopep8-before-save)
