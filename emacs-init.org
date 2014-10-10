@@ -85,6 +85,8 @@ org!
   )
 #+END_SRC
 
+#+RESULTS:
+
 #+name: codigopython
 #+BEGIN_SRC python :results output :file paquetes.el
   import os
@@ -166,6 +168,9 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'org-page)
   (require 'undo-tree)
   (require 'dired+)
+  (require 'muse-mode)
+  (require 'muse-docbook)
+  (require 'muse-project)
 #+end_src
 
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
@@ -333,6 +338,9 @@ modos que se activan luego de que emacs carga
      #+end_src
 
 *** EN REVISIÓN Org-mode
+- State "EN REVISIÓN" from "EN REVISIÓN" [2014-10-10 vie 00:19] \\
+  El error parece provenir de la sentencia =org-blank-before-new-entry t= en la configuración. Todo lo demás
+  permanece sin comentar y aun así org-capture funciona como debe.
 - State "EN REVISIÓN" from ""           [2014-10-08 mié 20:19] \\
   No puedo hacer uso de la función para capturar anotaciones, [[http://emacs.stackexchange.com/questions/847/whats-wrong-with-my-org-mode-capture-settings][en el stack exchange de Emacs]] estoy tratando de
   conseguir ayuda para este problema
@@ -349,7 +357,7 @@ combinación C-' para otra cosa.
              org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
              org-catch-invisible-edits 'show
              org-return-follow-link t
-             org-blank-before-new-entry t
+             ;;org-blank-before-new-entry t
              org-startup-indented t
              org-startup-folded nil
              org-imenu-depth 5
@@ -359,12 +367,14 @@ combinación C-' para otra cosa.
                                     (concat org-directory "/notas.org")
                                     (concat org-directory "/otros.org")
                                     (concat org-directory "/agenda.org"))
+
              org-default-notes-file (concat org-directory "/notas.org")
+
              org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/otros.org") "Tareas")
                                       "* Tareas %?\n  %i\n  %a")
-                                     ("d" "Diario" entry (file+datatree ,(concat org-directory "/diario.org"))
+                                     ("d" "Diario" entry (file+datetree ,(concat org-directory "/diario.org"))
                                       "* %?\nInsertado el %U\n  %i\n  %a")
-                                     ("a" "Apuntes importantes" entry (file+datatree "")
+                                     ("a" "Apuntes importantes" entry (file+datetree "")
                                       "* Notas importantes %?\nNota importante del %U\n  %i\n  %a")
                                      ("g" "Agenda" entry (file+datetree+prompt ,(concat org-directory "/agenda.org"))
                                       "* Agenda %?\n Ingresado el %T\nProgramado para el %:date\n  %i\n"))
@@ -406,7 +416,6 @@ castellanizar los enlaces y sus títulos en el blog.
         )
       #+END_SRC
    
-
 *** text-mode
 Esta configuración afecta a todos los modos texto en los buffers.
      
@@ -865,6 +874,13 @@ configuración de CMake para Emacs
                                                                     company-yasnippet))
                      ))
        #+end_src
+
+*** Muse
+Configuración para Muse, un modo mayor en Emacs para la escritura y publicación de libros a varios formatos.
+
+#+BEGIN_SRC emacs-lisp
+  ;; nada que agregar, todavía
+#+END_SRC
 
 *** gancho para antes de guardar el archivo
 puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enganchan un par de funciones.

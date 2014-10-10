@@ -108,6 +108,8 @@
   :ensure multi-term)
 (use-package multiple-cursors
   :ensure multiple-cursors)
+(use-package muse
+  :ensure muse)
 (use-package mustache
   :ensure mustache)
 (use-package nav-flash
@@ -128,6 +130,8 @@
   :ensure persistent-soft)
 (use-package pkg-info
   :ensure pkg-info)
+(use-package pkgbuild-mode
+  :ensure pkgbuild-mode)
 (use-package powerline
   :ensure powerline)
 (use-package pretty-mode
