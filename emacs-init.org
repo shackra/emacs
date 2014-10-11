@@ -337,7 +337,9 @@ modos que se activan luego de que emacs carga
        (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
      #+end_src
 
-*** EN REVISIÓN Org-mode
+*** POR HACER Org-mode
+- State "POR HACER"  from "EN REVISIÓN" [2014-10-11 sáb 00:16] \\
+  probar las capturas de anotaciones implementadas. Pasar a los nuevos archivos las tareas en otros archivos.
 - State "EN REVISIÓN" from "EN REVISIÓN" [2014-10-10 vie 00:19] \\
   El error parece provenir de la sentencia =org-blank-before-new-entry t= en la configuración. Todo lo demás
   permanece sin comentar y aun así org-capture funciona como debe.
@@ -363,21 +365,37 @@ combinación C-' para otra cosa.
              org-imenu-depth 5
              org-log-done 'time
              org-clock-persist 'history
-             org-agenda-files (list (concat org-directory "/trabajo.org")
-                                    (concat org-directory "/notas.org")
-                                    (concat org-directory "/otros.org")
+             org-agenda-files (list (concat org-directory "/cosasporhacer.org")
                                     (concat org-directory "/agenda.org"))
 
-             org-default-notes-file (concat org-directory "/notas.org")
+             org-default-notes-file (concat org-directory "/diario.org")
 
-             org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/otros.org") "Tareas")
-                                      "* Tareas %?\n  %i\n  %a")
-                                     ("d" "Diario" entry (file+datetree ,(concat org-directory "/diario.org"))
-                                      "* %?\nInsertado el %U\n  %i\n  %a")
-                                     ("a" "Apuntes importantes" entry (file+datetree "")
-                                      "* Notas importantes %?\nNota importante del %U\n  %i\n  %a")
-                                     ("g" "Agenda" entry (file+datetree+prompt ,(concat org-directory "/agenda.org"))
-                                      "* Agenda %?\n Ingresado el %T\nProgramado para el %:date\n  %i\n"))
+             org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
+                                      "* POR HACER %^{breve descripcion}\n %?\nAdded: %U")
+                                     ("pp" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour") 
+                                      "* POR HACER %^{Titulo del proyecto}\n%^{cliente}p\n%^{ID}p\nDescripción: %?")
+                                     ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")
+                                      "* %^{Nombre del evento}\n SCHEDULED: %:date")
+                                     ("a" "Cumpleaños y aniversarios" entry (file+headline ,(concat org-directory "/agenda.org") "Cumpleaños y aniversarios")
+                                      "* %^{Nombre del cumpleañero o aniversario}\n SCHEDULED: %:date\n %?")
+                                     ("z" "Algún día/Tal vez" entry (file+headline ,(concat org-directory "quizas.org") "En 'veremos'")
+                                      "* %^{breve descripcion}\n %?\nAdded: %U")
+                                     ("zl" "Algún día/Tal vez (Libros)" entry (file+olp ,(concat org-directory "quizas.org") "En 'veremos'" "Libros por leer")
+                                      "* Leer %^{titulo del libro} por %^{autor o autores}\n %?\nAdded: %U")
+                                     ("zp" "Algún día/Tal vez (Peliculas)" entry (file+olp ,(concat org-directory "quizas.org") "En 'veremos'" "Pelicuas por ver")
+                                      "* Ver la pelicula %^{titulo de la pelicula}\n %?\n Added: %U")
+                                     ("zm" "Algún día/Tal vez (Música)" entry (file+olp ,(concat org-directory "quizas.org") "En 'veremos'" "Música por escuchar")
+                                      "* Escuchar cierta(s) cancion(es) de %^{artista}\n %?\nAdded: %U")
+                                     ("zb" "Algún día/Tal vez (Blogs)" entry (file+olp ,(concat org-directory "quizas.org") "En 'veremos'" "Blogs por leer")
+                                      "* Leer [[%:url][%^{titulo de la entrada de blog}]] por %^{autor}\nAdded: %U")
+                                     ("zp" "Algún día/Tal vez (Por hacer)" entry (file+olp ,(concat org-directory "quizas.org") "En 'veremos'" "Cosas por hacer")
+                                      "* %^{breve descripcion de la tarea}\n %?\nAdded: %U")
+                                     ("za" "Algún día/Tal vez (Aprender)" entry (file+olp ,(concat org-directory "quizas.org") "En 'veremos'" "Cosas por aprender")
+                                      "* %^{breve descripcion}\n %?\nAdded: %U")
+                                     ("zx" "Algún día/Tal vez (Nuevo proyecto)" entry (file+olp ,(concat org-directory "quizas.org") "En 'veremos'" "Nuevos proyectos")
+                                      "* %^{breve descripcion}\n %?\nAdded: %U")
+                                     )
+
              org-todo-keywords '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))
              org-todo-keyword-faces '(
                                       ("POR HACER" . (:foreground "black" :background "#ff4500" :weight bold))
