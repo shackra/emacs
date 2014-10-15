@@ -173,6 +173,28 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'muse-project)
 #+end_src
 
+** Códigos elisp
+funciones de Emacs lisp escritas por mi u otras personas (y que yo he recolectado para mi propio beneficio)
+
+*** función para insertar etiquetas <kbd>
+Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta desde Emacs.stackexchange]].
+
+#+BEGIN_SRC emacs-lisp
+  (defun endless/insert-key (key)
+    "Ask for a key then insert its description.
+  Will work on both org-mode and any mode that accepts plain html."
+    (interactive "kType key sequence: ")
+    (let* ((is-org-mode (derived-mode-p 'org-mode))
+           (tag (if is-org-mode
+                    "@@html:<kbd>%s</kbd>@@"
+                  "<kbd>%s</kbd>")))
+      (if (null (equal key "\r"))
+          (insert
+           (format tag (help-key-description key nil)))
+        (insert (format tag ""))
+        (forward-char (if is-org-mode -8 -6)))))
+#+END_SRC
+
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
 defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
