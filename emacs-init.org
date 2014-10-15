@@ -18,8 +18,8 @@ comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la cap
 varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer),
 además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código
 Python!.
-  
-* La Configuración
+
+* LA Configuración
 Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
 =~/.emacs.d/init.el=:
 
@@ -413,6 +413,12 @@ combinación C-' para otra cosa.
        (define-key org-mode-map (kbd "C-¡") 'er/expand-region)
 
        (org-clock-persistence-insinuate)
+
+       (add-hook 'org-mode-hook (lambda ()
+                                  (auto-fill-mode -1)
+                                  (visual-line-mode)
+                                  )
+                 )
      #+end_src
 
 *** org-page
@@ -897,7 +903,12 @@ configuración de CMake para Emacs
 Configuración para Muse, un modo mayor en Emacs para la escritura y publicación de libros a varios formatos.
 
 #+BEGIN_SRC emacs-lisp
-  ;; nada que agregar, todavía
+  (add-hook 'muse-mode-hook (lambda ()
+                              (auto-fill-mode -1)
+                              (visual-line-mode)
+                              )
+            )
+
 #+END_SRC
 
 *** gancho para antes de guardar el archivo
