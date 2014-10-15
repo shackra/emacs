@@ -352,79 +352,71 @@ Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que 
 combinación C-' para otra cosa.
 
      #+begin_src emacs-lisp
-       (setf org-footnote-auto-adjust t
-             org-directory (expand-file-name "~/org")
-             org-archive-location (concat org-directory "/archivado.org::* Entradas viejas y archivadas")
-             org-special-ctrl-k t
-             org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
-             org-catch-invisible-edits 'show
-             org-return-follow-link t
-             ;;org-blank-before-new-entry t
-             org-startup-indented t
-             org-startup-folded nil
-             org-imenu-depth 5
-             org-log-done 'time
-             org-clock-persist 'history
-             org-agenda-files (list (concat org-directory "/cosasporhacer.org")
-                                    (concat org-directory "/agenda.org"))
+              (setf org-footnote-auto-adjust t
+                    org-directory (expand-file-name "~/org")
+                    org-archive-location (concat org-directory "/archivado.org::* Entradas viejas y archivadas")
+                    org-special-ctrl-k t
+                    org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
+                    org-catch-invisible-edits 'show
+                    org-return-follow-link t
+                    ;;org-blank-before-new-entry t
+                    org-startup-indented t
+                    org-startup-folded nil
+                    org-imenu-depth 5
+                    org-log-done 'time
+                    org-clock-persist 'history
+                    org-agenda-files (list (concat org-directory "/cosasporhacer.org")
+                                           (concat org-directory "/agenda.org"))
 
-             org-default-notes-file (concat org-directory "/diario.org")
+                    org-default-notes-file (concat org-directory "/diario.org")
 
-             org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
-                                      "* POR HACER %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("x" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour") 
-                                      "* POR HACER %^{Titulo del proyecto}\n%^{cliente}p\n%^{ID}p\nDescripción: %?" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")
-                                      "* %^{Nombre del evento}\n SCHEDULED: %:date" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("a" "Cumpleaños y aniversarios" entry (file+headline ,(concat org-directory "/agenda.org") "Cumpleaños y aniversarios")
-                                      "* %^{Nombre del cumpleañero o aniversario}\n SCHEDULED: %:date\n %?" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("g" "Algún día/Tal vez" entry (file+headline ,(concat org-directory "/quizas.org") "En 'veremos'")
-                                      "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("l" "Algún día/Tal vez (Libros)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Libros por leer")
-                                      "* Leer %^{titulo del libro} por %^{autor o autores}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("v" "Algún día/Tal vez (Peliculas)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Películas por ver")
-                                      "* Ver la pelicula %^{titulo de la pelicula}\n %?\n Added: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("m" "Algún día/Tal vez (Música)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Música por escuchar")
-                                      "* Escuchar cierta(s) cancion(es) de %^{artista}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("b" "Algún día/Tal vez (Blogs)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Blogs por leer")
-                                      "* Leer [[%:url][%^{titulo de la entrada de blog}]] por %^{autor}\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("z" "Algún día/Tal vez (Por hacer)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por hacer")
-                                      "* %^{breve descripcion de la tarea}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("w" "Algún día/Tal vez (Aprender)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por aprender")
-                                      "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("n" "Algún día/Tal vez (Nuevo proyecto)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Nuevos proyectos")
-                                      "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     )
+                    org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
+                                             "* POR HACER %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("x" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour") 
+                                             "* POR HACER %^{Titulo del proyecto}\n%^{cliente}p\n%^{ID}p\nDescripción: %?" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")
+                                             "* %^{Nombre del evento}\n SCHEDULED: %:date" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("a" "Cumpleaños y aniversarios" entry (file+headline ,(concat org-directory "/agenda.org") "Cumpleaños y aniversarios")
+                                             "* %^{Nombre del cumpleañero o aniversario}\n SCHEDULED: %:date\n %?" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("g" "Algún día/Tal vez" entry (file+headline ,(concat org-directory "/quizas.org") "En 'veremos'")
+                                             "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("l" "Algún día/Tal vez (Libros)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Libros por leer")
+                                             "* Leer %^{titulo del libro} por %^{autor o autores}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("v" "Algún día/Tal vez (Peliculas)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Películas por ver")
+                                             "* Ver la pelicula %^{titulo de la pelicula}\n %?\n Added: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("m" "Algún día/Tal vez (Música)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Música por escuchar")
+                                             "* Escuchar cierta(s) cancion(es) de %^{artista}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("b" "Algún día/Tal vez (Blogs)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Blogs por leer")
+                                             "* Leer [[%:url][%^{titulo de la entrada de blog}]] por %^{autor}\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("z" "Algún día/Tal vez (Por hacer)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por hacer")
+                                             "* %^{breve descripcion de la tarea}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("w" "Algún día/Tal vez (Aprender)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por aprender")
+                                             "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("n" "Algún día/Tal vez (Nuevo proyecto)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Nuevos proyectos")
+                                             "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            )
 
-             org-todo-keywords '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))
-             org-todo-keyword-faces '(
-                                      ("POR HACER" . (:foreground "black" :background "#ff4500" :weight bold))
-                                      ("EN PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
-                                      ("EN ESPERA" . (:foreground "black" :background "#0000ff" :weight bold))
-                                      ("EN REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
-                                      ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))
-                                      ("CANCELADO" . (:foreground "black" :background "#8b0000" :weight bold))
-                                      )
-             )
+                    org-todo-keywords '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))
+                    org-todo-keyword-faces '(
+                                             ("POR HACER" . (:foreground "black" :background "#ff4500" :weight bold))
+                                             ("EN PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
+                                             ("EN ESPERA" . (:foreground "black" :background "#0000ff" :weight bold))
+                                             ("EN REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
+                                             ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))
+                                             ("CANCELADO" . (:foreground "black" :background "#8b0000" :weight bold))
+                                             )
+                    )
 
-       (global-set-key (kbd "C-c l") 'org-store-link)
-       (global-set-key (kbd "C-c a") 'org-agenda)
-       (define-key global-map (kbd "C-c c") 'org-capture)
-       (define-key org-mode-map (kbd "C-¡") 'er/expand-region)
+              (global-set-key (kbd "C-c l") 'org-store-link)
+              (global-set-key (kbd "C-c a") 'org-agenda)
+              (define-key global-map (kbd "C-c c") 'org-capture)
+              (define-key org-mode-map (kbd "C-¡") 'er/expand-region)
 
-       (org-clock-persistence-insinuate)
+              (org-clock-persistence-insinuate)
 
-<<<<<<< HEAD
-       (add-hook 'org-mode-hook (lambda ()
-                                  (auto-fill-mode -1)
-                                  (visual-line-mode)
-                                  )
-                 )
-=======
        ;; sacado de http://emacs.stackexchange.com/a/2103/690
        (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
        (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
->>>>>>> b5f53fb8d8f3d415aa660d4ab2de482e261a65b4
      #+end_src
 
 *** org-page
