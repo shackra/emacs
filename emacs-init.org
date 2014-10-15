@@ -413,6 +413,10 @@ combinación C-' para otra cosa.
        (define-key org-mode-map (kbd "C-¡") 'er/expand-region)
 
        (org-clock-persistence-insinuate)
+
+       ;; sacado de http://emacs.stackexchange.com/a/2103/690
+       (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+       (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
      #+end_src
 
 *** org-page
