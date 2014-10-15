@@ -414,11 +414,17 @@ combinación C-' para otra cosa.
 
        (org-clock-persistence-insinuate)
 
+<<<<<<< HEAD
        (add-hook 'org-mode-hook (lambda ()
                                   (auto-fill-mode -1)
                                   (visual-line-mode)
                                   )
                  )
+=======
+       ;; sacado de http://emacs.stackexchange.com/a/2103/690
+       (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+       (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+>>>>>>> b5f53fb8d8f3d415aa660d4ab2de482e261a65b4
      #+end_src
 
 *** org-page
