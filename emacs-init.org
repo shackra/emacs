@@ -462,6 +462,8 @@ castellanizar los enlaces y sus títulos en el blog.
               op/site-main-title "El blog de Shackra"
               op/site-sub-title "«No seas tan abierto de mente o tu cerebro se caerá» ~G.K. Chesterton"
               op/personal-github-link "https://github.com/shackra"
+              op/theme-root-directory (expand-file-name "themes" user-emacs-directory)
+              op/theme 'shc
         )
 
         (defun op/do-publication-all ()
@@ -949,3 +951,18 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
         (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
         (add-hook 'before-save-hook 'gofmt-before-save)
        #+end_src
+
+*** langtool
+[[https://www.languagetool.org/es/][Language Tool]] es una herramienta de software libre para revisión gramatical, ortográfica y de estilo.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'langtool)
+  (setf langtool-language-tool-jar "/usr/share/java/languagetool/languagetool.jar"
+        langtool-mother-tongue "es")
+
+  (global-set-key (kbd "C-x 4 w") 'langtool-check)
+  (global-set-key (kbd "C-x 4 W") 'langtool-check-done)
+  (global-set-key (kbd "C-x 4 l") 'langtool-switch-default-language)
+  (global-set-key (kbd "C-x 4 4") 'langtool-show-message-at-point)
+  (global-set-key (kbd "C-x 4 c") 'langtool-correct-buffer)
+#+END_SRC
