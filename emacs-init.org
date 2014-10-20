@@ -2,6 +2,7 @@
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Sislock)
 #+EMAIL: elcorreo@deshackra.com
 #+OPTIONS: toc:3 num:nil ^:nil
+#+STARTUP: folded
 
 #+begin_quote
 Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam
@@ -19,7 +20,7 @@ varias secciones de la configuración, o navegar rápidamente entre secciones (c
 además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código
 Python!.
 
-* LA Configuración
+* La Configuración
 Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
 =~/.emacs.d/init.el=:
 
@@ -136,6 +137,9 @@ Cargamos paquetes que no se instalan con ELPA.
   (load-file (expand-file-name "site-packages/erosiond-theme/erosiond-theme.el" user-emacs-directory))
   ;; carga un agregado para cuando se escriben correos usando mu4e
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
+  (if (file-exists-p "~/quicklisp/slime-helper.el" )
+      (load "~/quicklisp/slime-helper.el")
+    (setf inferior-lisp-program "sbcl"))
 #+end_src
 
 ** Paquetes requeridos con =require=
@@ -543,8 +547,7 @@ calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de
                                        "\\.xlsx$" "\\.epub$" "\\.docx$"))
         helm-ff-skip-boring-buffers t
         helm-truncate-lines t
-        helm-projectile-sources-list '(helm-source-projectile-files-list
-                                       helm-source-projectile-projects))
+        helm-projectile-sources-list '(helm-source-projectile-files-list))
 
        (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
        (global-set-key (kbd "C-x f") 'helm-recentf)
@@ -965,4 +968,53 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
   (global-set-key (kbd "C-x 4 l") 'langtool-switch-default-language)
   (global-set-key (kbd "C-x 4 4") 'langtool-show-message-at-point)
   (global-set-key (kbd "C-x 4 c") 'langtool-correct-buffer)
+#+END_SRC
+
+*** Jabber
+Chat de jabber desde Emacs!!
+
+#+BEGIN_SRC emacs-lisp
+  (setf
+   jabber-history-enabled t
+   jabber-use-global-history nil
+   jabber-backlog-number 40
+   jabber-backlog-days 30
+   jabber-alert-presence-message-function (lambda (who oldstatus newstatus statusnext) nil)
+   jabber-invalid-certificate-servers '("chat.deshackra.com")
+  )
+
+  (defun notify-jabber-notify (from buf text proposed-alert)
+    "Notifica sobre nuevos mensajes en Jabber vía notify.el"
+    (when (or jabber-message-alert-same-buffer
+             (not (memq (selected-window) (get-buffer-window-list buf))))
+      (if (jabber-muc-sender-p from)
+          (notify (format "(MP) %s"
+                          (jabber-jid-displayname (jabber-jid-user from)))
+                  (format "%s: %s" (jabber-jid-resource from) text)))
+      (notify (format "%s" (jabber-jid-displayname from))
+              text)))
+
+  (defun my-jabber-chat-delete-or-bury ()
+    (interactive)
+    (if (eq 'jabber-chat-mode major-mode)
+        (condition-case e 
+            (delete-frame)
+          (error 
+           (if (string= "Attempt to delete the sole visible or iconified frame" 
+                        (cadr e))
+               (bury-buffer))))))
+
+  ;;(define-key jabber-chat-mode-map [escape] 'my-jabber-chat-delete-or-bury)
+  (add-hook 'jabber-alert-message-hooks 'notify-jabber-notify)
+  (load-file (expand-file-name "jabber.secret.gpg" user-emacs-directory))
+  ;; nos conecta a todas las cuentas jabber!
+
+  (ignore-errors 
+    (jabber-connect-all))
+#+END_SRC
+*** GNU TLS
+Una implementación libre de los protocolos SSL, TLS y DTLS. Integrado con Emacs
+
+#+BEGIN_SRC emacs-lisp
+  (setf gnutls-min-prime-bits 1024)
 #+END_SRC
