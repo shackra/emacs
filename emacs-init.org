@@ -24,27 +24,27 @@ Python!.
 Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
 =~/.emacs.d/init.el=:
 
-#+begin_src emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp :tangle no
   ;; init.el para esta configuración. Tu Emacs debe ser versión 24.
   (package-initialize)
   (require 'ob-tangle)
   (org-babel-load-file
    (expand-file-name "emacs-init.org"
                      user-emacs-directory))
-#+end_src
+#+END_SRC
 
 activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
 
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
   ;;(toggle-debug-on-error)
   ;;(toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
-#+end_src
+#+END_SRC
 
 ** Información personal
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Araya Navarro"
         user-mail-address "elcorreo@deshackra.com")
-#+end_src
+#+END_SRC
 
 ** Repositorio de paquetes
 Desde la versión 24 Emacs permite la instalación de paquetes de la misma manera como se realiza en
@@ -54,11 +54,11 @@ El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcio
 poner algunas cosas en tu configuración de Emacs y tal. Lo posible es que las mismas instrucciones estén dadas
 en la descripción del paquete.
 
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (setf package-archives (list (quote ("gnu" . "http://elpa.gnu.org/packages/"))
                                (quote ("melpa" . "http://melpa.milkbox.net/packages/"))
                                (quote ("org" . "http://orgmode.org/elpa/"))))
-#+end_src
+#+END_SRC
 
 Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x
 package-list-pactares=
@@ -131,7 +131,7 @@ instalación de los paquetes extraído de [[https://github.com/adamrt/emacs.d/][
 
 Cargamos paquetes que no se instalan con ELPA.
 
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (load-file (expand-file-name "site-packages/golang/company-go.el" user-emacs-directory))
   (load-file (expand-file-name "site-packages/erosiond-theme/erosiond-theme.el" user-emacs-directory))
   ;; carga un agregado para cuando se escriben correos usando mu4e
@@ -139,14 +139,14 @@ Cargamos paquetes que no se instalan con ELPA.
   (ignore-errors 
     (load-file "~/quicklisp/slime-helper.el")
     (setf inferior-lisp-program "sbcl"))
-#+end_src
+#+END_SRC
 
 ** Paquetes requeridos con =require=
 Existen algunos paquetes que deben ser "requeridos" para la correcta
 activación de algunos modos mayores, funcionalidades, y demás cosas
 proveídas por Emacs o paquetes instalados en Emacs.
 
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (require 'uniquify)
   (require 'helm)
   (require 'helm-config)
@@ -174,7 +174,7 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'muse-mode)
   (require 'muse-docbook)
   (require 'muse-project)
-#+end_src
+#+END_SRC
 
 ** Códigos elisp
 funciones de Emacs lisp escritas por mi u otras personas (y que yo he recolectado para mi propio beneficio)
@@ -311,9 +311,9 @@ se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverfl
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira en éste archivo:
 
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
   (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
-#+end_src
+#+END_SRC
 
  Me da la impresión que estas modificaciones pueden ser sobre-escritas
  si se cargan al puro inicio. De ahí que sean movidas a la ultima
@@ -321,9 +321,9 @@ se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverfl
 
 Y cargamos el archivo, ¡No lo olvide!.
 
- #+begin_src emacs-lisp
+ #+BEGIN_SRC emacs-lisp
    (load custom-file)
- #+end_src
+ #+END_SRC
 
 ** Modos de Emacs
    La configuración especifica a cada modo mayor, menor, o paquete con
@@ -332,7 +332,7 @@ Y cargamos el archivo, ¡No lo olvide!.
 *** Después de que Emacs cargue la configuración por completo
 modos que se activan luego de que emacs carga
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (add-hook (quote after-init-hook)
                  (lambda ()
               (helm-mode 1)
@@ -360,7 +360,7 @@ modos que se activan luego de que emacs carga
        ;; salta a la nueva ventana creada despues de dividir la actual
        (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
        (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
-     #+end_src
+     #+END_SRC
 
 *** TERMINADO Org-mode
 CLOSED: [2014-10-15 mié 17:38]
@@ -378,7 +378,7 @@ CLOSED: [2014-10-15 mié 17:38]
 Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que org-mode usa la
 combinación C-' para otra cosa.
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
               (setf org-footnote-auto-adjust t
                     org-directory (expand-file-name "~/org")
                     org-archive-location (concat org-directory "/archivado.org::* Entradas viejas y archivadas")
@@ -452,7 +452,7 @@ combinación C-' para otra cosa.
                                   (visual-line-mode)
                                   )
                  )
-     #+end_src
+     #+END_SRC
 
 *** org-page
 Genera un blog estatico con [[https://github.com/kelvinh/org-page][org-page]].
@@ -481,7 +481,8 @@ Esta configuración afecta a todos los modos texto en los buffers.
      #+BEGIN_SRC emacs-lisp
        (add-hook 'text-mode-hook
                   (lambda ()
-                    (turn-on-auto-fill)
+                    ;;(turn-on-auto-fill)
+                    (turn-on-visual-line-mode)
                     (flyspell-mode)
                     (set (make-local-variable 'fill-column) 110)
                     ))
@@ -491,7 +492,7 @@ Esta configuración afecta a todos los modos texto en los buffers.
 Es un paquete que esta en su propia liga. Éste paquete te ayudara a aumentar tu productividad, reducir tu
 calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de amor por vos ;)
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        ;; re-une la tecla TAB con el comando para ejecutar la acción persistente
        (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
        ;; Hace que la tecla TAB en la terminal funcione nuevamente
@@ -554,7 +555,7 @@ calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de
        (global-set-key (kbd "C-c i") 'helm-imenu)
        (define-key global-map (kbd "C-x C-f") 'helm-find-files)
        (define-key global-map (kbd "C-x b") 'helm-buffers-list)
-     #+end_src
+     #+END_SRC
      
 *** Projectile
 Es un paquete que nos permite el manejo de archivos en proyectos. Un proyecto, por definición, puede ser
@@ -562,7 +563,7 @@ cualquier repositorio de código fuente de software, como =mercurial=, =git=, et
 un proyecto en una carpeta dejando caer en él un archivo =.projectile=, dentro de este archivo se puede
 definir qué archivos/carpetas ignorar y cuales no. Para más información ver la [[http://batsov.com/projectile/][pagina del proyecto]].
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (setf
         projectile-completion-system 'helm
         projectile-file-exists-remote-cache-expire (* 10 60)
@@ -571,12 +572,12 @@ definir qué archivos/carpetas ignorar y cuales no. Para más información ver l
                                             "*.zip" "*.tar.*" "*.rar" "*.7z"))
         projectile-switch-project-action  'helm-projectile-find-file
         )
-     #+end_src
+     #+END_SRC
 
 *** Multi-term
 Ofrece un excelente emulador de terminal *dentro* de Emacs
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (setf multi-term-buffer-name "terminal "
              multi-term-program "/bin/bash"
              term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
@@ -600,13 +601,13 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
        (global-set-key [f1] 'multi-term)
        (global-set-key [C-next] 'multi-term-next)
        (global-set-key [C-prior] 'multi-term-prev)
-     #+end_src
+     #+END_SRC
 
 *** company
 El paquete da funcionalidades de auto completado. Esta opcion es
 cada día más popular como remplazo a =auto-complete=.
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (setf company-idle-delay 0.3
              company-tooltip-limit 20
              company-minimum-prefix-length 2
@@ -617,14 +618,14 @@ cada día más popular como remplazo a =auto-complete=.
        (add-to-list 'company-backends 'company-ispell t)
        (add-to-list 'company-backends 'company-files t)
        (add-to-list 'company-backends 'company-yasnippet t)
-     #+end_src
+     #+END_SRC
      
 *** Python
 Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]]
 en el modo Python. Por lo tanto, estoy reuniendo la tecla RET con la función =newline-and-indent= que funciona
 de lo más bien.
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (elpy-enable)
        (setf python-indent-guess-indent-offset nil
              python-indent 4
@@ -633,7 +634,7 @@ de lo más bien.
                  (lambda ()
                    (nlinum-mode)
                    (hlinum-activate)))
-     #+end_src
+     #+END_SRC
 
 *** discover-my-major
 Éste paquete nos muestra las combinaciones de teclas posibles para el modo mayor en el que estamos
@@ -641,28 +642,28 @@ actualmente, todo lo que hay que hacer es recordar una combinación especifica d
 
 Esta combinación por defecto es C-h C-m ;)
 
-      #+begin_src emacs-lisp
+      #+BEGIN_SRC emacs-lisp
         (global-set-key (kbd "C-h C-m") 'discover-my-major)
-      #+end_src
+      #+END_SRC
 
 *** Expand-region
 Provee una manera fácil de hacer selección de elementos en el buffer con presionar solo una tecla. Puede ver
 éste paquete en acción en este episodio de [[http://emacsrocks.com/e09.html][Emacs Rocks]].
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (global-set-key (kbd "C-'") 'er/expand-region)
-     #+end_src
+     #+END_SRC
 
 *** multiple-cursos
 Marca varias partes del buffer dependiendo de la selección que hagas.
      
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (define-key global-map (kbd "C-+") 'mc/mark-next-like-this)
        (define-key global-map (kbd "M-+") 'mc/mark-previous-like-this)
        (define-key global-map (kbd "C-M-+") 'mc/mark-all-like-this)
        ;; Para diseñadores web, marca la etiqueta de apertura y cierre
        ;;(define-key sgml-mode-map (kbd "C-'") 'mc/mark-sgml-tag-pair) ;;Symbol's value as variable is void: sgml-mode-map
-     #+end_src
+     #+END_SRC
 
 este paquete puedes tener configuraciones de teclas muy variadas, lo mejor es que visites la pagina del
 proyecto en Github para más [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las teclas usadas reflejan la reducida cantidad que existen en mi
@@ -674,18 +675,18 @@ sintaxis que dispongas.
      
 Tiene soporte para muchos lenguajes. Lo recomiendo por encima de flymake.
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (setf
         flycheck-disabled-checkers '(emacs-lisp-checkdoc) ;; deshabilita el majadero revisor de documentación
         flycheck-indication-mode 'right-fringe
         )
-     #+end_src
+     #+END_SRC
 
 *** web-mode
 Un modo mayor autónomo que permite la edición de plantillas web: documentos HTML con partes embebidas
 (CSS/Javascript) y bloques (del lado de cliente/servidor)
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.[gj]sp\\'" . web-mode))
@@ -694,7 +695,7 @@ Un modo mayor autónomo que permite la edición de plantillas web: documentos HT
        (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode)) ;; para plantillas de Django.
        (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)) ;; para editar archivos HTML
-     #+end_src
+     #+END_SRC
 
 *** mu4e
 Un versátil cliente de correo electrónico. Éste paquete se carga de manera condicional si esta instalado en el
@@ -706,7 +707,7 @@ Correos electrónicos y otros datos son traídos de un archivo secreto ;)
 Para saber como configurar mu4e para escribir correos con diferentes cuentas de correo, puedes mirar la
 [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]] es aconsejable que esa configuración viva en el archivo secreto...
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e/")
          (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
          (autoload 'mu4e "mu4e" "Mail client based on mu (maildir-utils)." t)
@@ -764,13 +765,13 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
          ;; y enganchamos la funcion
          (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
          )
-     #+end_src
+     #+END_SRC
 
 *** dired y dired+
 Extiende funcionalidades de =dired=. Se agrega una función personalizada que mata el buffer al presionar =q=,
 porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (defun dired-quit-window-kill-buffer ()
          "Además de matar el buffer, cierra la ventana"
          (interactive)
@@ -785,62 +786,62 @@ porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear
        (define-key ctl-x-4-map "d" 'diredp-dired-for-files-other-window)
        (define-key dired-mode-map (kbd ".") 'dired-up-directory)
        (define-key dired-mode-map (kbd "q") 'dired-quit-window-kill-buffer)
-     #+end_src
+     #+END_SRC
 
 *** ace-jump
 hace que el cursor se mueva por todo el buffer con presionar pocas teclas.
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
        (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
-     #+end_src
+     #+END_SRC
 
 *** magit
 Git en Emacs.
 
 A decir verdad, amo a Mercurial y odio a Git.
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (define-key global-map [C-f12] 'magit-status)
-     #+end_src
+     #+END_SRC
 
 *** monky
 Mercurial en Emacs
 
 Amo Mercurial ;)
 
-     #+begin_src emacs-lisp
+     #+BEGIN_SRC emacs-lisp
        (define-key global-map [f12] 'monky-status)
        (setf monky-process-type 'cmdserver)
-     #+end_src
+     #+END_SRC
 
 *** Smart modeline
 el modeline, pero más inteligente.
 
-       #+begin_src emacs-lisp
+       #+BEGIN_SRC emacs-lisp
          (sml/setup)
          (sml/apply-theme 'respectful)
 
          (add-to-list 'sml/replacer-regexp-list '("^~/coders/" ":Código:") t)
          (add-to-list 'sml/replacer-regexp-list '("^:Código:PPH/clientes/" ":PPH:") t)
-       #+end_src
+       #+END_SRC
 
 *** Visual-regexp y Visual-regexp-steroids
 expresiones regulares con algo más moderno que lo ofrecido por Emacs:
 
-       #+begin_src emacs-lisp
+       #+BEGIN_SRC emacs-lisp
          (define-key global-map (kbd "C-c r") 'vr/replace)
          (define-key global-map (kbd "C-c q") 'vr/query-replace)
          (define-key global-map (kbd "C-c m") 'vr/mc-mark)
          (define-key esc-map (kbd "C-r") 'vr/isearch-backward) ;; C-M-r
          (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s
-       #+end_src
+       #+END_SRC
 
 *** Para todos los modos mayores de programación
 En lo personal, me gustaría que al escribir los comentarios en mi código fuente, las lineas se rompan al
 llegar a la columna 79.
 
-    #+begin_src emacs-lisp
+    #+BEGIN_SRC emacs-lisp
       (add-hook 'prog-mode-hook
                 (lambda ()
                   (set (make-local-variable 'fill-column) 79)
@@ -850,16 +851,17 @@ llegar a la columna 79.
                   (highlight-numbers-mode)
                   (hes-mode)
                   (highlight-blocks-mode)
-                  ;; redefinimos la tecla RET para que inserte un salto de linea y la
-                  ;; idente de manera adecuada.
-                  (define-key prog-mode-map (kbd "RET") 'newline-and-indent))
-                )
-    #+end_src
+                  (flyspell-prog-mode)))
+
+      ;; redefinimos la tecla RET para que inserte un salto de linea y la
+      ;; idente de manera adecuada.
+      (define-key prog-mode-map (kbd "RET") 'newline-and-indent)
+    #+END_SRC
 
 *** golang
 configuración para golang en emacs.
 
-       #+begin_src emacs-lisp
+       #+BEGIN_SRC emacs-lisp
          (add-hook 'go-mode-hook (lambda ()
                                    (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
                                    (local-set-key (kbd "C-c i") 'go-goto-imports)
@@ -867,7 +869,7 @@ configuración para golang en emacs.
                                    (set (make-local-variable 'company-backends) '(company-go))
                                    (go-eldoc-setup)
          ))
-       #+end_src
+       #+END_SRC
        
 *** rustlang
 configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Mozilla y "su web abierta" por lo
@@ -877,15 +879,15 @@ PIERDAN SUS TRABAJOS PORQUE LOS FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENE
 SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla, hipócrita,
 cuanta tolerancia y respeto hacía los demás!.
        
-       #+begin_src emacs-lisp
+       #+BEGIN_SRC emacs-lisp
          ;;nada por agregar, aun...
-       #+end_src
+       #+END_SRC
 
 *** C++
 configuración para habilitar auto-completado en Emacs para la
 programación en el lenguaje C++
 
-       #+begin_src emacs-lisp
+       #+BEGIN_SRC emacs-lisp
          (require 'cmake-project)
          
          (defun maybe-cmake-project-hook ()
@@ -912,12 +914,12 @@ programación en el lenguaje C++
                      (company-irony-setup-begin-commands)
                      (my-irony-mode-hook)
          ))
-       #+end_src
+       #+END_SRC
 
 *** CMake
 configuración de CMake para Emacs
        
-       #+begin_src emacs-lisp
+       #+BEGIN_SRC emacs-lisp
          (require 'cmake-mode)
          
          (setq auto-mode-alist
@@ -931,7 +933,7 @@ configuración de CMake para Emacs
                      (set (make-local-variable 'company-backends) '(company-cmake
                                                                     company-yasnippet))
                      ))
-       #+end_src
+       #+END_SRC
 
 *** Muse
 Configuración para Muse, un modo mayor en Emacs para la escritura y publicación de libros a varios formatos.
@@ -948,13 +950,15 @@ Configuración para Muse, un modo mayor en Emacs para la escritura y publicació
 *** gancho para antes de guardar el archivo
 puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enganchan un par de funciones.
 
-      #+begin_src emacs-lisp
+      #+BEGIN_SRC emacs-lisp
         (add-hook 'before-save-hook 'py-autopep8-before-save)
         (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
         (add-hook 'before-save-hook 'gofmt-before-save)
-       #+end_src
+       #+END_SRC
 
-*** langtool
+*** EN REVISIÓN langtool
+- State "EN REVISIÓN" from ""           [2014-10-27 lun 15:26] \\
+  al momento de usar los comandos, da errores
 [[https://www.languagetool.org/es/][Language Tool]] es una herramienta de software libre para revisión gramatical, ortográfica y de estilo.
 
 #+BEGIN_SRC emacs-lisp
@@ -969,7 +973,9 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
   (global-set-key (kbd "C-x 4 c") 'langtool-correct-buffer)
 #+END_SRC
 
-*** Jabber
+*** EN REVISIÓN Jabber
+- State "EN REVISIÓN" from ""           [2014-10-27 lun 15:27] \\
+  iniciar sesión únicamente si Emacs se inicia como demonio
 Chat de jabber desde Emacs!!
 
 #+BEGIN_SRC emacs-lisp
@@ -1011,8 +1017,9 @@ Chat de jabber desde Emacs!!
   (ignore-errors 
     (jabber-connect-all))
 #+END_SRC
+
 *** GNU TLS
-Una implementación libre de los protocolos SSL, TLS y DTLS. Integrado con Emacs
+Una implementación libre de los protocolos SSL, TLS y DTLS. Interado con Emacs
 
 #+BEGIN_SRC emacs-lisp
   (setf gnutls-min-prime-bits 1024)
