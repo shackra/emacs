@@ -26,6 +26,8 @@
   :ensure company-cmake)
 (use-package company-irony
   :ensure company-irony)
+(use-package connection
+  :ensure connection)
 (use-package dash
   :ensure dash)
 (use-package diminish
@@ -56,6 +58,8 @@
   :ensure git-commit-mode)
 (use-package git-rebase-mode
   :ensure git-rebase-mode)
+(use-package gnup
+  :ensure gnup)
 (use-package go-eldoc
   :ensure go-eldoc)
 (use-package go-mode
@@ -88,18 +92,28 @@
   :ensure imenu+)
 (use-package irony
   :ensure irony)
+(use-package jabber
+  :ensure jabber)
 (use-package kivy-mode
   :ensure kivy-mode)
+(use-package langtool
+  :ensure langtool)
 (use-package ledger-mode
   :ensure ledger-mode)
 (use-package lice
   :ensure lice)
+(use-package link
+  :ensure link)
 (use-package list-utils
   :ensure list-utils)
 (use-package magit
   :ensure magit)
 (use-package makey
   :ensure makey)
+(use-package markdown-mode
+  :ensure markdown-mode)
+(use-package markdown-mode+
+  :ensure markdown-mode+)
 (use-package monky
   :ensure monky)
 (use-package monokai-theme
@@ -116,6 +130,8 @@
   :ensure nav-flash)
 (use-package nlinum
   :ensure nlinum)
+(use-package notify
+  :ensure notify)
 (use-package org
   :ensure org)
 (use-package org-page
@@ -132,6 +148,8 @@
   :ensure pkg-info)
 (use-package pkgbuild-mode
   :ensure pkgbuild-mode)
+(use-package pony-mode
+  :ensure pony-mode)
 (use-package powerline
   :ensure powerline)
 (use-package pretty-mode

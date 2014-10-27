@@ -56,7 +56,6 @@ en la descripción del paquete.
 
 #+begin_src emacs-lisp
   (setf package-archives (list (quote ("gnu" . "http://elpa.gnu.org/packages/"))
-                               (quote ("marmalade" . "http://marmalade-repo.org/packages/"))
                                (quote ("melpa" . "http://melpa.milkbox.net/packages/"))
                                (quote ("org" . "http://orgmode.org/elpa/"))))
 #+end_src
@@ -137,8 +136,8 @@ Cargamos paquetes que no se instalan con ELPA.
   (load-file (expand-file-name "site-packages/erosiond-theme/erosiond-theme.el" user-emacs-directory))
   ;; carga un agregado para cuando se escriben correos usando mu4e
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
-  (if (file-exists-p "~/quicklisp/slime-helper.el" )
-      (load "~/quicklisp/slime-helper.el")
+  (ignore-errors 
+    (load-file "~/quicklisp/slime-helper.el")
     (setf inferior-lisp-program "sbcl"))
 #+end_src
 
