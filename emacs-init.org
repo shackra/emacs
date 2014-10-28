@@ -56,6 +56,7 @@ en la descripción del paquete.
 
 #+BEGIN_SRC emacs-lisp
   (setf package-archives (list (quote ("gnu" . "http://elpa.gnu.org/packages/"))
+                               (quote ("mermelade" . "http://marmalade-repo.org/packages/"))
                                (quote ("melpa" . "http://melpa.milkbox.net/packages/"))
                                (quote ("org" . "http://orgmode.org/elpa/"))))
 #+END_SRC
@@ -224,6 +225,7 @@ innecesariamente de entras decidí colocar todas las opciones dentro de un sólo
   (delete-selection-mode 1)
 
   (setf
+   load-prefer-newer t
    bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
    bookmark-save-flag 1
    inhibit-startup-message t
@@ -399,6 +401,8 @@ combinación C-' para otra cosa.
 
                     org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
                                              "* POR HACER %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                            ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
+                                             "%?\n\nEscrito el: %U\nEn: %a" :empty-lines 1)
                                             ("x" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour") 
                                              "* POR HACER %^{Titulo del proyecto}\n%^{cliente}p\n%^{ID}p\nDescripción: %?" :clock-in nil :clock-keep nil :clock-resume nil)
                                             ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")

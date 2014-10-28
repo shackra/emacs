@@ -58,8 +58,6 @@
   :ensure git-commit-mode)
 (use-package git-rebase-mode
   :ensure git-rebase-mode)
-(use-package gnup
-  :ensure gnup)
 (use-package go-eldoc
   :ensure go-eldoc)
 (use-package go-mode
