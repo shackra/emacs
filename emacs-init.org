@@ -1046,8 +1046,8 @@ Una implementación libre de los protocolos SSL, TLS y DTLS. Interado con Emacs
 *** eyebrowse
 permite cambiar entre disposiciones de ventanas en emacs
 #+BEGIN_SRC emacs-lisp
-  (define-key eyebrowse-mode-map (kbd "z") 'eyebrowse-prev-window-config)
-  (define-key eyebrowse-mode-map (kbd "x") 'eyebrowse-next-window-config)
+  (define-key eyebrowse-mode-map (kbd "C-c C-w z") 'eyebrowse-prev-window-config)
+  (define-key eyebrowse-mode-map (kbd "C-c C-w x") 'eyebrowse-next-window-config)
 #+END_SRC
 
 *** EN REVISIÓN notify.el
@@ -1056,5 +1056,5 @@ permite cambiar entre disposiciones de ventanas en emacs
 Permite a emacs enviar notificaciones por DBus o diferentes medios
 
 #+BEGIN_SRC emacs-lisp
-  (setf notify-method 'notify-via-dbus)
+  (setf notify-method 'notify-via-libnotify)
 #+END_SRC
