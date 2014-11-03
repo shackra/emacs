@@ -2,7 +2,7 @@
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Sislock)
 #+EMAIL: elcorreo@deshackra.com
 #+OPTIONS: toc:3 num:nil ^:nil
-#+STARTUP: folded
+#+STARTUP: content
 
 #+begin_quote
 Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam
@@ -987,8 +987,9 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
   (global-set-key (kbd "C-x 4 c") 'langtool-correct-buffer)
 #+END_SRC
 
-*** TERMINADO Jabber
-CLOSED: [2014-11-03 lun 13:47]
+*** EN REVISIÓN Jabber
+- State "EN REVISIÓN" from "TERMINADO"  [2014-11-03 lun 14:47] \\
+  las notificaciones no pueden ser enviadas por dbus o libnotify
 - State "TERMINADO"  from "EN REVISIÓN" [2014-11-03 lun 13:47]
 - State "EN REVISIÓN" from ""           [2014-10-27 lun 15:27] \\
   iniciar sesión únicamente si Emacs se inicia como demonio
@@ -1026,7 +1027,7 @@ Chat de jabber desde Emacs!!
                (bury-buffer))))))
 
   ;;(define-key jabber-chat-mode-map [escape] 'my-jabber-chat-delete-or-bury)
-  (add-hook 'jabber-alert-message-hooks 'notify-jabber-notify)
+  ;;(add-hook 'jabber-alert-message-hooks 'notify-jabber-notify)
 
   (if (daemonp)
       ;; nos conecta a todas las cuentas jabber!
