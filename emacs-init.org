@@ -100,7 +100,8 @@ org!
               name = package[:package.rfind("-")]
               if not name == "archive":
                   packagestoinstall.append(
-                      "(use-package {0}\n  :ensure {0})".format(name))
+                      "(ignore-errors (use-package {0}\n  :ensure {0}))".format(
+                          name))
 
       # Remove any repeated package. This can happen if different directories
       # with the same package name exists in the elpa/ directory
@@ -175,6 +176,7 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'muse-mode)
   (require 'muse-docbook)
   (require 'muse-project)
+  (require 'eyebrowse)
 #+END_SRC
 
 ** Códigos elisp
@@ -352,9 +354,12 @@ modos que se activan luego de que emacs carga
               (global-relative-buffers-mode)
               ;;(global-auto-highlight-symbol-mode)
               ;; abre la agenda
-              (org-agenda-list 1)
-              (delete-other-windows)
-              ))
+              (eyebrowse-mode t)
+              (if (not (daemonp))
+                  (progn
+                    (org-agenda-list 1)
+                    (delete-other-windows))
+              )))
        (global-set-key (kbd "C-ç") 'undo)
        (global-set-key (kbd "M-¡") 'text-scale-increase)
        (global-set-key (kbd "M-'") 'text-scale-decrease)
@@ -400,7 +405,7 @@ combinación C-' para otra cosa.
                     org-default-notes-file (concat org-directory "/diario.org")
 
                     org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
-                                             "* POR HACER %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                             "* POR HACER %^{breve descripcion}\n %?\nAgregado: %U\nEn: %a" :clock-in nil :clock-keep nil :clock-resume nil)
                                             ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
                                              "%?\n\nEscrito el: %U\nEn: %a" :empty-lines 1)
                                             ("x" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour") 
@@ -636,6 +641,8 @@ de lo más bien.
              python-indent-offset 4)
        (add-hook 'python-mode-hook
                  (lambda ()
+                   ;; esto puede que no funcione en emacs 24.3 y anteriores
+                   (electric-indent-local-mode -1)
                    (nlinum-mode)
                    (hlinum-activate)))
      #+END_SRC
@@ -977,7 +984,9 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
   (global-set-key (kbd "C-x 4 c") 'langtool-correct-buffer)
 #+END_SRC
 
-*** EN REVISIÓN Jabber
+*** TERMINADO Jabber
+CLOSED: [2014-11-03 lun 13:47]
+- State "TERMINADO"  from "EN REVISIÓN" [2014-11-03 lun 13:47]
 - State "EN REVISIÓN" from ""           [2014-10-27 lun 15:27] \\
   iniciar sesión únicamente si Emacs se inicia como demonio
 Chat de jabber desde Emacs!!
@@ -1015,11 +1024,13 @@ Chat de jabber desde Emacs!!
 
   ;;(define-key jabber-chat-mode-map [escape] 'my-jabber-chat-delete-or-bury)
   (add-hook 'jabber-alert-message-hooks 'notify-jabber-notify)
-  (load-file (expand-file-name "jabber.secret.gpg" user-emacs-directory))
-  ;; nos conecta a todas las cuentas jabber!
 
-  (ignore-errors 
-    (jabber-connect-all))
+  (if (daemonp)
+      ;; nos conecta a todas las cuentas jabber!
+      (progn 
+        (load-file (expand-file-name "jabber.secret.gpg" user-emacs-directory))
+        (ignore-errors 
+          (jabber-connect-all))))
 #+END_SRC
 
 *** GNU TLS
@@ -1027,4 +1038,11 @@ Una implementación libre de los protocolos SSL, TLS y DTLS. Interado con Emacs
 
 #+BEGIN_SRC emacs-lisp
   (setf gnutls-min-prime-bits 1024)
+#+END_SRC
+
+*** eyebrowse
+permite cambiar entre disposiciones de ventanas en emacs
+#+BEGIN_SRC emacs-lisp
+  (define-key eyebrowse-mode-map (kbd "z") 'eyebrowse-prev-window-config)
+  (define-key eyebrowse-mode-map (kbd "x") 'eyebrowse-next-window-config)
 #+END_SRC
