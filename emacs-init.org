@@ -288,6 +288,9 @@ innecesariamente de entras decidí colocar todas las opciones dentro de un sólo
   (eval-after-load "simple" '(diminish 'auto-fill-function))
   (eval-after-load "company" '(diminish 'company-mode))
   (eval-after-load "magit" '(diminish 'magit-auto-revert-mode))
+  (eval-after-load "eyebrowse" '(diminish 'eyebrowse-mode))
+  (eval-after-load "subword-mode" '(diminish 'subword-mode))
+  (eval-after-load "visual-line-mode" '(diminish 'visual-line-mode))
 #+END_SRC
 
 *** Mover el cursos de manera inteligente al inicio de la linea
@@ -1045,4 +1048,13 @@ permite cambiar entre disposiciones de ventanas en emacs
 #+BEGIN_SRC emacs-lisp
   (define-key eyebrowse-mode-map (kbd "z") 'eyebrowse-prev-window-config)
   (define-key eyebrowse-mode-map (kbd "x") 'eyebrowse-next-window-config)
+#+END_SRC
+
+*** EN REVISIÓN notify.el
+- State "EN REVISIÓN" from ""           [2014-11-03 lun 14:13] \\
+  el método definido no es multiplataforma
+Permite a emacs enviar notificaciones por DBus o diferentes medios
+
+#+BEGIN_SRC emacs-lisp
+  (setf notify-method 'notify-via-dbus)
 #+END_SRC
