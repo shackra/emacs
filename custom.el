@@ -32,9 +32,10 @@
    (quote
     ("3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default)))
  '(elpy-interactive-python-command "ipython")
+ '(elpy-mode-hook (quote (hl-line-mode)))
  '(elpy-modules
    (quote
-    (elpy-module-company elpy-module-eldoc elpy-module-highlight-indentation elpy-module-yasnippet elpy-module-sane-defaults)))
+    (elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet)))
  '(elpy-rpc-backend "jedi")
  '(elpy-rpc-python-command "python2")
  '(flycheck-check-syntax-automatically (quote (save idle-change new-line mode-enabled)))

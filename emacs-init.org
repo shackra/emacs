@@ -177,6 +177,7 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'muse-docbook)
   (require 'muse-project)
   (require 'eyebrowse)
+  (load "flymake")
 #+END_SRC
 
 ** Códigos elisp
@@ -861,7 +862,6 @@ llegar a la columna 79.
                   (set (make-local-variable 'fill-column) 79)
                   (set (make-local-variable 'comment-auto-fill-only-comments) t)
                   (auto-fill-mode t)
-                  (toggle-truncate-lines)
                   (highlight-numbers-mode)
                   (hes-mode)
                   (highlight-blocks-mode)
