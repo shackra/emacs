@@ -977,7 +977,7 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
 
 #+BEGIN_SRC emacs-lisp
   (require 'langtool)
-  (setf langtool-language-tool-jar "/usr/share/java/languagetool/languagetool.jar"
+  (setf langtool-language-tool-jar "/usr/share/java/languagetool/languagetool-commandline.jar"
         langtool-mother-tongue "es")
 
   (global-set-key (kbd "C-x 4 w") 'langtool-check)
@@ -1058,4 +1058,9 @@ Permite a emacs enviar notificaciones por DBus o diferentes medios
 
 #+BEGIN_SRC emacs-lisp
   (setf notify-method 'notify-via-libnotify)
+#+END_SRC
+*** MediaWiki
+Acceso para Emacs a sitios que usan Wikimedia
+#+BEGIN_SRC emacs-lisp
+  (load-file (expand-file-name "mediawiki.secret.gpg" user-emacs-directory))
 #+END_SRC
