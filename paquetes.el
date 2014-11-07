@@ -66,6 +66,8 @@
   :ensure go-eldoc))
 (ignore-errors (use-package go-mode
   :ensure go-mode))
+(ignore-errors (use-package go-snippets
+  :ensure go-snippets))
 (ignore-errors (use-package helm
   :ensure helm))
 (ignore-errors (use-package helm-descbinds
@@ -118,6 +120,8 @@
   :ensure markdown-mode))
 (ignore-errors (use-package markdown-mode+
   :ensure markdown-mode+))
+(ignore-errors (use-package mediawiki
+  :ensure mediawiki))
 (ignore-errors (use-package monky
   :ensure monky))
 (ignore-errors (use-package monokai-theme

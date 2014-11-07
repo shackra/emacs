@@ -177,6 +177,7 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'muse-docbook)
   (require 'muse-project)
   (require 'eyebrowse)
+  (require 'mediawiki)
   (load "flymake")
 #+END_SRC
 
@@ -1063,4 +1064,5 @@ Permite a emacs enviar notificaciones por DBus o diferentes medios
 Acceso para Emacs a sitios que usan Wikimedia
 #+BEGIN_SRC emacs-lisp
   (load-file (expand-file-name "mediawiki.secret.gpg" user-emacs-directory))
+  (define-key mediawiki-mode-map (kbd "C-c o") 'mediawiki-browse)
 #+END_SRC
