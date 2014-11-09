@@ -174,8 +174,9 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'undo-tree)
   (require 'dired+)
   (require 'muse-mode)
-  (require 'muse-docbook)
   (require 'muse-project)
+  (require 'muse-docbook)
+  (require 'muse-book)
   (require 'eyebrowse)
   (require 'mediawiki)
   (load "flymake")
@@ -203,6 +204,28 @@ Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta
         (forward-char (if is-org-mode -8 -6)))))
 #+END_SRC
 
+*** funciones con expresiones regulares que uso a menudo en edición de texto
+estas son funciones que uso muy a menudo durante la edición de texto, tenerlos como comandos interactivos me ahorra tiempo escribiendo las expresiones regulares una y otra vez.
+
+#+BEGIN_SRC emacs-lisp
+  (defun shackra/regexp-una-sola-linea (start end)
+    "Elimina todos los saltos de linea en la selección"
+    (interactive "r")
+    (vr/replace "\n+" " " start end)
+    )
+
+  (defun shackra/regexp-un-solo-espacio (start end)
+    "Elimina todos los espacios en blanco seguidos en la selección"
+    (interactive "r")
+    (vr/replace " +" " " start end)
+    )
+
+  (defun shackra/muse-regexp-un-solo-marcado (start end)
+    "Elimina los * que existan entre espacios en blanco en la selección para formar un solo termino marcado"
+    (interactive "r")
+    (vr/replace "\* \*" " " start end)
+    )
+#+END_SRC
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
 defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
@@ -369,6 +392,8 @@ modos que se activan luego de que emacs carga
        (global-set-key (kbd "M-¡") 'text-scale-increase)
        (global-set-key (kbd "M-'") 'text-scale-decrease)
        (define-key global-map (kbd "M-o") 'other-window)
+       (define-key global-map (kbd "M-p") 'ace-window)
+       (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
        ;; salta a la nueva ventana creada despues de dividir la actual
        (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
        (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
