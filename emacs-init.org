@@ -379,7 +379,7 @@ modos que se activan luego de que emacs carga
               (global-fixmee-mode 1)
               ;;(semantic-mode 1)
               ;;(global-move-dup-mode)
-              (global-relative-buffers-mode)
+              ;;(global-relative-buffers-mode)
               ;;(global-auto-highlight-symbol-mode)
               ;; abre la agenda
               (eyebrowse-mode t)
@@ -549,7 +549,6 @@ calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de
        (setf
         helm-google-suggest-use-curl-p t
         helm-scroll-amount 4
-        helm-quick-update t
         helm-idle-delay 0.01
         helm-input-idle-delay 0.01
         helm-ff-search-library-in-sexp t

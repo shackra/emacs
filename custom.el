@@ -69,6 +69,7 @@
  '(holiday-other-holidays
    (quote
     ((holiday-fixed 11 19 "Día Internacional del Hombre"))))
+ '(jabber-alert-info-message-hooks (quote (jabber-info-xmessage)))
  '(magit-use-overlays nil)
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
  '(py-autopep8-options
@@ -76,7 +77,12 @@
     ("--ignore E711,E712,E24" "--aggressive --aggressive --aggressive")))
  '(python-shell-interpreter "python2")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python2")
- '(safe-local-variable-values (quote ((ispell-dictionary . en) (encoding . utf-8))))
+ '(safe-local-variable-values
+   (quote
+    ((ispell-local-dictionary . english)
+     (ispell-local-dictionary . en)
+     (ispell-dictionary . en)
+     (encoding . utf-8))))
  '(tramp-default-method "ssh")
  '(tramp-encoding-shell "/bin/bash")
  '(vr/default-replace-preview t))
