@@ -4,6 +4,8 @@
   :ensure ace-jump-mode))
 (ignore-errors (use-package ace-window
   :ensure ace-window))
+(ignore-errors (use-package achievements
+  :ensure achievements))
 (ignore-errors (use-package async
   :ensure async))
 (ignore-errors (use-package autopair
@@ -70,6 +72,8 @@
   :ensure go-snippets))
 (ignore-errors (use-package helm
   :ensure helm))
+(ignore-errors (use-package helm-company
+  :ensure helm-company))
 (ignore-errors (use-package helm-descbinds
   :ensure helm-descbinds))
 (ignore-errors (use-package helm-projectile
@@ -100,6 +104,8 @@
   :ensure jabber))
 (ignore-errors (use-package js2-mode
   :ensure js2-mode))
+(ignore-errors (use-package keyfreq
+  :ensure keyfreq))
 (ignore-errors (use-package kivy-mode
   :ensure kivy-mode))
 (ignore-errors (use-package langtool
@@ -124,8 +130,6 @@
   :ensure mediawiki))
 (ignore-errors (use-package monky
   :ensure monky))
-(ignore-errors (use-package monokai-theme
-  :ensure monokai-theme))
 (ignore-errors (use-package multi-term
   :ensure multi-term))
 (ignore-errors (use-package multiple-cursors
@@ -152,6 +156,10 @@
   :ensure pcache))
 (ignore-errors (use-package persistent-soft
   :ensure persistent-soft))
+(ignore-errors (use-package php-extras
+  :ensure php-extras))
+(ignore-errors (use-package php-mode
+  :ensure php-mode))
 (ignore-errors (use-package pkg-info
   :ensure pkg-info))
 (ignore-errors (use-package pkgbuild-mode
@@ -172,8 +180,6 @@
   :ensure pyvenv))
 (ignore-errors (use-package rainbow-mode
   :ensure rainbow-mode))
-(ignore-errors (use-package relative-buffers
-  :ensure relative-buffers))
 (ignore-errors (use-package rich-minority
   :ensure rich-minority))
 (ignore-errors (use-package rust-mode
