@@ -135,12 +135,18 @@ Cargamos paquetes que no se instalan con ELPA.
 
 #+BEGIN_SRC emacs-lisp
   (load-file (expand-file-name "site-packages/golang/company-go.el" user-emacs-directory))
-  (load-file (expand-file-name "site-packages/erosiond-theme/erosiond-theme.el" user-emacs-directory))
   ;; carga un agregado para cuando se escriben correos usando mu4e
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
   (ignore-errors 
     (load-file "~/quicklisp/slime-helper.el")
     (setf inferior-lisp-program "sbcl"))
+#+END_SRC
+
+*** Ubicación de temas personalizados
+Emacs ofrece la posibilidad de tener una carpeta exclusiva para colocar temas personalizados o de terceros a traves de una variable llamada =custom-theme-load-path=. Todos los temas iran en la carpeta /themes/ dentro de la carpeta raíz de Emacs.
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 #+END_SRC
 
 ** Paquetes requeridos con =require=
@@ -226,14 +232,31 @@ estas son funciones que uso muy a menudo durante la edición de texto, tenerlos 
     (vr/replace "\* \*" " " start end)
     )
 #+END_SRC
+
+*** reemplazo para comment-dwim
+#+BEGIN_SRC emacs-lisp
+  ;; Original idea from
+  ;; http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
+  (defun comment-dwim-line (&optional arg)
+    "Replacement for the comment-dwim command.
+          If no region is selected and current line is not blank
+          and we are not at the end of the line, then comment
+          current line.  Replaces default behaviour of
+          comment-dwim, when it inserts comment at the end of the
+          line."
+    (interactive "*P")
+    (comment-normalize-vars)
+    (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+        (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+      (comment-dwim arg)))
+#+END_SRC
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
 defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
 innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
 
 #+BEGIN_SRC emacs-lisp
-  ;;(load-theme 'monokai t)
-  ;;(setf initial-buffer-choice "*Org Agenda*")
+  (load-theme 'jazz t)
   (powerline-center-theme)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -252,6 +275,9 @@ innecesariamente de entras decidí colocar todas las opciones dentro de un sólo
   (delete-selection-mode 1)
 
   (setf
+   ;; hace que el buffer inicial al abrir un nuevo cuadro de Emacs sea la agenda
+   ;; de org-mode
+   initial-buffer-choice "~/org/cosasporhacer.org"
    load-prefer-newer t
    bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
    bookmark-save-flag 1
@@ -339,6 +365,20 @@ se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverfl
   (global-set-key (kbd "C-a") 'smart-beginning-of-line)
 #+END_SRC
 
+** Asociación de archivos a modos mayores
+Aquí se definen código para definir la asociación de algunas extensiones de archivo con algunos modos mayores
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.gohtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.gtl\\'" . web-mode))
+#+END_SRC
+
 ** Customize
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira en éste archivo:
@@ -381,13 +421,11 @@ modos que se activan luego de que emacs carga
               ;;(global-move-dup-mode)
               ;;(global-relative-buffers-mode)
               ;;(global-auto-highlight-symbol-mode)
-              ;; abre la agenda
               (eyebrowse-mode t)
-              (if (not (daemonp))
-                  (progn
-                    (org-agenda-list 1)
-                    (delete-other-windows))
-              )))
+              ;; abre la agenda
+              (org-agenda-list 1)
+              (delete-other-windows)))
+
        (global-set-key (kbd "C-ç") 'undo)
        (global-set-key (kbd "M-¡") 'text-scale-increase)
        (global-set-key (kbd "M-'") 'text-scale-decrease)
@@ -578,7 +616,8 @@ calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de
                                          "\\*magit"
                                          "\\*.+(.+)"
                                          "\\*fsm-debug\\*"
-                                         "elpa/.+")
+                                         "elpa/.+"
+                                         "\\*Gofmt Errors\\*")
         
         helm-boring-file-regexp-list (quote
                                       ("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
@@ -677,6 +716,7 @@ de lo más bien.
                    (electric-indent-local-mode -1)
                    (nlinum-mode)
                    (hlinum-activate)))
+       (define-key python-mode-map (kbd "C-M-,") 'comment-dwim-line)
      #+END_SRC
 
 *** discover-my-major
@@ -892,7 +932,7 @@ llegar a la columna 79.
                   (auto-fill-mode t)
                   (highlight-numbers-mode)
                   (hes-mode)
-                  (highlight-blocks-mode)
+                  ;;(highlight-blocks-mode)
                   (flyspell-prog-mode)))
 
       ;; redefinimos la tecla RET para que inserte un salto de linea y la
