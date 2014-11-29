@@ -422,9 +422,7 @@ modos que se activan luego de que emacs carga
               ;;(global-relative-buffers-mode)
               ;;(global-auto-highlight-symbol-mode)
               (eyebrowse-mode t)
-              ;; abre la agenda
-              (org-agenda-list 1)
-              (delete-other-windows)))
+              ))
 
        (global-set-key (kbd "C-ç") 'undo)
        (global-set-key (kbd "M-¡") 'text-scale-increase)
