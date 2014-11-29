@@ -4,6 +4,3 @@
 [submodule "site-packages/jazz-theme"]
 	path = site-packages/jazz-theme
 	url = https://github.com/donderom/jazz-theme.git
-[submodule "themes/jazz-theme"]
-	path = themes/jazz-theme
-	url = https://github.com/donderom/jazz-theme.git

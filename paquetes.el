@@ -186,6 +186,8 @@
   :ensure rust-mode))
 (ignore-errors (use-package s
   :ensure s))
+(ignore-errors (use-package screenshot
+  :ensure screenshot))
 (ignore-errors (use-package smart-mode-line
   :ensure smart-mode-line))
 (ignore-errors (use-package smartrep
