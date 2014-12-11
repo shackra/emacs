@@ -71,6 +71,7 @@
    (quote
     ((holiday-fixed 11 19 "Día Internacional del Hombre"))))
  '(jabber-alert-info-message-hooks (quote (jabber-info-xmessage)))
+ '(jabber-alert-muc-hooks (quote (jabber-muc-echo-personal jabber-muc-scroll)))
  '(magit-use-overlays nil)
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
  '(py-autopep8-options

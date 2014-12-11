@@ -397,6 +397,15 @@ Y cargamos el archivo, ¡No lo olvide!.
    (load custom-file)
  #+END_SRC
 
+** Otras configuraciones
+Existen ciertos cambios que no tienen cabida en otra parte, y ciertamente colocarlos debajo de [[*Modos%20de%20Emacs][Modos de Emacs]] no es una opción... porque lo veo como algo desordenado.
+
+*** Desata algunas teclas rápidas y sus respectivos comandos
+=C-z= es una combinación de teclas que no me sirven para algo, así que lo desato de su comando =suspend-frame= para darle un mejor uso. También =M-z= puede tener un mejor uso que ejecutar el comando de borrado =zap-to-char=
+#+BEGIN_SRC emacs-lisp
+  (global-unset-key (kbd "C-z"))
+  (global-unset-key (kbd "M-z"))
+#+END_SRC
 ** Modos de Emacs
    La configuración especifica a cada modo mayor, menor, o paquete con
    funcionalidades. Dividió por secciones.
@@ -542,7 +551,7 @@ castellanizar los enlaces y sus títulos en el blog.
               op/site-main-title "El blog de Shackra"
               op/site-sub-title "«No seas tan abierto de mente o tu cerebro se caerá» ~G.K. Chesterton"
               op/personal-github-link "https://github.com/shackra"
-              op/theme-root-directory (expand-file-name "themes" user-emacs-directory)
+              op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
               op/theme 'shc
         )
 
@@ -785,6 +794,15 @@ Emacs.
 
 Correos electrónicos y otros datos son traídos de un archivo secreto ;)
 
+#+BEGIN_SRC emacs-lisp
+  (defun shackra/render-html-message ()
+    "Render a HTML message with eww, see http://emacs.stackexchange.com/a/3052/690"
+    (let ((dom (libxml-parse-html-region (point-min) (point-max))))
+      (erase-buffer)
+      (shr-insert-document dom)
+      (goto-char (point-min))))
+#+END_SRC
+
 Para saber como configurar mu4e para escribir correos con diferentes cuentas de correo, puedes mirar la
 [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]] es aconsejable que esa configuración viva en el archivo secreto...
 
@@ -793,6 +811,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
          (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
          (autoload 'mu4e "mu4e" "Mail client based on mu (maildir-utils)." t)
 
+         (require 'mu4e-contrib)
          (require 'org-mu4e)
          (setf mu4e-view-show-images t)
          (global-key-binding (kbd "[f7]") 'mu4e)
@@ -802,7 +821,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
          (setf
           ;; html2text es un paquete que debe estar instalado en tu sistema
           mu4e-confirm-quit nil
-          mu4e-html2text-command "html2text -width 100 -style pretty -nobs"
+          mu4e-html2text-command 'mu4e-shr2text
           mu4e-get-mail-command "offlineimap"
           mu4e-maildir "/home/jorge/correo"
           mu4e-update-interval nil
@@ -871,11 +890,13 @@ porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear
 
 *** ace-jump
 hace que el cursor se mueva por todo el buffer con presionar pocas teclas.
-
-     #+BEGIN_SRC emacs-lisp
-       (global-set-key (kbd "C-c SPC") 'ace-jump-mode)
-       (define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
-     #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-z") 'ace-jump-word-mode)
+  (global-set-key (kbd "C-S-z") 'ace-jump-line-mode)
+  (global-set-key (kbd "C-M-z") 'ace-jump-char-mode)
+  (global-set-key (kbd "M-z") 'ace-jump-mode-pop-mark)
+  (setf ace-jump-mode-case-fold t)
+#+END_SRC
 
 *** magit
 Git en Emacs.
@@ -948,6 +969,7 @@ configuración para golang en emacs.
                                    (local-set-key (kbd "M-.") 'godef-jump)
                                    (set (make-local-variable 'company-backends) '(company-go))
                                    (go-eldoc-setup)
+                                   (nlinum-mode)
          ))
        #+END_SRC
        
