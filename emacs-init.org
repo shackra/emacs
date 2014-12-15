@@ -509,12 +509,12 @@ combinación C-' para otra cosa.
                                       "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
                                      )
              
-             org-todo-keywords '((sequence "POR HACER(p)" "EN PROGRESO(g)" "EN ESPERA(e@/!)" "EN REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))
+             org-todo-keywords '((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))
              org-todo-keyword-faces '(
-                                      ("POR HACER" . (:foreground "black" :background "#ff4500" :weight bold))
-                                      ("EN PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
-                                      ("EN ESPERA" . (:foreground "black" :background "#0000ff" :weight bold))
-                                      ("EN REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
+                                      ("POR-HACER" . (:foreground "black" :background "#ff4500" :weight bold))
+                                      ("EN-PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
+                                      ("EN-ESPERA" . (:foreground "black" :background "#0000ff" :weight bold))
+                                      ("EN-REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
                                       ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))
                                       ("CANCELADO" . (:foreground "black" :background "#8b0000" :weight bold))
                                       )
@@ -1058,7 +1058,7 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
         (add-hook 'before-save-hook 'gofmt-before-save)
        #+END_SRC
 
-*** EN REVISIÓN langtool
+*** EN-REVISIÓN langtool
 - State "EN REVISIÓN" from ""           [2014-10-27 lun 15:26] \\
   al momento de usar los comandos, da errores
 [[https://www.languagetool.org/es/][Language Tool]] es una herramienta de software libre para revisión gramatical, ortográfica y de estilo.
@@ -1075,11 +1075,11 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
   (global-set-key (kbd "C-x 4 c") 'langtool-correct-buffer)
 #+END_SRC
 
-*** EN REVISIÓN Jabber
-- State "EN REVISIÓN" from "TERMINADO"  [2014-11-03 lun 14:47] \\
+*** EN-REVISIÓN Jabber
+- State "EN-REVISIÓN" from "TERMINADO"  [2014-11-03 lun 14:47] \\
   las notificaciones no pueden ser enviadas por dbus o libnotify
 - State "TERMINADO"  from "EN REVISIÓN" [2014-11-03 lun 13:47]
-- State "EN REVISIÓN" from ""           [2014-10-27 lun 15:27] \\
+- State "EN-REVISIÓN" from ""           [2014-10-27 lun 15:27] \\
   iniciar sesión únicamente si Emacs se inicia como demonio
 Chat de jabber desde Emacs!!
 
@@ -1091,6 +1091,7 @@ Chat de jabber desde Emacs!!
    jabber-backlog-days 30
    jabber-alert-presence-message-function (lambda (who oldstatus newstatus statusnext) nil)
    jabber-invalid-certificate-servers '("chat.deshackra.com")
+   jabber-default-status "«Faith is always at a disadvantage; it is a perpetually defeated thing which survives all of its conquerors,» wrote G. K. Chesterton."
   )
 
   (defun notify-jabber-notify (from buf text proposed-alert)
@@ -1123,6 +1124,11 @@ Chat de jabber desde Emacs!!
         (load-file (expand-file-name "jabber.secret.gpg" user-emacs-directory))
         (ignore-errors 
           (jabber-connect-all))))
+
+  (add-hook 'jabber-chat-mode-hook (lambda ()
+                                     (turn-off-auto-fill)
+                                     (turn-on-visual-line-mode)
+                                     (flyspell-mode)))
 #+END_SRC
 
 *** GNU TLS
@@ -1132,15 +1138,17 @@ Una implementación libre de los protocolos SSL, TLS y DTLS. Interado con Emacs
   (setf gnutls-min-prime-bits 1024)
 #+END_SRC
 
-*** eyebrowse
+*** EN-REVISIÓN eyebrowse
+- State "EN-REVISIÓN" from ""           [2014-12-15 lun 00:34] \\
+  Aun no sé si en el estado actual funciona como deberia
 permite cambiar entre disposiciones de ventanas en emacs
 #+BEGIN_SRC emacs-lisp
   (define-key eyebrowse-mode-map (kbd "C-c C-w z") 'eyebrowse-prev-window-config)
   (define-key eyebrowse-mode-map (kbd "C-c C-w x") 'eyebrowse-next-window-config)
 #+END_SRC
 
-*** EN REVISIÓN notify.el
-- State "EN REVISIÓN" from ""           [2014-11-03 lun 14:13] \\
+*** EN-REVISIÓN notify.el
+- State "EN-REVISIÓN" from ""           [2014-11-03 lun 14:13] \\
   el método definido no es multiplataforma
 Permite a emacs enviar notificaciones por DBus o diferentes medios
 

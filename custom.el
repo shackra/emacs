@@ -71,7 +71,20 @@
    (quote
     ((holiday-fixed 11 19 "Día Internacional del Hombre"))))
  '(jabber-alert-info-message-hooks (quote (jabber-info-xmessage)))
- '(jabber-alert-muc-hooks (quote (jabber-muc-echo-personal jabber-muc-scroll)))
+ '(jabber-alert-message-hooks (quote (jabber-message-scroll)))
+ '(jabber-alert-muc-hooks
+   (quote
+    (jabber-muc-libnotify-personal jabber-muc-echo-personal jabber-muc-scroll)))
+ '(jabber-alert-presence-hooks nil)
+ '(jabber-chat-buffer-format "*-chat-%n-*")
+ '(jabber-chat-delayed-time-format "%d-%m-%Y %H:%M")
+ '(jabber-chat-fill-long-lines nil)
+ '(jabber-chat-foreign-prompt-format "[%t] %n > ")
+ '(jabber-groupchat-buffer-format "*-gc-%n-*")
+ '(jabber-groupchat-prompt-format "[%t] %n > ")
+ '(jabber-message-alert-same-buffer nil)
+ '(jabber-muc-completion-delimiter ", ")
+ '(jabber-muc-private-buffer-format "*-muc-priv-%g-%n-*")
  '(magit-use-overlays nil)
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
  '(py-autopep8-options
@@ -93,4 +106,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(jabber-chat-text-foreign ((t (:foreground "white smoke")))))
