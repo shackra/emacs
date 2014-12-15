@@ -82,6 +82,7 @@ org!
    '(
      (emacs-lisp . t)
      (python . t)
+     (sh . t)
      )
   )
 #+END_SRC
@@ -446,13 +447,13 @@ modos que se activan luego de que emacs carga
 
 *** Org-mode
 CLOSED: [2014-10-15 mié 17:38]
-- State "TERMINADO"  from "POR HACER"  [2014-10-15 mié 17:38]
-- State "POR HACER"  from "EN REVISIÓN" [2014-10-11 sáb 00:16] \\
+- State "TERMINADO"  from "POR-HACER"  [2014-10-15 mié 17:38]
+- State "POR-HACER"  from "EN-REVISIÓN" [2014-10-11 sáb 00:16] \\
   probar las capturas de anotaciones implementadas. Pasar a los nuevos archivos las tareas en otros archivos.
-- State "EN REVISIÓN" from "EN REVISIÓN" [2014-10-10 vie 00:19] \\
+- State "EN-REVISIÓN" from "EN-REVISIÓN" [2014-10-10 vie 00:19] \\
   El error parece provenir de la sentencia =org-blank-before-new-entry t= en la configuración. Todo lo demás
   permanece sin comentar y aun así org-capture funciona como debe.
-- State "EN REVISIÓN" from ""           [2014-10-08 mié 20:19] \\
+- State "EN-REVISIÓN" from ""           [2014-10-08 mié 20:19] \\
   No puedo hacer uso de la función para capturar anotaciones, [[http://emacs.stackexchange.com/questions/847/whats-wrong-with-my-org-mode-capture-settings][en el stack exchange de Emacs]] estoy tratando de
   conseguir ayuda para este problema
 ¡Organiza tu vida usando Emacs!
