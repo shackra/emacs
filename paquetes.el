@@ -112,6 +112,8 @@
   :ensure langtool))
 (ignore-errors (use-package ledger-mode
   :ensure ledger-mode))
+(ignore-errors (use-package let-alist
+  :ensure let-alist))
 (ignore-errors (use-package lice
   :ensure lice))
 (ignore-errors (use-package link
@@ -142,8 +144,6 @@
   :ensure nav-flash))
 (ignore-errors (use-package nlinum
   :ensure nlinum))
-(ignore-errors (use-package notify
-  :ensure notify))
 (ignore-errors (use-package org
   :ensure org))
 (ignore-errors (use-package org-page
