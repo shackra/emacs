@@ -70,11 +70,9 @@
  '(holiday-other-holidays
    (quote
     ((holiday-fixed 11 19 "Día Internacional del Hombre"))))
- '(jabber-alert-info-message-hooks (quote (jabber-info-xmessage)))
- '(jabber-alert-message-hooks (quote (jabber-message-scroll)))
- '(jabber-alert-muc-hooks
-   (quote
-    (jabber-muc-libnotify-personal jabber-muc-echo-personal jabber-muc-scroll)))
+ '(jabber-alert-info-message-hooks (quote (jabber-info-libnotify)))
+ '(jabber-alert-message-hooks (quote (jabber-message-libnotify jabber-message-scroll)))
+ '(jabber-alert-muc-hooks (quote (jabber-muc-libnotify-personal jabber-muc-scroll)))
  '(jabber-alert-presence-hooks nil)
  '(jabber-chat-buffer-format "*-chat-%n-*")
  '(jabber-chat-delayed-time-format "%d-%m-%Y %H:%M")
@@ -82,6 +80,10 @@
  '(jabber-chat-foreign-prompt-format "[%t] %n > ")
  '(jabber-groupchat-buffer-format "*-gc-%n-*")
  '(jabber-groupchat-prompt-format "[%t] %n > ")
+ '(jabber-libnotify-icon "emacs")
+ '(jabber-libnotify-message-header "Mensaje en Jabber")
+ '(jabber-libnotify-timeout 10000)
+ '(jabber-libnotify-urgency "normal")
  '(jabber-message-alert-same-buffer nil)
  '(jabber-muc-completion-delimiter ", ")
  '(jabber-muc-private-buffer-format "*-muc-priv-%g-%n-*")
