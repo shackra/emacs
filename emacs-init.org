@@ -483,11 +483,11 @@ combinación C-' para otra cosa.
              org-mobile-directory "~/orgmobile/"
              
              org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
-                                      "* POR HACER %^{breve descripcion}\n %?\nAgregado: %U\nEn: %a" :clock-in nil :clock-keep nil :clock-resume nil)
+                                      "* POR-HACER %^{breve descripcion}\n%?\nAgregado: %U\nEn: %a" :clock-in nil :clock-keep nil :clock-resume nil)
                                      ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
                                       "%?\n\nEscrito el: %U\nEn: %a" :empty-lines 1)
                                      ("x" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour") 
-                                      "* POR HACER %^{Titulo del proyecto}\n%^{cliente}p\n%^{ID}p\nDescripción: %?" :clock-in nil :clock-keep nil :clock-resume nil)
+                                      "* POR-HACER %^{Titulo del proyecto}\n%^{cliente}p\n%^{ID}p\nDescripción: %?" :clock-in nil :clock-keep nil :clock-resume nil)
                                      ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")
                                       "* %^{Nombre del evento}\n SCHEDULED: %:date" :clock-in nil :clock-keep nil :clock-resume nil)
                                      ("a" "Cumpleaños y aniversarios" entry (file+headline ,(concat org-directory "/agenda.org") "Cumpleaños y aniversarios")
@@ -725,7 +725,19 @@ de lo más bien.
                    (nlinum-mode)
                    (hlinum-activate)))
        (define-key python-mode-map (kbd "C-M-,") 'comment-dwim-line)
+       (define-key python-mode-map (kbd "C-c <right>") 'python-indent-shift-right)
+       (define-key python-mode-map (kbd "C-c <left>") 'python-indent-shift-left)
+       (define-key python-mode-map (kbd "C-c ,") 'iedit-mode-toggle-on-function)
      #+END_SRC
+
+*** iedit-mode
+=iedit-mode= es un modo que permite editar un termino repetido en varios lugares a la vez en el buffer actual, es como =multiple-cursors=, pero sin la tener que marcar un area y luego llamar al modo mayor. En Python se llama a =iedit-mode-toggle-on-function= con @@html:<kbd>C</kbd>@@@@html:<kbd>c</kbd>@@ @@html:<kbd>,</kbd>@@.
+
+Cuando =iedit-mode= esta activo, presionar la tecla @@html:<kbd>RET</kbd>@@ hará que se desactive, al igual que sucede con =multiple-cursors=.
+
+#+BEGIN_SRC emacs-lisp
+  (define-key iedit-mode-keymap (kbd "RET") 'iedit-done)
+#+END_SRC
 
 *** discover-my-major
 Éste paquete nos muestra las combinaciones de teclas posibles para el modo mayor en el que estamos
@@ -841,7 +853,8 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
           smtpmail-smtp-service 465
           message-send-mail-function 'smtpmail-send-it
           )
-         (load (expand-file-name "mu4e-conf.secret.gpg" user-emacs-directory) t)
+         (ignore-errors
+           (load (expand-file-name "mu4e-conf.secret.gpg" user-emacs-directory) t))
 
          ;; funcion para seleccionar la cuenta con la que se va a responder a un email
          (defun my-mu4e-set-account ()
@@ -1121,8 +1134,9 @@ Chat de jabber desde Emacs!!
 
   (if (daemonp)
       ;; nos conecta a todas las cuentas jabber!
-      (progn 
-        (load-file (expand-file-name "jabber.secret.gpg" user-emacs-directory))
+      (progn
+        (ignore-errors
+          (load-file (expand-file-name "jabber.secret.gpg" user-emacs-directory)))
         (ignore-errors 
           (jabber-connect-all))))
 
@@ -1159,6 +1173,7 @@ Permite a emacs enviar notificaciones por DBus o diferentes medios
 *** MediaWiki
 Acceso para Emacs a sitios que usan Wikimedia
 #+BEGIN_SRC emacs-lisp
-  (load-file (expand-file-name "mediawiki.secret.gpg" user-emacs-directory))
+  (ignore-errors
+    (load-file (expand-file-name "mediawiki.secret.gpg" user-emacs-directory)))
   (define-key mediawiki-mode-map (kbd "C-c o") 'mediawiki-browse)
 #+END_SRC

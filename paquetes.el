@@ -96,6 +96,8 @@
   :ensure htmlize))
 (ignore-errors (use-package idomenu
   :ensure idomenu))
+(ignore-errors (use-package iedit
+  :ensure iedit))
 (ignore-errors (use-package imenu+
   :ensure imenu+))
 (ignore-errors (use-package irony
