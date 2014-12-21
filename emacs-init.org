@@ -736,7 +736,7 @@ de lo más bien.
 Cuando =iedit-mode= esta activo, presionar la tecla @@html:<kbd>RET</kbd>@@ hará que se desactive, al igual que sucede con =multiple-cursors=.
 
 #+BEGIN_SRC emacs-lisp
-  (define-key iedit-mode-keymap (kbd "RET") 'iedit-done)
+  (define-key iedit-mode-keymap (kbd "RET") 'iedit-mode)
 #+END_SRC
 
 *** discover-my-major
