@@ -163,6 +163,7 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'helm-grep)
   (require 'helm-buffers)
   (require 'helm-org)
+  (require 'helm-descbinds)
   (require 'htmlize)
   (require 'company)
   (require 'hlinum)
@@ -579,70 +580,89 @@ Esta configuración afecta a todos los modos texto en los buffers.
 Es un paquete que esta en su propia liga. Éste paquete te ayudara a aumentar tu productividad, reducir tu
 calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de amor por vos ;)
 
-     #+BEGIN_SRC emacs-lisp
-       ;; re-une la tecla TAB con el comando para ejecutar la acción persistente
-       (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-       ;; Hace que la tecla TAB en la terminal funcione nuevamente
-       (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-       (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
-       ;; Lista las acciones disponibles usando C-z en lugar de TAB
-       (define-key helm-map (kbd "C-z")  'helm-select-action) 
+Acá se definen primero los keybindings para Helm, todo en un solo sitio.
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-c h") 'helm-command-prefix)
+  (global-unset-key (kbd "C-x c"))
+  (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+  (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebind tab to do persistent action
+  (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+  (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+  (global-set-key (kbd "C-x f") 'helm-recentf)
+  (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+  (global-set-key (kbd "C-c i") 'helm-imenu)
+  (global-set-key (kbd "C-x C-f") 'helm-find-files)
+  (global-set-key (kbd "C-x b") 'helm-mini)
+  (global-set-key (kbd "C-c h o") 'helm-occur)
+  (global-set-key (kbd "C-h SPC") 'helm-all-mark-rings)
+  (global-set-key (kbd "C-c h x") 'helm-register)
+  (global-set-key (kbd "C-c h g") 'helm-google-suggest)
+  (define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
+  (define-key shell-mode-map (kbd "C-c C-l") 'helm-comint-input-ring)
+  (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
+  (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+  (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
+#+END_SRC
 
-       (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
-       (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
-       (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
+Y acá el resto de la configuración de Helm
+#+BEGIN_SRC emacs-lisp
+  (when (executable-find "curl")
+    (setf helm-google-suggest-use-curl-p t))
 
-       (setf
-        helm-google-suggest-use-curl-p t
-        helm-scroll-amount 4
-        helm-idle-delay 0.01
-        helm-input-idle-delay 0.01
-        helm-ff-search-library-in-sexp t
-        
-        helm-split-window-default-side 'other
-        helm-split-window-in-side-p t
-        helm-candidate-number-limit 200
-        helm-M-x-requires-pattern 0
-        helm-ff-file-name-history-use-recentf t
-        helm-move-to-line-cycle-in-source t
-        
-        helm-buffers-fuzzy-matching t
-        helm-boring-buffer-regexp-list '("\\` "
-                                         "\\*helm"
-                                         "\\*helm-mode"
-                                         "\\*Echo Area"
-                                         "\\*Minibuf"
-                                         "\\*monky-cmd-process\\*"
-                                         "\\*epc con"
-                                         "\\*Compile-Log\\*"
-                                         "\\*monky-process\\*"
-                                         "\\*CEDET CScope\\*"
-                                         "\\*Messages\\*"
-                                         "\\*Flycheck error"
-                                         "\\*Elpy"
-                                         "\\*elpy-rpc"
-                                         "\\*magit"
-                                         "\\*.+(.+)"
-                                         "\\*fsm-debug\\*"
-                                         "elpa/.+"
-                                         "\\*Gofmt Errors\\*")
-        
-        helm-boring-file-regexp-list (quote
-                                      ("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
-                                       "\\._darcs$" "\\.la$" "\\.o$" "~$"
-                                       "\\.pyc$" "\\.elc$" "TAGS" "\#*\#"
-                                       "\\.exe$" "\\.jar$" "\\.img$" "\\.iso$"
-                                       "\\.xlsx$" "\\.epub$" "\\.docx$"))
-        helm-ff-skip-boring-buffers t
-        helm-truncate-lines t
-        helm-projectile-sources-list '(helm-source-projectile-files-list))
+  (setf
+   helm-split-window-in-side-p t          ; open helm buffer inside current window, not
+                                          ; occupy whole other window
+   helm-move-to-line-cycle-in-source t    ; move to end or beginning of source when
+                                          ; reaching top or bottom of source.
+   helm-ff-search-library-in-sexp t       ; search for library in `require' and
+                                          ; `declare-function' sexp.
+   helm-scroll-amount 8                   ; scroll 8 lines other window using M-<next>/M-<prior>
+   helm-ff-file-name-history-use-recentf t
+   helm-locate-command "locate %s -e -A --regex %s"
+   helm-locate-fuzzy-match t
+   helm-M-x-fuzzy-match t
+   helm-buffers-fuzzy-matching t
+   helm-recentf-fuzzy-match    t
+   helm-boring-buffer-regexp-list '("\\` "
+                                    "\\*helm"
+                                    "\\*helm-mode"
+                                    "\\*Echo Area"
+                                    "\\*Minibuf"
+                                    "\\*monky-cmd-process\\*"
+                                    "\\*epc con"
+                                    "\\*Compile-Log\\*"
+                                    "\\*monky-process\\*"
+                                    "\\*CEDET CScope\\*"
+                                    "\\*Messages\\*"
+                                    "\\*Flycheck error"
+                                    "\\*Elpy"
+                                    "\\*elpy-rpc"
+                                    "\\*.+(.+)"
+                                    "\\*fsm-debug\\*"
+                                    "elpa/.+"
+                                    "\\*Gofmt Errors\\*")
+   
+   helm-boring-file-regexp-list (quote
+                                 ("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
+                                  "\\._darcs$" "\\.la$" "\\.o$" "~$"
+                                  "\\.pyc$" "\\.elc$" "TAGS" "\#*\#"
+                                  "\\.exe$" "\\.jar$" "\\.img$" "\\.iso$"
+                                  "\\.xlsx$" "\\.epub$" "\\.docx$"))
+   helm-ff-skip-boring-buffers t
+   helm-truncate-lines t
+   helm-projectile-sources-list '(helm-source-projectile-files-list))
 
-       (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
-       (global-set-key (kbd "C-x f") 'helm-recentf)
-       (global-set-key (kbd "M-y") 'helm-show-kill-ring)
-       (global-set-key (kbd "C-c i") 'helm-imenu)
-       (define-key global-map (kbd "C-x C-f") 'helm-find-files)
-       (define-key global-map (kbd "C-x b") 'helm-buffers-list)
+  ;; Instalar ack o ack-grep
+  (when (executable-find "ack")
+    (setq helm-grep-default-command "ack -Hn --no-group --no-color %e %p %f"
+          helm-grep-default-recurse-command "ack -H --no-group --no-color %e %p %f"))
+
+  ;; en caso de que ack-grep sea el programa disponible
+  (when (executable-find "ack-grep")
+    (setq helm-grep-default-command "ack-grep -Hn --no-group --no-color %e %p %f"
+          helm-grep-default-recurse-command "ack-grep -H --no-group --no-color %e %p %f"))
+  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+  (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
      #+END_SRC
      
 *** Projectile
