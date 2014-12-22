@@ -98,6 +98,9 @@
  '(jabber-roster-buffer "*-roster-*")
  '(magit-use-overlays nil)
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
+ '(org-modules
+   (quote
+    (org-bbdb org-bibtex org-crypt org-docview org-gnus org-habit org-id org-info org-irc org-mhe org-rmail org-w3m org-expiry org-invoice)))
  '(py-autopep8-options
    (quote
     ("--ignore E711,E712,E24" "--aggressive --aggressive --aggressive")))
