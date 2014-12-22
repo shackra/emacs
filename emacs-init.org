@@ -177,6 +177,7 @@ proveídas por Emacs o paquetes instalados en Emacs.
 
   (require 'company-go)
   (require 'org)
+  (require 'org-habit)
   (require 'org-page)
   (require 'undo-tree)
   (require 'dired+)
