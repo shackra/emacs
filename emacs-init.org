@@ -423,15 +423,9 @@ modos que se activan luego de que emacs carga
               (projectile-global-mode)
               (helm-projectile-on)
               (global-flycheck-mode)
-              ;;(auto-indent-global-mode)
-              (autopair-global-mode)
               (global-pretty-mode t)
               (global-company-mode)
               (global-fixmee-mode 1)
-              ;;(semantic-mode 1)
-              ;;(global-move-dup-mode)
-              ;;(global-relative-buffers-mode)
-              ;;(global-auto-highlight-symbol-mode)
               (eyebrowse-mode t)
               ))
 
@@ -464,6 +458,7 @@ combinación C-' para otra cosa.
 
      #+BEGIN_SRC emacs-lisp
        (setf org-footnote-auto-adjust t
+             org-habit-graph-column 55
              org-directory (expand-file-name "~/org")
              org-archive-location (concat org-directory "/archivado.org::* Entradas viejas y archivadas")
              org-special-ctrl-k t
@@ -987,6 +982,7 @@ llegar a la columna 79.
                   (highlight-numbers-mode)
                   (hes-mode)
                   ;;(highlight-blocks-mode)
+                  (electric-pair-mode)
                   (flyspell-prog-mode)))
 
       ;; redefinimos la tecla RET para que inserte un salto de linea y la
