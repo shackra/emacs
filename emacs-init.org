@@ -61,8 +61,7 @@ en la descripción del paquete.
                                (quote ("org" . "http://orgmode.org/elpa/"))))
 #+END_SRC
 
-Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x
-package-list-pactares=
+Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
 
 ** Listado, revisión e instalación de paquetes con Melpa
 *La situación es la siguiente:* Quiero poder usar mi configuración en muchas partes, o quizás otros usuarios

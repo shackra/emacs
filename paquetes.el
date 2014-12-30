@@ -8,8 +8,6 @@
   :ensure achievements))
 (ignore-errors (use-package async
   :ensure async))
-(ignore-errors (use-package autopair
-  :ensure autopair))
 (ignore-errors (use-package back-button
   :ensure back-button))
 (ignore-errors (use-package bind-key
@@ -146,6 +144,8 @@
   :ensure nav-flash))
 (ignore-errors (use-package nlinum
   :ensure nlinum))
+(ignore-errors (use-package nsis-mode
+  :ensure nsis-mode))
 (ignore-errors (use-package org
   :ensure org))
 (ignore-errors (use-package org-page
