@@ -530,25 +530,24 @@ combinación C-' para otra cosa.
        (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
 
        (add-hook 'org-mode-hook (lambda ()
-                                  (auto-fill-mode -1)
-                                  (visual-line-mode)
-                                  )
-                 )
+                                  (progn 
+                                    (auto-fill-mode -1)
+                                    (visual-fill-column-mode))))
      #+END_SRC
 
-*** org-page
+*** Org-page
 Genera un blog estatico con [[https://github.com/kelvinh/org-page][org-page]].
 la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porque de verdad quiero
 castellanizar los enlaces y sus títulos en el blog.
 
       #+BEGIN_SRC emacs-lisp
-        (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com"
-              op/site-domain "http://elblog.deshackra.com/"
+        (setf op/repository-directory "/home/jorge/Documentos/shackra.bitbucket.org/"
+              op/site-domain "http://shackra.bitbucket.org"
               op/site-main-title "El blog de Shackra"
               op/site-sub-title "«No seas tan abierto de mente o tu cerebro se caerá» ~G.K. Chesterton"
               op/personal-github-link "https://github.com/shackra"
               op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
-              op/theme 'shc
+              op/theme 'mdo
         )
 
         (defun op/do-publication-all ()
@@ -812,8 +811,19 @@ Un modo mayor autónomo que permite la edición de plantillas web: documentos HT
        (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode)) ;; para plantillas de Django.
        (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)) ;; para editar archivos HTML
-     #+END_SRC
 
+       (add-hook 'web-mode-hook (lambda ()
+                                  (progn
+                                    (auto-fill-mode -1)
+                                    (electric-indent-local-mode t)
+                                    ;; (progn
+                                    ;;   ;; según https://github.com/capitaomorte/yasnippet/issues/396#issuecomment-46340904
+                                    ;;   ;; hace yasnippet funcionar con web-mode
+                                    ;;   (yas-activate-extra-mode 'html-mode)
+                                    ;;   (yas-minor-mode-on))
+                                    (emmet-mode)
+                                    )))
+     #+END_SRC
 *** mu4e
 Un versátil cliente de correo electrónico. Éste paquete se carga de manera condicional si esta instalado en el
 sistema del usuario. Desgraciadamente no puedes instalarlo desde Melpa o algún otro repositorio de paquetes de
@@ -1105,7 +1115,9 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
   (global-set-key (kbd "C-x 4 c") 'langtool-correct-buffer)
 #+END_SRC
 
-*** EN-REVISIÓN Jabber
+*** Jabber
+CLOSED: [2015-01-14 mié 02:20]
+- State "TERMINADO"  from "EN-REVISIÓN" [2015-01-14 mié 02:20]
 - State "EN-REVISIÓN" from "TERMINADO"  [2014-11-03 lun 14:47] \\
   las notificaciones no pueden ser enviadas por dbus o libnotify
 - State "TERMINADO"  from "EN REVISIÓN" [2014-11-03 lun 13:47]
@@ -1178,7 +1190,9 @@ permite cambiar entre disposiciones de ventanas en emacs
   (define-key eyebrowse-mode-map (kbd "C-c C-w x") 'eyebrowse-next-window-config)
 #+END_SRC
 
-*** EN-REVISIÓN notify.el
+*** notify.el
+CLOSED: [2015-01-14 mié 02:20]
+- State "TERMINADO"  from "EN-REVISIÓN" [2015-01-14 mié 02:20]
 - State "EN-REVISIÓN" from ""           [2014-11-03 lun 14:13] \\
   el método definido no es multiplataforma
 Permite a emacs enviar notificaciones por DBus o diferentes medios

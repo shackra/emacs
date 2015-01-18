@@ -148,6 +148,8 @@
   :ensure nsis-mode))
 (ignore-errors (use-package org
   :ensure org))
+(ignore-errors (use-package org-beautify-theme
+  :ensure org-beautify-theme))
 (ignore-errors (use-package org-page
   :ensure org-page))
 (ignore-errors (use-package pandoc-mode
@@ -202,6 +204,8 @@
   :ensure undo-tree))
 (ignore-errors (use-package use-package
   :ensure use-package))
+(ignore-errors (use-package visual-fill-column
+  :ensure visual-fill-column))
 (ignore-errors (use-package visual-regexp
   :ensure visual-regexp))
 (ignore-errors (use-package visual-regexp-steroids
