@@ -134,7 +134,6 @@ instalación de los paquetes extraído de [[https://github.com/adamrt/emacs.d/][
 Cargamos paquetes que no se instalan con ELPA.
 
 #+BEGIN_SRC emacs-lisp
-  (load-file (expand-file-name "site-packages/golang/company-go.el" user-emacs-directory))
   ;; carga un agregado para cuando se escriben correos usando mu4e
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
   (ignore-errors 
@@ -843,68 +842,68 @@ Correos electrónicos y otros datos son traídos de un archivo secreto ;)
 Para saber como configurar mu4e para escribir correos con diferentes cuentas de correo, puedes mirar la
 [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]] es aconsejable que esa configuración viva en el archivo secreto...
 
-     #+BEGIN_SRC emacs-lisp
-       (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e/")
-         (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
-         (autoload 'mu4e "mu4e" "Mail client based on mu (maildir-utils)." t)
+#+BEGIN_SRC emacs-lisp
+  (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e/")
+    (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
+    (autoload 'mu4e "mu4e" "Mail client based on mu (maildir-utils)." t)
 
-         (require 'mu4e-contrib)
-         (require 'org-mu4e)
-         (setf mu4e-view-show-images t)
-         (global-key-binding (kbd "[f7]") 'mu4e)
-         (when (fboundp 'imagemagick-register-types)
-           (imagemagick-register-types))
+    (require 'mu4e-contrib)
+    (require 'org-mu4e)
+    (setf mu4e-view-show-images t)
+    (global-set-key (kbd "<f7>") 'mu4e)
+    (when (fboundp 'imagemagick-register-types)
+      (imagemagick-register-types))
 
-         (setf
-          ;; html2text es un paquete que debe estar instalado en tu sistema
-          mu4e-confirm-quit nil
-          mu4e-html2text-command 'mu4e-shr2text
-          mu4e-get-mail-command "offlineimap"
-          mu4e-maildir "/home/jorge/correo"
-          mu4e-update-interval nil
-          mu4e-auto-retrieve-keys t
-          mu4e-headers-leave-behavior 'apply
-          mu4e-headers-visible-lines 7
-          mu4e-hide-index-messages t
-          message-kill-buffer-on-exit t
-          mu4e-attachment-dir  "~/Descargas"
-          mu4e-maildir       "~/correo" ;; top-level Maildir
-          mu4e-sent-folder   "/principal/INBOX/Sent" ;; folder for sent messages
-          mu4e-drafts-folder "/principal/INBOX/Drafts" ;; unfinished messages
-          mu4e-trash-folder  "/principal/INBOX/Trash"  ;; trashed messages
-          mu4e-refile-folder "/principal/INBOX/Archives" ;; Mensajes salvados
-          smtpmail-stream-type  'ssl
-          smtpmail-smtp-service 465
-          message-send-mail-function 'smtpmail-send-it
-          )
-         (if (daemonp)
-             (ignore-errors
-               (load (expand-file-name "mu4e-conf.secret.gpg" user-emacs-directory) t)))
+    (setf
+     ;; html2text es un paquete que debe estar instalado en tu sistema
+     mu4e-confirm-quit nil
+     mu4e-html2text-command 'mu4e-shr2text
+     mu4e-get-mail-command "offlineimap"
+     mu4e-maildir "/home/jorge/correo"
+     mu4e-update-interval nil
+     mu4e-auto-retrieve-keys t
+     mu4e-headers-leave-behavior 'apply
+     mu4e-headers-visible-lines 7
+     mu4e-hide-index-messages t
+     message-kill-buffer-on-exit t
+     mu4e-attachment-dir  "~/Descargas"
+     mu4e-maildir       "~/correo" ;; top-level Maildir
+     mu4e-sent-folder   "/principal/INBOX/Sent" ;; folder for sent messages
+     mu4e-drafts-folder "/principal/INBOX/Drafts" ;; unfinished messages
+     mu4e-trash-folder  "/principal/INBOX/Trash"  ;; trashed messages
+     mu4e-refile-folder "/principal/INBOX/Archives" ;; Mensajes salvados
+     smtpmail-stream-type  'ssl
+     smtpmail-smtp-service 465
+     message-send-mail-function 'smtpmail-send-it
+     )
+    (if (daemonp)
+        (ignore-errors
+          (load (expand-file-name "mu4e-conf.secret.gpg" user-emacs-directory) t)))
 
-         ;; funcion para seleccionar la cuenta con la que se va a responder a un email
-         (defun my-mu4e-set-account ()
-           "Set the account for composing a message."
-           (let* ((account
-                   (if mu4e-compose-parent-message
-                       (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
-                         (string-match "/\\(.*?\\)/" maildir)
-                         (match-string 1 maildir))
-                     (completing-read (format "Componer correo con la cuenta: (%s) "
-                                              (mapconcat #'(lambda (var) (car var))
-                                                         my-mu4e-account-alist "/"))
-                                      (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
-                                      nil t nil nil (caar my-mu4e-account-alist))))
-                  (account-vars (cdr (assoc account my-mu4e-account-alist))))
-             (if account-vars
-                 (mapc #'(lambda (var)
-                           (set (car var) (cadr var)))
-                       account-vars)
-               (error "Cuenta de correo no encontrada"))))
+    ;; funcion para seleccionar la cuenta con la que se va a responder a un email
+    (defun my-mu4e-set-account ()
+      "Set the account for composing a message."
+      (let* ((account
+              (if mu4e-compose-parent-message
+                  (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+                    (string-match "/\\(.*?\\)/" maildir)
+                    (match-string 1 maildir))
+                (completing-read (format "Componer correo con la cuenta: (%s) "
+                                         (mapconcat #'(lambda (var) (car var))
+                                                    my-mu4e-account-alist "/"))
+                                 (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+                                 nil t nil nil (caar my-mu4e-account-alist))))
+             (account-vars (cdr (assoc account my-mu4e-account-alist))))
+        (if account-vars
+            (mapc #'(lambda (var)
+                      (set (car var) (cadr var)))
+                  account-vars)
+          (error "Cuenta de correo no encontrada"))))
 
-         ;; y enganchamos la funcion
-         (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
-         )
-     #+END_SRC
+    ;; y enganchamos la funcion
+    (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+    )
+#+END_SRC
 
 *** dired y dired+
 Extiende funcionalidades de =dired=. Se agrega una función personalizada que mata el buffer al presionar =q=,

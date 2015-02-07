@@ -38,7 +38,7 @@
    (quote
     (elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet)))
  '(elpy-rpc-backend "jedi")
- '(elpy-rpc-python-command "python2")
+ '(elpy-rpc-python-command "python")
  '(flycheck-check-syntax-automatically (quote (save idle-change new-line mode-enabled)))
  '(flycheck-disabled-checkers (quote (emacs-lisp-checkdoc)))
  '(flycheck-idle-change-delay 2.0)
