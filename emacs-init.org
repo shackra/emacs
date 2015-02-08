@@ -1207,3 +1207,9 @@ Acceso para Emacs a sitios que usan Wikimedia
         (load-file (expand-file-name "mediawiki.secret.gpg" user-emacs-directory))))
   (define-key mediawiki-mode-map (kbd "C-c o") 'mediawiki-browse)
 #+END_SRC
+*** adoc-mode
+Un modo mayor de Emacs para editar documentos AsciiDoc
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist (cons "\\.txt\\'" 'adoc-mode))
+#+END_SRC

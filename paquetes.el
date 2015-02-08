@@ -6,6 +6,8 @@
   :ensure ace-window))
 (ignore-errors (use-package achievements
   :ensure achievements))
+(ignore-errors (use-package adoc-mode
+  :ensure adoc-mode))
 (ignore-errors (use-package async
   :ensure async))
 (ignore-errors (use-package back-button
@@ -24,6 +26,8 @@
   :ensure company-c-headers))
 (ignore-errors (use-package company-cmake
   :ensure company-cmake))
+(ignore-errors (use-package company-go
+  :ensure company-go))
 (ignore-errors (use-package company-irony
   :ensure company-irony))
 (ignore-errors (use-package connection
@@ -40,6 +44,8 @@
   :ensure dpaste))
 (ignore-errors (use-package elpy
   :ensure elpy))
+(ignore-errors (use-package emmet-mode
+  :ensure emmet-mode))
 (ignore-errors (use-package epl
   :ensure epl))
 (ignore-errors (use-package expand-region
@@ -128,6 +134,8 @@
   :ensure markdown-mode))
 (ignore-errors (use-package markdown-mode+
   :ensure markdown-mode+))
+(ignore-errors (use-package markup-faces
+  :ensure markup-faces))
 (ignore-errors (use-package mediawiki
   :ensure mediawiki))
 (ignore-errors (use-package monky
@@ -198,6 +206,10 @@
   :ensure smartrep))
 (ignore-errors (use-package string-utils
   :ensure string-utils))
+(ignore-errors (use-package stylus-mode
+  :ensure stylus-mode))
+(ignore-errors (use-package sws-mode
+  :ensure sws-mode))
 (ignore-errors (use-package ucs-utils
   :ensure ucs-utils))
 (ignore-errors (use-package undo-tree
