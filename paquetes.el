@@ -110,6 +110,10 @@
   :ensure jabber))
 (ignore-errors (use-package js2-mode
   :ensure js2-mode))
+(ignore-errors (use-package js2-refactor
+  :ensure js2-refactor))
+(ignore-errors (use-package jss
+  :ensure jss))
 (ignore-errors (use-package keyfreq
   :ensure keyfreq))
 (ignore-errors (use-package kivy-mode
@@ -200,6 +204,12 @@
   :ensure s))
 (ignore-errors (use-package screenshot
   :ensure screenshot))
+(ignore-errors (use-package simple-httpd
+  :ensure simple-httpd))
+(ignore-errors (use-package skewer-mode
+  :ensure skewer-mode))
+(ignore-errors (use-package skewer-reload-stylesheets
+  :ensure skewer-reload-stylesheets))
 (ignore-errors (use-package smart-mode-line
   :ensure smart-mode-line))
 (ignore-errors (use-package smartrep
@@ -226,6 +236,8 @@
   :ensure web-beautify))
 (ignore-errors (use-package web-mode
   :ensure web-mode))
+(ignore-errors (use-package websocket
+  :ensure websocket))
 (ignore-errors (use-package yaml-mode
   :ensure yaml-mode))
 (ignore-errors (use-package yasnippet
