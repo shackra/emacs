@@ -710,7 +710,6 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
   (add-hook 'term-mode-hook
             (lambda ()
               (yas-minor-mode -1)
-              (powerline-nano-theme)
               )
             )
 
