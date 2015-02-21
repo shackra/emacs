@@ -1149,19 +1149,8 @@ Chat de jabber desde Emacs!!
    jabber-backlog-days 30
    jabber-alert-presence-message-function (lambda (who oldstatus newstatus statusnext) nil)
    jabber-invalid-certificate-servers '("chat.deshackra.com")
-   jabber-default-status "«Faith is always at a disadvantage; it is a perpetually defeated thing which survives all of its conquerors,» wrote G. K. Chesterton."
+   jabber-default-status "«Faith is always at a disadvantage; it is a perpetually defeated thing which survives all of its conquerors» ~G. K. Chesterton."
   )
-
-  (defun notify-jabber-notify (from buf text proposed-alert)
-    "Notifica sobre nuevos mensajes en Jabber vía notify.el"
-    (when (or jabber-message-alert-same-buffer
-             (not (memq (selected-window) (get-buffer-window-list buf))))
-      (if (jabber-muc-sender-p from)
-          (notify (format "(MP) %s"
-                          (jabber-jid-displayname (jabber-jid-user from)))
-                  (format "%s: %s" (jabber-jid-resource from) text)))
-      (notify (format "%s" (jabber-jid-displayname from))
-              text)))
 
   (defun my-jabber-chat-delete-or-bury ()
     (interactive)
@@ -1172,9 +1161,6 @@ Chat de jabber desde Emacs!!
            (if (string= "Attempt to delete the sole visible or iconified frame" 
                         (cadr e))
                (bury-buffer))))))
-
-  ;;(define-key jabber-chat-mode-map [escape] 'my-jabber-chat-delete-or-bury)
-  ;;(add-hook 'jabber-alert-message-hooks 'notify-jabber-notify)
 
   (if (daemonp)
       ;; nos conecta a todas las cuentas jabber!
