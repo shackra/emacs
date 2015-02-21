@@ -434,9 +434,13 @@ modos que se activan luego de que emacs carga
          (global-pretty-mode t)
          (global-company-mode)
          (global-fixmee-mode 1)
+         (global-undo-tree-mode 1)
          ))
 
+  (defalias 'redo 'undo-tree-redo)
+
   (global-set-key (kbd "C-ç") 'undo)
+  (global-set-key (kbd "M-ç") 'redo)
   (global-set-key (kbd "M-¡") 'text-scale-increase)
   (global-set-key (kbd "M-'") 'text-scale-decrease)
   (define-key global-map (kbd "M-o") 'other-window)
