@@ -688,7 +688,7 @@ definir qué archivos/carpetas ignorar y cuales no. Para más información ver l
 Ofrece un excelente emulador de terminal *dentro* de Emacs
 
      #+BEGIN_SRC emacs-lisp
-       (setf multi-term-buffer-name "terminal "
+       (setf multi-term-buffer-name "shell-"
              multi-term-program "/bin/bash"
              term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
                                        (cons "C-p" 'previous-line)
@@ -707,7 +707,11 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
                                        (cons "C-y" 'term-send-raw)))
        (add-hook 'term-mode-hook
                  (lambda ()
-                   (yas-minor-mode -1)))
+                   (yas-minor-mode -1)
+                   (powerline-nano-theme)
+                   )
+                 )
+
        (global-set-key [f1] 'multi-term)
        (global-set-key [C-next] 'multi-term-next)
        (global-set-key [C-prior] 'multi-term-prev)
