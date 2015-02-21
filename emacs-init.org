@@ -423,30 +423,29 @@ Existen ciertos cambios que no tienen cabida en otra parte, y ciertamente coloca
 *** Después de que Emacs cargue la configuración por completo
 modos que se activan luego de que emacs carga
 
-     #+BEGIN_SRC emacs-lisp
-       (add-hook (quote after-init-hook)
-                 (lambda ()
-              (helm-mode 1)
-              (helm-descbinds-mode)
-              (projectile-global-mode)
-              (helm-projectile-on)
-              (global-flycheck-mode)
-              (global-pretty-mode t)
-              (global-company-mode)
-              (global-fixmee-mode 1)
-              (eyebrowse-mode t)
-              ))
+#+BEGIN_SRC emacs-lisp
+  (add-hook (quote after-init-hook)
+            (lambda ()
+         (helm-mode 1)
+         (helm-descbinds-mode)
+         (projectile-global-mode)
+         (helm-projectile-on)
+         (global-flycheck-mode)
+         (global-pretty-mode t)
+         (global-company-mode)
+         (global-fixmee-mode 1)
+         ))
 
-       (global-set-key (kbd "C-ç") 'undo)
-       (global-set-key (kbd "M-¡") 'text-scale-increase)
-       (global-set-key (kbd "M-'") 'text-scale-decrease)
-       (define-key global-map (kbd "M-o") 'other-window)
-       (define-key global-map (kbd "M-p") 'ace-window)
-       (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-       ;; salta a la nueva ventana creada despues de dividir la actual
-       (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
-       (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
-     #+END_SRC
+  (global-set-key (kbd "C-ç") 'undo)
+  (global-set-key (kbd "M-¡") 'text-scale-increase)
+  (global-set-key (kbd "M-'") 'text-scale-decrease)
+  (define-key global-map (kbd "M-o") 'other-window)
+  (define-key global-map (kbd "M-p") 'ace-window)
+  (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  ;; salta a la nueva ventana creada despues de dividir la actual
+  (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
+  (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
+#+END_SRC
 
 *** Org-mode
 CLOSED: [2014-10-15 mié 17:38]
@@ -686,36 +685,35 @@ definir qué archivos/carpetas ignorar y cuales no. Para más información ver l
 
 *** Multi-term
 Ofrece un excelente emulador de terminal *dentro* de Emacs
+#+BEGIN_SRC emacs-lisp
+  (setf multi-term-buffer-name "shell-"
+        multi-term-program "/bin/bash"
+        term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
+                                  (cons "C-p" 'previous-line)
+                                  (cons "C-n" 'next-line)
+                                  (cons "M-f" 'term-send-forward-word)
+                                  (cons "M-b" 'term-send-backward-word)
+                                  (cons "C-c C-j" 'term-line-mode)
+                                  (cons "C-c C-k" 'term-char-mode)
+                                  (cons "M-DEL" 'term-send-backward-kill-word)
+                                  (cons "M-d" 'term-send-forward-kill-word)
+                                  (cons "<C-left>" 'term-send-backward-word)
+                                  (cons "<C-right>" 'term-send-forward-word)
+                                  (cons "C-r" 'term-send-reverse-search-history)
+                                  (cons "M-p" 'term-send-raw-meta)
+                                  (cons "M-y" 'term-send-raw-meta)
+                                  (cons "C-y" 'term-send-raw)))
+  (add-hook 'term-mode-hook
+            (lambda ()
+              (yas-minor-mode -1)
+              (powerline-nano-theme)
+              )
+            )
 
-     #+BEGIN_SRC emacs-lisp
-       (setf multi-term-buffer-name "shell-"
-             multi-term-program "/bin/bash"
-             term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
-                                       (cons "C-p" 'previous-line)
-                                       (cons "C-n" 'next-line)
-                                       (cons "M-f" 'term-send-forward-word)
-                                       (cons "M-b" 'term-send-backward-word)
-                                       (cons "C-c C-j" 'term-line-mode)
-                                       (cons "C-c C-k" 'term-char-mode)
-                                       (cons "M-DEL" 'term-send-backward-kill-word)
-                                       (cons "M-d" 'term-send-forward-kill-word)
-                                       (cons "<C-left>" 'term-send-backward-word)
-                                       (cons "<C-right>" 'term-send-forward-word)
-                                       (cons "C-r" 'term-send-reverse-search-history)
-                                       (cons "M-p" 'term-send-raw-meta)
-                                       (cons "M-y" 'term-send-raw-meta)
-                                       (cons "C-y" 'term-send-raw)))
-       (add-hook 'term-mode-hook
-                 (lambda ()
-                   (yas-minor-mode -1)
-                   (powerline-nano-theme)
-                   )
-                 )
-
-       (global-set-key [f1] 'multi-term)
-       (global-set-key [C-next] 'multi-term-next)
-       (global-set-key [C-prior] 'multi-term-prev)
-     #+END_SRC
+  (global-set-key [f1] 'multi-term)
+  (global-set-key [C-next] 'multi-term-next)
+  (global-set-key [C-prior] 'multi-term-prev)
+#+END_SRC
 
 *** company
 El paquete da funcionalidades de auto completado. Esta opcion es
@@ -1005,6 +1003,7 @@ llegar a la columna 79.
                   (hes-mode)
                   ;;(highlight-blocks-mode)
                   (electric-pair-mode)
+                  (rainbow-turn-on)
                   (flyspell-prog-mode)))
 
       ;; redefinimos la tecla RET para que inserte un salto de linea y la
