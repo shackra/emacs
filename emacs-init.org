@@ -365,6 +365,16 @@ se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverfl
   (global-set-key (kbd "C-a") 'smart-beginning-of-line)
 #+END_SRC
 
+*** EN-ESPERA Modificación de los caracteres en el mode-line
+- State "EN-ESPERA"  from ""           [2015-02-20 vie 18:24] \\
+  Tengo que liarme con `powerline' primero para poder tocar siquiera la variable `mode-line-format'
+Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (según [[http://tromey.com/blog/?p%3D831][The Cliffs of Inanity]], también [[http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html][lunarsite]]. referencias sobre =mode-line-format= en la [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Mode-Line-Format.html][referencia de Elisp]])
+
+#+BEGIN_SRC emacs-lisp
+  ;; Si usas `powerline', editar la variable mode-line-format es algo complicado,
+  ;; pero no imposible
+#+END_SRC
+
 ** Asociación de archivos a modos mayores
 Aquí se definen código para definir la asociación de algunas extensiones de archivo con algunos modos mayores
 #+BEGIN_SRC emacs-lisp
@@ -1212,4 +1222,11 @@ Un modo mayor de Emacs para editar documentos AsciiDoc
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist (cons "\\.txt\\'" 'adoc-mode))
+#+END_SRC
+*** skewer-mode
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'js2-mode-hook 'skewer-mode)
+  (add-hook 'css-mode-hook 'skewer-css-mode)
+  (add-hook 'html-mode-hook 'skewer-html-mode)
+  (add-hook 'web-mode-hook 'skewer-html-mode)
 #+END_SRC

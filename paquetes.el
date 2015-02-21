@@ -128,6 +128,8 @@
   :ensure lice))
 (ignore-errors (use-package link
   :ensure link))
+(ignore-errors (use-package list-unicode-display
+  :ensure list-unicode-display))
 (ignore-errors (use-package list-utils
   :ensure list-utils))
 (ignore-errors (use-package magit
@@ -220,6 +222,8 @@
   :ensure stylus-mode))
 (ignore-errors (use-package sws-mode
   :ensure sws-mode))
+(ignore-errors (use-package toml-mode
+  :ensure toml-mode))
 (ignore-errors (use-package ucs-utils
   :ensure ucs-utils))
 (ignore-errors (use-package undo-tree
