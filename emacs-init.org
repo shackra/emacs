@@ -250,6 +250,37 @@ estas son funciones que uso muy a menudo durante la edición de texto, tenerlos 
         (comment-or-uncomment-region (line-beginning-position) (line-end-position))
       (comment-dwim arg)))
 #+END_SRC
+
+*** =find-file= y =switch-buffer= personalizados
+Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visitar archivos y buffers relacionados con el proyecto en el cual estoy trabajando. Projectile-helm es de mucha ayuda, sin embargo la combinación de teclas es muy extensa y la mayoría de veces no las uso.
+
+Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=.
+
+**** =find-file= personalizado
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:find-file ()
+    (interactive)
+    (call-interactively (if (equal current-prefix-arg '(4))
+                            'find-file
+                          ;; si no se llamo a la función con el argumento
+                          ;; universal C-u. El comando se comporta normalmente
+                          (if (projectile-project-p)
+                              'helm-projectile-find-file
+                            'find-file))))
+#+END_SRC
+
+**** =switch-buffer= personalizado
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:switch-buffer ()
+    (interactive)
+    (call-interactively (if (equal current-prefix-arg '(4))
+                            'switch-to-buffer
+                          ;; si no se llamo a la función con el argumento
+                          ;; universal C-u. El comando se comporta normalmente
+                          (if (projectile-project-p)
+                              'helm-projectile-switch-to-buffer
+                            'switch-to-buffer))))
+#+END_SRC
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
 defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
@@ -445,6 +476,9 @@ modos que se activan luego de que emacs carga
   (global-set-key (kbd "M-'") 'text-scale-decrease)
   (define-key global-map (kbd "M-o") 'other-window)
   (define-key global-map (kbd "M-p") 'ace-window)
+  ;; find-file y switch-to-buffer personalizados
+  (define-key global-map (kbd "C-x C-f") 'shackra:find-file)
+  (define-key global-map (kbd "C-x b") 'shackra:switch-buffer)
   (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   ;; salta a la nueva ventana creada despues de dividir la actual
   (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
@@ -645,6 +679,7 @@ Y acá el resto de la configuración de Helm
                                     "\\*.+(.+)"
                                     "\\*fsm-debug\\*"
                                     "elpa/.+"
+                                    "tramp/.+"
                                     "\\*Gofmt Errors\\*")
    
    helm-boring-file-regexp-list (quote
@@ -1029,16 +1064,11 @@ configuración para golang en emacs.
        #+END_SRC
        
 *** rustlang
-configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Mozilla y "su web abierta" por lo
-que le hicieron (o no hicieron, si quiere) con Brendan Eich. LAS PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU
-DINERO AQUELLAS CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN PARA QUE SEAN PERSEGUIDAS Y
-PIERDAN SUS TRABAJOS PORQUE LOS FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN DISTINTOS DE ELLOS
-SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla, hipócrita,
-cuanta tolerancia y respeto hacía los demás!.
-       
-       #+BEGIN_SRC emacs-lisp
-         ;;nada por agregar, aun...
-       #+END_SRC
+configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Mozilla y "su web abierta" por lo que le hicieron (o no hicieron, si quiere) con Brendan Eich. LAS PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU DINERO AQUELLAS CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN PARA QUE SEAN PERSEGUIDAS Y PIERDAN SUS TRABAJOS PORQUE LOS FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN DISTINTOS DE ELLOS SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla, hipócrita, cuanta tolerancia y respeto hacía los demás!.
+
+#+BEGIN_SRC emacs-lisp
+  ;;nada por agregar, aun...
+#+END_SRC
 
 *** C++
 configuración para habilitar auto-completado en Emacs para la
@@ -1221,4 +1251,12 @@ Un modo mayor de Emacs para editar documentos AsciiDoc
   (add-hook 'css-mode-hook 'skewer-css-mode)
   (add-hook 'html-mode-hook 'skewer-html-mode)
   (add-hook 'web-mode-hook 'skewer-html-mode)
+#+END_SRC
+*** TRAMP
+Un paquete para la edición de archivos remotos
+
+#+BEGIN_SRC emacs-lisp
+  (setf tramp-default-method "ssh")
+
+  (add-to-list 'tramp-default-method-alist '("\\`localhost\\'" "\\`root\\'" "su"))
 #+END_SRC
