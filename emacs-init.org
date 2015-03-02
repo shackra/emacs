@@ -1260,3 +1260,9 @@ Un paquete para la edición de archivos remotos
 
   (add-to-list 'tramp-default-method-alist '("\\`localhost\\'" "\\`root\\'" "su"))
 #+END_SRC
+*** js2-mode
+Un modo mayor para editar JavaScript
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.js\\'" .  js2-mode))
+#+END_SRC
