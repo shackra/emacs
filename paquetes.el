@@ -132,6 +132,8 @@
   :ensure list-unicode-display))
 (ignore-errors (use-package list-utils
   :ensure list-utils))
+(ignore-errors (use-package lua-mode
+  :ensure lua-mode))
 (ignore-errors (use-package magit
   :ensure magit))
 (ignore-errors (use-package makey
@@ -162,8 +164,6 @@
   :ensure nsis-mode))
 (ignore-errors (use-package org
   :ensure org))
-(ignore-errors (use-package org-beautify-theme
-  :ensure org-beautify-theme))
 (ignore-errors (use-package org-page
   :ensure org-page))
 (ignore-errors (use-package pandoc-mode
