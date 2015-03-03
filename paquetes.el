@@ -8,6 +8,8 @@
   :ensure achievements))
 (ignore-errors (use-package adoc-mode
   :ensure adoc-mode))
+(ignore-errors (use-package archives
+  :ensure archives))
 (ignore-errors (use-package async
   :ensure async))
 (ignore-errors (use-package back-button
@@ -66,8 +68,8 @@
   :ensure git-commit-mode))
 (ignore-errors (use-package git-rebase-mode
   :ensure git-rebase-mode))
-(ignore-errors (use-package gnup
-  :ensure gnup))
+(ignore-errors (use-package gnupg
+  :ensure gnupg))
 (ignore-errors (use-package go-eldoc
   :ensure go-eldoc))
 (ignore-errors (use-package go-mode
