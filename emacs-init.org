@@ -281,6 +281,17 @@ Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=
                               'helm-projectile-switch-to-buffer
                             'switch-to-buffer))))
 #+END_SRC
+
+*** abrir archivos que estén en modo de solo lectura como root
+Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]], según éste [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][post en Emacs Redux]].
+
+#+BEGIN_SRC emacs-lisp
+  (defun find-file-sudo ()
+    "Reopen the current file with sudo privileges."
+    (when (and buffer-file-name
+             (not (file-writable-p buffer-file-name)))
+      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+#+END_SRC
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
 defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
@@ -1265,4 +1276,8 @@ Un modo mayor para editar JavaScript
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.js\\'" .  js2-mode))
+#+END_SRC
+*** find-file
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'find-file-hook 'find-file-sudo)
 #+END_SRC
