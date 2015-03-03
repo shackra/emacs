@@ -103,7 +103,7 @@ org!
               else:
                   name = package
                   
-              if not name == "archive":
+              if not name == "archives-" and not name == "archives":
                   packagestoinstall.append(
                       "(ignore-errors (use-package {0}\n  :ensure {0}))".format(
                           name))
