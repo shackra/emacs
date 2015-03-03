@@ -279,12 +279,12 @@ Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=
   (defun shackra:switch-buffer ()
     (interactive)
     (call-interactively (if (equal current-prefix-arg '(4))
-                            'switch-to-buffer
+                            'helm-mini
                           ;; si no se llamo a la función con el argumento
                           ;; universal C-u. El comando se comporta normalmente
                           (if (projectile-project-p)
                               'helm-projectile-switch-to-buffer
-                            'switch-to-buffer))))
+                            'helm-mini))))
 #+END_SRC
 
 *** abrir archivos que estén en modo de solo lectura como root
