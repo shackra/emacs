@@ -100,10 +100,28 @@
  '(jabber-muc-private-buffer-format "*-muc-priv-%g-%n-*")
  '(jabber-roster-buffer "*-roster-*")
  '(magit-use-overlays nil)
+ '(org-agenda-files
+   (quote
+    ("/home/jorge/org/cosasporhacer.org" "/home/jorge/org/agenda.org")))
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
+ '(org-catch-invisible-edits (quote show))
+ '(org-clock-persist (quote history))
+ '(org-ctrl-k-protect-subtree t)
+ '(org-default-notes-file "/home/jorge/org/diario.org")
+ '(org-directory "/home/jorge/org")
+ '(org-footnote-auto-adjust t)
+ '(org-habit-graph-column 55)
+ '(org-imenu-depth 5)
+ '(org-log-done (quote time))
  '(org-modules
    (quote
-    (org-bbdb org-bibtex org-crypt org-docview org-gnus org-habit org-id org-info org-irc org-mhe org-rmail org-w3m org-expiry org-invoice)))
+    (org-bbdb org-bibtex org-crypt org-docview org-gnus org-habit org-id org-info org-irc org-mhe org-rmail org-w3m)))
+ '(org-special-ctrl-k t)
+ '(org-startup-folded nil)
+ '(org-startup-indented t)
+ '(org-todo-keywords
+   (quote
+    ((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))))
  '(py-autopep8-options
    (quote
     ("--ignore E711,E712,E24" "--aggressive --aggressive --aggressive")))
