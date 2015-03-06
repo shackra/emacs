@@ -297,6 +297,30 @@ Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]],
              (not (file-writable-p buffer-file-name)))
       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 #+END_SRC
+
+*** Encierra los bloques =_SRC= de org en etiquetas =<pre><code>=
+Le pedimos a org-mode que no meta las patas cuando exporta archivos a HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
+
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:org-html-wrap-blocks-in-code (src backend info)
+    "Encierra bloques de código entre <pre><code class=\"lang\">.</code></pre>"
+    (when (org-export-derived-backend-p backend 'html)
+      (replace-regexp-in-string
+       "\\(</pre>\\)" "</code>\n\\1"
+       (replace-regexp-in-string "<pre class=\"src src-\\([^\"]*?\\)\">"
+                                 "<pre>\n<code class=\"\\1\">\n" src))))
+
+#+END_SRC
+
+*** Recrea el blog para probar el diseño
+Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos el procedimiento manual de publicar el blog a una carpeta
+
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:ppp ()
+    "Llama op/do-publication con una serie de parámetros predeterminados. Útil cuando se esta diseñando un tema"
+    (interactive)
+    (op/do-publication t t "/tmp/blog" nil))
+#+END_SRC
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
 defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
@@ -519,6 +543,8 @@ combinación C-' para otra cosa.
 
      #+BEGIN_SRC emacs-lisp
        (setf org-footnote-auto-adjust t
+             org-html-htmlize-output-type 'css
+             org-html-htmlize-font-prefix "org-"
              org-habit-graph-column 55
              org-directory (expand-file-name "~/org")
              org-archive-location (concat org-directory "/archivado.org::* Entradas viejas y archivadas")
@@ -606,16 +632,16 @@ castellanizar los enlaces y sus títulos en el blog.
         (setf op/repository-directory "/home/jorge/Documentos/shackra.bitbucket.org/"
               op/site-domain "http://shackra.bitbucket.org"
               op/site-main-title "El blog de Shackra"
-              op/site-sub-title "«No seas tan abierto de mente o tu cerebro se caerá» ~G.K. Chesterton"
+              op/site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
               op/personal-github-link "https://github.com/shackra"
               op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
-              op/theme 'mdo
+              op/theme 'shackra
+              op/item-cache nil
+              org-html-htmlize-output-type nil
         )
 
-        (defun op/do-publication-all ()
-          "You could re-publish all org source files. To publish all files use this function"
-          (op/do-publication t nil nil t)
-        )
+        (add-to-list 'org-export-filter-src-block-functions
+                     'shackra:org-html-wrap-blocks-in-code)
       #+END_SRC
    
 *** text-mode
@@ -1285,4 +1311,9 @@ Un modo mayor para editar JavaScript
 *** find-file
 #+BEGIN_SRC emacs-lisp
   (add-hook 'find-file-hook 'find-file-sudo)
+#+END_SRC
+*** httpd-mode
+Servidor web dentro de Emacs
+#+BEGIN_SRC emacs-lisp
+  (setf httpd-port 9300)
 #+END_SRC

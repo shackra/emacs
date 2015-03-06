@@ -1,0 +1,23 @@
+<!-- Cabecera de la pagina -->
+<header>{{! mi nav}}
+    <div class="container-fluid cabecera-caja">
+        <h1><a href="/">{{site-main-title}}</a></h1>
+        <h3><span class="adorno-inicio">Catolicismo</span><span class="adorno">Emacs</span><span class="adorno-fin">Software libre</span></h3>
+    </div>
+    <div class="container-fluid frase-caja">
+        <h2 id="frase">“{{site-sub-title}}” <b>~G.K. Chesterton</b></h2>
+    </div>
+    <div class="container">
+        <nav>
+            <ul class="nav nav-pills nav-justified">
+                {{#nav-categories}}
+                    <li><a href="{{category-uri}}">{{category-name}}</a></li>
+                {{/nav-categories}}
+                <li><a href="/tags/">Etiquetas</a></li>
+                <li><a href="/about/">Sobre mi</a></li>
+                <li><a href="{{github}}"><span class="ion-social-github"></span> GitHub</a></li>
+                <li><a href="/rss.xml"><span class="ion-social-rss"></span> RSS</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>

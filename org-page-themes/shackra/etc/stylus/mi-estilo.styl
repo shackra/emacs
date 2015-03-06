@@ -1,0 +1,153 @@
+@import url("http://fonts.googleapis.com/css?family=Permanent+Marker|Source+Code+Pro:500|Source+Sans+Pro:400,700,700italic,400italic|Source+Serif+Pro:400,700&subset=latin,latin-ext");
+@import "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"
+@import "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
+@import "keys.css"
+@import "kimbie.dark.css"
+@import "openwebicons-bootstrap.min.css"
+
+footer-height-min-screen = 400px
+footer-height-max-screen = 250px
+
+html
+  position relative
+  min-height 100%
+
+body
+  font-family Source Sans Pro, sans-serif
+  // margen al fondo segun la altura del footer
+  margin-bottom footer-height-min-screen
+  @media (min-width: 1000px)
+    margin-bottom footer-height-max-screen
+
+h1,h2,h3,h4,h5,h6
+  font-family Source Serif Pro, serif
+
+pre
+  font-family Source Code Pro, monospace
+  background none
+  border none
+  white-space pre
+
+pre code
+  white-space pre
+
+code
+  white-space nowrap
+
+article
+  padding-bottom 5em
+
+img
+  display block
+  width auto
+  max-width 100%
+  height auto
+  margin 2em auto
+
+img .pos-izquierda
+  float left
+  margin 2em 2em
+
+img .pos-derecha
+  float right
+  margin 2em 2em
+
+video
+  width 100% !important
+  height auto !important
+  
+.cabecera-caja
+  background #ffa500
+  color #ffffff
+  text-align center
+
+.cabecera-caja a
+  color #ffffff
+
+.cabecera-caja a:hover
+  text-decoration none
+
+div.cabecera-caja h1
+  font-family Permanent Marker, cursive
+  text-transform uppercase
+  font-size 3em
+  border 5px solid #ffffff
+  padding: 0.5em
+  @media (min-width: 700px)
+    width 500px
+    margin-left auto
+    margin-right auto
+
+div.cabecera-caja h3
+  font-size 1.2em
+  font-family Source Sans Pro, sans-serif
+  font-style normal
+  margin-bottom 1.2em
+
+div.frase-caja
+  background #cc8400
+  text-align center
+
+div.frase-caja h2
+  color #ffffff
+  font-size 1.2em
+  font-family Source Sans Pro, sans-serif
+  font-style italic
+  margin-bottom 1.2em
+
+div.frase-caja h2 b
+  font-size 0.9em
+  font-style normal
+
+.adorno-inicio:before
+  content "• "
+  
+.adorno-fin:after
+  content " •"
+
+.adorno:after
+.adorno:before
+  content " • "
+
+.footer
+  position absolute
+  bottom 0
+  width 100%
+  // establesca la altura fija del footer aqui
+  height footer-height-min-screen
+  background-color #141414
+  color #544e4e
+  text-align center
+  @media (min-width: 1000px)
+    height footer-height-max-screen
+  
+.footer-caja
+  margin 0.5em 0
+  @media screen and (min-width: 1000px)
+    margin 0.2em 0
+  
+.footer img
+  margin-top 1em
+  margin-bottom 1em
+
+.footer a
+  color #808080
+  
+.container-footer
+  width auto
+  max-width 700px
+  padding 0 15px
+
+.no-margen
+  margin-top 1em
+  margin-bottom 0
+
+.post-meta
+  background #808080
+  padding 1em
+
+.post-info
+  color #ffffff
+
+.post-meta a
+  color #ffffff

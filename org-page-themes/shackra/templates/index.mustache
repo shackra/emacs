@@ -1,0 +1,9 @@
+{{#categories}}
+    <h2>{{category}}</h2>
+    <p>Entradas en la categoria <b>{{category}}</b></p>
+    <ul>
+        {{#posts}}
+            <li><a href="{{post-uri}}">{{post-title}}</a></li>
+        {{/posts}}
+    </ul>
+{{/categories}}

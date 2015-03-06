@@ -1,0 +1,52 @@
+<!-- Pie de la pagina -->
+{{#show-meta}}
+<div class="post-meta"> <!-- metadatos -->
+    <div class="container">
+        <div>
+            <span title="Autor" class="post-info"><span class="ion-person"></span> {{author}}</span>
+        </div>
+        <div>
+            <span title="Fecha de publicación" class="post-info"><span class="ion-calendar"></span> {{{date}}}</span> / 
+            <span title="Fecha de última modificación" class="post-info">{{mod-date}}</span> 
+        </div>
+        <div>
+            <span title="Etiquetas" class="post-info"><span class="ion-pricetags"></span> {{{tag-links}}}</span>
+        </div>
+    </div>
+</div>
+{{/show-meta}}
+<footer class="footer">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 footer-caja">
+                <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+                    <div style="font-size: 2em"><i class="icon-cc"></i> <i class="icon-cc-by"></i> <i class="icon-cc-sa"></i></div></a>
+                    <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Text" property="dct:title" rel="dct:type">El blog de Shackra</span> por <a href="mailto:{{email}}"><span xmlns:cc="http://creativecommons.org/ns#" property="cc:attributionName">Jorge Araya Navarro</span></a> se distribuye bajo una
+                    <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional</a>.
+            </div>
+            <div class="col-md-4 footer-caja">
+                <p class="no-margen">Diseñado en la distribución</p>
+                <img class="no-margen" alt="Parabola GNU/Linux-libre" src="/media/svg/parabola.svg"/>
+            </div>
+            <div class="col-md-4 footer-caja">
+                <p class="no-margen">Generado con {{{creator-info}}}</p>
+                <p>Potenciado por <a href="https://github.com/kelvinh/org-page" target="_blank">org-page</a></p>
+            </div>
+            <div class="col-md-4 footer-caja">
+                <p class="no-margen">Editado a mano con</p>
+                <img class="no-margen" alt="GNU Emacs" src="/media/svg/emacs.svg"/>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript -->
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<script src="/media/js/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<!-- El siguiente script mantiene todos los videos de YouTube y Vimeo insertados -->
+<!-- "Responsive" y con la relación de aspecto correcto -->
+<script src="/media/js/videos-aspect-ratio.js"></script>
+<!-- cambia la frase mostrada en el blog -->
+<script src="/media/js/citas.js"></script>
