@@ -321,6 +321,29 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
     (interactive)
     (op/do-publication t t "/tmp/blog" nil))
 #+END_SRC
+
+*** Generación del blog y sincronización con RacketSpace
+
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:syncblog ()
+    "Sincroniza el blog generado con el contenedor en Racketspace"
+    (interactive)
+    ;; usa rclone para hacer la re-sincronización
+    (start-process "sync rclone" (get-buffer-create "*RClone*") "rclone"
+                   "sync"
+                   (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com")
+                   "rscf:elblog.deshackra.com")
+    )
+
+  (defun shackra:genblog ()
+    "Genera y sincroniza el blog"
+    (interactive)
+    ;; borra el directorio con los datos antiguos y vuelve a generar el blog
+    (delete-directory (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com") t nil)
+    (op/do-publication nil "HEAD^1" "~/Documentos/deshackra.com/elblog.deshackra.com" nil)
+    ;; sincroniza
+    (shackra:syncblog))
+#+END_SRC
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
 defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
@@ -629,14 +652,15 @@ la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porq
 castellanizar los enlaces y sus títulos en el blog.
 
       #+BEGIN_SRC emacs-lisp
-        (setf op/repository-directory "/home/jorge/Documentos/shackra.bitbucket.org/"
-              op/site-domain "http://shackra.bitbucket.org"
+        (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com/"
+              op/repository-org-branch "master"
+              op/repository-html-branch nil
+              op/site-domain "http://elblog.deshackra.com"
               op/site-main-title "El blog de Shackra"
               op/site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
               op/personal-github-link "https://github.com/shackra"
               op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
               op/theme 'shackra
-              op/item-cache nil
               org-html-htmlize-output-type nil
         )
 
