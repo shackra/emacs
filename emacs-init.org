@@ -683,6 +683,7 @@ modos que se activan luego de que emacs carga
          (global-company-mode)
          (global-fixmee-mode 1)
          (global-undo-tree-mode 1)
+         (unkillable-scratch 1)
          ))
 
   (defalias 'redo 'undo-tree-redo)

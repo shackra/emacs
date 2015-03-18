@@ -228,6 +228,8 @@
   :ensure ucs-utils))
 (ignore-errors (use-package undo-tree
   :ensure undo-tree))
+(ignore-errors (use-package unkillable-scratch
+  :ensure unkillable-scratch))
 (ignore-errors (use-package use-package
   :ensure use-package))
 (ignore-errors (use-package visual-fill-column
