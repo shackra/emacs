@@ -88,6 +88,7 @@ org!
 
 #+RESULTS:
 
+*** script generador de la lista de paquetes a instalar
 #+name: codigopython
 #+BEGIN_SRC python :results output :file paquetes.el
   import os
@@ -103,7 +104,7 @@ org!
               else:
                   name = package
                   
-              if not name == "archives-" and not name == "archives" and not name == "gnupg-":
+              if not name.startswith("archives") and not name.startswith("gnupg"):
                   packagestoinstall.append(
                       "(ignore-errors (use-package {0}\n  :ensure {0}))".format(
                           name))
@@ -133,17 +134,13 @@ Y cargamos ese archivo :)
   (load-file (expand-file-name "paquetes.el" user-emacs-directory))
 #+END_SRC
 
-Así es como, por el momento y de manera no muy elegante, resolvemos esta deficiencia! Código elisp para la
-instalación de los paquetes extraído de [[https://github.com/adamrt/emacs.d/][ésta otra configuración]] de Emacs.
+Así es como, por el momento y de manera no muy elegante, resolvemos esta deficiencia! Código elisp para la instalación de los paquetes extraído de [[https://github.com/adamrt/emacs.d/][ésta otra configuración]] de Emacs.
 
 Cargamos paquetes que no se instalan con ELPA.
 
 #+BEGIN_SRC emacs-lisp
   ;; carga un agregado para cuando se escriben correos usando mu4e
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
-  (ignore-errors 
-    (load-file "~/quicklisp/slime-helper.el")
-    (setf inferior-lisp-program "sbcl"))
 #+END_SRC
 
 *** Ubicación de temas personalizados
@@ -504,7 +501,8 @@ defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi c
 innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
 
 #+BEGIN_SRC emacs-lisp
-  (load-theme 'jazz t)
+  ;;(load-theme 'jazz t) ;; enviaremos el tema a vacaciones por un tiempo
+  (load-theme 'solarized-dark t)
   (powerline-center-theme)
   (menu-bar-mode -1)
   (tool-bar-mode -1)

@@ -66,8 +66,6 @@
   :ensure git-commit-mode))
 (ignore-errors (use-package git-rebase-mode
   :ensure git-rebase-mode))
-(ignore-errors (use-package gnupg
-  :ensure gnupg))
 (ignore-errors (use-package go-eldoc
   :ensure go-eldoc))
 (ignore-errors (use-package go-mode
@@ -216,6 +214,8 @@
   :ensure smart-mode-line))
 (ignore-errors (use-package smartrep
   :ensure smartrep))
+(ignore-errors (use-package solarized-theme
+  :ensure solarized-theme))
 (ignore-errors (use-package string-utils
   :ensure string-utils))
 (ignore-errors (use-package stylus-mode
