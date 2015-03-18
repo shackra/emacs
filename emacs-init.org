@@ -496,9 +496,14 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
     (shackra:syncblog))
 #+END_SRC
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
-Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane
-defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando
-innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
+Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
+
+#+BEGIN_SRC emacs-lisp
+  (setf solarized-high-contrast-mode-line t
+        solarized-distinct-fringe-background t
+        solarized-use-more-italic t
+        solarized-scale-org-headlines t)
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   ;;(load-theme 'jazz t) ;; enviaremos el tema a vacaciones por un tiempo
@@ -524,6 +529,8 @@ innecesariamente de entras decidí colocar todas las opciones dentro de un sólo
    ;; hace que el buffer inicial al abrir un nuevo cuadro de Emacs sea la agenda
    ;; de org-mode
    initial-buffer-choice "~/org/cosasporhacer.org"
+   x-underline-at-descent-line t ;; la linea que subraya es puesta en la base de
+                                 ;; la tipografía en lugar de en la linea base.
    load-prefer-newer t
    bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
    bookmark-save-flag 1
