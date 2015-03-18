@@ -499,7 +499,7 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
 
 #+BEGIN_SRC emacs-lisp
-  (setf solarized-high-contrast-mode-line t
+  (setf ;;solarized-high-contrast-mode-line t
         solarized-distinct-fringe-background t
         solarized-use-more-italic t
         solarized-scale-org-headlines t)
@@ -508,7 +508,7 @@ Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sa
 #+BEGIN_SRC emacs-lisp
   ;;(load-theme 'jazz t) ;; enviaremos el tema a vacaciones por un tiempo
   (load-theme 'solarized-dark t)
-  (powerline-center-theme)
+  ;;(powerline-center-theme)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -1503,4 +1503,14 @@ Un modo mayor para editar JavaScript
 Servidor web dentro de Emacs
 #+BEGIN_SRC emacs-lisp
   (setf httpd-port 9300)
+#+END_SRC
+*** recentf
+Mantiene una lista de archivos visitados recientemente
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'recentf-exclude ".git/")
+  (add-to-list 'recentf-exclude ".hg/")
+  (add-to-list 'recentf-exclude "elpa/")
+  (add-to-list 'recentf-exclude "\\.emacs.d/org-clock-save.el\\'")
+  (add-to-list 'recentf-exclude "INBOX/")
 #+END_SRC
