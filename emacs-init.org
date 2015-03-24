@@ -508,7 +508,7 @@ Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sa
 #+BEGIN_SRC emacs-lisp
   ;;(load-theme 'jazz t) ;; enviaremos el tema a vacaciones por un tiempo
   (load-theme 'solarized-dark t)
-  ;;(powerline-center-theme)
+  (powerline-center-theme)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -593,8 +593,8 @@ Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sa
   (eval-after-load "company" '(diminish 'company-mode))
   (eval-after-load "magit" '(diminish 'magit-auto-revert-mode))
   (eval-after-load "eyebrowse" '(diminish 'eyebrowse-mode))
-  (eval-after-load "subword-mode" '(diminish 'subword-mode))
-  (eval-after-load "visual-line-mode" '(diminish 'visual-line-mode))
+  (diminish 'subword-mode)
+  (diminish 'visual-line-mode)
 #+END_SRC
 
 *** Mover el cursos de manera inteligente al inicio de la linea
@@ -689,6 +689,9 @@ modos que se activan luego de que emacs carga
          (global-fixmee-mode 1)
          (global-undo-tree-mode 1)
          (unkillable-scratch 1)
+         ;; find-file y switch-to-buffer personalizados
+         (define-key global-map (kbd "C-x C-f") 'shackra:find-file)
+         (define-key global-map (kbd "C-x b") 'shackra:switch-buffer)
          ))
 
   (defalias 'redo 'undo-tree-redo)
@@ -699,9 +702,6 @@ modos que se activan luego de que emacs carga
   (global-set-key (kbd "M-'") 'text-scale-decrease)
   (define-key global-map (kbd "M-o") 'other-window)
   (define-key global-map (kbd "M-p") 'ace-window)
-  ;; find-file y switch-to-buffer personalizados
-  (define-key global-map (kbd "C-x C-f") 'shackra:find-file)
-  (define-key global-map (kbd "C-x b") 'shackra:switch-buffer)
   (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   ;; salta a la nueva ventana creada despues de dividir la actual
   (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
@@ -909,7 +909,8 @@ Y acá el resto de la configuración de Helm
                                     "\\*fsm-debug\\*"
                                     "elpa/.+"
                                     "tramp/.+"
-                                    "\\*Gofmt Errors\\*")
+                                    "\\*Gofmt Errors\\*"
+                                    "\\*autopep8")
    
    helm-boring-file-regexp-list (quote
                                  ("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
@@ -1380,6 +1381,7 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
 #+BEGIN_SRC emacs-lisp
   (require 'langtool)
   (setf langtool-language-tool-jar "/usr/share/java/languagetool/languagetool-commandline.jar"
+        langtool-java-bin (expand-file-name "bin/java" (getenv "JAVA_HOME"))
         langtool-mother-tongue "es")
 
   (global-set-key (kbd "C-x 4 w") 'langtool-check)
