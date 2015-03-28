@@ -5,9 +5,11 @@
 #+STARTUP: content
 
 #+begin_quote
-Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam
-repleamur. (Te encomendamos, Señor, nuestras actividades para que las
-realicemos a mayor gloria tuya.)
+Latin: Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam
+repleamur.
+
+Español: Te encomendamos, Señor, nuestras actividades para que las
+realicemos a mayor gloria tuya.
 #+end_quote
 
 * Configuración de GNU Emacs en un archivo de org-mode
@@ -43,7 +45,10 @@ activamos algunas opciones para depuración en caso de que Emacs falle en cargar
 ** Información personal
 #+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Araya Navarro"
-        user-mail-address "elcorreo@deshackra.com")
+        user-mail-address "elcorreo@deshackra.com"
+        calendar-location-name "Siquirres, CR"
+        calendar-latitude 10.083333
+        calendar-longitude -83.5)
 #+END_SRC
 
 ** Repositorio de paquetes
@@ -188,6 +193,7 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'eyebrowse)
   (require 'mediawiki)
   (load "flymake")
+  (require 'theme-changer)
 #+END_SRC
 
 ** Códigos elisp
@@ -495,6 +501,16 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
     ;; sincroniza
     (shackra:syncblog))
 #+END_SRC
+
+*** función para =delete-frame-functions=
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:run-delete-frame-hooks (frame)
+    "Esta función corre algunas funciones que no son llamadas cuando Emacs
+  corre como proceso de segundo plano"
+    (when (server-running-p)
+      (savehist-save)
+      (recentf-save-list)))
+#+END_SRC
 ** Emacs, no hagas éstas cosas... AKA "sane defaults"
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
 
@@ -506,8 +522,11 @@ Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sa
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;;(load-theme 'jazz t) ;; enviaremos el tema a vacaciones por un tiempo
-  (load-theme 'solarized-dark t)
+  ;; cambia el tema dependiendo de la hora del día
+  (change-theme 'solarized-light 'solarized-dark)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   (powerline-center-theme)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
@@ -532,6 +551,7 @@ Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sa
    x-underline-at-descent-line t ;; la linea que subraya es puesta en la base de
                                  ;; la tipografía en lugar de en la linea base.
    load-prefer-newer t
+   save-interprogram-paste-before-kill t
    bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
    bookmark-save-flag 1
    inhibit-startup-message t
@@ -627,7 +647,6 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
   ;; Si usas `powerline', editar la variable mode-line-format es algo complicado,
   ;; pero no imposible
 #+END_SRC
-
 ** Asociación de archivos a modos mayores
 Aquí se definen código para definir la asociación de algunas extensiones de archivo con algunos modos mayores
 #+BEGIN_SRC emacs-lisp
@@ -989,11 +1008,11 @@ cada día más popular como remplazo a =auto-complete=.
 
      #+BEGIN_SRC emacs-lisp
        (setf company-idle-delay 0.3
-             company-tooltip-limit 20
-             company-minimum-prefix-length 2
+             company-tooltip-limit 30
+             company-minimum-prefix-length 1
              company-echo-delay 0
              company-auto-complete nil)
-       
+
        (add-to-list 'company-backends 'company-dabbrev t)
        (add-to-list 'company-backends 'company-ispell t)
        (add-to-list 'company-backends 'company-files t)
@@ -1234,17 +1253,6 @@ Amo Mercurial ;)
        (define-key global-map [f12] 'monky-status)
        (setf monky-process-type 'cmdserver)
      #+END_SRC
-
-*** Smart modeline
-el modeline, pero más inteligente.
-
-       #+BEGIN_SRC emacs-lisp
-         (sml/setup)
-         (sml/apply-theme 'respectful)
-
-         (add-to-list 'sml/replacer-regexp-list '("^~/coders/" ":Código:") t)
-         (add-to-list 'sml/replacer-regexp-list '("^:Código:PPH/clientes/" ":PPH:") t)
-       #+END_SRC
 
 *** Visual-regexp y Visual-regexp-steroids
 expresiones regulares con algo más moderno que lo ofrecido por Emacs:
@@ -1515,4 +1523,25 @@ Mantiene una lista de archivos visitados recientemente
   (add-to-list 'recentf-exclude "elpa/")
   (add-to-list 'recentf-exclude "\\.emacs.d/org-clock-save.el\\'")
   (add-to-list 'recentf-exclude "INBOX/")
+#+END_SRC
+*** Powerline
+#+BEGIN_SRC emacs-lisp
+  (setf powerline-default-separator-dir '(right . left))
+#+END_SRC
+
+*** Smart modeline
+el modeline, pero más inteligente.
+
+#+BEGIN_SRC emacs-lisp
+  (setf sml/use-projectile-p 'before-prefixes
+        sml/shorten-modes t)
+  (sml/apply-theme 'respectful)
+  (sml/setup)
+
+  (add-to-list 'sml/replacer-regexp-list '("^~/go-workspace/" ":Código:") t)
+#+END_SRC
+
+*** delete-frame-functions
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'delete-frame-functions 'shackra:run-delete-frame-hooks)
 #+END_SRC
