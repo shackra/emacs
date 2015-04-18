@@ -187,9 +187,10 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'undo-tree)
   (require 'dired+)
   (require 'muse-mode)
-  (require 'muse-project)
   (require 'muse-docbook)
   (require 'muse-book)
+  (require 'muse-wiki)
+  (require 'muse-project)
   (require 'eyebrowse)
   (require 'mediawiki)
   (load "flymake")
@@ -729,15 +730,6 @@ modos que se activan luego de que emacs carga
 
 *** Org-mode
 CLOSED: [2014-10-15 mié 17:38]
-- State "TERMINADO"  from "POR-HACER"  [2014-10-15 mié 17:38]
-- State "POR-HACER"  from "EN-REVISIÓN" [2014-10-11 sáb 00:16] \\
-  probar las capturas de anotaciones implementadas. Pasar a los nuevos archivos las tareas en otros archivos.
-- State "EN-REVISIÓN" from "EN-REVISIÓN" [2014-10-10 vie 00:19] \\
-  El error parece provenir de la sentencia =org-blank-before-new-entry t= en la configuración. Todo lo demás
-  permanece sin comentar y aun así org-capture funciona como debe.
-- State "EN-REVISIÓN" from ""           [2014-10-08 mié 20:19] \\
-  No puedo hacer uso de la función para capturar anotaciones, [[http://emacs.stackexchange.com/questions/847/whats-wrong-with-my-org-mode-capture-settings][en el stack exchange de Emacs]] estoy tratando de
-  conseguir ayuda para este problema
 ¡Organiza tu vida usando Emacs!
 
 Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que org-mode usa la
@@ -795,16 +787,14 @@ combinación C-' para otra cosa.
                                       "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
                                      )
              
-             org-todo-keywords '((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))
+             org-todo-keywords '((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))                          
              org-todo-keyword-faces '(
-                                      ("POR-HACER" . (:foreground "black" :background "#ff4500" :weight bold))
+                                      ("POR-HACER" . (:foreground "white" :background "#ff4500" :weight bold))                              
                                       ("EN-PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
-                                      ("EN-ESPERA" . (:foreground "black" :background "#0000ff" :weight bold))
+                                      ("EN-ESPERA" . (:foreground "white" :background "#0000ff" :weight bold))
                                       ("EN-REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
-                                      ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))
-                                      ("CANCELADO" . (:foreground "black" :background "#8b0000" :weight bold))
-                                      )
-             )
+                                      ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))                               
+                                      ("CANCELADO" . (:foreground "white" :background "#8b0000" :weight bold))))
 
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
@@ -821,7 +811,6 @@ combinación C-' para otra cosa.
 
        (add-hook 'org-mode-hook (lambda ()
                                   (progn 
-                                    (auto-fill-mode -1)
                                     (visual-fill-column-mode))))
      #+END_SRC
 
@@ -831,23 +820,23 @@ la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porq
 castellanizar los enlaces y sus títulos en el blog.
 
 #+BEGIN_SRC emacs-lisp
-  (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com/"
-        op/repository-org-branch "master"
-        op/repository-html-branch nil
-        op/site-domain "http://elblog.deshackra.com"
-        op/site-main-title "El blog de Shackra"
-        op/site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
-        op/personal-github-link "https://github.com/shackra"
-        op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
-        op/theme 'shackra
-        org-html-htmlize-output-type nil
-  )
+    (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com/"
+          op/repository-org-branch "master"
+          op/repository-html-branch nil
+          op/site-domain "http://elblog.deshackra.com"
+          op/site-main-title "El blog de Shackra"
+          op/site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
+          op/personal-github-link "https://github.com/shackra"
+          op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
+          op/theme 'shackra
+  ;;      org-html-htmlize-output-type nil
+    )
 
-  (eval-after-load 'ox
-    '(progn
-       (add-to-list 'org-export-filter-src-block-functions
-                    'org2html-wrap-blocks-in-code)
-       ))
+    (eval-after-load 'ox
+      '(progn
+         (add-to-list 'org-export-filter-src-block-functions
+                      'org2html-wrap-blocks-in-code)
+         ))
       #+END_SRC
    
 *** text-mode
@@ -929,7 +918,8 @@ Y acá el resto de la configuración de Helm
                                     "elpa/.+"
                                     "tramp/.+"
                                     "\\*Gofmt Errors\\*"
-                                    "\\*autopep8")
+                                    "\\*autopep8"
+                                    "\\*magit.")
    
    helm-boring-file-regexp-list (quote
                                  ("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
@@ -1157,7 +1147,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      ;; html2text es un paquete que debe estar instalado en tu sistema
      mu4e-confirm-quit nil
      mu4e-html2text-command 'mu4e-shr2text
-     mu4e-get-mail-command "offlineimap"
+     mu4e-get-mail-command "mbsync -a"
      mu4e-maildir "/home/jorge/correo"
      mu4e-update-interval nil
      mu4e-auto-retrieve-keys t
@@ -1175,6 +1165,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      smtpmail-smtp-service 465
      message-send-mail-function 'smtpmail-send-it
      )
+    
     (if (daemonp)
         (ignore-errors
           (load (expand-file-name "mu4e-conf.secret.gpg" user-emacs-directory) t)))
@@ -1242,6 +1233,8 @@ A decir verdad, amo a Mercurial y odio a Git.
 
      #+BEGIN_SRC emacs-lisp
        (define-key global-map [C-f12] 'magit-status)
+       (setf magit-last-seen-setup-instructions "1.4.0"
+             magit-auto-revert-mode nil)
      #+END_SRC
 
 *** monky
@@ -1364,12 +1357,11 @@ configuración de CMake para Emacs
 Configuración para Muse, un modo mayor en Emacs para la escritura y publicación de libros a varios formatos.
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'muse-mode-hook (lambda ()
-                              (auto-fill-mode -1)
-                              (visual-line-mode)
-                              )
-            )
-
+  ;; proyectos Muse
+  (setf
+   muse-project-alist
+   '(("WikiCatolica" ("~/Documentos/deshackra.com/wikicatolica.deshackra.com" :default "index")
+      (:base "html" :path "~/Documentos/deshackra.com/wikicatolica.deshackra.com/salidahtml"))))
 #+END_SRC
 
 *** gancho para antes de guardar el archivo
@@ -1544,4 +1536,11 @@ el modeline, pero más inteligente.
 *** delete-frame-functions
 #+BEGIN_SRC emacs-lisp
   (add-hook 'delete-frame-functions 'shackra:run-delete-frame-hooks)
+#+END_SRC
+
+*** SLIME
+Es un modo de Emacs para desarrollo con Common Lisp.
+
+#+BEGIN_SRC emacs-lisp
+  (setf inferior-lisp-program "clisp")
 #+END_SRC

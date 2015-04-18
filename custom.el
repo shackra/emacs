@@ -129,7 +129,9 @@
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python2")
  '(safe-local-variable-values
    (quote
-    ((ispell-local-dictionary . english)
+    ((ispell-dictionary . "en")
+     (pyvenv-workon . sent-api)
+     (ispell-local-dictionary . english)
      (ispell-local-dictionary . en)
      (ispell-dictionary . en)
      (encoding . utf-8))))
