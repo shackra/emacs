@@ -709,6 +709,8 @@ modos que se activan luego de que emacs carga
          (global-fixmee-mode 1)
          (global-undo-tree-mode 1)
          (unkillable-scratch 1)
+         (when (fboundp 'winner-mode)
+           (winner-mode 1))
          ;; find-file y switch-to-buffer personalizados
          (define-key global-map (kbd "C-x C-f") 'shackra:find-file)
          (define-key global-map (kbd "C-x b") 'shackra:switch-buffer)
@@ -1152,15 +1154,15 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      mu4e-update-interval nil
      mu4e-auto-retrieve-keys t
      mu4e-headers-leave-behavior 'apply
-     mu4e-headers-visible-lines 7
+     mu4e-headers-visible-lines 8
      mu4e-hide-index-messages t
      message-kill-buffer-on-exit t
      mu4e-attachment-dir  "~/Descargas"
      mu4e-maildir       "~/correo" ;; top-level Maildir
-     mu4e-sent-folder   "/principal/INBOX/Sent" ;; folder for sent messages
-     mu4e-drafts-folder "/principal/INBOX/Drafts" ;; unfinished messages
-     mu4e-trash-folder  "/principal/INBOX/Trash"  ;; trashed messages
-     mu4e-refile-folder "/principal/INBOX/Archives" ;; Mensajes salvados
+     mu4e-sent-folder   "/personal/Enviados" ;; folder for sent messages
+     mu4e-drafts-folder "/personal/Borradores" ;; unfinished messages
+     mu4e-trash-folder  "/personal/Papelera"  ;; trashed messages
+     mu4e-refile-folder "/personal/Archivados" ;; Mensajes salvados
      smtpmail-stream-type  'ssl
      smtpmail-smtp-service 465
      message-send-mail-function 'smtpmail-send-it
