@@ -32,8 +32,8 @@ function cambia() {
     }
 }
 
-$(document).ready(
-    function() {
-        window.setInterval(cambia, 7000);
-    }
-);
+// $(document).ready(
+//     function() {
+//         window.setInterval(cambia, 7000);
+//     }
+// );
