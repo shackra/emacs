@@ -296,9 +296,10 @@ Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]],
 
 #+BEGIN_SRC emacs-lisp
   (defun find-file-sudo ()
-    "Reopen the current file with sudo privileges."
+    "reabre el archivo actual, si existe, usando sudo"
     (when (and buffer-file-name
-             (not (file-writable-p buffer-file-name)))
+             (not (file-writable-p buffer-file-name))
+             (file-exists-p buffer-file-name))
       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 #+END_SRC
 
@@ -498,7 +499,7 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
     (interactive)
     ;; borra el directorio con los datos antiguos y vuelve a generar el blog
     (delete-directory (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com") t nil)
-    (op/do-publication t nil "~/Documentos/deshackra.com/elblog.deshackra.com/" nil)
+    (op/do-publication nil "HEAD^1" "~/Documentos/deshackra.com/elblog.deshackra.com/" nil)
     ;; sincroniza
     (shackra:syncblog))
 #+END_SRC
@@ -1146,6 +1147,14 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
       (imagemagick-register-types))
 
     (setf
+     ;; información de cuentas de correo
+     mu4e-user-mail-address-list (list "elcorreo@deshackra.com"
+                                        "kartelo@gmx.com")
+   
+     mu4e-compose-signature "Pax et bonum.\nJorge Araya Navarro.\nES: Diseñador Publicitario, Programador Python y colaborador en Parabola GNU/Linux-libre\nEN: Ads Designer, Python programmer and contributor Parabola GNU/Linux-libre\nEO: Anonco grafikisto, Pitino programalingvo programisto kai kontribuanto en Parabola GNU/Linux-libre\nhttps://es.gravatar.com/shackra"
+     smtpmail-smtp-server "privateemail.com"
+     smtpmail-local-domain "local"
+     smtpmail-smtp-user "elcorreo@deshackra.com"
      ;; html2text es un paquete que debe estar instalado en tu sistema
      mu4e-confirm-quit nil
      mu4e-html2text-command 'mu4e-shr2text
@@ -1167,11 +1176,33 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      smtpmail-smtp-service 465
      message-send-mail-function 'smtpmail-send-it
      )
-    
-    (if (daemonp)
-        (ignore-errors
-          (load (expand-file-name "mu4e-conf.secret.gpg" user-emacs-directory) t)))
 
+    ;; cuentas de correo, información que cambia de cuenta en cuenta
+    (defvar my-mu4e-account-alist
+      '(("Personal"
+         (user-full-name "Jorge Araya Navarro")
+         (user-mail-address "elcorreo@deshackra.com")
+         (mu4e-sent-folder   "/principal/Enviados") ;; folder for sent messages
+         (mu4e-drafts-folder "/principal/Borradores") ;; unfinished messages
+         (mu4e-trash-folder  "/principal/Papelera")  ;; trashed messages
+         (mu4e-refile-folder "/principal/Archivos") ;; Mensajes salvados
+         (smtpmail-smtp-server "privateemail.com")
+         (smtpmail-local-domain "local")
+         (smtpmail-smtp-user "elcorreo@deshackra.com")
+         (mu4e-compose-signature "Pax et bonum.\n Jorge Araya Navarro.\n ES: Diseñador Publicitario, Programador Python y colaborador en Parabola GNU/Linux-libre\n EN: Ads Designer, Python programmer and contributor in Parabola GNU/Linux-libre\n EO: Anonco grafikisto, Pitino programalingvo programisto kai kontribuanto en Parabola GNU/Linux-libre\nhttps://es.gravatar.com/shackra"))
+        ("kartelo"
+         (user-full-name "Kartelo Diseño Publicitario")
+         (user-mail-address "kartelo@gmx.com")
+         (mu4e-sent-folder   "/kartelo/OUTBOX") ;; folder for sent messages
+         (mu4e-drafts-folder "/kartelo/Borradores") ;; unfinished messages
+         (mu4e-trash-folder  "/kartelo/Papelera")  ;; trashed messages
+         (mu4e-refile-folder "/kartelo/Archives") ;; Mensajes salvados
+         (smtpmail-smtp-server "mail.gmx.com")
+         (smtpmail-local-domain "local")
+         (smtpmail-smtp-user "kartelo@gmx.com")
+         (mu4e-compose-signature "Jorge Araya Navarro\nDiseñador Publicitario\nTel.: +506 61 07 77 10"))
+        ))
+    
     ;; funcion para seleccionar la cuenta con la que se va a responder a un email
     (defun my-mu4e-set-account ()
       "Set the account for composing a message."
