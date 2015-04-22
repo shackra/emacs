@@ -1493,9 +1493,12 @@ Permite a emacs enviar notificaciones por DBus o diferentes medios
 *** MediaWiki
 Acceso para Emacs a sitios que usan Wikimedia
 #+BEGIN_SRC emacs-lisp
-  (if (daemonp)
-      (ignore-errors
-        (load-file (expand-file-name "mediawiki.secret.gpg" user-emacs-directory))))
+  (setf mediawiki-site-alist
+        `(
+          ("Wikipedia en español" "https://es.wikipedia.org/w/" "jorgejavieran" ,(secrets-get-secret "Login" "contraseña usual") "Portal:Iglesia_católica")
+          ("Wikipedia en Inglés" "https://en.wikipedia.org/w/" "jorgejavieran"  ,(secrets-get-secret "Login" "contraseña usual") "Portal:Catholicism")
+          ))
+
   (define-key mediawiki-mode-map (kbd "C-c o") 'mediawiki-browse)
 #+END_SRC
 *** adoc-mode
