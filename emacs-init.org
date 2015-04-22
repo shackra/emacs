@@ -1425,17 +1425,17 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
 #+END_SRC
 
 *** Jabber
-CLOSED: [2015-01-14 mié 02:20]
-- State "TERMINADO"  from "EN-REVISIÓN" [2015-01-14 mié 02:20]
-- State "EN-REVISIÓN" from "TERMINADO"  [2014-11-03 lun 14:47] \\
-  las notificaciones no pueden ser enviadas por dbus o libnotify
-- State "TERMINADO"  from "EN REVISIÓN" [2014-11-03 lun 13:47]
-- State "EN-REVISIÓN" from ""           [2014-10-27 lun 15:27] \\
-  iniciar sesión únicamente si Emacs se inicia como demonio
 Chat de jabber desde Emacs!!
 
 #+BEGIN_SRC emacs-lisp
   (setf
+   ;; ver http://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
+   jabber-account-list `(
+                         ("shackra@riseup.net/emacs"
+                          (:password . ,(secrets-get-secret "Login" "e-mail"))
+                          (:network-server . "riseup.net")
+                          (:connection-type . starttls))
+                         )
    jabber-history-enabled t
    jabber-use-global-history nil
    jabber-backlog-number 40
@@ -1443,7 +1443,7 @@ Chat de jabber desde Emacs!!
    jabber-alert-presence-message-function (lambda (who oldstatus newstatus statusnext) nil)
    jabber-invalid-certificate-servers '("chat.deshackra.com")
    jabber-default-status "«Faith is always at a disadvantage; it is a perpetually defeated thing which survives all of its conquerors» ~G. K. Chesterton."
-  )
+   )
 
   (defun my-jabber-chat-delete-or-bury ()
     (interactive)
@@ -1455,18 +1455,13 @@ Chat de jabber desde Emacs!!
                         (cadr e))
                (bury-buffer))))))
 
-  (if (daemonp)
-      ;; nos conecta a todas las cuentas jabber!
-      (progn
-        (ignore-errors
-          (load-file (expand-file-name "jabber.secret.gpg" user-emacs-directory)))
-        (ignore-errors 
-          (jabber-connect-all))))
-
   (add-hook 'jabber-chat-mode-hook (lambda ()
                                      (turn-off-auto-fill)
                                      (turn-on-visual-line-mode)
                                      (flyspell-mode)))
+  (if (daemonp)
+      ;; Nos conectamos a Jabber sólo cuando Emacs corre como demonio
+      (jabber-connect-all))
 #+END_SRC
 
 *** GNU TLS
