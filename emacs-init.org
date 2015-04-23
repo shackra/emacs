@@ -1175,7 +1175,10 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      smtpmail-stream-type  'ssl
      smtpmail-smtp-service 465
      message-send-mail-function 'smtpmail-send-it
-     )
+     mu4e-maildir-shortcuts
+     '(("/personal/INBOX" . ?p)
+       ("/gmx/INBOX"      . ?g)
+     ))
 
     ;; cuentas de correo, información que cambia de cuenta en cuenta
     (defvar my-mu4e-account-alist
