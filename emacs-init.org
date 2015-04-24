@@ -1434,9 +1434,10 @@ Chat de jabber desde Emacs!!
   (setf
    ;; ver http://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
    jabber-account-list `(
-                         ("shackra@riseup.net/emacs"
-                          (:password . ,(secrets-get-secret "Login" "e-mail"))
-                          (:network-server . "riseup.net")
+                         ("jorgedice@blah.im/emacs"
+                          (:password . ,(secrets-get-secret "Login" "contraseña usual"))
+                          (:network-server . "jabber.blah.im")
+                          (:port . 5222)
                           (:connection-type . starttls))
                          )
    jabber-history-enabled t
