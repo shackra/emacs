@@ -82,6 +82,10 @@
   :ensure helm-projectile))
 (ignore-errors (use-package helm-swoop
   :ensure helm-swoop))
+(ignore-errors (use-package helm-unicode
+  :ensure helm-unicode))
+(ignore-errors (use-package hgignore-mode
+  :ensure hgignore-mode))
 (ignore-errors (use-package highlight-blocks
   :ensure highlight-blocks))
 (ignore-errors (use-package highlight-escape-sequences
@@ -96,6 +100,8 @@
   :ensure ht))
 (ignore-errors (use-package htmlize
   :ensure htmlize))
+(ignore-errors (use-package hydra
+  :ensure hydra))
 (ignore-errors (use-package idomenu
   :ensure idomenu))
 (ignore-errors (use-package iedit
@@ -210,8 +216,12 @@
   :ensure skewer-mode))
 (ignore-errors (use-package skewer-reload-stylesheets
   :ensure skewer-reload-stylesheets))
+(ignore-errors (use-package slime
+  :ensure slime))
 (ignore-errors (use-package smart-mode-line
   :ensure smart-mode-line))
+(ignore-errors (use-package smart-mode-line-powerline-theme
+  :ensure smart-mode-line-powerline-theme))
 (ignore-errors (use-package smartrep
   :ensure smartrep))
 (ignore-errors (use-package solarized-theme
@@ -222,8 +232,14 @@
   :ensure stylus-mode))
 (ignore-errors (use-package sws-mode
   :ensure sws-mode))
+(ignore-errors (use-package sx
+  :ensure sx))
+(ignore-errors (use-package theme-changer
+  :ensure theme-changer))
 (ignore-errors (use-package toml-mode
   :ensure toml-mode))
+(ignore-errors (use-package twittering-mode
+  :ensure twittering-mode))
 (ignore-errors (use-package ucs-utils
   :ensure ucs-utils))
 (ignore-errors (use-package undo-tree

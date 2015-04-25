@@ -1580,3 +1580,10 @@ Es un modo de Emacs para desarrollo con Common Lisp.
 #+BEGIN_SRC emacs-lisp
   (setf inferior-lisp-program "clisp")
 #+END_SRC
+*** twittering-mode
+Twitter desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (setf twittering-use-master-password t
+        twittering-icon-mode t
+        twittering-display-remaining t)
+#+END_SRC
