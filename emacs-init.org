@@ -1438,6 +1438,7 @@ Chat de jabber desde Emacs!!
                           (:password . ,(secrets-get-secret "Login" "contraseña usual"))
                           (:network-server . "jabber.blah.im")
                           (:port . 5222)
+                          (:nickname . "Shackra Sislock")
                           (:connection-type . starttls))
                          )
    jabber-history-enabled t
