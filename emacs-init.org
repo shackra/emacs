@@ -1116,20 +1116,7 @@ Un modo mayor autónomo que permite la edición de plantillas web: documentos HT
                                     )))
      #+END_SRC
 *** mu4e
-Un versátil cliente de correo electrónico. Éste paquete se carga de manera condicional si esta instalado en el
-sistema del usuario. Desgraciadamente no puedes instalarlo desde Melpa o algún otro repositorio de paquetes de
-Emacs.
-
-Correos electrónicos y otros datos son traídos de un archivo secreto ;)
-
-#+BEGIN_SRC emacs-lisp
-  (defun shackra/render-html-message ()
-    "Render a HTML message with eww, see http://emacs.stackexchange.com/a/3052/690"
-    (let ((dom (libxml-parse-html-region (point-min) (point-max))))
-      (erase-buffer)
-      (shr-insert-document dom)
-      (goto-char (point-min))))
-#+END_SRC
+Un versátil cliente de correo electrónico. Éste paquete se carga de manera condicional si esta instalado en el sistema del usuario. Desgraciadamente no puedes instalarlo desde Melpa o algún otro repositorio de paquetes de Emacs.
 
 Para saber como configurar mu4e para escribir correos con diferentes cuentas de correo, puedes mirar la
 [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]] es aconsejable que esa configuración viva en el archivo secreto...
@@ -1177,8 +1164,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      message-send-mail-function 'smtpmail-send-it
      mu4e-maildir-shortcuts
      '(("/personal/INBOX" . ?p)
-       ("/gmx/INBOX"      . ?g)
-     ))
+       ("/gmx/INBOX"      . ?g)))
 
     ;; cuentas de correo, información que cambia de cuenta en cuenta
     (defvar my-mu4e-account-alist
@@ -1203,8 +1189,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
          (smtpmail-smtp-server "mail.gmx.com")
          (smtpmail-local-domain "local")
          (smtpmail-smtp-user "kartelo@gmx.com")
-         (mu4e-compose-signature "Jorge Araya Navarro\nDiseñador Publicitario\nTel.: +506 61 07 77 10"))
-        ))
+         (mu4e-compose-signature "Jorge Araya Navarro\nDiseñador Publicitario\nTel.: +506 61 07 77 10"))))
     
     ;; funcion para seleccionar la cuenta con la que se va a responder a un email
     (defun my-mu4e-set-account ()
