@@ -38,7 +38,7 @@
  '(elpy-mode-hook (quote (hl-line-mode)))
  '(elpy-modules
    (quote
-    (elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-highlight-indentation elpy-module-yasnippet)))
+    (elpy-module-company elpy-module-eldoc elpy-module-pyvenv elpy-module-yasnippet)))
  '(elpy-rpc-backend "jedi")
  '(elpy-rpc-python-command "python2")
  '(fci-rule-color "#151515")
