@@ -60,6 +60,8 @@
   :ensure fixmee))
 (ignore-errors (use-package flycheck
   :ensure flycheck))
+(ignore-errors (use-package flycheck-color-mode-line
+  :ensure flycheck-color-mode-line))
 (ignore-errors (use-package flycheck-rust
   :ensure flycheck-rust))
 (ignore-errors (use-package git-commit-mode

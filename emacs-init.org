@@ -1013,9 +1013,7 @@ cada día más popular como remplazo a =auto-complete=.
      #+END_SRC
      
 *** Python
-Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]]
-en el modo Python. Por lo tanto, estoy reuniendo la tecla RET con la función =newline-and-indent= que funciona
-de lo más bien.
+Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]] en el modo Python. Por lo tanto, estoy reuniendo la tecla RET con la función =newline-and-indent= que funciona de lo más bien.
 
      #+BEGIN_SRC emacs-lisp
        (elpy-enable)
@@ -1026,12 +1024,14 @@ de lo más bien.
                  (lambda ()
                    ;; esto puede que no funcione en emacs 24.3 y anteriores
                    (electric-indent-local-mode -1)
+                   (py-autopep8-enable-on-save)
                    (nlinum-mode)
                    (hlinum-activate)))
+
        (define-key python-mode-map (kbd "C-M-,") 'comment-dwim-line)
-       (define-key python-mode-map (kbd "C-c <right>") 'python-indent-shift-right)
-       (define-key python-mode-map (kbd "C-c <left>") 'python-indent-shift-left)
-       (define-key python-mode-map (kbd "C-c ,") 'iedit-mode-toggle-on-function)
+       (define-key python-mode-map (kbd "C-c .") 'python-indent-shift-right)
+       (define-key python-mode-map (kbd "C-c ,") 'python-indent-shift-left)
+       (define-key python-mode-map (kbd "C-c -") 'iedit-mode-toggle-on-function)
      #+END_SRC
 
 *** iedit-mode
@@ -1077,8 +1077,7 @@ proyecto en Github para más [[https://github.com/magnars/multiple-cursors.el#ba
 laptop.
      
 *** flycheck-mode
-revisión-al-vuelo de la sintaxis mientras editas código. Hace una selección automática del mejor revisor de
-sintaxis que dispongas.
+revisión-al-vuelo de la sintaxis mientras editas código. Hace una selección automática del mejor revisor de sintaxis que dispongas.
      
 Tiene soporte para muchos lenguajes. Lo recomiendo por encima de flymake.
 
@@ -1087,6 +1086,9 @@ Tiene soporte para muchos lenguajes. Lo recomiendo por encima de flymake.
         flycheck-disabled-checkers '(emacs-lisp-checkdoc) ;; deshabilita el majadero revisor de documentación
         flycheck-indication-mode 'right-fringe
         )
+
+       (eval-after-load "flycheck"
+         '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
      #+END_SRC
 
 *** web-mode
@@ -1389,7 +1391,6 @@ Configuración para Muse, un modo mayor en Emacs para la escritura y publicació
 puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enganchan un par de funciones.
 
       #+BEGIN_SRC emacs-lisp
-        (add-hook 'before-save-hook 'py-autopep8-before-save)
         (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
         (add-hook 'before-save-hook 'gofmt-before-save)
        #+END_SRC
