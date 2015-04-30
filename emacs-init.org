@@ -513,7 +513,9 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
       (savehist-save)
       (recentf-save-list)))
 #+END_SRC
-** Emacs, no hagas éstas cosas... AKA "sane defaults"
+** EN-ESPERA Emacs, no hagas éstas cosas... AKA "sane defaults"
+- State "EN-ESPERA"  from ""           [2015-04-30 jue 00:34] \\
+  powerline-mode ha sido desactivado por un tiempo
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
 
 #+BEGIN_SRC emacs-lisp
@@ -529,7 +531,7 @@ Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sa
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (powerline-center-theme)
+  ;;(powerline-center-theme)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
@@ -1543,14 +1545,16 @@ Mantiene una lista de archivos visitados recientemente
   (setf powerline-default-separator-dir '(right . left))
 #+END_SRC
 
-*** Smart modeline
+*** EN-ESPERA smart-modeline
+- State "EN-ESPERA"  from ""           [2015-04-30 jue 00:34] \\
+  he decidido desactivarlo por un tiempo
 el modeline, pero más inteligente.
 
 #+BEGIN_SRC emacs-lisp
   (setf sml/use-projectile-p 'before-prefixes
         sml/shorten-modes t)
-  (sml/apply-theme 'respectful)
-  (sml/setup)
+  ;; (sml/apply-theme 'respectful)
+  ;; (sml/setup)
 
   (add-to-list 'sml/replacer-regexp-list '("^~/go-workspace/" ":Código:") t)
 #+END_SRC
