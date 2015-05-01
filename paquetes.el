@@ -126,8 +126,6 @@
   :ensure kivy-mode))
 (ignore-errors (use-package langtool
   :ensure langtool))
-(ignore-errors (use-package ledger-mode
-  :ensure ledger-mode))
 (ignore-errors (use-package let-alist
   :ensure let-alist))
 (ignore-errors (use-package lice
