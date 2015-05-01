@@ -162,7 +162,6 @@ proveídas por Emacs o paquetes instalados en Emacs.
 
 #+BEGIN_SRC emacs-lisp
   (require 'uniquify)
-  (require 'helm)
   (require 'helm-config)
   (require 'helm-files)
   (require 'helm-grep)
@@ -195,6 +194,7 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'mediawiki)
   (load "flymake")
   (require 'theme-changer)
+  (require 'keyfreq)
 #+END_SRC
 
 ** Códigos elisp
@@ -665,7 +665,7 @@ Aquí se definen código para definir la asociación de algunas extensiones de a
   (add-to-list 'auto-mode-alist '("\\.gtl\\'" . web-mode))
 #+END_SRC
 
-** Customize
+** Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira en éste archivo:
 
@@ -703,6 +703,8 @@ modos que se activan luego de que emacs carga
   (add-hook (quote after-init-hook)
             (lambda ()
          (helm-mode 1)
+         (helm-adaptative-mode 1)
+         (helm-autoresize-mode 1)
          (helm-descbinds-mode)
          (projectile-global-mode)
          (helm-projectile-on)
@@ -717,7 +719,8 @@ modos que se activan luego de que emacs carga
          ;; find-file y switch-to-buffer personalizados
          (define-key global-map (kbd "C-x C-f") 'shackra:find-file)
          (define-key global-map (kbd "C-x b") 'shackra:switch-buffer)
-         ))
+         (keyfreq-mode 1)
+         (keyfreq-autosave-mode 1)))
 
   (defalias 'redo 'undo-tree-redo)
 
@@ -843,7 +846,7 @@ castellanizar los enlaces y sus títulos en el blog.
                       'org2html-wrap-blocks-in-code)
          ))
       #+END_SRC
-   
+
 *** text-mode
 Esta configuración afecta a todos los modos texto en los buffers.
      
@@ -858,11 +861,14 @@ Esta configuración afecta a todos los modos texto en los buffers.
      #+END_SRC
 
 *** HELM
-Es un paquete que esta en su propia liga. Éste paquete te ayudara a aumentar tu productividad, reducir tu
-calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de amor por vos ;)
+Es un paquete que esta en su propia liga. Éste paquete te ayudara a aumentar tu productividad, reducir tu calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de amor por vos ;)
 
 Acá se definen primero los keybindings para Helm, todo en un solo sitio.
 #+BEGIN_SRC emacs-lisp
+  ;; establece el tamaño de la ventada de Helm a un 20% (40% por defecto)
+  (setf helm-autoresize-max-height 20
+        helm-autoresize-min-height 20)
+
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
   (global-unset-key (kbd "C-x c"))
   (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
@@ -1008,6 +1014,9 @@ cada día más popular como remplazo a =auto-complete=.
              company-echo-delay 0
              company-auto-complete nil)
 
+       (define-key company-mode-map (kbd "C-ñ") 'helm-company)
+       (define-key company-mode-map (kbd "C-ñ") 'helm-company)
+
        (add-to-list 'company-backends 'company-dabbrev t)
        (add-to-list 'company-backends 'company-ispell t)
        (add-to-list 'company-backends 'company-files t)
@@ -1026,9 +1035,7 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
                  (lambda ()
                    ;; esto puede que no funcione en emacs 24.3 y anteriores
                    (electric-indent-local-mode -1)
-                   (py-autopep8-enable-on-save)
-                   (nlinum-mode)
-                   (hlinum-activate)))
+                   (py-autopep8-enable-on-save)))
 
        (define-key python-mode-map (kbd "C-M-,") 'comment-dwim-line)
        (define-key python-mode-map (kbd "C-c .") 'python-indent-shift-right)
@@ -1225,6 +1232,7 @@ Extiende funcionalidades de =dired=. Se agrega una función personalizada que ma
 porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
 
      #+BEGIN_SRC emacs-lisp
+       ;; función defectuosa
        (defun dired-quit-window-kill-buffer ()
          "Además de matar el buffer, cierra la ventana"
          (interactive)
@@ -1238,7 +1246,7 @@ porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear
        (define-key ctl-x-map   "d" 'dired)
        (define-key ctl-x-4-map "d" 'diredp-dired-for-files-other-window)
        (define-key dired-mode-map (kbd ".") 'dired-up-directory)
-       (define-key dired-mode-map (kbd "q") 'dired-quit-window-kill-buffer)
+       ;;(define-key dired-mode-map (kbd "q") 'dired-quit-window-kill-buffer)
      #+END_SRC
 
 *** ace-jump
@@ -1292,6 +1300,8 @@ llegar a la columna 79.
                 (lambda ()
                   (set (make-local-variable 'fill-column) 79)
                   (set (make-local-variable 'comment-auto-fill-only-comments) t)
+                  (nlinum-mode)
+                  (hlinum-activate)
                   (auto-fill-mode t)
                   (highlight-numbers-mode)
                   (hes-mode)
@@ -1576,4 +1586,23 @@ Twitter desde Emacs
   (setf twittering-use-master-password t
         twittering-icon-mode t
         twittering-display-remaining t)
+#+END_SRC
+*** helm-unicode
+Permite escoger caracteres /unicode/ por nombre usando [[*HELM][Helm]].
+
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map (kbd "C-c h u") 'helm-unicode)
+#+END_SRC
+*** ScreenShot
+Hace capturas de pantalla de Emacs, desde Emacs
+
+#+BEGIN_SRC emacs-lisp
+  (setf screenshot-schemes
+        '(
+          ("local"
+           :dir "~/Imágenes/emacs/")
+          ("Carpeta actual"
+           :dir default-directory)))
+  (setf screenshot-default-scheme "local"
+        screenshot-take-delay 3)
 #+END_SRC
