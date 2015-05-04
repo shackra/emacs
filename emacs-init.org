@@ -1586,6 +1586,8 @@ Twitter desde Emacs
   (setf twittering-use-master-password t
         twittering-icon-mode t
         twittering-display-remaining t)
+
+  (define-key twittering-mode-map (kbd "C-c f") 'twittering-favorite)
 #+END_SRC
 *** helm-unicode
 Permite escoger caracteres /unicode/ por nombre usando [[*HELM][Helm]].
