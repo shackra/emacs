@@ -1653,4 +1653,6 @@ Lector de /RSS feeds/ dentro de Emacs
   (add-hook 'elfeed-new-entry-hook
             (elfeed-make-tagger :before "5 days ago"
                                 :remove 'unread))
+
+  (global-set-key (kbd "C-x w") 'elfeed)
 #+END_SRC
