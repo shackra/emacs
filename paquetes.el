@@ -10,6 +10,8 @@
   :ensure adoc-mode))
 (ignore-errors (use-package async
   :ensure async))
+(ignore-errors (use-package avy
+  :ensure avy))
 (ignore-errors (use-package back-button
   :ensure back-button))
 (ignore-errors (use-package bind-key
@@ -42,6 +44,8 @@
   :ensure discover-my-major))
 (ignore-errors (use-package dpaste
   :ensure dpaste))
+(ignore-errors (use-package elfeed
+  :ensure elfeed))
 (ignore-errors (use-package elpy
   :ensure elpy))
 (ignore-errors (use-package emmet-mode
