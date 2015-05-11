@@ -1682,9 +1682,9 @@ Lector de /RSS feeds/ dentro de Emacs
         ;; envía la notificación usando libnotify. Esto no funcionara si DBus no
         ;; se esta usando
         (notifications-notify
-         :title "Aviso de la agenda"
-         :body (format "<b>Cita en %d minuto(s):</b><br>%s<br>" min-to-app msg)
-         :appname "Emacs: Org"
+         :title "Agenda Org"
+         :body (format "<b>Cita en %s minuto(s):</b><br>%s<br>" min-to-app msg)
+         :app-name "Emacs: Org"
          :app-icon "/usr/share/icons/Adwaita/32x32/status/appointment-soon.png"
          :urgency "critical"
          :sound-file "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
@@ -1693,9 +1693,9 @@ Lector de /RSS feeds/ dentro de Emacs
       ;; cosas por hacer.
       (dolist (i (number-sequence 0 (1- (length min-to-app))))
         (notifications-notify
-         :title "Aviso de la agenda"
-         :body (format "<b>Cita en %d minuto(s):</b><br>%s<br>" (nth i min-to-app) (nth i msg))
-         :appname "Emacs: Org"
+         :title "Agenda Org"
+         :body (format "<b>Cita en %s minuto(s):</b> %s" (nth i min-to-app) (nth i msg))
+         :app-name "Emacs: Org"
          :app-icon "/usr/share/icons/Adwaita/32x32/status/appointment-soon.png"
          :urgency "critical"
          :sound-file "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
