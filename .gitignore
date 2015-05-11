@@ -30,3 +30,4 @@ jabber-*
 recentf
 .org-id-locations
 .sx/*
+helm-adaptive-history
