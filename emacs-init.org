@@ -1684,7 +1684,7 @@ Lector de /RSS feeds/ dentro de Emacs
         (notifications-notify
          :title "Aviso de la agenda"
          :body (format "<b>Cita en %d minuto(s):</b><br>%s<br>" min-to-app msg)
-         :appname "emacs"
+         :appname "Emacs: Org"
          :app-icon "/usr/share/icons/Adwaita/32x32/status/appointment-soon.png"
          :urgency "critical"
          :sound-file "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
@@ -1695,7 +1695,7 @@ Lector de /RSS feeds/ dentro de Emacs
         (notifications-notify
          :title "Aviso de la agenda"
          :body (format "<b>Cita en %d minuto(s):</b><br>%s<br>" (nth i min-to-app) (nth i msg))
-         :appname "emacs"
+         :appname "Emacs: Org"
          :app-icon "/usr/share/icons/Adwaita/32x32/status/appointment-soon.png"
          :urgency "critical"
          :sound-file "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
