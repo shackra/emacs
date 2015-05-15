@@ -122,9 +122,7 @@
  '(org-todo-keywords
    (quote
     ((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))))
- '(py-autopep8-options
-   (quote
-    ("--ignore E711,E712,E24" "--aggressive --aggressive --aggressive")))
+ '(py-autopep8-options nil)
  '(python-shell-interpreter "python2")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python2")
  '(safe-local-variable-values

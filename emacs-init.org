@@ -60,10 +60,9 @@ poner algunas cosas en tu configuración de Emacs y tal. Lo posible es que las m
 en la descripción del paquete.
 
 #+BEGIN_SRC emacs-lisp
-  (setf package-archives (list (quote ("gnu" . "http://elpa.gnu.org/packages/"))
-                               (quote ("mermelade" . "http://marmalade-repo.org/packages/"))
-                               (quote ("melpa" . "http://melpa.milkbox.net/packages/"))
-                               (quote ("org" . "http://orgmode.org/elpa/"))))
+  (setf package-archives (list '("gnu" . "http://elpa.gnu.org/packages/")
+                               '("melpa" . "http://melpa.milkbox.net/packages/")
+                               '("org" . "http://orgmode.org/elpa/")))
 #+END_SRC
 
 Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
@@ -1368,53 +1367,51 @@ configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Moz
 configuración para habilitar auto-completado en Emacs para la
 programación en el lenguaje C++
 
-       #+BEGIN_SRC emacs-lisp
-         (require 'cmake-project)
-         
-         (defun maybe-cmake-project-hook ()
-           (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
-         
-         (defun my-irony-mode-hook ()
-           (define-key irony-mode-map [remap completion-at-point]
-             'irony-completion-at-point-async)
-           (define-key irony-mode-map [remap complete-symbol]
-             'irony-completion-at-point-async))
-         
-         (add-hook 'c++-mode-hook
-                   (lambda ()
-                     (irony-mode)
-                     (set (make-local-variable 'company-backends) '(company-c-headers 
-                                                                    company-irony
-                                                                    company-yasnippet
-                                                                    ))
-                     (maybe-cmake-project-hook)
-         ))
-         
-         (add-hook 'irony-mode-hook 
-                   (lambda ()
-                     (company-irony-setup-begin-commands)
-                     (my-irony-mode-hook)
-         ))
-       #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (require 'cmake-project)
+
+  (defun maybe-cmake-project-hook ()
+    (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
+
+  (defun my-irony-mode-hook ()
+    (define-key irony-mode-map [remap completion-at-point]
+      'irony-completion-at-point-async)
+    (define-key irony-mode-map [remap complete-symbol]
+      'irony-completion-at-point-async))
+
+  (add-hook 'c++-mode-hook
+            (lambda ()
+              (irony-mode)
+              (set (make-local-variable 'company-backends)
+                   '(company-irony
+                     company-yasnippet
+                     company-files))
+              (maybe-cmake-project-hook)))
+
+  (add-hook 'irony-mode-hook 
+            (lambda ()
+              (my-irony-mode-hook)
+              (irony-cdb-autosetup-compile-options)))
+  #+END_SRC
 
 *** CMake
 configuración de CMake para Emacs
        
-       #+BEGIN_SRC emacs-lisp
-         (require 'cmake-mode)
-         
-         (setq auto-mode-alist
-               (append
-                '(("CMakeLists\\.txt\\'" . cmake-mode))
-                '(("\\.cmake\\'" . cmake-mode))
-                auto-mode-alist))
-         
-         (add-hook 'cmake-mode-hook 
-                   (lambda ()
-                     (set (make-local-variable 'company-backends) '(company-cmake
-                                                                    company-yasnippet))
-                     ))
-       #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (require 'cmake-mode)
+
+  (setq auto-mode-alist
+        (append
+         '(("CMakeLists\\.txt\\'" . cmake-mode))
+         '(("\\.cmake\\'" . cmake-mode))
+         auto-mode-alist))
+
+  (add-hook 'cmake-mode-hook 
+            (lambda ()
+              (set (make-local-variable 'company-backends)
+                   '(company-cmake
+                     company-yasnippet))))
+#+END_SRC
 
 *** Muse
 Configuración para Muse, un modo mayor en Emacs para la escritura y publicación de libros a varios formatos.
@@ -1588,11 +1585,11 @@ Mantiene una lista de archivos visitados recientemente
   he decidido desactivarlo por un tiempo
 el modeline, pero más inteligente.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (setf sml/use-projectile-p 'before-prefixes
         sml/shorten-modes t)
-  ;; (sml/apply-theme 'respectful)
-  ;; (sml/setup)
+  (sml/apply-theme 'respectful)
+  (sml/setup)
 
   (add-to-list 'sml/replacer-regexp-list '("^~/go-workspace/" ":Código:") t)
 #+END_SRC
