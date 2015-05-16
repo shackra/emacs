@@ -60,9 +60,11 @@ poner algunas cosas en tu configuración de Emacs y tal. Lo posible es que las m
 en la descripción del paquete.
 
 #+BEGIN_SRC emacs-lisp
-  (setf package-archives (list '("gnu" . "http://elpa.gnu.org/packages/")
-                               '("melpa" . "http://melpa.milkbox.net/packages/")
-                               '("org" . "http://orgmode.org/elpa/")))
+  (add-to-list 'package-archives
+               '("melpa" . "http://melpa.org/packages/") t)
+  (when (< emacs-major-version 24)
+    ;; Para importes librerias que requieren compatibilidad como cl-lib
+    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 #+END_SRC
 
 Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
