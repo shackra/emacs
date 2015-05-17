@@ -78,12 +78,16 @@
   :ensure go-mode))
 (ignore-errors (use-package go-snippets
   :ensure go-snippets))
+(ignore-errors (use-package header2
+  :ensure header2))
 (ignore-errors (use-package helm
   :ensure helm))
 (ignore-errors (use-package helm-company
   :ensure helm-company))
 (ignore-errors (use-package helm-descbinds
   :ensure helm-descbinds))
+(ignore-errors (use-package helm-flycheck
+  :ensure helm-flycheck))
 (ignore-errors (use-package helm-projectile
   :ensure helm-projectile))
 (ignore-errors (use-package helm-swoop
@@ -116,6 +120,8 @@
   :ensure imenu+))
 (ignore-errors (use-package irony
   :ensure irony))
+(ignore-errors (use-package irony-eldoc
+  :ensure irony-eldoc))
 (ignore-errors (use-package jabber
   :ensure jabber))
 (ignore-errors (use-package js2-mode
@@ -238,6 +244,8 @@
   :ensure sws-mode))
 (ignore-errors (use-package sx
   :ensure sx))
+(ignore-errors (use-package systemd
+  :ensure systemd))
 (ignore-errors (use-package theme-changer
   :ensure theme-changer))
 (ignore-errors (use-package toml-mode

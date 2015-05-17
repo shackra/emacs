@@ -969,6 +969,12 @@ Y acá el resto de la configuración de Helm
   (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
      #+END_SRC
      
+*** helm-flycheck
+Muestra los errores y advertencias marcados por flycheck usando Helm!
+
+#+BEGIN_SRC emacs-lisp
+  (define-key flycheck-mode-map (kbd "C-c h !") 'helm-flycheck)
+#+END_SRC
 *** Projectile
 Es un paquete que nos permite el manejo de archivos en proyectos. Un proyecto, por definición, puede ser
 cualquier repositorio de código fuente de software, como =mercurial=, =git=, etc. También es posible definir
@@ -1329,14 +1335,16 @@ llegar a la columna 79.
                 (lambda ()
                   (set (make-local-variable 'fill-column) 79)
                   (set (make-local-variable 'comment-auto-fill-only-comments) t)
-                  (nlinum-mode)
-                  (hlinum-activate)
+                  ;; Nota: M-q rellena las columnas del párrafo actual
+                  ;;       M-o M-s centra una linea de texto
                   (auto-fill-mode t)
+                  (hlinum-activate)
                   (highlight-numbers-mode)
                   (hes-mode)
                   ;;(highlight-blocks-mode)
                   (electric-pair-mode)
                   (rainbow-turn-on)
+                  (auto-make-header)
                   (flyspell-prog-mode)))
 
       ;; redefinimos la tecla RET para que inserte un salto de linea y la
@@ -1710,3 +1718,7 @@ Lector de /RSS feeds/ dentro de Emacs
                (if (string= (buffer-file-name) (concat org-directory "/cosasporhacer.org"))
                    (shackra:org-agenda-to-appt))))
 #+END_SRC
+*** POR-HACER header2
+Añade y actualiza de manera automática las cabeceras de los archivos de tus proyectos!
+
+- [[https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-header2.el][Ejemplos]]

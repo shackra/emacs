@@ -18,7 +18,7 @@ files-backup/
 flycheck_*.el
 *.cache
 projectile-*.eld
-emacs-init.el
+configuracion.el
 srecode-map.el
 var/*
 tramp
