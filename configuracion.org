@@ -1293,18 +1293,6 @@ porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear
        ;;(define-key dired-mode-map (kbd "q") 'dired-quit-window-kill-buffer)
      #+END_SRC
 
-*** EN-ESPERA ace-jump
-- State "EN-ESPERA"  from ""           [2015-05-08 vie 19:32] \\
-  Desactivado. Probando avy-jump.
-hace que el cursor se mueva por todo el buffer con presionar pocas teclas.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (global-set-key (kbd "C-z") 'ace-jump-word-mode)
-  (global-set-key (kbd "C-S-z") 'ace-jump-line-mode)
-  (global-set-key (kbd "C-M-z") 'ace-jump-char-mode)
-  (global-set-key (kbd "M-z") 'ace-jump-mode-pop-mark)
-  (setf ace-jump-mode-case-fold t)
-#+END_SRC
-
 *** avy-jump
 reemplazo para [[*ace-jump][ace-jump]]
 #+BEGIN_SRC emacs-lisp
@@ -1532,15 +1520,6 @@ Una implementación libre de los protocolos SSL, TLS y DTLS. Interado con Emacs
   (setf gnutls-min-prime-bits 1024)
 #+END_SRC
 
-*** EN-REVISIÓN eyebrowse
-- State "EN-REVISIÓN" from ""           [2014-12-15 lun 00:34] \\
-  Aun no sé si en el estado actual funciona como deberia
-permite cambiar entre disposiciones de ventanas en emacs
-#+BEGIN_SRC emacs-lisp
-  (define-key eyebrowse-mode-map (kbd "C-c C-w z") 'eyebrowse-prev-window-config)
-  (define-key eyebrowse-mode-map (kbd "C-c C-w x") 'eyebrowse-next-window-config)
-#+END_SRC
-
 *** notify.el
 CLOSED: [2015-01-14 mié 02:20]
 - State "TERMINADO"  from "EN-REVISIÓN" [2015-01-14 mié 02:20]
@@ -1608,25 +1587,6 @@ Mantiene una lista de archivos visitados recientemente
   (add-to-list 'recentf-exclude "\\.emacs.d/org-clock-save.el\\'")
   (add-to-list 'recentf-exclude "INBOX/")
 #+END_SRC
-*** Powerline
-#+BEGIN_SRC emacs-lisp
-  (setf powerline-default-separator-dir '(right . left))
-#+END_SRC
-
-*** EN-ESPERA smart-modeline
-- State "EN-ESPERA"  from ""           [2015-04-30 jue 00:34] \\
-  he decidido desactivarlo por un tiempo
-el modeline, pero más inteligente.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (setf sml/use-projectile-p 'before-prefixes
-        sml/shorten-modes t)
-  (sml/apply-theme 'respectful)
-  (sml/setup)
-
-  (add-to-list 'sml/replacer-regexp-list '("^~/go-workspace/" ":Código:") t)
-#+END_SRC
-
 *** delete-frame-functions
 #+BEGIN_SRC emacs-lisp
   (add-hook 'delete-frame-functions 'shackra:run-delete-frame-hooks)

@@ -1,7 +1,3 @@
-(ignore-errors (use-package ace-jump-buffer
-  :ensure ace-jump-buffer))
-(ignore-errors (use-package ace-jump-mode
-  :ensure ace-jump-mode))
 (ignore-errors (use-package ace-window
   :ensure ace-window))
 (ignore-errors (use-package achievements
@@ -54,8 +50,6 @@
   :ensure epl))
 (ignore-errors (use-package expand-region
   :ensure expand-region))
-(ignore-errors (use-package eyebrowse
-  :ensure eyebrowse))
 (ignore-errors (use-package f
   :ensure f))
 (ignore-errors (use-package find-file-in-project
@@ -180,6 +174,8 @@
   :ensure org))
 (ignore-errors (use-package org-page
   :ensure org-page))
+(ignore-errors (use-package package-safe-delete
+  :ensure package-safe-delete))
 (ignore-errors (use-package pandoc-mode
   :ensure pandoc-mode))
 (ignore-errors (use-package parent-mode
@@ -198,8 +194,6 @@
   :ensure pkgbuild-mode))
 (ignore-errors (use-package pony-mode
   :ensure pony-mode))
-(ignore-errors (use-package powerline
-  :ensure powerline))
 (ignore-errors (use-package pretty-mode
   :ensure pretty-mode))
 (ignore-errors (use-package pretty-mode-plus
@@ -212,8 +206,6 @@
   :ensure pyvenv))
 (ignore-errors (use-package rainbow-mode
   :ensure rainbow-mode))
-(ignore-errors (use-package rich-minority
-  :ensure rich-minority))
 (ignore-errors (use-package rust-mode
   :ensure rust-mode))
 (ignore-errors (use-package s
@@ -228,10 +220,6 @@
   :ensure skewer-reload-stylesheets))
 (ignore-errors (use-package slime
   :ensure slime))
-(ignore-errors (use-package smart-mode-line
-  :ensure smart-mode-line))
-(ignore-errors (use-package smart-mode-line-powerline-theme
-  :ensure smart-mode-line-powerline-theme))
 (ignore-errors (use-package smartrep
   :ensure smartrep))
 (ignore-errors (use-package solarized-theme
