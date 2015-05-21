@@ -191,7 +191,6 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'muse-book)
   (require 'muse-wiki)
   (require 'muse-project)
-  (require 'eyebrowse)
   (require 'mediawiki)
   (load "flymake")
   (require 'theme-changer)
