@@ -37,7 +37,7 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
 
 activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
 
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+BEGIN_SRC emacs-lisp :tangle no
   (toggle-debug-on-error)
   (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+END_SRC
@@ -1187,6 +1187,24 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
     (when (fboundp 'imagemagick-register-types)
       (imagemagick-register-types))
 
+    ;;; message view action
+    (defun mu4e-msgv-action-view-in-browser (msg)
+      "Ver el cuerpo del mensaje HTML en el navegador web"
+      (interactive)
+      (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
+            (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
+        (unless html (error "No partes en HTML para este mensaje"))
+        (with-temp-file tmpfile
+          (insert
+           "<html>"
+           "<head><meta http-equiv=\"content-type\""
+           "content=\"text/html;charset=UTF-8\">"
+           html))
+        (browse-url (concat "file://" tmpfile))))
+    
+    (add-to-list 'mu4e-view-actions
+                 '("Ver en el navegador" . mu4e-msgv-action-view-in-browser) t)
+    
     (setf
      ;; información de cuentas de correo
      mu4e-user-mail-address-list (list "elcorreo@deshackra.com"
