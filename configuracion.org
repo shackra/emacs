@@ -1733,20 +1733,21 @@ Funcion para generar el texto de la licencia dependiendo de si el archivo es par
   (defun shackra:header-render-license ()
     "Retorna el texto de la licencia adecuado si se esta dentro de un proyecto o no"
     (if (projectile-project-p)
-        (format "This file is part of %s.
+        (setq-local fsproj (format-spec-make ?n (projectile-project-name)))
+      (format-spec "This file is part of %n.
 
-  %s is free software: you can redistribute it and/or modify
+  %n is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  %s is distributed in the hope that it will be useful,
+  %n is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with %s. If not, see <http://www.gnu.org/licenses/>." (projectile-project-name)(projectile-project-name)(projectile-project-name)(projectile-project-name))
+  along with %n. If not, see <http://www.gnu.org/licenses/>." fsproj)
 
   (format "This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1770,7 +1771,7 @@ Funcion para generar el texto de la licencia dependiendo de si el archivo es par
   (defun shackra:header-project-name ()
     "Inserta el nombre del proyecto, en caso de estar dentro de uno"
     (when (projectile-project-p)
-      (insert header-prefix-string (format "Project: %s\n" (projectile-project-name)))))
+      (insert header-prefix-string (format "Project: %n\n" (projectile-project-name)))))
 
   (defun shackra:header-sep-line ()
     "Inserta una linea de separación"
