@@ -664,20 +664,6 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
   ;; Si usas `powerline', editar la variable mode-line-format es algo complicado,
   ;; pero no imposible
 #+END_SRC
-** Asociación de archivos a modos mayores
-Aquí se definen código para definir la asociación de algunas extensiones de archivo con algunos modos mayores
-#+BEGIN_SRC emacs-lisp
-  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.gohtml\\'" . web-mode))
-  (add-to-list 'auto-mode-alist '("\\.gtl\\'" . web-mode))
-#+END_SRC
-
 ** Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira en éste archivo:
@@ -702,6 +688,7 @@ Variables usadas por funciones escritas (o copiadas de por ahí) por mi
 #+BEGIN_SRC emacs-lisp
   (defvar-local shackra:var-python-ver 2
     "Indica que versión de Python estamos usando, Python2 o Python3")
+  (put 'shackra:var-python-ver 'safe-local-variable-values #'integerp)
 #+END_SRC
 ** Otras configuraciones
 Existen ciertos cambios que no tienen cabida en otra parte, y ciertamente colocarlos debajo de [[*Modos%20de%20Emacs][Modos de Emacs]] no es una opción... porque lo veo como algo desordenado.
@@ -716,11 +703,11 @@ Existen ciertos cambios que no tienen cabida en otra parte, y ciertamente coloca
    La configuración especifica a cada modo mayor, menor, o paquete con
    funcionalidades. Dividió por secciones.
 
-*** Después de que Emacs cargue la configuración por completo
+*** after-init-hook
 modos que se activan luego de que emacs carga
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook (quote after-init-hook)
+  (add-hook 'after-init-hook
             (lambda ()
          (helm-mode 1)
          (helm-adaptative-mode 1)
@@ -731,6 +718,8 @@ modos que se activan luego de que emacs carga
          (global-flycheck-mode)
          (global-pretty-mode t)
          (global-company-mode)
+         (company-quickhelp-mode 1)
+         (company-statistics-mode)
          (global-fixmee-mode 1)
          (global-undo-tree-mode 1)
          (unkillable-scratch 1)
@@ -739,8 +728,9 @@ modos que se activan luego de que emacs carga
          ;; find-file y switch-to-buffer personalizados
          (define-key global-map (kbd "C-x C-f") 'shackra:find-file)
          (define-key global-map (kbd "C-x b") 'shackra:switch-buffer)
-         (keyfreq-mode 1)
-         (keyfreq-autosave-mode 1)))
+         (when (daemonp)
+           (keyfreq-mode 1)
+           (keyfreq-autosave-mode 1))))
 
   (defalias 'redo 'undo-tree-redo)
 
@@ -750,7 +740,6 @@ modos que se activan luego de que emacs carga
   (global-set-key (kbd "M-'") 'text-scale-decrease)
   (define-key global-map (kbd "M-o") 'other-window)
   (define-key global-map (kbd "M-p") 'ace-window)
-  (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
   ;; salta a la nueva ventana creada despues de dividir la actual
   (global-set-key "\C-x2" (lambda () (interactive)(split-window-vertically) (other-window 1)))
   (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
@@ -1053,33 +1042,55 @@ cada día más popular como remplazo a =auto-complete=.
 Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]] en el modo Python. Por lo tanto, estoy reuniendo la tecla RET con la función =newline-and-indent= que funciona de lo más bien.
 
 #+BEGIN_SRC emacs-lisp
-  (elpy-enable)
+  ;; configuración basica para python-mode y elpy-mode
   (setf python-indent-guess-indent-offset nil
         python-indent 4
-        python-indent-offset 4)
-  (add-hook 'python-mode-hook
-            (lambda ()
-              ;; esto puede que no funcione en emacs 24.3 y anteriores
-              (electric-indent-local-mode -1)
-              ;; activa la definicion personalizada para este modo mayor para
-              ;; header2
-              (setf make-header-hook '(shackra:header-python-shebang-coding
-                                       shackra:header-sep-line
-                                       shackra:header-project-name
-                                       header-file-name
-                                       header-creation-date
-                                       header-author
-                                       shackra:header-sep-line
-                                       header-modification-date
-                                       header-modification-author
-                                       header-update-count
-                                       shackra:header-sep-line
-                                       shackra:header-free-software
-                                       shackra:header-sep-line
-                                       shackra:header-code))
-              (auto-make-header)
-              (py-autopep8-enable-on-save)))
+        python-indent-offset 4
+        elpy-modules '(elpy-module-company
+                       elpy-module-eldoc
+                       elpy-module-pyvenv
+                       elpy-module-yasnippet)
+        elpy-rpc-backend "jedi")
+  ;; habilita elpy
+  (elpy-enable)
 
+  (defun shackra:python-switch-python-version ()
+    "Cambia entre (i)Python2 o (i)Python3 dependiendo de ciertas variables"
+    (if (eq shackra:var-python-ver 2)
+        (setf elpy-rpc-python-command "python2"
+              elpy-interactive-python-command "ipython2"))
+    (setf elpy-rpc-python-command "python3"
+          elpy-interactive-python-command "ipython"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'python-mode-hook (lambda ()
+                                ;; esto puede que no funcione en emacs 24.3 y anteriores
+                                (electric-indent-local-mode -1)
+                                ;; Si la variable `shackra:var-python-ver'
+                                ;; cambió, cambia la versión de Python en uso
+                                (shackra:python-switch-python-version)
+                                ;; activa la definicion personalizada para este modo mayor para
+                                ;; header2
+                                (setf make-header-hook '(shackra:header-python-shebang-coding
+                                                         shackra:header-sep-line
+                                                         shackra:header-project-name
+                                                         header-file-name
+                                                         header-creation-date
+                                                         header-author
+                                                         shackra:header-sep-line
+                                                         header-modification-date
+                                                         header-modification-author
+                                                         header-update-count
+                                                         shackra:header-sep-line
+                                                         shackra:header-free-software
+                                                         shackra:header-sep-line
+                                                         shackra:header-code))
+                                (auto-make-header)
+                                (py-autopep8-enable-on-save)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
   (define-key python-mode-map (kbd "C-M-,") 'comment-dwim-line)
   (define-key python-mode-map (kbd "C-c .") 'python-indent-shift-right)
   (define-key python-mode-map (kbd "C-c ,") 'python-indent-shift-left)
@@ -1157,6 +1168,11 @@ Un modo mayor autónomo que permite la edición de plantillas web: documentos HT
        (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode)) ;; para plantillas de Django.
        (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)) ;; para editar archivos HTML
 
+       (setf web-mode-engines-alist
+             '(("php"    . "\\.phtml\\'")))
+
+       (define-key web-mode-map (kbd "C-n") 'web-mode-tag-match)
+
        (add-hook 'web-mode-hook (lambda ()
                                   (progn
                                     (auto-fill-mode -1)
@@ -1167,6 +1183,10 @@ Un modo mayor autónomo que permite la edición de plantillas web: documentos HT
                                     ;;   (yas-activate-extra-mode 'html-mode)
                                     ;;   (yas-minor-mode-on))
                                     (emmet-mode)
+                                    (add-hook 'local-write-file-hooks
+                                              (lambda ()
+                                                (delete-trailing-whitespace)
+                                                nil))
                                     )))
      #+END_SRC
 *** mu4e
@@ -1217,7 +1237,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      ;; html2text es un paquete que debe estar instalado en tu sistema
      mu4e-confirm-quit nil
      mu4e-html2text-command 'mu4e-shr2text
-     mu4e-get-mail-command "mbsync -a"
+     mu4e-get-mail-command "mbsync -a -q"
      mu4e-maildir "/home/jorge/correo"
      mu4e-update-interval nil
      mu4e-auto-retrieve-keys t
@@ -1388,17 +1408,19 @@ configuración para golang en emacs.
                                    (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
                                    (local-set-key (kbd "C-c i") 'go-goto-imports)
                                    (local-set-key (kbd "M-.") 'godef-jump)
-                                   (set (make-local-variable 'company-backends) '(company-go))
+                                   (set (make-local-variable 'company-backends) '(company-go
+                                                                                  company-files))
                                    (go-eldoc-setup)
-                                   (nlinum-mode)
-         ))
+                                   (nlinum-mode)))
        #+END_SRC
        
 *** rustlang
 configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Mozilla y "su web abierta" por lo que le hicieron (o no hicieron, si quiere) con Brendan Eich. LAS PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU DINERO AQUELLAS CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN PARA QUE SEAN PERSEGUIDAS Y PIERDAN SUS TRABAJOS PORQUE LOS FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN DISTINTOS DE ELLOS SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla, hipócrita, cuanta tolerancia y respeto hacía los demás!.
 
 #+BEGIN_SRC emacs-lisp
-  ;;nada por agregar, aun...
+  (add-hook 'rust-mode-hook (lambda ()
+                              (set (make-local-variable 'company-backends) '(company-racer
+                                                                             company-files))))
 #+END_SRC
 
 *** C++
@@ -1584,6 +1606,13 @@ Un modo mayor para editar JavaScript
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.js\\'" .  js2-mode))
+  (add-hook 'js2-mode-hook (lambda ()
+                            (add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
+#+END_SRC
+*** CSS
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'css-mode-hook (lambda ()
+                             (add-hook 'before-save-hook 'web-beautify-css-buffer t t)))
 #+END_SRC
 *** find-file
 #+BEGIN_SRC emacs-lisp
@@ -1733,8 +1762,9 @@ Funcion para generar el texto de la licencia dependiendo de si el archivo es par
   (defun shackra:header-render-license ()
     "Retorna el texto de la licencia adecuado si se esta dentro de un proyecto o no"
     (if (projectile-project-p)
-        (setq-local fsproj (format-spec-make ?n (projectile-project-name)))
-      (format-spec "This file is part of %n.
+        (let ((projname nil))
+          (setf projname (format-spec-make ?n (projectile-project-name)))
+          (format-spec "This file is part of %n.
 
   %n is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -1747,9 +1777,10 @@ Funcion para generar el texto de la licencia dependiendo de si el archivo es par
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with %n. If not, see <http://www.gnu.org/licenses/>." fsproj)
+  along with %n. If not, see <http://www.gnu.org/licenses/>." projname))
 
-  (format "This program is free software: you can redistribute it and/or modify
+  ;; Licensia para proyectos que constan de un sólo archivo
+  "This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
@@ -1760,7 +1791,7 @@ Funcion para generar el texto de la licencia dependiendo de si el archivo es par
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.")))
+  along with this program.  If not, see <http://www.gnu.org/licenses/>."))
 
   (defun shackra:header-free-software ()
     "Inserta un texto diciendo que el archivo es software libre o parte de un proyecto de software libre"
@@ -1795,9 +1826,9 @@ Función para renderizar las dos primeras lineas de las cabeceras de forma difer
 #+BEGIN_SRC emacs-lisp
   (defun shackra:header-python-shebang-coding ()
     "Inserta los famosos shebang (#!) y “coding”"
-    (if (eq shackra:var-python-ver 3)
-        (insert "#!/usr/bin/python3\n")
-      (insert "#!/usr/bin/python2\n"))
+    (if (eq shackra:var-python-ver 2)
+        (insert "#!/usr/bin/python2\n")
+      (insert "#!/usr/bin/python3\n"))
     ;; TODO: Insertar la leyenda VENI, SANCTE SPIRITUS centrado
     (insert header-prefix-string "-*- coding: utf-8 -*-\n\n"))
 #+END_SRC
