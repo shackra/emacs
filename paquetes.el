@@ -14,10 +14,14 @@
   :ensure bind-key))
 (ignore-errors (use-package button-lock
   :ensure button-lock))
+(ignore-errors (use-package chronos
+  :ensure chronos))
 (ignore-errors (use-package cmake-mode
   :ensure cmake-mode))
 (ignore-errors (use-package cmake-project
   :ensure cmake-project))
+(ignore-errors (use-package column-enforce-mode
+  :ensure column-enforce-mode))
 (ignore-errors (use-package company
   :ensure company))
 (ignore-errors (use-package company-c-headers
@@ -28,10 +32,18 @@
   :ensure company-go))
 (ignore-errors (use-package company-irony
   :ensure company-irony))
+(ignore-errors (use-package company-quickhelp
+  :ensure company-quickhelp))
+(ignore-errors (use-package company-racer
+  :ensure company-racer))
+(ignore-errors (use-package company-statistics
+  :ensure company-statistics))
 (ignore-errors (use-package connection
   :ensure connection))
 (ignore-errors (use-package dash
   :ensure dash))
+(ignore-errors (use-package deferred
+  :ensure deferred))
 (ignore-errors (use-package diminish
   :ensure diminish))
 (ignore-errors (use-package dired+
@@ -76,6 +88,8 @@
   :ensure header2))
 (ignore-errors (use-package helm
   :ensure helm))
+(ignore-errors (use-package helm-chronos
+  :ensure helm-chronos))
 (ignore-errors (use-package helm-company
   :ensure helm-company))
 (ignore-errors (use-package helm-descbinds
@@ -184,6 +198,8 @@
   :ensure pcache))
 (ignore-errors (use-package persistent-soft
   :ensure persistent-soft))
+(ignore-errors (use-package php+-mode
+  :ensure php+-mode))
 (ignore-errors (use-package php-extras
   :ensure php-extras))
 (ignore-errors (use-package php-mode
@@ -194,6 +210,8 @@
   :ensure pkgbuild-mode))
 (ignore-errors (use-package pony-mode
   :ensure pony-mode))
+(ignore-errors (use-package pos-tip
+  :ensure pos-tip))
 (ignore-errors (use-package pretty-mode
   :ensure pretty-mode))
 (ignore-errors (use-package pretty-mode-plus
