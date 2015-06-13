@@ -707,30 +707,32 @@ Existen ciertos cambios que no tienen cabida en otra parte, y ciertamente coloca
 modos que se activan luego de que emacs carga
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'after-init-hook
-            (lambda ()
-         (helm-mode 1)
-         (helm-adaptative-mode 1)
-         (helm-autoresize-mode 1)
-         (helm-descbinds-mode)
-         (projectile-global-mode)
-         (helm-projectile-on)
-         (global-flycheck-mode)
-         (global-pretty-mode t)
-         (global-company-mode)
-         (company-quickhelp-mode 1)
-         (company-statistics-mode)
-         (global-fixmee-mode 1)
-         (global-undo-tree-mode 1)
-         (unkillable-scratch 1)
-         (when (fboundp 'winner-mode)
-           (winner-mode 1))
-         ;; find-file y switch-to-buffer personalizados
-         (define-key global-map (kbd "C-x C-f") 'shackra:find-file)
-         (define-key global-map (kbd "C-x b") 'shackra:switch-buffer)
-         (when (daemonp)
-           (keyfreq-mode 1)
-           (keyfreq-autosave-mode 1))))
+  (defun shackra:after-init ()
+    "funcion para el gancho `after-init-hook'"
+    (helm-mode 1)
+    (helm-adaptative-mode 1)
+    (helm-autoresize-mode 1)
+    (helm-descbinds-mode)
+    (projectile-global-mode)
+    (helm-projectile-on)
+    (global-flycheck-mode)
+    (global-pretty-mode t)
+    (global-company-mode)
+    (company-quickhelp-mode 1)
+    (company-statistics-mode)
+    (global-fixmee-mode 1)
+    (global-undo-tree-mode 1)
+    (unkillable-scratch 1)
+    (when (fboundp 'winner-mode)
+      (winner-mode 1))
+    ;; find-file y switch-to-buffer personalizados
+    (define-key global-map (kbd "C-x C-f") 'shackra:find-file)
+    (define-key global-map (kbd "C-x b") 'shackra:switch-buffer)
+    (when (daemonp)
+      (keyfreq-mode 1)
+      (keyfreq-autosave-mode 1)))
+
+  (add-hook 'after-init-hook #'shackra:after-init)
 
   (defalias 'redo 'undo-tree-redo)
 
@@ -826,9 +828,7 @@ combinación C-' para otra cosa.
        (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
        (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
 
-       (add-hook 'org-mode-hook (lambda ()
-                                  (progn 
-                                    (visual-fill-column-mode))))
+       (add-hook 'org-mode-hook #'visual-fill-column-mode)
      #+END_SRC
 
 *** Org-page
@@ -860,13 +860,12 @@ castellanizar los enlaces y sus títulos en el blog.
 Esta configuración afecta a todos los modos texto en los buffers.
      
      #+BEGIN_SRC emacs-lisp
-       (add-hook 'text-mode-hook
-                  (lambda ()
-                    ;;(turn-on-auto-fill)
-                    (turn-on-visual-line-mode)
-                    (flyspell-mode)
-                    (set (make-local-variable 'fill-column) 110)
-                    ))
+       (defun shackra:text-mode ()
+         (turn-on-visual-line-mode)
+         (flyspell-mode)
+         (set (make-local-variable 'fill-column) 110))
+
+       (add-hook 'text-mode-hook #'shackra:text-mode)
      #+END_SRC
 
 *** HELM
@@ -990,6 +989,10 @@ definir qué archivos/carpetas ignorar y cuales no. Para más información ver l
 *** Multi-term
 Ofrece un excelente emulador de terminal *dentro* de Emacs
 #+BEGIN_SRC emacs-lisp
+  (defun shackra:maybe-disable-yasnippet ()
+    "Desactiva yasnippet a pedido"
+    (yas-minor-mode -1))
+
   (setf multi-term-buffer-name "shell-"
         multi-term-program "/bin/bash"
         term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
@@ -1007,11 +1010,8 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
                                   (cons "M-p" 'term-send-raw-meta)
                                   (cons "M-y" 'term-send-raw-meta)
                                   (cons "C-y" 'term-send-raw)))
-  (add-hook 'term-mode-hook
-            (lambda ()
-              (yas-minor-mode -1)
-              )
-            )
+
+  (add-hook 'term-mode-hook #'shackra:maybe-disable-yasnippet)
 
   (global-set-key [f1] 'multi-term)
   (global-set-key [C-next] 'multi-term-next)
@@ -1064,30 +1064,32 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'python-mode-hook (lambda ()
-                                ;; esto puede que no funcione en emacs 24.3 y anteriores
-                                (electric-indent-local-mode -1)
-                                ;; Si la variable `shackra:var-python-ver'
-                                ;; cambió, cambia la versión de Python en uso
-                                (shackra:python-switch-python-version)
-                                ;; activa la definicion personalizada para este modo mayor para
-                                ;; header2
-                                (setf make-header-hook '(shackra:header-python-shebang-coding
-                                                         shackra:header-sep-line
-                                                         shackra:header-project-name
-                                                         header-file-name
-                                                         header-creation-date
-                                                         header-author
-                                                         shackra:header-sep-line
-                                                         header-modification-date
-                                                         header-modification-author
-                                                         header-update-count
-                                                         shackra:header-sep-line
-                                                         shackra:header-free-software
-                                                         shackra:header-sep-line
-                                                         shackra:header-code))
-                                (auto-make-header)
-                                (py-autopep8-enable-on-save)))
+  (defun shackra:python-mode ()
+    ;; esto puede que no funcione en emacs 24.3 y anteriores
+    (electric-indent-local-mode -1)
+    ;; Si la variable `shackra:var-python-ver'
+    ;; cambió, cambia la versión de Python en uso
+    (shackra:python-switch-python-version)
+    ;; activa la definicion personalizada para este modo mayor para
+    ;; header2
+    (setf make-header-hook '(shackra:header-python-shebang-coding
+                             shackra:header-sep-line
+                             shackra:header-project-name
+                             header-file-name
+                             header-creation-date
+                             header-author
+                             shackra:header-sep-line
+                             header-modification-date
+                             header-modification-author
+                             header-update-count
+                             shackra:header-sep-line
+                             shackra:header-free-software
+                             shackra:header-sep-line
+                             shackra:header-code))
+    (auto-make-header)
+    (py-autopep8-enable-on-save))
+
+  (add-hook 'python-mode-hook #'shackra:python-mode)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1159,6 +1161,17 @@ Un modo mayor autónomo que permite la edición de plantillas web: documentos HT
 (CSS/Javascript) y bloques (del lado de cliente/servidor)
 
      #+BEGIN_SRC emacs-lisp
+       (defun shackra:web-mode ()
+         (auto-fill-mode -1)
+         (electric-indent-local-mode t)
+         ;; (progn
+         ;;   ;; según https://github.com/capitaomorte/yasnippet/issues/396#issuecomment-46340904
+         ;;   ;; hace yasnippet funcionar con web-mode
+         ;;   (yas-activate-extra-mode 'html-mode)
+         ;;   (yas-minor-mode-on))
+         (emmet-mode)
+         (add-hook 'local-write-file-hooks #'delete-trailing-whitespace))
+
        (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
        (add-to-list 'auto-mode-alist '("\\.[gj]sp\\'" . web-mode))
@@ -1173,21 +1186,7 @@ Un modo mayor autónomo que permite la edición de plantillas web: documentos HT
 
        (define-key web-mode-map (kbd "C-n") 'web-mode-tag-match)
 
-       (add-hook 'web-mode-hook (lambda ()
-                                  (progn
-                                    (auto-fill-mode -1)
-                                    (electric-indent-local-mode t)
-                                    ;; (progn
-                                    ;;   ;; según https://github.com/capitaomorte/yasnippet/issues/396#issuecomment-46340904
-                                    ;;   ;; hace yasnippet funcionar con web-mode
-                                    ;;   (yas-activate-extra-mode 'html-mode)
-                                    ;;   (yas-minor-mode-on))
-                                    (emmet-mode)
-                                    (add-hook 'local-write-file-hooks
-                                              (lambda ()
-                                                (delete-trailing-whitespace)
-                                                nil))
-                                    )))
+       (add-hook 'web-mode-hook #'shackra:web-mode)
      #+END_SRC
 *** mu4e
 Un versátil cliente de correo electrónico. Éste paquete se carga de manera condicional si esta instalado en el sistema del usuario. Desgraciadamente no puedes instalarlo desde Melpa o algún otro repositorio de paquetes de Emacs.
@@ -1380,20 +1379,20 @@ En lo personal, me gustaría que al escribir los comentarios en mi código fuent
 llegar a la columna 79.
 
     #+BEGIN_SRC emacs-lisp
-      (add-hook 'prog-mode-hook
-                (lambda ()
-                  (set (make-local-variable 'fill-column) 79)
-                  (set (make-local-variable 'comment-auto-fill-only-comments) t)
-                  ;; Nota: M-q rellena las columnas del párrafo actual
-                  ;;       M-o M-s centra una linea de texto
-                  (auto-fill-mode t)
-                  (hlinum-activate)
-                  (highlight-numbers-mode)
-                  (hes-mode)
-                  ;;(highlight-blocks-mode)
-                  (electric-pair-mode)
-                  (rainbow-turn-on)
-                  (flyspell-prog-mode)))
+      (defun shackra:prog-mode ()
+        (set (make-local-variable 'fill-column) 79)
+        (set (make-local-variable 'comment-auto-fill-only-comments) t)
+        ;; Nota: M-q rellena las columnas del párrafo actual
+        ;;       M-o M-s centra una linea de texto
+        (auto-fill-mode t)
+        (hlinum-activate)
+        (highlight-numbers-mode)
+        (hes-mode)
+        (electric-pair-mode)
+        (rainbow-turn-on)
+        (flyspell-prog-mode))
+
+      (add-hook 'prog-mode-hook #'shackra:prog-mode)
 
       ;; redefinimos la tecla RET para que inserte un salto de linea y la
       ;; idente de manera adecuada.
@@ -1404,23 +1403,27 @@ llegar a la columna 79.
 configuración para golang en emacs.
 
        #+BEGIN_SRC emacs-lisp
-         (add-hook 'go-mode-hook (lambda ()
-                                   (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
-                                   (local-set-key (kbd "C-c i") 'go-goto-imports)
-                                   (local-set-key (kbd "M-.") 'godef-jump)
-                                   (set (make-local-variable 'company-backends) '(company-go
-                                                                                  company-files))
-                                   (go-eldoc-setup)
-                                   (nlinum-mode)))
+         (defun shackra:go-mode ()
+           (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
+           (local-set-key (kbd "C-c i") 'go-goto-imports)
+           (local-set-key (kbd "M-.") 'godef-jump)
+           (set (make-local-variable 'company-backends) '(company-go
+                                                          company-files))
+           (go-eldoc-setup)
+           (nlinum-mode))
+
+         (add-hook 'go-mode-hook #'shackra:go-mode)
        #+END_SRC
        
 *** rustlang
 configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Mozilla y "su web abierta" por lo que le hicieron (o no hicieron, si quiere) con Brendan Eich. LAS PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU DINERO AQUELLAS CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN PARA QUE SEAN PERSEGUIDAS Y PIERDAN SUS TRABAJOS PORQUE LOS FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN DISTINTOS DE ELLOS SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla, hipócrita, cuanta tolerancia y respeto hacía los demás!.
 
 #+BEGIN_SRC emacs-lisp
-  (add-hook 'rust-mode-hook (lambda ()
-                              (set (make-local-variable 'company-backends) '(company-racer
-                                                                             company-files))))
+  (defun shackra:rust-mode ()
+    (set (make-local-variable 'company-backends) '(company-racer
+                                                   company-files)))
+
+  (add-hook 'rust-mode-hook #'shackra:rust-mode)
 #+END_SRC
 
 *** C++
@@ -1428,51 +1431,26 @@ configuración para habilitar auto-completado en Emacs para la
 programación en el lenguaje C++
 
 #+BEGIN_SRC emacs-lisp
-  (require 'cmake-project)
-
-  (defun maybe-cmake-project-hook ()
-    (if (file-exists-p "CMakeLists.txt") (cmake-project-mode)))
-
   (defun my-irony-mode-hook ()
     (define-key irony-mode-map [remap completion-at-point]
       'irony-completion-at-point-async)
     (define-key irony-mode-map [remap complete-symbol]
       'irony-completion-at-point-async))
 
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (irony-mode)
-              (set (make-local-variable 'company-backends)
-                   '(company-irony
-                     company-yasnippet
-                     company-files))
-              (maybe-cmake-project-hook)))
+  (defun shackra:c++-mode ()
+    (irony-mode)
+    (set (make-local-variable 'company-backends)
+         '(company-irony
+           company-yasnippet
+           company-files)))
+
+  (add-hook 'c++-mode-hook #'shackra:c++-mode)
 
   (add-hook 'irony-mode-hook 
             (lambda ()
               (my-irony-mode-hook)
               (irony-cdb-autosetup-compile-options)))
   #+END_SRC
-
-*** CMake
-configuración de CMake para Emacs
-       
-#+BEGIN_SRC emacs-lisp
-  (require 'cmake-mode)
-
-  (setq auto-mode-alist
-        (append
-         '(("CMakeLists\\.txt\\'" . cmake-mode))
-         '(("\\.cmake\\'" . cmake-mode))
-         auto-mode-alist))
-
-  (add-hook 'cmake-mode-hook 
-            (lambda ()
-              (set (make-local-variable 'company-backends)
-                   '(company-cmake
-                     company-yasnippet))))
-#+END_SRC
-
 *** Muse
 Configuración para Muse, un modo mayor en Emacs para la escritura y publicación de libros a varios formatos.
 
@@ -1543,10 +1521,10 @@ Chat de jabber desde Emacs!!
                         (cadr e))
                (bury-buffer))))))
 
-  (add-hook 'jabber-chat-mode-hook (lambda ()
-                                     (turn-off-auto-fill)
-                                     (turn-on-visual-line-mode)
-                                     (flyspell-mode)))
+  (add-hook 'jabber-chat-mode-hook #'turn-off-auto-fill)
+  (add-hook 'jabber-chat-mode-hook #'turn-on-visual-line-mode)
+  (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
+
   (if (daemonp)
       ;; Nos conectamos a Jabber sólo cuando Emacs corre como demonio
       (jabber-connect-all))
@@ -1740,12 +1718,14 @@ Lector de /RSS feeds/ dentro de Emacs
   ;; Muestra las citas como notificaciones en el manejador de ventanas
   (setf appt-disp-window-function 'shackra:appt-muestra-notificacion)
 
+  (defun shackra:appt-update-when-file-updated ()
+    "Actualiza appt cuando cierto archivo es actualizado"
+    (if (string= (buffer-file-name) (concat org-directory "/cosasporhacer.org"))
+                   (shackra:org-agenda-to-appt)))
+
   ;; automáticamente actualiza las citas cuando el archivo cosasporhacer.org es
   ;; salvado (ahí es donde yo guardo mi lista de cosas por hacer, y mi agenda)
-  (add-hook 'after-save-hook
-            '(lambda ()
-               (if (string= (buffer-file-name) (concat org-directory "/cosasporhacer.org"))
-                   (shackra:org-agenda-to-appt))))
+  (add-hook 'after-save-hook #'shackra:appt-update-when-file-updated)
 #+END_SRC
 *** header2
 Añade y actualiza de manera automática las cabeceras de los archivos de tus proyectos!
