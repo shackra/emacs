@@ -1832,3 +1832,11 @@ Función para renderizar las dos primeras lineas de las cabeceras de forma difer
     ;; TODO: Insertar la leyenda VENI, SANCTE SPIRITUS centrado
     (insert header-prefix-string "-*- coding: utf-8 -*-\n\n"))
 #+END_SRC
+*** sh-mode
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'sh-mode-hook (lambda ()
+                            (set (make-local-variable 'fill-column) 79)
+                            (set (make-local-variable 'comment-auto-fill-only-comments) t)
+                            (auto-fill-mode t)))
+#+END_SRC

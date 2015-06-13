@@ -31,3 +31,4 @@ recentf
 .org-id-locations
 .sx/*
 helm-adaptive-history
+company-statistics-cache.el
