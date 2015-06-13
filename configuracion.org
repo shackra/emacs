@@ -518,7 +518,7 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
   powerline-mode ha sido desactivado por un tiempo
 Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (setf ;;solarized-high-contrast-mode-line t
         solarized-distinct-fringe-background t
         solarized-use-more-italic t
@@ -527,7 +527,7 @@ Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sa
 
 #+BEGIN_SRC emacs-lisp
   ;; cambia el tema dependiendo de la hora del día
-  (change-theme 'solarized-light 'solarized-dark)
+  (change-theme 'material-light 'material)
 #+END_SRC
 
 Establecemos la tipografía a usar
@@ -537,8 +537,7 @@ Establecemos la tipografía a usar
   (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-12")))
 
   (defun shackra:arregla-emojis (&optional frame)
-    (set-fontset-font "fontset-default" nil (font-spec :size 30 :name "Symbola") frame 'append)
-    ;;(set-fontset-font "fontset-default" '(#xf000 . #xf23a) (font-spec :size 30 :name "FontAwesome") frame 'append)
+    (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)
     (message "tipografías “fallback” aplicadas"))
 
   (add-hook 'after-make-frame-functions 'shackra:arregla-emojis)
@@ -718,7 +717,7 @@ modos que se activan luego de que emacs carga
     (global-flycheck-mode)
     (global-pretty-mode t)
     (global-company-mode)
-    ;; (company-quickhelp-mode 1) ;; hace que el demonio de Emacs no termine de
+    (company-quickhelp-mode 1) ;; hace que el demonio de Emacs no termine de
     ;; iniciarse
     (company-statistics-mode)
     (global-fixmee-mode 1)

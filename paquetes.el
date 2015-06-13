@@ -162,6 +162,8 @@
   :ensure markdown-mode+))
 (ignore-errors (use-package markup-faces
   :ensure markup-faces))
+(ignore-errors (use-package material-theme
+  :ensure material-theme))
 (ignore-errors (use-package mediawiki
   :ensure mediawiki))
 (ignore-errors (use-package monky
@@ -232,8 +234,6 @@
   :ensure slime))
 (ignore-errors (use-package smartrep
   :ensure smartrep))
-(ignore-errors (use-package solarized-theme
-  :ensure solarized-theme))
 (ignore-errors (use-package string-utils
   :ensure string-utils))
 (ignore-errors (use-package stylus-mode
