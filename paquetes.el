@@ -18,16 +18,12 @@
   :ensure chronos))
 (ignore-errors (use-package cmake-mode
   :ensure cmake-mode))
-(ignore-errors (use-package cmake-project
-  :ensure cmake-project))
 (ignore-errors (use-package column-enforce-mode
   :ensure column-enforce-mode))
 (ignore-errors (use-package company
   :ensure company))
 (ignore-errors (use-package company-c-headers
   :ensure company-c-headers))
-(ignore-errors (use-package company-cmake
-  :ensure company-cmake))
 (ignore-errors (use-package company-go
   :ensure company-go))
 (ignore-errors (use-package company-irony
@@ -200,8 +196,6 @@
   :ensure persistent-soft))
 (ignore-errors (use-package php+-mode
   :ensure php+-mode))
-(ignore-errors (use-package php-extras
-  :ensure php-extras))
 (ignore-errors (use-package php-mode
   :ensure php-mode))
 (ignore-errors (use-package pkg-info
@@ -214,8 +208,6 @@
   :ensure pos-tip))
 (ignore-errors (use-package pretty-mode
   :ensure pretty-mode))
-(ignore-errors (use-package pretty-mode-plus
-  :ensure pretty-mode-plus))
 (ignore-errors (use-package projectile
   :ensure projectile))
 (ignore-errors (use-package py-autopep8
