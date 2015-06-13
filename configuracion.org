@@ -718,7 +718,8 @@ modos que se activan luego de que emacs carga
     (global-flycheck-mode)
     (global-pretty-mode t)
     (global-company-mode)
-    (company-quickhelp-mode 1)
+    ;; (company-quickhelp-mode 1) ;; hace que el demonio de Emacs no termine de
+    ;; iniciarse
     (company-statistics-mode)
     (global-fixmee-mode 1)
     (global-undo-tree-mode 1)
@@ -754,7 +755,7 @@ CLOSED: [2014-10-15 mié 17:38]
 Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que org-mode usa la
 combinación C-' para otra cosa.
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (setf org-footnote-auto-adjust t
              org-html-htmlize-output-type 'css
              org-html-htmlize-font-prefix "org-"
@@ -836,7 +837,7 @@ Genera un blog estático con [[https://github.com/kelvinh/org-page][org-page]].
 la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porque de verdad quiero
 castellanizar los enlaces y sus títulos en el blog.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
     (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com/"
           op/repository-org-branch "master"
           op/repository-html-branch nil
@@ -859,7 +860,7 @@ castellanizar los enlaces y sus títulos en el blog.
 *** text-mode
 Esta configuración afecta a todos los modos texto en los buffers.
      
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (defun shackra:text-mode ()
          (turn-on-visual-line-mode)
          (flyspell-mode)
@@ -872,7 +873,7 @@ Esta configuración afecta a todos los modos texto en los buffers.
 Es un paquete que esta en su propia liga. Éste paquete te ayudara a aumentar tu productividad, reducir tu calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de amor por vos ;)
 
 Acá se definen primero los keybindings para Helm, todo en un solo sitio.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   ;; establece el tamaño de la ventada de Helm a un 20% (40% por defecto)
   (setf helm-autoresize-max-height 20
         helm-autoresize-min-height 20)
@@ -900,7 +901,7 @@ Acá se definen primero los keybindings para Helm, todo en un solo sitio.
 #+END_SRC
 
 Y acá el resto de la configuración de Helm
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (when (executable-find "curl")
     (setf helm-google-suggest-use-curl-p t))
 
@@ -966,7 +967,7 @@ Y acá el resto de la configuración de Helm
 *** helm-flycheck
 Muestra los errores y advertencias marcados por flycheck usando Helm!
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (define-key flycheck-mode-map (kbd "C-c h !") 'helm-flycheck)
 #+END_SRC
 *** Projectile
@@ -975,7 +976,7 @@ cualquier repositorio de código fuente de software, como =mercurial=, =git=, et
 un proyecto en una carpeta dejando caer en él un archivo =.projectile=, dentro de este archivo se puede
 definir qué archivos/carpetas ignorar y cuales no. Para más información ver la [[http://batsov.com/projectile/][pagina del proyecto]].
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (setf
         projectile-completion-system 'helm
         projectile-file-exists-remote-cache-expire (* 10 60)
@@ -988,7 +989,7 @@ definir qué archivos/carpetas ignorar y cuales no. Para más información ver l
 
 *** Multi-term
 Ofrece un excelente emulador de terminal *dentro* de Emacs
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (defun shackra:maybe-disable-yasnippet ()
     "Desactiva yasnippet a pedido"
     (yas-minor-mode -1))
@@ -1022,7 +1023,7 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
 El paquete da funcionalidades de auto completado. Esta opcion es
 cada día más popular como remplazo a =auto-complete=.
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (setf company-idle-delay 0.3
              company-tooltip-limit 30
              company-minimum-prefix-length 1
@@ -1041,7 +1042,7 @@ cada día más popular como remplazo a =auto-complete=.
 *** Python
 Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]] en el modo Python. Por lo tanto, estoy reuniendo la tecla RET con la función =newline-and-indent= que funciona de lo más bien.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   ;; configuración basica para python-mode y elpy-mode
   (setf python-indent-guess-indent-offset nil
         python-indent 4
@@ -1063,7 +1064,7 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
           elpy-interactive-python-command "ipython"))
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (defun shackra:python-mode ()
     ;; esto puede que no funcione en emacs 24.3 y anteriores
     (electric-indent-local-mode -1)
@@ -1092,7 +1093,7 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
   (add-hook 'python-mode-hook #'shackra:python-mode)
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (define-key python-mode-map (kbd "C-M-,") 'comment-dwim-line)
   (define-key python-mode-map (kbd "C-c .") 'python-indent-shift-right)
   (define-key python-mode-map (kbd "C-c ,") 'python-indent-shift-left)
@@ -1104,7 +1105,7 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
 
 Cuando =iedit-mode= esta activo, presionar la tecla @@html:<kbd>RET</kbd>@@ hará que se desactive, al igual que sucede con =multiple-cursors=.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (define-key iedit-mode-keymap (kbd "RET") 'iedit-mode)
 #+END_SRC
 
@@ -1114,7 +1115,7 @@ actualmente, todo lo que hay que hacer es recordar una combinación especifica d
 
 Esta combinación por defecto es C-h C-m ;)
 
-      #+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp 
         (global-set-key (kbd "C-h C-m") 'discover-my-major)
       #+END_SRC
 
@@ -1122,14 +1123,14 @@ Esta combinación por defecto es C-h C-m ;)
 Provee una manera fácil de hacer selección de elementos en el buffer con presionar solo una tecla. Puede ver
 éste paquete en acción en este episodio de [[http://emacsrocks.com/e09.html][Emacs Rocks]].
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (global-set-key (kbd "C-'") 'er/expand-region)
      #+END_SRC
 
 *** multiple-cursos
 Marca varias partes del buffer dependiendo de la selección que hagas.
      
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (define-key global-map (kbd "C-+") 'mc/mark-next-like-this)
        (define-key global-map (kbd "M-+") 'mc/mark-previous-like-this)
        (define-key global-map (kbd "C-M-+") 'mc/mark-all-like-this)
@@ -1146,9 +1147,9 @@ revisión-al-vuelo de la sintaxis mientras editas código. Hace una selección a
      
 Tiene soporte para muchos lenguajes. Lo recomiendo por encima de flymake.
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (setf
-        flycheck-disabled-checkers '(emacs-lisp-checkdoc) ;; deshabilita el majadero revisor de documentación
+        flycheck-disabled-checkers '(emacs-lisp -checkdoc) ;; deshabilita el majadero revisor de documentación
         flycheck-indication-mode 'right-fringe
         )
 
@@ -1160,7 +1161,7 @@ Tiene soporte para muchos lenguajes. Lo recomiendo por encima de flymake.
 Un modo mayor autónomo que permite la edición de plantillas web: documentos HTML con partes embebidas
 (CSS/Javascript) y bloques (del lado de cliente/servidor)
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (defun shackra:web-mode ()
          (auto-fill-mode -1)
          (electric-indent-local-mode t)
@@ -1194,7 +1195,7 @@ Un versátil cliente de correo electrónico. Éste paquete se carga de manera co
 Para saber como configurar mu4e para escribir correos con diferentes cuentas de correo, puedes mirar la
 [[http://www.djcbsoftware.nl/code/mu/mu4e/Multiple-accounts.html][documentación]] es aconsejable que esa configuración viva en el archivo secreto...
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e/")
     (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e/")
     (autoload 'mu4e "mu4e" "Mail client based on mu (maildir-utils)." t)
@@ -1311,7 +1312,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
 Extiende funcionalidades de =dired=. Se agrega una función personalizada que mata el buffer al presionar =q=,
 porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        ;; función defectuosa
        (defun dired-quit-window-kill-buffer ()
          "Además de matar el buffer, cierra la ventana"
@@ -1331,7 +1332,7 @@ porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear
 
 *** avy-jump
 reemplazo para [[*ace-jump][ace-jump]]
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (global-set-key (kbd "C-z") 'avy-goto-char)
   (global-set-key (kbd "C-S-z") 'avy-goto-line)
   (global-set-key (kbd "C-M-z") 'avy-goto-word-1)
@@ -1347,7 +1348,7 @@ Git en Emacs.
 
 A decir verdad, amo a Mercurial y odio a Git.
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (define-key global-map [C-f12] 'magit-status)
        (setf magit-last-seen-setup-instructions "1.4.0"
              magit-auto-revert-mode nil)
@@ -1358,7 +1359,7 @@ Mercurial en Emacs
 
 Amo Mercurial ;)
 
-     #+BEGIN_SRC emacs-lisp
+     #+BEGIN_SRC emacs-lisp 
        (define-key global-map [f12] 'monky-status)
        (setf monky-process-type 'cmdserver)
      #+END_SRC
@@ -1366,7 +1367,7 @@ Amo Mercurial ;)
 *** Visual-regexp y Visual-regexp-steroids
 expresiones regulares con algo más moderno que lo ofrecido por Emacs:
 
-       #+BEGIN_SRC emacs-lisp
+       #+BEGIN_SRC emacs-lisp 
          (define-key global-map (kbd "C-c r") 'vr/replace)
          (define-key global-map (kbd "C-c q") 'vr/query-replace)
          (define-key global-map (kbd "C-c m") 'vr/mc-mark)
@@ -1378,7 +1379,7 @@ expresiones regulares con algo más moderno que lo ofrecido por Emacs:
 En lo personal, me gustaría que al escribir los comentarios en mi código fuente, las lineas se rompan al
 llegar a la columna 79.
 
-    #+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp 
       (defun shackra:prog-mode ()
         (set (make-local-variable 'fill-column) 79)
         (set (make-local-variable 'comment-auto-fill-only-comments) t)
@@ -1402,7 +1403,7 @@ llegar a la columna 79.
 *** golang
 configuración para golang en emacs.
 
-       #+BEGIN_SRC emacs-lisp
+       #+BEGIN_SRC emacs-lisp 
          (defun shackra:go-mode ()
            (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
            (local-set-key (kbd "C-c i") 'go-goto-imports)
@@ -1418,7 +1419,7 @@ configuración para golang en emacs.
 *** rustlang
 configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Mozilla y "su web abierta" por lo que le hicieron (o no hicieron, si quiere) con Brendan Eich. LAS PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU DINERO AQUELLAS CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN PARA QUE SEAN PERSEGUIDAS Y PIERDAN SUS TRABAJOS PORQUE LOS FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN DISTINTOS DE ELLOS SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla, hipócrita, cuanta tolerancia y respeto hacía los demás!.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (defun shackra:rust-mode ()
     (set (make-local-variable 'company-backends) '(company-racer
                                                    company-files)))
@@ -1430,7 +1431,7 @@ configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Moz
 configuración para habilitar auto-completado en Emacs para la
 programación en el lenguaje C++
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (defun my-irony-mode-hook ()
     (define-key irony-mode-map [remap completion-at-point]
       'irony-completion-at-point-async)
@@ -1454,7 +1455,7 @@ programación en el lenguaje C++
 *** Muse
 Configuración para Muse, un modo mayor en Emacs para la escritura y publicación de libros a varios formatos.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   ;; proyectos Muse
   (setf
    muse-project-alist
@@ -1465,7 +1466,7 @@ Configuración para Muse, un modo mayor en Emacs para la escritura y publicació
 *** gancho para antes de guardar el archivo
 puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enganchan un par de funciones.
 
-      #+BEGIN_SRC emacs-lisp
+      #+BEGIN_SRC emacs-lisp 
         (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
         (add-hook 'before-save-hook 'gofmt-before-save)
        #+END_SRC
@@ -1475,7 +1476,7 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
   al momento de usar los comandos, da errores
 [[https://www.languagetool.org/es/][Language Tool]] es una herramienta de software libre para revisión gramatical, ortográfica y de estilo.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (require 'langtool)
   (setf langtool-language-tool-jar "/usr/share/java/languagetool/languagetool-commandline.jar"
         langtool-java-bin (expand-file-name "bin/java" (getenv "JAVA_HOME"))
@@ -1491,7 +1492,7 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
 *** Jabber
 Chat de jabber desde Emacs!!
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf
    ;; ver http://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
    jabber-account-list `(
@@ -1525,15 +1526,15 @@ Chat de jabber desde Emacs!!
   (add-hook 'jabber-chat-mode-hook #'turn-on-visual-line-mode)
   (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
 
-  (if (daemonp)
-      ;; Nos conectamos a Jabber sólo cuando Emacs corre como demonio
-      (jabber-connect-all))
+  ;; (if (daemonp)
+  ;;     ;; Nos conectamos a Jabber sólo cuando Emacs corre como demonio
+  ;;     (jabber-connect-all))
 #+END_SRC
 
 *** GNU TLS
 Una implementación libre de los protocolos SSL, TLS y DTLS. Interado con Emacs
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf gnutls-min-prime-bits 1024)
 #+END_SRC
 
@@ -1544,12 +1545,12 @@ CLOSED: [2015-01-14 mié 02:20]
   el método definido no es multiplataforma
 Permite a emacs enviar notificaciones por DBus o diferentes medios
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf notify-method 'notify-via-libnotify)
 #+END_SRC
 *** MediaWiki
 Acceso para Emacs a sitios que usan Wikimedia
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf mediawiki-site-alist
         `(
           ("Wikipedia en español" "https://es.wikipedia.org/w/" "jorgejavieran" ,(secrets-get-secret "Login" "contraseña usual") "Portal:Iglesia_católica")
@@ -1561,11 +1562,11 @@ Acceso para Emacs a sitios que usan Wikimedia
 *** adoc-mode
 Un modo mayor de Emacs para editar documentos AsciiDoc
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-to-list 'auto-mode-alist (cons "\\.txt\\'" 'adoc-mode))
 #+END_SRC
 *** skewer-mode
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-hook 'js2-mode-hook 'skewer-mode)
   (add-hook 'css-mode-hook 'skewer-css-mode)
   (add-hook 'html-mode-hook 'skewer-html-mode)
@@ -1574,7 +1575,7 @@ Un modo mayor de Emacs para editar documentos AsciiDoc
 *** TRAMP
 Un paquete para la edición de archivos remotos
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf tramp-default-method "ssh")
 
   (add-to-list 'tramp-default-method-alist '("\\`localhost\\'" "\\`root\\'" "su"))
@@ -1582,29 +1583,29 @@ Un paquete para la edición de archivos remotos
 *** js2-mode
 Un modo mayor para editar JavaScript
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-to-list 'auto-mode-alist '("\\.js\\'" .  js2-mode))
   (add-hook 'js2-mode-hook (lambda ()
                             (add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
 #+END_SRC
 *** CSS
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-hook 'css-mode-hook (lambda ()
                              (add-hook 'before-save-hook 'web-beautify-css-buffer t t)))
 #+END_SRC
 *** find-file
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-hook 'find-file-hook 'find-file-sudo)
 #+END_SRC
 *** httpd-mode
 Servidor web dentro de Emacs
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf httpd-port 9300)
 #+END_SRC
 *** recentf
 Mantiene una lista de archivos visitados recientemente
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-to-list 'recentf-exclude ".git/")
   (add-to-list 'recentf-exclude ".hg/")
   (add-to-list 'recentf-exclude "elpa/")
@@ -1612,19 +1613,19 @@ Mantiene una lista de archivos visitados recientemente
   (add-to-list 'recentf-exclude "INBOX/")
 #+END_SRC
 *** delete-frame-functions
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-hook 'delete-frame-functions 'shackra:run-delete-frame-hooks)
 #+END_SRC
 
 *** SLIME
 Es un modo de Emacs para desarrollo con Common Lisp.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf inferior-lisp-program "clisp")
 #+END_SRC
 *** twittering-mode
 Twitter desde Emacs
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf twittering-use-master-password t
         twittering-icon-mode t
         twittering-display-remaining t)
@@ -1634,13 +1635,13 @@ Twitter desde Emacs
 *** helm-unicode
 Permite escoger caracteres /unicode/ por nombre usando [[*HELM][Helm]].
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (define-key global-map (kbd "C-c h u") 'helm-unicode)
 #+END_SRC
 *** ScreenShot
 Hace capturas de pantalla de Emacs, desde Emacs
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf screenshot-schemes
         '(
           ("local"
@@ -1652,7 +1653,7 @@ Hace capturas de pantalla de Emacs, desde Emacs
 #+END_SRC
 *** elfeed
 Lector de /RSS feeds/ dentro de Emacs
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (setf elfeed-feeds
         '(
           ("http://www.nacion.com/rss/nacional/" periodico)
@@ -1673,7 +1674,7 @@ Lector de /RSS feeds/ dentro de Emacs
 *** appt
 /Appointments/ me alerta de mis citas o pendientes que tengo por hacer.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
   ;; a http://redd.it/35kbf6
   (require 'appt)
@@ -1732,13 +1733,13 @@ Añade y actualiza de manera automática las cabeceras de los archivos de tus pr
 
 Actualiza las cabeceras de los archivos antes de guardar el archivo visitado.
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-hook 'write-file-hooks 'auto-update-file-header)
 #+END_SRC
 
 Funcion para generar el texto de la licencia dependiendo de si el archivo es parte de un proyecto o no
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (defun shackra:header-render-license ()
     "Retorna el texto de la licencia adecuado si se esta dentro de un proyecto o no"
     (if (projectile-project-p)
@@ -1803,7 +1804,7 @@ Funcion para generar el texto de la licencia dependiendo de si el archivo es par
 
 Función para renderizar las dos primeras lineas de las cabeceras de forma diferente en Python
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (defun shackra:header-python-shebang-coding ()
     "Inserta los famosos shebang (#!) y “coding”"
     (if (eq shackra:var-python-ver 2)
@@ -1814,7 +1815,7 @@ Función para renderizar las dos primeras lineas de las cabeceras de forma difer
 #+END_SRC
 *** sh-mode
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp 
   (add-hook 'sh-mode-hook (lambda ()
                             (set (make-local-variable 'fill-column) 79)
                             (set (make-local-variable 'comment-auto-fill-only-comments) t)
