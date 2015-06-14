@@ -772,17 +772,17 @@ combinación C-' para otra cosa.
              org-log-done 'time
              org-clock-persist 'history
              org-default-notes-file (concat org-directory "/diario.org")
-             
+
              org-agenda-files (list (concat org-directory "/cosasporhacer.org")
                                     (concat org-directory "/agenda.org"))
 
              org-mobile-directory "~/orgmobile/"
-             
+
              org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
                                       "* POR-HACER %^{breve descripcion}\n%?\nAgregado: %U\nEn: %a" :clock-in nil :clock-keep nil :clock-resume nil)
                                      ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
                                       "%?\n\nEscrito el: %U\nEn: %a" :empty-lines 1)
-                                     ("x" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour") 
+                                     ("x" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour")
                                       "* POR-HACER %^{Titulo del proyecto}\n%^{cliente}p\n%^{ID}p\nDescripción: %?" :clock-in nil :clock-keep nil :clock-resume nil)
                                      ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")
                                       "* %^{Nombre del evento}\n SCHEDULED: %:date" :clock-in nil :clock-keep nil :clock-resume nil)
@@ -805,15 +805,20 @@ combinación C-' para otra cosa.
                                      ("n" "Algún día/Tal vez (Nuevo proyecto)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Nuevos proyectos")
                                       "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
                                      )
-             
-             org-todo-keywords '((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))                          
-             org-todo-keyword-faces '(
-                                      ("POR-HACER" . (:foreground "white" :background "#ff4500" :weight bold))                              
-                                      ("EN-PROGRESO" . (:foreground "black" :background "#ffa500" :weight bold))
-                                      ("EN-ESPERA" . (:foreground "white" :background "#0000ff" :weight bold))
-                                      ("EN-REVISIÓN" . (:foreground "black" :background "#ffff00" :weight bold))
-                                      ("TERMINADO" . (:foreground "black" :background "#32cd32" :weight bold))                               
-                                      ("CANCELADO" . (:foreground "white" :background "#8b0000" :weight bold))))
+
+             org-todo-keywords '((sequence "POR-HACER(p)"
+                                           "EN-PROGRESO(g)"
+                                           "EN-ESPERA(e@/!)"
+                                           "EN-REVISIÓN(r@/!)"
+                                           "|" "CANCELADO(c@)"
+                                           "TERMINADO(t!)"))
+
+             org-todo-keyword-faces '(("POR-HACER" . (:foreground "#ff4500" :weight bold))
+                                      ("EN-PROGRESO" . (:foreground "#ffa500" :weight bold))
+                                      ("EN-ESPERA" . (:foreground "#0000ff" :weight bold))
+                                      ("EN-REVISIÓN" . (:foreground "#ffff00" :weight bold))
+                                      ("TERMINADO" . (:foreground "#32cd32" :weight bold))
+                                      ("CANCELADO" . (:foreground "#8b0000" :weight bold))))
 
        (global-set-key (kbd "C-c l") 'org-store-link)
        (global-set-key (kbd "C-c a") 'org-agenda)
@@ -1552,9 +1557,10 @@ Acceso para Emacs a sitios que usan Wikimedia
 #+BEGIN_SRC emacs-lisp 
   (setf mediawiki-site-alist
         `(
-          ("Wikipedia en español" "https://es.wikipedia.org/w/" "jorgejavieran" ,(secrets-get-secret "Login" "contraseña usual") "Portal:Iglesia_católica")
-          ("Wikipedia en Inglés" "https://en.wikipedia.org/w/" "jorgejavieran"  ,(secrets-get-secret "Login" "contraseña usual") "Portal:Catholicism")
-          ))
+          ("Wikipedia en español" "https://es.wikipedia.org/w/" "jorgejavieran"
+           ,(secrets-get-secret "Login" "contraseña usual") "Portal:Iglesia_católica")
+          ("Wikipedia en Inglés" "https://en.wikipedia.org/w/" "jorgejavieran"
+           ,(secrets-get-secret "Login" "contraseña usual") "Portal:Catholicism")))
 
   (define-key mediawiki-mode-map (kbd "C-c o") 'mediawiki-browse)
 #+END_SRC
