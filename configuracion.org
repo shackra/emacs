@@ -1054,17 +1054,8 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
 
 #+BEGIN_SRC emacs-lisp 
   ;; configuración basica para python-mode y elpy-mode
-  (setf python-indent-guess-indent-offset nil
-        python-indent 4
-        python-indent-offset 4)
-
-  (defun shackra:python-switch-python-version ()
-    "Cambia entre (i)Python2 o (i)Python3 dependiendo de ciertas variables"
-    (if (eq shackra:var-python-ver 2)
-        (setf elpy-rpc-python-command "python2"
-              elpy-interactive-python-command "ipython2"))
-    (setf elpy-rpc-python-command "python3"
-          elpy-interactive-python-command "ipython"))
+  (setf py-return-key 'py-newline-and-indent
+        python-mode-modeline-display "python-mode")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp 
@@ -1073,7 +1064,6 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
     (electric-indent-local-mode -1)
     ;; Si la variable `shackra:var-python-ver'
     ;; cambió, cambia la versión de Python en uso
-    ;;(shackra:python-switch-python-version)
     (add-to-list 'company-backends 'company-anaconda)
     (anaconda-mode)
     (eldoc-mode)
@@ -1105,6 +1095,7 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
   (define-key python-mode-map (kbd "C-c .") 'python-indent-shift-right)
   (define-key python-mode-map (kbd "C-c ,") 'python-indent-shift-left)
   (define-key python-mode-map (kbd "C-c -") 'iedit-mode-toggle-on-function)
+  (define-key python-mode-map (kbd "RET") 'py-newline-and-indent)
 #+END_SRC
 
 *** iedit-mode
