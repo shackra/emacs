@@ -4,6 +4,8 @@
   :ensure achievements))
 (ignore-errors (use-package adoc-mode
   :ensure adoc-mode))
+(ignore-errors (use-package anaconda-mode
+  :ensure anaconda-mode))
 (ignore-errors (use-package async
   :ensure async))
 (ignore-errors (use-package avy
@@ -22,6 +24,8 @@
   :ensure column-enforce-mode))
 (ignore-errors (use-package company
   :ensure company))
+(ignore-errors (use-package company-anaconda
+  :ensure company-anaconda))
 (ignore-errors (use-package company-c-headers
   :ensure company-c-headers))
 (ignore-errors (use-package company-go
@@ -50,8 +54,6 @@
   :ensure dpaste))
 (ignore-errors (use-package elfeed
   :ensure elfeed))
-(ignore-errors (use-package elpy
-  :ensure elpy))
 (ignore-errors (use-package emmet-mode
   :ensure emmet-mode))
 (ignore-errors (use-package epl
@@ -60,8 +62,6 @@
   :ensure expand-region))
 (ignore-errors (use-package f
   :ensure f))
-(ignore-errors (use-package find-file-in-project
-  :ensure find-file-in-project))
 (ignore-errors (use-package fixmee
   :ensure fixmee))
 (ignore-errors (use-package flycheck
@@ -104,8 +104,6 @@
   :ensure highlight-blocks))
 (ignore-errors (use-package highlight-escape-sequences
   :ensure highlight-escape-sequences))
-(ignore-errors (use-package highlight-indentation
-  :ensure highlight-indentation))
 (ignore-errors (use-package highlight-numbers
   :ensure highlight-numbers))
 (ignore-errors (use-package hlinum
@@ -132,6 +130,8 @@
   :ensure js2-mode))
 (ignore-errors (use-package js2-refactor
   :ensure js2-refactor))
+(ignore-errors (use-package json-rpc
+  :ensure json-rpc))
 (ignore-errors (use-package jss
   :ensure jss))
 (ignore-errors (use-package keyfreq
@@ -184,6 +184,8 @@
   :ensure nsis-mode))
 (ignore-errors (use-package org
   :ensure org))
+(ignore-errors (use-package org-bullets
+  :ensure org-bullets))
 (ignore-errors (use-package org-page
   :ensure org-page))
 (ignore-errors (use-package package-safe-delete
@@ -214,6 +216,10 @@
   :ensure projectile))
 (ignore-errors (use-package py-autopep8
   :ensure py-autopep8))
+(ignore-errors (use-package pyenv-mode
+  :ensure pyenv-mode))
+(ignore-errors (use-package python-mode
+  :ensure python-mode))
 (ignore-errors (use-package pyvenv
   :ensure pyvenv))
 (ignore-errors (use-package rainbow-mode

@@ -629,8 +629,12 @@ Establecemos la tipografía a usar
   (eval-after-load "company" '(diminish 'company-mode))
   (eval-after-load "magit" '(diminish 'magit-auto-revert-mode))
   (eval-after-load "eyebrowse" '(diminish 'eyebrowse-mode))
+  (eval-after-load "anaconda-mode" '(diminish 'anaconda-mode))
+  ;; modos menores no necesitan ser encerrados en sentencias `eval-after-load'
   (diminish 'subword-mode)
   (diminish 'visual-line-mode)
+  (diminish 'eldoc-mode)
+  (diminish 'outline-minor-mode)
 #+END_SRC
 
 *** Mover el cursos de manera inteligente al inicio de la linea
@@ -834,6 +838,7 @@ combinación C-' para otra cosa.
        (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
 
        (add-hook 'org-mode-hook #'visual-fill-column-mode)
+       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
      #+END_SRC
 
 *** Org-page
@@ -953,7 +958,9 @@ Y acá el resto de la configuración de Helm
                                   "\\.xlsx$" "\\.epub$" "\\.docx$"))
    helm-ff-skip-boring-buffers t
    helm-truncate-lines t
-   helm-projectile-sources-list '(helm-source-projectile-files-list))
+   helm-projectile-sources-list '(helm-source-projectile-files-list)
+   helm-semantic-fuzzy-match t
+   helm-imenu-fuzzy-match t)
 
   ;; Instalar ack o ack-grep
   (when (executable-find "ack")
@@ -1050,14 +1057,7 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
   ;; configuración basica para python-mode y elpy-mode
   (setf python-indent-guess-indent-offset nil
         python-indent 4
-        python-indent-offset 4
-        elpy-modules '(elpy-module-company
-                       elpy-module-eldoc
-                       elpy-module-pyvenv
-                       elpy-module-yasnippet)
-        elpy-rpc-backend "jedi")
-  ;; habilita elpy
-  (elpy-enable)
+        python-indent-offset 4)
 
   (defun shackra:python-switch-python-version ()
     "Cambia entre (i)Python2 o (i)Python3 dependiendo de ciertas variables"
@@ -1074,7 +1074,11 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
     (electric-indent-local-mode -1)
     ;; Si la variable `shackra:var-python-ver'
     ;; cambió, cambia la versión de Python en uso
-    (shackra:python-switch-python-version)
+    ;;(shackra:python-switch-python-version)
+    (add-to-list 'company-backends 'company-anaconda)
+    (anaconda-mode)
+    (eldoc-mode)
+    (pyvenv-mode)
     ;; activa la definicion personalizada para este modo mayor para
     ;; header2
     (setf make-header-hook '(shackra:header-python-shebang-coding
