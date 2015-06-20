@@ -192,7 +192,6 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'muse-wiki)
   (require 'muse-project)
   (require 'mediawiki)
-  (load "flymake")
   (require 'theme-changer)
   (require 'keyfreq)
 #+END_SRC
