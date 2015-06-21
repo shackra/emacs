@@ -532,12 +532,14 @@ Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sa
 Establecemos la tipografía a usar
 
 #+BEGIN_SRC emacs-lisp
-  (set-frame-font "SourceCodePro 12")
-  (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-12")))
+  (ignore-errors
+    (set-frame-font "SourceCodePro 12")
+    (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-12"))))
 
   (defun shackra:arregla-emojis (&optional frame)
-    (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)
-    (message "tipografías “fallback” aplicadas"))
+    (ignore-errors
+      (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)
+      (message "tipografías “fallback” aplicadas")))
 
   (add-hook 'after-make-frame-functions 'shackra:arregla-emojis)
   (shackra:arregla-emojis)
