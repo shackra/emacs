@@ -11,3 +11,4 @@
     (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
   ;; en caso contrario, carga el archivo ya existente :)
   (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
+(put 'downcase-region 'disabled nil)

@@ -70,10 +70,8 @@
   :ensure flycheck-color-mode-line))
 (ignore-errors (use-package flycheck-rust
   :ensure flycheck-rust))
-(ignore-errors (use-package git-commit-mode
-  :ensure git-commit-mode))
-(ignore-errors (use-package git-rebase-mode
-  :ensure git-rebase-mode))
+(ignore-errors (use-package git-commit
+  :ensure git-commit))
 (ignore-errors (use-package go-eldoc
   :ensure go-eldoc))
 (ignore-errors (use-package go-mode
@@ -152,6 +150,8 @@
   :ensure lua-mode))
 (ignore-errors (use-package magit
   :ensure magit))
+(ignore-errors (use-package magit-popup
+  :ensure magit-popup))
 (ignore-errors (use-package makey
   :ensure makey))
 (ignore-errors (use-package markdown-mode
@@ -274,6 +274,8 @@
   :ensure web-mode))
 (ignore-errors (use-package websocket
   :ensure websocket))
+(ignore-errors (use-package with-editor
+  :ensure with-editor))
 (ignore-errors (use-package yaml-mode
   :ensure yaml-mode))
 (ignore-errors (use-package yasnippet

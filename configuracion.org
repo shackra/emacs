@@ -628,7 +628,6 @@ Establecemos la tipografía a usar
   (eval-after-load "flyspell" '(diminish 'flyspell-mode))
   (eval-after-load "simple" '(diminish 'auto-fill-function))
   (eval-after-load "company" '(diminish 'company-mode))
-  (eval-after-load "magit" '(diminish 'magit-auto-revert-mode))
   (eval-after-load "eyebrowse" '(diminish 'eyebrowse-mode))
   (eval-after-load "anaconda-mode" '(diminish 'anaconda-mode))
   ;; modos menores no necesitan ser encerrados en sentencias `eval-after-load'
@@ -1821,4 +1820,11 @@ Función para renderizar las dos primeras lineas de las cabeceras de forma difer
                             (set (make-local-variable 'fill-column) 79)
                             (set (make-local-variable 'comment-auto-fill-only-comments) t)
                             (auto-fill-mode t)))
+#+END_SRC
+*** chronos
+Chronos es un modo mayor que lleva cronómetros en cuenta regresiva o en conteo normal
+#+BEGIN_SRC emacs-lisp
+  (setf chronos-notification-wav "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")
+  ;; Cuando un contador expira, le pedimos a Chronos que nos lo haga saber
+  (add-hook 'chronos-expiry-functions #'chronos-desktop-notifications-notify)
 #+END_SRC
