@@ -4,8 +4,6 @@
   :ensure achievements))
 (ignore-errors (use-package adoc-mode
   :ensure adoc-mode))
-(ignore-errors (use-package anaconda-mode
-  :ensure anaconda-mode))
 (ignore-errors (use-package async
   :ensure async))
 (ignore-errors (use-package avy
@@ -24,22 +22,26 @@
   :ensure column-enforce-mode))
 (ignore-errors (use-package company
   :ensure company))
-(ignore-errors (use-package company-anaconda
-  :ensure company-anaconda))
 (ignore-errors (use-package company-c-headers
   :ensure company-c-headers))
 (ignore-errors (use-package company-go
   :ensure company-go))
 (ignore-errors (use-package company-irony
   :ensure company-irony))
+(ignore-errors (use-package company-jedi
+  :ensure company-jedi))
 (ignore-errors (use-package company-quickhelp
   :ensure company-quickhelp))
 (ignore-errors (use-package company-racer
   :ensure company-racer))
 (ignore-errors (use-package company-statistics
   :ensure company-statistics))
+(ignore-errors (use-package concurrent
+  :ensure concurrent))
 (ignore-errors (use-package connection
   :ensure connection))
+(ignore-errors (use-package ctable
+  :ensure ctable))
 (ignore-errors (use-package dash
   :ensure dash))
 (ignore-errors (use-package deferred
@@ -56,6 +58,8 @@
   :ensure elfeed))
 (ignore-errors (use-package emmet-mode
   :ensure emmet-mode))
+(ignore-errors (use-package epc
+  :ensure epc))
 (ignore-errors (use-package epl
   :ensure epl))
 (ignore-errors (use-package expand-region
@@ -122,6 +126,8 @@
   :ensure irony-eldoc))
 (ignore-errors (use-package jabber
   :ensure jabber))
+(ignore-errors (use-package jedi-core
+  :ensure jedi-core))
 (ignore-errors (use-package js2-mode
   :ensure js2-mode))
 (ignore-errors (use-package js2-refactor
@@ -216,6 +222,8 @@
   :ensure py-autopep8))
 (ignore-errors (use-package pyenv-mode
   :ensure pyenv-mode))
+(ignore-errors (use-package python-environment
+  :ensure python-environment))
 (ignore-errors (use-package python-mode
   :ensure python-mode))
 (ignore-errors (use-package pyvenv

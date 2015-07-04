@@ -1063,9 +1063,8 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
   (defun shackra:python-mode ()
     ;; esto puede que no funcione en emacs 24.3 y anteriores
     (electric-indent-local-mode -1)
-    ;; Si la variable `shackra:var-python-ver'
-    ;; cambió, cambia la versión de Python en uso
-    (add-to-list 'company-backends 'company-anaconda)
+    (jedi:setup)
+    (add-to-list 'company-backends 'company-jedi)
     (anaconda-mode)
     (eldoc-mode)
     (pyvenv-mode)
@@ -1099,6 +1098,12 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
   (define-key python-mode-map (kbd "RET") 'py-newline-and-indent)
 #+END_SRC
 
+*** Jedi.el
+Es un paquete de auto completado de Python para Emacs. Su objetivo es ayudar al programador en Python de una forma no destructiva. También ayuda a encontrar información sobre objetos Python como /docstrings/, argumentos de funciones y localización de código.
+
+#+BEGIN_SRC emacs-lisp
+  (setf jedi:complete-on-dot t)
+#+END_SRC
 *** iedit-mode
 =iedit-mode= es un modo que permite editar un termino repetido en varios lugares a la vez en el buffer actual, es como =multiple-cursors=, pero sin la tener que marcar un area y luego llamar al modo mayor. En Python se llama a =iedit-mode-toggle-on-function= con @@html:<kbd>C</kbd>@@@@html:<kbd>c</kbd>@@ @@html:<kbd>,</kbd>@@.
 
