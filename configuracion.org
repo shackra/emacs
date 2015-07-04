@@ -545,6 +545,12 @@ Establecemos la tipografía a usar
   (shackra:arregla-emojis)
 #+END_SRC
 
+Cuando corremos Emacs en una terminal, no aplica tema de colores alguno. Según: [[https://www.reddit.com/r/emacs/comments/3bjbq9/dont_use_colors_or_theme_when_run_from_terminal/][don't use colors or theme when run from terminal : emacs]]
+
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'default-frame-alist '(tty-color-mode . -1))
+#+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   ;;(powerline-center-theme)
   (menu-bar-mode -1)
@@ -1064,7 +1070,6 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
     (electric-indent-local-mode -1)
     (jedi:setup)
     (add-to-list 'company-backends 'company-jedi)
-    (eldoc-mode)
     (pyvenv-mode)
     ;; activa la definicion personalizada para este modo mayor para
     ;; header2
