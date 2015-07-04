@@ -629,7 +629,6 @@ Establecemos la tipografía a usar
   (eval-after-load "simple" '(diminish 'auto-fill-function))
   (eval-after-load "company" '(diminish 'company-mode))
   (eval-after-load "eyebrowse" '(diminish 'eyebrowse-mode))
-  (eval-after-load "anaconda-mode" '(diminish 'anaconda-mode))
   ;; modos menores no necesitan ser encerrados en sentencias `eval-after-load'
   (diminish 'subword-mode)
   (diminish 'visual-line-mode)
@@ -1065,7 +1064,6 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
     (electric-indent-local-mode -1)
     (jedi:setup)
     (add-to-list 'company-backends 'company-jedi)
-    (anaconda-mode)
     (eldoc-mode)
     (pyvenv-mode)
     ;; activa la definicion personalizada para este modo mayor para
