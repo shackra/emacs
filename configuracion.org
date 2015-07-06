@@ -1061,7 +1061,9 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
 #+BEGIN_SRC emacs-lisp 
   ;; configuración basica para python-mode y elpy-mode
   (setf py-return-key 'py-newline-and-indent
-        python-mode-modeline-display "python-mode")
+        python-mode-modeline-display "python-mode"
+        py-auto-fill-mode t
+        py-shell-name "python2")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp 
@@ -1835,4 +1837,17 @@ Chronos es un modo mayor que lleva cronómetros en cuenta regresiva o en conteo 
   (setf chronos-notification-wav "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")
   ;; Cuando un contador expira, le pedimos a Chronos que nos lo haga saber
   (add-hook 'chronos-expiry-functions #'chronos-desktop-notifications-notify)
+#+END_SRC
+*** AUCTeX
+#+BEGIN_SRC emacs-lisp
+  ;; remueve la versión preinstalada de AUCTeX
+  (setf TeX-auto-save t
+        TeX-parse-self t
+        TeX-newline-function 'newline-and-indent
+        ;; identa bien bonito los comandos de LaTeX que están dentro de un ambiente
+        LaTeX-item-indent 0)
+  (setq-default TeX-master nil)
+  (setq-default TeX-engine 'xetex)
+  (setq-default TeX-PDF-mode t)
+  (company-auctex-init)
 #+END_SRC

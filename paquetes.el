@@ -6,6 +6,8 @@
   :ensure adoc-mode))
 (ignore-errors (use-package async
   :ensure async))
+(ignore-errors (use-package auctex
+  :ensure auctex))
 (ignore-errors (use-package avy
   :ensure avy))
 (ignore-errors (use-package back-button
@@ -22,6 +24,8 @@
   :ensure column-enforce-mode))
 (ignore-errors (use-package company
   :ensure company))
+(ignore-errors (use-package company-auctex
+  :ensure company-auctex))
 (ignore-errors (use-package company-c-headers
   :ensure company-c-headers))
 (ignore-errors (use-package company-go
@@ -30,6 +34,8 @@
   :ensure company-irony))
 (ignore-errors (use-package company-jedi
   :ensure company-jedi))
+(ignore-errors (use-package company-math
+  :ensure company-math))
 (ignore-errors (use-package company-quickhelp
   :ensure company-quickhelp))
 (ignore-errors (use-package company-racer
@@ -142,6 +148,8 @@
   :ensure kivy-mode))
 (ignore-errors (use-package langtool
   :ensure langtool))
+(ignore-errors (use-package latex-extra
+  :ensure latex-extra))
 (ignore-errors (use-package let-alist
   :ensure let-alist))
 (ignore-errors (use-package lice
@@ -168,6 +176,8 @@
   :ensure markup-faces))
 (ignore-errors (use-package material-theme
   :ensure material-theme))
+(ignore-errors (use-package math-symbol-lists
+  :ensure math-symbol-lists))
 (ignore-errors (use-package mediawiki
   :ensure mediawiki))
 (ignore-errors (use-package monky
