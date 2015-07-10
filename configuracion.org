@@ -512,6 +512,15 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
       (savehist-save)
       (recentf-save-list)))
 #+END_SRC
+
+*** salva algunos buffers al perder Emacs el foco
+Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-settings-with-big.html][Programming: Seven specialty Emacs settings with big payoffs]]
+
+#+BEGIN_SRC emacs-lisp
+  (defun guardar-todo ()
+    (interactive)
+    (save-some-buffers t))
+#+END_SRC
 ** EN-ESPERA Emacs, no hagas éstas cosas... AKA "sane defaults"
 - State "EN-ESPERA"  from ""           [2015-04-30 jue 00:34] \\
   powerline-mode ha sido desactivado por un tiempo
@@ -549,6 +558,20 @@ Cuando corremos Emacs en una terminal, no aplica tema de colores alguno. Según:
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'default-frame-alist '(tty-color-mode . -1))
+#+END_SRC
+
+Guarda algunos buffers cuando Emacs pierde el foco.
+
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'focus-out-hook 'guardar-todo)
+#+END_SRC
+
+Cuando Emacs cierra, en verdad quiero que también mate a todos los procesos en segundo plano (y no me preguntes sobre ello; sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-settings-with-big.html][Programming: Seven specialty Emacs settings with big payoffs]])
+
+#+BEGIN_SRC emacs-lisp
+  (require 'cl)
+  (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+             (flet ((process-list ())) ad-do-it))
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -1595,8 +1618,6 @@ Un modo mayor para editar JavaScript
 
 #+BEGIN_SRC emacs-lisp 
   (add-to-list 'auto-mode-alist '("\\.js\\'" .  js2-mode))
-  (add-hook 'js2-mode-hook (lambda ()
-                            (add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
 #+END_SRC
 *** CSS
 #+BEGIN_SRC emacs-lisp 
