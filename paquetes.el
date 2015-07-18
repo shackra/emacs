@@ -238,8 +238,6 @@
   :ensure pyenv-mode))
 (ignore-errors (use-package python-environment
   :ensure python-environment))
-(ignore-errors (use-package python-mode
-  :ensure python-mode))
 (ignore-errors (use-package pyvenv
   :ensure pyvenv))
 (ignore-errors (use-package rainbow-mode

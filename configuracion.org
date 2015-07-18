@@ -1123,7 +1123,7 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
   (define-key python-mode-map (kbd "C-c .") 'python-indent-shift-right)
   (define-key python-mode-map (kbd "C-c ,") 'python-indent-shift-left)
   (define-key python-mode-map (kbd "C-c -") 'iedit-mode-toggle-on-function)
-  (define-key python-mode-map (kbd "RET") 'py-newline-and-indent)
+  ;; (define-key python-mode-map (kbd "RET") 'py-newline-and-indent)
 #+END_SRC
 
 *** Jedi.el
