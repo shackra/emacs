@@ -80,6 +80,8 @@
   :ensure flycheck-color-mode-line))
 (ignore-errors (use-package flycheck-rust
   :ensure flycheck-rust))
+(ignore-errors (use-package fm-bookmarks
+  :ensure fm-bookmarks))
 (ignore-errors (use-package git-commit
   :ensure git-commit))
 (ignore-errors (use-package go-eldoc
@@ -96,6 +98,8 @@
   :ensure helm-chronos))
 (ignore-errors (use-package helm-company
   :ensure helm-company))
+(ignore-errors (use-package helm-core
+  :ensure helm-core))
 (ignore-errors (use-package helm-descbinds
   :ensure helm-descbinds))
 (ignore-errors (use-package helm-flycheck

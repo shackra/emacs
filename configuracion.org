@@ -1872,3 +1872,26 @@ Chronos es un modo mayor que lleva cronómetros en cuenta regresiva o en conteo 
   (setq-default TeX-PDF-mode t)
   (company-auctex-init)
 #+END_SRC
+*** fm-bookmarks
+Muestra tus marcadores de los manejadores de archivos, como PCmanFM o Nautilus, en Dired
+
+#+BEGIN_SRC emacs-lisp
+  (require 'fm-bookmarks)
+  ;; abre fm-bookmarks dentro de dired con '
+  (define-key dired-mode-map (kbd "'") #'fm-bookmarks)
+  ;; abre fm-bookmarks fuera de dired
+  (global-set-key (kbd "C-x '") #'fm-bookmarks)
+  ;; 'media sólo esta disponible para el sistema operativo GNU/Linux y derivados
+  (setf fm-bookmarks-enabled-file-managers '(pcmanfm custom media))
+  ;; Marcadores personalizados
+  (setf fm-bookmarks-custom-bookmarks
+        '(("Raíz" . "/")
+          ("Archivos temporales" . "/tmp/")
+          ("Proyectos" . "/home/jorge/proyectos/")
+          ("Freelance" . "/home/jorge/proyectos/bitbucket.org/jorgefreelance/")))
+  ;; esconde ubicaciones repetidas (ya que varios manejadores de archivos pueden
+  ;; contener marcadores a ubicaciones iguales)
+  (defvar fm-bookmarks-hide-duplicated t)
+  ;; hagase la cache
+  (setq fm-bookmarks-enable-cache t)
+#+END_SRC
