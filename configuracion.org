@@ -1503,22 +1503,17 @@ puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enga
         (add-hook 'before-save-hook 'gofmt-before-save)
        #+END_SRC
 
-*** EN-REVISIÓN langtool
+*** langtool
+CLOSED: [2015-07-21 mar 12:36]
+- State "TERMINADO"  from "EN-REVISIÓN" [2015-07-21 mar 12:36]
 - State "EN REVISIÓN" from ""           [2014-10-27 lun 15:26] \\
   al momento de usar los comandos, da errores
 [[https://www.languagetool.org/es/][Language Tool]] es una herramienta de software libre para revisión gramatical, ortográfica y de estilo.
 
 #+BEGIN_SRC emacs-lisp 
   (require 'langtool)
-  (setf langtool-language-tool-jar "/usr/share/java/languagetool/languagetool-commandline.jar"
-        langtool-java-bin (expand-file-name "bin/java" (getenv "JAVA_HOME"))
+  (setf langtool-java-classpath "/usr/share/languagetool:/usr/share/java/languagetool/*"
         langtool-mother-tongue "es")
-
-  (global-set-key (kbd "C-x 4 w") 'langtool-check)
-  (global-set-key (kbd "C-x 4 W") 'langtool-check-done)
-  (global-set-key (kbd "C-x 4 l") 'langtool-switch-default-language)
-  (global-set-key (kbd "C-x 4 4") 'langtool-show-message-at-point)
-  (global-set-key (kbd "C-x 4 c") 'langtool-correct-buffer)
 #+END_SRC
 
 *** Jabber
@@ -1592,14 +1587,10 @@ Acceso para Emacs a sitios que usan Wikimedia
 
   (define-key mediawiki-mode-map (kbd "C-c o") 'mediawiki-browse)
 #+END_SRC
-*** adoc-mode
-Un modo mayor de Emacs para editar documentos AsciiDoc
-
-#+BEGIN_SRC emacs-lisp 
-  (add-to-list 'auto-mode-alist (cons "\\.txt\\'" 'adoc-mode))
-#+END_SRC
-*** skewer-mode
-#+BEGIN_SRC emacs-lisp 
+*** EN-ESPERA skewer-mode
+- State "EN-ESPERA"  from ""           [2015-07-21 mar 12:36] \\
+  Por el momento no quiero que se active esto
+#+BEGIN_SRC emacs-lisp :tangle no
   (add-hook 'js2-mode-hook 'skewer-mode)
   (add-hook 'css-mode-hook 'skewer-css-mode)
   (add-hook 'html-mode-hook 'skewer-html-mode)

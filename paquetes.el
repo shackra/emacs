@@ -2,8 +2,6 @@
   :ensure ace-window))
 (ignore-errors (use-package achievements
   :ensure achievements))
-(ignore-errors (use-package adoc-mode
-  :ensure adoc-mode))
 (ignore-errors (use-package async
   :ensure async))
 (ignore-errors (use-package auctex
