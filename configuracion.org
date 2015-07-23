@@ -1345,15 +1345,7 @@ Extiende funcionalidades de =dired=. Se agrega una función personalizada que ma
 porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
 
      #+BEGIN_SRC emacs-lisp 
-       ;; función defectuosa
-       (defun dired-quit-window-kill-buffer ()
-         "Además de matar el buffer, cierra la ventana"
-         (interactive)
-         (let ((win-curr (selected-window))
-               (win-other (next-window)))
-           (select-window win-other)
-           (kill-this-buffer)
-           (select-window win-curr)))
+       (diredp-toggle-find-file-reuse-dir 1)
 
        (setf dired-dwim-target t)
        (define-key ctl-x-map   "d" 'dired)
