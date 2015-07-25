@@ -185,7 +185,6 @@ proveídas por Emacs o paquetes instalados en Emacs.
   (require 'org)
   (require 'org-page)
   (require 'undo-tree)
-  (require 'dired+)
   (require 'muse-mode)
   (require 'muse-docbook)
   (require 'muse-book)
@@ -1345,15 +1344,41 @@ Extiende funcionalidades de =dired=. Se agrega una función personalizada que ma
 porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
 
      #+BEGIN_SRC emacs-lisp 
+       (require 'dired-sort)
+       (require 'dired-details+)
+
+       (setf dired-dwim-target t
+             dired-recursive-deletes 'always
+             dired-recursive-copies 'always
+             delete-by-moving-to-trash t
+             trash-directory "~/.local/share/Trash/files"
+             dired-details-hide-link-targets nil
+             diredp-hide-details-initially-flag nil
+             dired-omit-mode t
+             dired-details-propagate-flag t)
+
+       (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.")
+       (require 'dired+)
        (diredp-toggle-find-file-reuse-dir 1)
 
-       (setf dired-dwim-target t)
        (define-key ctl-x-map   "d" 'dired)
        (define-key ctl-x-4-map "d" 'diredp-dired-for-files-other-window)
        (define-key dired-mode-map (kbd ".") 'dired-up-directory)
-       ;;(define-key dired-mode-map (kbd "q") 'dired-quit-window-kill-buffer)
+       (define-key dired-mode-map (kbd "C-o") 'dired-omit-mode)
      #+END_SRC
 
+
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:dired ()
+    "activa algunas cosas cuando entramos en dired"
+    (dired-sort-name)
+    (dired-details-activate)
+    (dired-details-show)
+    (dired-hide-details-mode -1)
+    (dired-omit-mode))
+
+  (add-hook 'dired-mode-hook #'shackra:dired)
+#+END_SRC
 *** avy-jump
 reemplazo para [[*ace-jump][ace-jump]]
 #+BEGIN_SRC emacs-lisp 
@@ -1877,4 +1902,21 @@ Muestra tus marcadores de los manejadores de archivos, como PCmanFM o Nautilus, 
   (defvar fm-bookmarks-hide-duplicated t)
   ;; hagase la cache
   (setq fm-bookmarks-enable-cache t)
+#+END_SRC
+*** dired-rainbow
+Colorea archivos por extensión o por su =chmod=
+
+#+BEGIN_SRC emacs-lisp
+  (require 'dired-rainbow)
+
+  (defconst dired-audio-files-extensions
+    '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
+    "Dired Audio files extensions")
+  (dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+
+  (defconst dired-video-files-extensions
+      '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+        "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+      "Dired Video files extensions")
+  (dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
 #+END_SRC

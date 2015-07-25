@@ -54,6 +54,10 @@
   :ensure diminish))
 (ignore-errors (use-package dired+
   :ensure dired+))
+(ignore-errors (use-package dired-hacks-utils
+  :ensure dired-hacks-utils))
+(ignore-errors (use-package dired-rainbow
+  :ensure dired-rainbow))
 (ignore-errors (use-package discover-my-major
   :ensure discover-my-major))
 (ignore-errors (use-package dpaste
