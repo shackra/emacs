@@ -54,10 +54,16 @@
   :ensure diminish))
 (ignore-errors (use-package dired+
   :ensure dired+))
+(ignore-errors (use-package dired-details
+  :ensure dired-details))
+(ignore-errors (use-package dired-details+
+  :ensure dired-details+))
 (ignore-errors (use-package dired-hacks-utils
   :ensure dired-hacks-utils))
 (ignore-errors (use-package dired-rainbow
   :ensure dired-rainbow))
+(ignore-errors (use-package dired-sort
+  :ensure dired-sort))
 (ignore-errors (use-package discover-my-major
   :ensure discover-my-major))
 (ignore-errors (use-package dpaste
@@ -188,6 +194,8 @@
   :ensure mediawiki))
 (ignore-errors (use-package monky
   :ensure monky))
+(ignore-errors (use-package mu4e-maildirs-extension
+  :ensure mu4e-maildirs-extension))
 (ignore-errors (use-package multi-term
   :ensure multi-term))
 (ignore-errors (use-package multiple-cursors
@@ -258,6 +266,8 @@
   :ensure skewer-reload-stylesheets))
 (ignore-errors (use-package slime
   :ensure slime))
+(ignore-errors (use-package smart-compile
+  :ensure smart-compile))
 (ignore-errors (use-package smartrep
   :ensure smartrep))
 (ignore-errors (use-package string-utils
