@@ -4,3 +4,6 @@
 [submodule "site-packages/jazz-theme"]
 	path = site-packages/jazz-theme
 	url = https://github.com/donderom/jazz-theme.git
+[submodule "site-packages/multimu4e"]
+	path = site-packages/multimu4e
+	url = https://github.com/DamienCassou/multimu4e.git
