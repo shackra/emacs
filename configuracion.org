@@ -1234,7 +1234,15 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
     (require 'mu4e-contrib)
     (require 'org-mu4e)
     (mu4e-maildirs-extension)
-    (setf mu4e-view-show-images nil)
+
+    (setf mu4e-maildirs-extension-title " Bandejas")
+    (setf mu4e-maildirs-extension-custom-list '("/personal/INBOX" "/gmx/INBOX" "/riseup/INBOX"))
+    
+    (setf mu4e-view-show-images nil
+          org-mu4e-convert-to-html t)
+    ;; redactamos el correo con org-mode y convertimos eso a HTML
+    (defalias 'org-mail 'org-mu4e-compose-org-mode)
+    
     (global-set-key (kbd "<f7>") 'mu4e)
     (when (fboundp 'imagemagick-register-types)
       (imagemagick-register-types))
@@ -1256,6 +1264,13 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
     
     (add-to-list 'mu4e-view-actions
                  '("Ver en el navegador" . mu4e-msgv-action-view-in-browser) t)
+
+    (setf mu4e-bookmarks
+          '(("flag:unread" "No leido" ?n)
+            ("flag:flagged" "Marcados" ?m)
+            ("date:today..now" "Correo de hoy" ?h)
+            ("date:7d..now" "Correo de la semana" ?w)  
+            ("maildir:/Mail/Inbox" "Bandeja de entrada" ?p)))
     
     (setf
      ;; información de cuentas de correo
@@ -1267,8 +1282,13 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      smtpmail-local-domain "local"
      smtpmail-smtp-user "elcorreo@deshackra.com"
      ;; html2text es un paquete que debe estar instalado en tu sistema
-     mu4e-confirm-quit nil
      mu4e-html2text-command 'mu4e-shr2text
+     mu4e-confirm-quit nil
+     mu4e-headers-date-format "%d/%m/%Y %H:%M"
+     ;; Ajustes para las respuestas
+     message-citation-line-format "El %A %d de %B del %Y a las %H%M horas, %N escribió:\n"
+     message-citation-line-function 'message-insert-formatted-citation-line
+     message-cite-reply-position 'below
      mu4e-get-mail-command "getmail.sh"
      mu4e-maildir "/home/jorge/correo"
      mu4e-update-interval nil
