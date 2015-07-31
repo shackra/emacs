@@ -1547,9 +1547,9 @@ Chat de jabber desde Emacs!!
   (add-hook 'jabber-chat-mode-hook #'turn-on-visual-line-mode)
   (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
 
-  ;; (if (daemonp)
-  ;;     ;; Nos conectamos a Jabber sólo cuando Emacs corre como demonio
-  ;;     (jabber-connect-all))
+  (if (daemonp)
+      ;; Nos conectamos a Jabber sólo cuando Emacs corre como demonio
+      (jabber-connect-all))
 #+END_SRC
 
 *** GNU TLS
