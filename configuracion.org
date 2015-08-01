@@ -1897,3 +1897,11 @@ Colorea archivos por extensión o por su =chmod=
       "Dired Video files extensions")
   (dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
 #+END_SRC
+** Alias
+Nombres cortos para comandos usados frecuentemente
+#+BEGIN_SRC emacs-lisp
+  (defalias 'cx 'mu4e)
+  (defalias 'eb 'eval-buffer)
+  (defalias 'er 'eval-region)
+  (defalias 'ed 'eval-defun)
+#+END_SRC
