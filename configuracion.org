@@ -1504,7 +1504,7 @@ CLOSED: [2015-07-21 mar 12:36]
   al momento de usar los comandos, da errores
 [[https://www.languagetool.org/es/][Language Tool]] es una herramienta de software libre para revisión gramatical, ortográfica y de estilo.
 
-#+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp :tangle no
   (require 'langtool)
   (setf langtool-java-classpath "/usr/share/languagetool:/usr/share/java/languagetool/*"
         langtool-mother-tongue "es")
