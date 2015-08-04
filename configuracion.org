@@ -910,7 +910,7 @@ Es un paquete que esta en su propia liga. Éste paquete te ayudara a aumentar tu
 Acá se definen primero los keybindings para Helm, todo en un solo sitio.
 #+BEGIN_SRC emacs-lisp 
   ;; establece el tamaño de la ventada de Helm a un 20% (40% por defecto)
-  (setf helm-autoresize-max-height 20
+  (setf helm-autoresize-max-height 40
         helm-autoresize-min-height 20)
 
   (global-set-key (kbd "C-c h") 'helm-command-prefix)
@@ -973,8 +973,7 @@ Y acá el resto de la configuración de Helm
                                     "elpa/.+"
                                     "tramp/.+"
                                     "\\*Gofmt Errors\\*"
-                                    "\\*autopep8"
-                                    "\\*magit.")
+                                    "\\*autopep8")
    
    helm-boring-file-regexp-list (quote
                                  ("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
@@ -1138,16 +1137,6 @@ Cuando =iedit-mode= esta activo, presionar la tecla @@html:<kbd>RET</kbd>@@ har�
 #+BEGIN_SRC emacs-lisp 
   (define-key iedit-mode-keymap (kbd "RET") 'iedit-mode)
 #+END_SRC
-
-*** discover-my-major
-Éste paquete nos muestra las combinaciones de teclas posibles para el modo mayor en el que estamos
-actualmente, todo lo que hay que hacer es recordar una combinación especifica de teclas.
-
-Esta combinación por defecto es C-h C-m ;)
-
-      #+BEGIN_SRC emacs-lisp 
-        (global-set-key (kbd "C-h C-m") 'discover-my-major)
-      #+END_SRC
 
 *** Expand-region
 Provee una manera fácil de hacer selección de elementos en el buffer con presionar solo una tecla. Puede ver

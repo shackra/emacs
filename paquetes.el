@@ -68,8 +68,6 @@
   :ensure dired-rainbow))
 (ignore-errors (use-package dired-sort
   :ensure dired-sort))
-(ignore-errors (use-package discover-my-major
-  :ensure discover-my-major))
 (ignore-errors (use-package dpaste
   :ensure dpaste))
 (ignore-errors (use-package elfeed
@@ -186,8 +184,6 @@
   :ensure magit))
 (ignore-errors (use-package magit-popup
   :ensure magit-popup))
-(ignore-errors (use-package makey
-  :ensure makey))
 (ignore-errors (use-package markdown-mode
   :ensure markdown-mode))
 (ignore-errors (use-package markdown-mode+
