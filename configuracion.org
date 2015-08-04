@@ -742,7 +742,6 @@ modos que se activan luego de que emacs carga
     (helm-mode 1)
     (helm-adaptative-mode 1)
     (helm-autoresize-mode 1)
-    (helm-descbinds-mode)
     (projectile-global-mode)
     (helm-projectile-on)
     (global-flycheck-mode)
@@ -1896,6 +1895,51 @@ Colorea archivos por extensión o por su =chmod=
         "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
       "Dired Video files extensions")
   (dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
+#+END_SRC
+*** general-close
+Inserta el delimitador de cierre de manera automática con una sola tecla
+#+BEGIN_SRC emacs-lisp
+  (require 'general-close)
+  (global-set-key (kbd "M-ñ") 'general-close)
+#+END_SRC
+*** ws-butler
+Remueve los espacios en blanco de los finales de linea de manera no intrusiva
+#+BEGIN_SRC emacs-lisp
+  ;; activado para todos los modos de programación
+  (add-hook 'prog-mode-hook 'ws-butler-mode)
+#+END_SRC
+*** visual bookmarks
+Los útiles marcadores de Emacs a la vista del usuario
+#+BEGIN_SRC emacs-lisp
+  (setq-default bm-buffer-persistence t)
+  (setf bm-cycle-all-buffers t)
+  (setf bm-highlight-style 'bm-highlight-only-fringe)
+  (add-hook 'after-init-hook 'bm-repository-load)
+  (add-hook 'find-file-hook 'bm-buffer-restore)
+  (add-hook 'kill-buffer-hook 'bm-buffer-save)
+  (add-hook 'kill-emacs-hook '(lambda nil
+                                (bm-buffer-save-all)
+                                (bm-repository-save)))
+  ;; interface para helm
+  (global-set-key (kbd "C-c b") 'helm-bm)
+#+END_SRC
+*** auto-package-update
+Actualiza tus paquetes de Emacs de manera automática
+#+BEGIN_SRC emacs-lisp
+  ;; en lugar de 7, quiero que actualices cada 3
+  (setf auto-package-update-interval 3)
+
+  (add-hook 'auto-package-update-before-hook
+            (lambda () (message "Actualizare los paquetes ahora")))
+
+  (add-hook 'after-init-hook 'auto-package-update-maybe)
+#+END_SRC
+*** helm-descbinds
+Helm mostrara los atajos de teclado asignados para diferente comandos
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-h b") 'helm-descbinds)
+  (setf helm-descbinds-window-style 'split-window)
+  (add-hook 'after-init-hook 'helm-descbinds-mode)
 #+END_SRC
 ** Alias
 Nombres cortos para comandos usados frecuentemente

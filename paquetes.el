@@ -6,12 +6,16 @@
   :ensure async))
 (ignore-errors (use-package auctex
   :ensure auctex))
+(ignore-errors (use-package auto-package-update
+  :ensure auto-package-update))
 (ignore-errors (use-package avy
   :ensure avy))
 (ignore-errors (use-package back-button
   :ensure back-button))
 (ignore-errors (use-package bind-key
   :ensure bind-key))
+(ignore-errors (use-package bm
+  :ensure bm))
 (ignore-errors (use-package button-lock
   :ensure button-lock))
 (ignore-errors (use-package chronos
@@ -90,6 +94,8 @@
   :ensure flycheck-rust))
 (ignore-errors (use-package fm-bookmarks
   :ensure fm-bookmarks))
+(ignore-errors (use-package general-close
+  :ensure general-close))
 (ignore-errors (use-package git-commit
   :ensure git-commit))
 (ignore-errors (use-package go-eldoc
@@ -102,6 +108,8 @@
   :ensure header2))
 (ignore-errors (use-package helm
   :ensure helm))
+(ignore-errors (use-package helm-bm
+  :ensure helm-bm))
 (ignore-errors (use-package helm-chronos
   :ensure helm-chronos))
 (ignore-errors (use-package helm-company
@@ -248,6 +256,8 @@
   :ensure pyenv-mode))
 (ignore-errors (use-package python-environment
   :ensure python-environment))
+(ignore-errors (use-package pythonic
+  :ensure pythonic))
 (ignore-errors (use-package pyvenv
   :ensure pyvenv))
 (ignore-errors (use-package rainbow-mode
@@ -308,6 +318,8 @@
   :ensure websocket))
 (ignore-errors (use-package with-editor
   :ensure with-editor))
+(ignore-errors (use-package ws-butler
+  :ensure ws-butler))
 (ignore-errors (use-package yaml-mode
   :ensure yaml-mode))
 (ignore-errors (use-package yasnippet
