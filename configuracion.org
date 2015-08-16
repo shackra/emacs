@@ -13,26 +13,27 @@ realicemos a mayor gloria tuya.
 #+end_quote
 
 * Configuración de GNU Emacs en un archivo de org-mode
-He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios
-archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar
-varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es
-posible documentar varios aspectos de mi configuración, sí, sí... ya sé que esto se puede hacer con
-comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir
-varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer),
-además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código
-Python!.
+He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi configuración, sí, sí... ya sé que esto se puede hacer con comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código Python!.
 
-* La Configuración
+* Cómo hacer que todo esto funcione: =init.el=
 Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
 =~/.emacs.d/init.el=:
 
 #+BEGIN_SRC emacs-lisp :tangle no
-  ;; init.el para esta configuración. Tu Emacs debe ser versión 24.
-  (package-initialize)
-  (require 'ob-tangle)
-  (org-babel-load-file
-   (expand-file-name "emacs-init.org"
-                     user-emacs-directory))
+;; init.el para esta configuración. Tu Emacs debe ser versión 24.
+(package-initialize)
+(require 'ob-tangle)
+;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
+;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
+;; ahorrarme unos segundos cuando Emacs se carga.
+(if (file-newer-than-file-p
+     (expand-file-name "configuracion.org" user-emacs-directory)
+     (expand-file-name "configuracion.el" user-emacs-directory))
+    ;; enreda los bloques de código en un archivo elisp
+    (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
+  ;; en caso contrario, carga el archivo ya existente :)
+  (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
+(put 'downcase-region 'disabled nil)
 #+END_SRC
 
 activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
@@ -42,7 +43,7 @@ activamos algunas opciones para depuración en caso de que Emacs falle en cargar
   (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+END_SRC
 
-** Información personal
+* Información personal
 #+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Araya Navarro"
         user-mail-address "elcorreo@deshackra.com"
@@ -50,14 +51,11 @@ activamos algunas opciones para depuración en caso de que Emacs falle en cargar
         calendar-latitude 10.083333
         calendar-longitude -83.5)
 #+END_SRC
-
-** Repositorio de paquetes
+* Repositorio de paquetes
 Desde la versión 24 Emacs permite la instalación de paquetes de la misma manera como se realiza en
 distribuciones de GNU/Linux.
 
-El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben, aun debes
-poner algunas cosas en tu configuración de Emacs y tal. Lo posible es que las mismas instrucciones estén dadas
-en la descripción del paquete.
+El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben, aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'package-archives
@@ -68,33 +66,22 @@ en la descripción del paquete.
 #+END_SRC
 
 Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
-
-** Listado, revisión e instalación de paquetes con Melpa
-*La situación es la siguiente:* Quiero poder usar mi configuración en muchas partes, o quizás otros usuarios
-de GNU Emacs desean usar mi configuración. Sin embargo, no cuento con una lista de paquetes que tengo
-instalado en mi Emacs, y si alguien desea usar mi configuración puede tener errores debido a que no tiene los
-paquetes instalados que yo tengo.
+* Listado, revisión e instalación de paquetes con Melpa
+*La situación es la siguiente:* Quiero poder usar mi configuración en muchas partes, o quizás otros usuarios de GNU Emacs desean usar mi configuración. Sin embargo, no cuento con una lista de paquetes que tengo instalado en mi Emacs, y si alguien desea usar mi configuración puede tener errores debido a que no tiene los paquetes instalados que yo tengo.
 
 *Solución:* usar org-babel para correr un trozo de código Python que genere un código Elisp que se encargue
 del problema :D.
 
-Pero primero nos aseguramos de decirle a babel que nos habilite Python para usar ejecutar desde el archivo
-org!
+Pero primero nos aseguramos de decirle a babel que nos habilite Python para usarlo dentro de cualquier archivos org!
 
 #+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '(
-     (emacs-lisp . t)
+   '((emacs-lisp . t)
      (python . t)
-     (sh . t)
-     )
-  )
+     (sh . t)))
 #+END_SRC
-
-#+RESULTS:
-
-*** script generador de la lista de paquetes a instalar
+** Listado de paquetes
 #+name: codigopython
 #+BEGIN_SRC python :results output :file paquetes.el
   import os
@@ -149,56 +136,32 @@ Cargamos paquetes que no se instalan con ELPA.
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
 #+END_SRC
 
-*** Ubicación de temas personalizados
+** Ubicación de temas personalizados
 Emacs ofrece la posibilidad de tener una carpeta exclusiva para colocar temas personalizados o de terceros a traves de una variable llamada =custom-theme-load-path=. Todos los temas iran en la carpeta /themes/ dentro de la carpeta raíz de Emacs.
 
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'custom-theme-load-path (expand-file-name "themes" user-emacs-directory))
 #+END_SRC
 
-** Paquetes requeridos con =require=
+* Paquetes requeridos con =require=
 Existen algunos paquetes que deben ser "requeridos" para la correcta
 activación de algunos modos mayores, funcionalidades, y demás cosas
 proveídas por Emacs o paquetes instalados en Emacs.
 
 #+BEGIN_SRC emacs-lisp
   (require 'uniquify)
-  (require 'helm-config)
-  (require 'helm-files)
-  (require 'helm-grep)
-  (require 'helm-buffers)
-  (require 'helm-org)
-  (require 'helm-descbinds)
   (require 'htmlize)
-  (require 'company)
   (require 'hlinum)
   (require 'fixmee)
-  (require 'expand-region)
-  (require 'web-mode)
   (require 'epa-file)
-  (require 'visual-regexp)
-  (require 'visual-regexp-steroids)
-  (when (file-exists-p "/usr/share/emacs/site-lisp/go-mode.el")
-    (require 'go-mode-load))
-
-  (require 'company-go)
-  (require 'org)
-  (require 'org-page)
   (require 'undo-tree)
-  (require 'muse-mode)
-  (require 'muse-docbook)
-  (require 'muse-book)
-  (require 'muse-wiki)
-  (require 'muse-project)
-  (require 'mediawiki)
-  (require 'theme-changer)
   (require 'keyfreq)
 #+END_SRC
 
-** Códigos elisp
+* Códigos elisp
 funciones de Emacs lisp escritas por mi u otras personas (y que yo he recolectado para mi propio beneficio)
 
-*** función para insertar etiquetas <kbd>
+** función para insertar etiquetas <kbd>
 Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta desde Emacs.stackexchange]].
 
 #+BEGIN_SRC emacs-lisp
@@ -217,7 +180,7 @@ Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta
         (forward-char (if is-org-mode -8 -6)))))
 #+END_SRC
 
-*** funciones con expresiones regulares que uso a menudo en edición de texto
+** funciones con expresiones regulares que uso a menudo en edición de texto
 estas son funciones que uso muy a menudo durante la edición de texto, tenerlos como comandos interactivos me ahorra tiempo escribiendo las expresiones regulares una y otra vez.
 
 #+BEGIN_SRC emacs-lisp
@@ -240,7 +203,7 @@ estas son funciones que uso muy a menudo durante la edición de texto, tenerlos 
     )
 #+END_SRC
 
-*** reemplazo para comment-dwim
+** reemplazo para comment-dwim
 #+BEGIN_SRC emacs-lisp
   ;; Original idea from
   ;; http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html
@@ -258,12 +221,12 @@ estas son funciones que uso muy a menudo durante la edición de texto, tenerlos 
       (comment-dwim arg)))
 #+END_SRC
 
-*** =find-file= y =switch-buffer= personalizados
+** =find-file= y =switch-buffer= personalizados
 Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visitar archivos y buffers relacionados con el proyecto en el cual estoy trabajando. Projectile-helm es de mucha ayuda, sin embargo la combinación de teclas es muy extensa y la mayoría de veces no las uso.
 
 Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=.
 
-**** =find-file= personalizado
+*** =find-file= personalizado
 #+BEGIN_SRC emacs-lisp
   (defun shackra:find-file ()
     (interactive)
@@ -276,7 +239,7 @@ Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=
                             'find-file))))
 #+END_SRC
 
-**** =switch-buffer= personalizado
+*** =switch-buffer= personalizado
 #+BEGIN_SRC emacs-lisp
   (defun shackra:switch-buffer ()
     (interactive)
@@ -289,7 +252,7 @@ Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=
                             'helm-mini))))
 #+END_SRC
 
-*** abrir archivos que estén en modo de solo lectura como root
+** abrir archivos que estén en modo de solo lectura como root
 Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]], según éste [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][post en Emacs Redux]].
 
 #+BEGIN_SRC emacs-lisp
@@ -301,7 +264,7 @@ Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]],
       (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
 #+END_SRC
 
-*** Encierra los bloques =_SRC= de org en etiquetas =<pre><code>=
+** Encierra los bloques =_SRC= de org en etiquetas =<pre><code>=
 Le pedimos a org-mode que no meta las patas cuando exporta archivos a HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
 
 Muchas gracias a [[http://emacs.stackexchange.com/users/202/chen-bin][chen bin]] por los [[http://emacs.stackexchange.com/a/9839/690][trozos de código]] sacados de su [[https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el][propio proyecto]] :)
@@ -469,7 +432,7 @@ Muchas gracias a [[http://emacs.stackexchange.com/users/202/chen-bin][chen bin]]
         (org2html-replace-pre src)))
 #+END_SRC
 
-*** Recrea el blog para probar el diseño
+** Recrea el blog para probar el diseño
 Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos el procedimiento manual de publicar el blog a una carpeta
 
 #+BEGIN_SRC emacs-lisp
@@ -479,7 +442,7 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
     (op/do-publication t t "/tmp/blog" nil))
 #+END_SRC
 
-*** Generación del blog y sincronización con RacketSpace
+** Generación del blog y sincronización con RacketSpace
 
 #+BEGIN_SRC emacs-lisp
   (defun shackra:syncblog ()
@@ -502,7 +465,7 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
     (shackra:syncblog))
 #+END_SRC
 
-*** función para =delete-frame-functions=
+** función para =delete-frame-functions=
 #+BEGIN_SRC emacs-lisp
   (defun shackra:run-delete-frame-hooks (frame)
     "Esta función corre algunas funciones que no son llamadas cuando Emacs
@@ -512,7 +475,7 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
       (recentf-save-list)))
 #+END_SRC
 
-*** salva algunos buffers al perder Emacs el foco
+** salva algunos buffers al perder Emacs el foco
 Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-settings-with-big.html][Programming: Seven specialty Emacs settings with big payoffs]]
 
 #+BEGIN_SRC emacs-lisp
@@ -520,25 +483,24 @@ Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-sett
     (interactive)
     (save-some-buffers t))
 #+END_SRC
-** EN-ESPERA Emacs, no hagas éstas cosas... AKA "sane defaults"
-- State "EN-ESPERA"  from ""           [2015-04-30 jue 00:34] \\
-  powerline-mode ha sido desactivado por un tiempo
-Una colección de sentencias para cambiar algunas cosas de Emacs que son poco sanas, de ahí el nombre de "sane defaults" u /opciones sanas predeterminadas/. Debido a que esta sección de mi configuración se estaba llenando innecesariamente de entras decidí colocar todas las opciones dentro de un sólo bloque de código elisp.
 
-#+BEGIN_SRC emacs-lisp :tangle no
-  (setf ;;solarized-high-contrast-mode-line t
-        solarized-distinct-fringe-background t
-        solarized-use-more-italic t
-        solarized-scale-org-headlines t)
+** No molestes, Shia LaBeouf!
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:org-reschedule-tomorrow ()
+    "Re-Programa para mañana una tarea que pude hacer hoy"
+    (interactive)
+    (org-schedule :time (format-time-string "%Y-%m-%d" (time-add (current-time) (seconds-to-time 86400)))))
 #+END_SRC
+* Sanas opciones para Emacs por defecto
+Hacemos que Emacs se comporte de una manera más complaciente porque su comportamiento de fabrica es intolerable.
 
 #+BEGIN_SRC emacs-lisp
+  (require 'theme-changer)
   ;; cambia el tema dependiendo de la hora del día
   (change-theme 'material-light 'material)
 #+END_SRC
 
 Establecemos la tipografía a usar
-
 #+BEGIN_SRC emacs-lisp
   (ignore-errors
     (set-frame-font "SourceCodePro 12")
@@ -554,19 +516,16 @@ Establecemos la tipografía a usar
 #+END_SRC
 
 Cuando corremos Emacs en una terminal, no aplica tema de colores alguno. Según: [[https://www.reddit.com/r/emacs/comments/3bjbq9/dont_use_colors_or_theme_when_run_from_terminal/][don't use colors or theme when run from terminal : emacs]]
-
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'default-frame-alist '(tty-color-mode . -1))
 #+END_SRC
 
 Guarda algunos buffers cuando Emacs pierde el foco.
-
 #+BEGIN_SRC emacs-lisp
   (add-hook 'focus-out-hook 'guardar-todo)
 #+END_SRC
 
 Cuando Emacs cierra, en verdad quiero que también mate a todos los procesos en segundo plano (y no me preguntes sobre ello; sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-settings-with-big.html][Programming: Seven specialty Emacs settings with big payoffs]])
-
 #+BEGIN_SRC emacs-lisp
   (require 'cl)
   (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
@@ -592,7 +551,6 @@ Cuando Emacs cierra, en verdad quiero que también mate a todos los procesos en 
   (setf
    ;; hace que el buffer inicial al abrir un nuevo cuadro de Emacs sea la agenda
    ;; de org-mode
-   initial-buffer-choice "~/org/cosasporhacer.org"
    x-underline-at-descent-line t ;; la linea que subraya es puesta en la base de
                                  ;; la tipografía en lugar de en la linea base.
    load-prefer-newer t
@@ -663,8 +621,7 @@ Cuando Emacs cierra, en verdad quiero que también mate a todos los procesos en 
   (diminish 'eldoc-mode)
   (diminish 'outline-minor-mode)
 #+END_SRC
-
-*** Mover el cursos de manera inteligente al inicio de la linea
+** Mover el cursos de manera inteligente al inicio de la linea
 He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0
 en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando
 se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
@@ -685,16 +642,45 @@ se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverfl
   (global-set-key (kbd "C-a") 'smart-beginning-of-line)
 #+END_SRC
 
-*** EN-ESPERA Modificación de los caracteres en el mode-line
-- State "EN-ESPERA"  from ""           [2015-02-20 vie 18:24] \\
-  Tengo que liarme con `powerline' primero para poder tocar siquiera la variable `mode-line-format'
+** Modificación de los caracteres en el mode-line
 Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (según [[http://tromey.com/blog/?p%3D831][The Cliffs of Inanity]], también [[http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html][lunarsite]]. referencias sobre =mode-line-format= en la [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Mode-Line-Format.html][referencia de Elisp]])
+
+#+BEGIN_SRC emacs-lisp
+  (defvar shackra:vc-mode nil)
+  (make-variable-buffer-local 'shackra:vc-mode)
+
+  (require 'vc)
+  (defun shackra:vc-command-hook (&rest args)
+    (let ((file-name (buffer-file-name)))
+      (setq shackra:vc-mode (and file-name
+                               (not (vc-registered file-name))
+                               (ignore-errors
+                                 (vc-responsible-backend file-name))))))
+
+  (add-hook 'vc-post-command-functions #'shackra:vc-command-hook)
+  (add-hook 'find-file-hook #'shackra:vc-command-hook)
+
+  (defun shackra:vc-info ()
+    (if shackra:vc-mode
+        (propertize "🗶" 'face 'error)
+      " "))
+#+END_SRC
 
 #+BEGIN_SRC emacs-lisp
   ;; Si usas `powerline', editar la variable mode-line-format es algo complicado,
   ;; pero no imposible
+  (setq-default mode-line-format
+                '("%e"
+                  (:eval (if (buffer-modified-p)
+                             (propertize "  ❗" 'face 'error)
+                           "  "))
+                  (:eval (shackra:vc-info))
+                  " " mode-line-buffer-identification
+                  " " mode-line-position
+                  " " mode-line-modes
+                  mode-line-misc-info))
 #+END_SRC
-** Custom.el
+* Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira en éste archivo:
 
@@ -712,7 +698,7 @@ Y cargamos el archivo, ¡No lo olvide!.
    (load custom-file)
  #+END_SRC
 
-** Variables personalizadas
+* Variables personalizadas
 Variables usadas por funciones escritas (o copiadas de por ahí) por mi
 
 #+BEGIN_SRC emacs-lisp
@@ -720,20 +706,18 @@ Variables usadas por funciones escritas (o copiadas de por ahí) por mi
     "Indica que versión de Python estamos usando, Python2 o Python3")
   (put 'shackra:var-python-ver 'safe-local-variable-values #'integerp)
 #+END_SRC
-** Otras configuraciones
+* Otras configuraciones
 Existen ciertos cambios que no tienen cabida en otra parte, y ciertamente colocarlos debajo de [[*Modos%20de%20Emacs][Modos de Emacs]] no es una opción... porque lo veo como algo desordenado.
 
-*** Desata algunas teclas rápidas y sus respectivos comandos
+** Desata algunas teclas rápidas y sus respectivos comandos
 =C-z= es una combinación de teclas que no me sirven para algo, así que lo desato de su comando =suspend-frame= para darle un mejor uso. También =M-z= puede tener un mejor uso que ejecutar el comando de borrado =zap-to-char=
 #+BEGIN_SRC emacs-lisp
   (global-unset-key (kbd "C-z"))
   (global-unset-key (kbd "M-z"))
 #+END_SRC
-** Modos de Emacs
-   La configuración especifica a cada modo mayor, menor, o paquete con
-   funcionalidades. Dividió por secciones.
-
-*** after-init-hook
+* Modos de Emacs
+La configuración especifica a cada modo mayor, menor, o paquete con funcionalidades. Dividió por secciones.
+** after-init-hook
 modos que se activan luego de que emacs carga
 
 #+BEGIN_SRC emacs-lisp
@@ -777,97 +761,94 @@ modos que se activan luego de que emacs carga
   (global-set-key "\C-x3" (lambda () (interactive)(split-window-horizontally) (other-window 1)))
 #+END_SRC
 
-*** Org-mode
-CLOSED: [2014-10-15 mié 17:38]
+** org-mode
+#+BEGIN_SRC emacs-lisp
+  (require 'org)
+#+END_SRC
 ¡Organiza tu vida usando Emacs!
 
 Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que org-mode usa la
 combinación C-' para otra cosa.
 
-     #+BEGIN_SRC emacs-lisp 
-       (setf org-footnote-auto-adjust t
-             org-html-htmlize-output-type 'css
-             org-html-htmlize-font-prefix "org-"
-             org-habit-graph-column 55
-             org-directory (expand-file-name "~/org")
-             org-archive-location (concat org-directory "/archivado.org::* Entradas viejas y archivadas")
-             org-special-ctrl-k t
-             org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
-             org-catch-invisible-edits 'show
-             org-return-follow-link t
-             ;;org-blank-before-new-entry t
-             org-startup-indented t
-             org-startup-folded nil
-             org-imenu-depth 5
-             org-log-done 'time
-             org-clock-persist 'history
-             org-default-notes-file (concat org-directory "/diario.org")
+#+BEGIN_SRC emacs-lisp 
+  (setf org-footnote-auto-adjust t
+        org-html-htmlize-output-type 'css
+        org-html-htmlize-font-prefix "org-"
+        org-habit-graph-column 55
+        org-directory (expand-file-name "~/org")
+        org-archive-location (expand-file-name "~/org-archivos/archivado.org::* Entradas viejas y archivadas")
+        org-special-ctrl-k t
+        org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
+        org-catch-invisible-edits 'show
+        org-return-follow-link t
+        ;;org-blank-before-new-entry t
+        org-startup-indented t
+        org-startup-folded nil
+        org-imenu-depth 5
+        org-log-done 'time
+        org-clock-persist 'history
+        org-default-notes-file (concat org-directory "/diario.org")
 
-             org-agenda-files (list (concat org-directory "/cosasporhacer.org")
-                                    (concat org-directory "/agenda.org"))
+        org-agenda-files (list (concat org-directory "/cosasporhacer.org"))
 
-             org-mobile-directory "~/orgmobile/"
+        org-capture-templates `(("p" "Añadir tarea 'Por hacer'" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
+                                 "* POR-HACER %^{breve descripcion}\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
+                                 "---\n%?\n\nEscrito el: %U\nEn: %a" :empty-lines 1)
+                                ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")
+                                 "* %^{Nombre del evento}\n SCHEDULED: %:date" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("g" "Algún día/Tal vez" entry (file+headline ,(concat org-directory "/quizas.org") "En 'veremos'")
+                                 "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("l" "Algún día/Tal vez (Libros)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Libros por leer")
+                                 "* Leer %^{titulo del libro} por %^{autor o autores}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("v" "Algún día/Tal vez (Peliculas)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Películas por ver")
+                                 "* Ver la pelicula %^{titulo de la pelicula}\n %?\n Added: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("m" "Algún día/Tal vez (Música)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Música por escuchar")
+                                 "* Escuchar cierta(s) cancion(es) de %^{artista}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("b" "Algún día/Tal vez (Blogs)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Blogs por leer")
+                                 "* Leer [[%:url][%^{titulo de la entrada de blog}]] por %^{autor}\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("z" "Algún día/Tal vez (Por hacer)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por hacer")
+                                 "* %^{breve descripcion de la tarea}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("w" "Algún día/Tal vez (Aprender)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por aprender")
+                                 "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                ("n" "Algún día/Tal vez (Nuevo proyecto)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Nuevos proyectos")
+                                 "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
+                                )
 
-             org-capture-templates `(("p" "Cosas por hacer" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
-                                      "* POR-HACER %^{breve descripcion}\n%?\nAgregado: %U\nEn: %a" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
-                                      "%?\n\nEscrito el: %U\nEn: %a" :empty-lines 1)
-                                     ("x" "Proyectos de clientes en PeoplePerHour" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Proyectos en PeoplePerHour")
-                                      "* POR-HACER %^{Titulo del proyecto}\n%^{cliente}p\n%^{ID}p\nDescripción: %?" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")
-                                      "* %^{Nombre del evento}\n SCHEDULED: %:date" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("a" "Cumpleaños y aniversarios" entry (file+headline ,(concat org-directory "/agenda.org") "Cumpleaños y aniversarios")
-                                      "* %^{Nombre del cumpleañero o aniversario}\n SCHEDULED: %:date\n %?" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("g" "Algún día/Tal vez" entry (file+headline ,(concat org-directory "/quizas.org") "En 'veremos'")
-                                      "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("l" "Algún día/Tal vez (Libros)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Libros por leer")
-                                      "* Leer %^{titulo del libro} por %^{autor o autores}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("v" "Algún día/Tal vez (Peliculas)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Películas por ver")
-                                      "* Ver la pelicula %^{titulo de la pelicula}\n %?\n Added: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("m" "Algún día/Tal vez (Música)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Música por escuchar")
-                                      "* Escuchar cierta(s) cancion(es) de %^{artista}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("b" "Algún día/Tal vez (Blogs)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Blogs por leer")
-                                      "* Leer [[%:url][%^{titulo de la entrada de blog}]] por %^{autor}\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("z" "Algún día/Tal vez (Por hacer)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por hacer")
-                                      "* %^{breve descripcion de la tarea}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("w" "Algún día/Tal vez (Aprender)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por aprender")
-                                      "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     ("n" "Algún día/Tal vez (Nuevo proyecto)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Nuevos proyectos")
-                                      "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                     )
+        org-todo-keywords '((sequence "POR-HACER(p)"
+                                      "EN-PROGRESO(g)"
+                                      "EN-ESPERA(e@/!)"
+                                      "EN-REVISIÓN(r@/!)"
+                                      "|" "CANCELADO(c@)"
+                                      "TERMINADO(t!)"))
 
-             org-todo-keywords '((sequence "POR-HACER(p)"
-                                           "EN-PROGRESO(g)"
-                                           "EN-ESPERA(e@/!)"
-                                           "EN-REVISIÓN(r@/!)"
-                                           "|" "CANCELADO(c@)"
-                                           "TERMINADO(t!)"))
+        org-todo-keyword-faces '(("POR-HACER" . (:foreground "#ff4500" :weight bold))
+                                 ("EN-PROGRESO" . (:foreground "#ffa500" :weight bold))
+                                 ("EN-ESPERA" . (:foreground "#0000ff" :weight bold))
+                                 ("EN-REVISIÓN" . (:foreground "#ffff00" :weight bold))
+                                 ("TERMINADO" . (:foreground "#32cd32" :weight bold))
+                                 ("CANCELADO" . (:foreground "#8b0000" :weight bold))))
 
-             org-todo-keyword-faces '(("POR-HACER" . (:foreground "#ff4500" :weight bold))
-                                      ("EN-PROGRESO" . (:foreground "#ffa500" :weight bold))
-                                      ("EN-ESPERA" . (:foreground "#0000ff" :weight bold))
-                                      ("EN-REVISIÓN" . (:foreground "#ffff00" :weight bold))
-                                      ("TERMINADO" . (:foreground "#32cd32" :weight bold))
-                                      ("CANCELADO" . (:foreground "#8b0000" :weight bold))))
+  (global-set-key (kbd "C-c l") 'org-store-link)
+  (global-set-key (kbd "C-c a") 'org-agenda)
+  (define-key global-map (kbd "C-c c") 'org-capture)
+  (define-key org-mode-map (kbd "C-¡") 'er/expand-region)
+  (define-key org-mode-map (kbd "C-c k") #'endless/insert-key)
 
-       (global-set-key (kbd "C-c l") 'org-store-link)
-       (global-set-key (kbd "C-c a") 'org-agenda)
-       (define-key global-map (kbd "C-c c") 'org-capture)
-       (define-key org-mode-map (kbd "C-¡") 'er/expand-region)
-       (define-key org-mode-map (kbd "C-c k") #'endless/insert-key)
+  (org-clock-persistence-insinuate)
 
-       (org-clock-persistence-insinuate)
+  ;; sacado de http://emacs.stackexchange.com/a/2103/690
+  (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
+  (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
+  (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
 
-       ;; sacado de http://emacs.stackexchange.com/a/2103/690
-       (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
-       (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
-       (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
-
-       (add-hook 'org-mode-hook #'visual-fill-column-mode)
-       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-     #+END_SRC
-
-*** Org-page
+  (add-hook 'org-mode-hook #'visual-fill-column-mode)
+  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+#+END_SRC
+** org-page
+#+BEGIN_SRC emacs-lisp
+  (require 'org-page)
+#+END_SRC
 Genera un blog estático con [[https://github.com/kelvinh/org-page][org-page]].
 la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porque de verdad quiero
 castellanizar los enlaces y sus títulos en el blog.
@@ -881,18 +862,15 @@ castellanizar los enlaces y sus títulos en el blog.
           op/site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
           op/personal-github-link "https://github.com/shackra"
           op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
-          op/theme 'shackra
-  ;;      org-html-htmlize-output-type nil
-    )
+          op/theme 'shackra)
 
     (eval-after-load 'ox
       '(progn
          (add-to-list 'org-export-filter-src-block-functions
-                      'org2html-wrap-blocks-in-code)
-         ))
+                      'org2html-wrap-blocks-in-code)))
       #+END_SRC
 
-*** text-mode
+** text-mode
 Esta configuración afecta a todos los modos texto en los buffers.
      
      #+BEGIN_SRC emacs-lisp 
@@ -904,7 +882,14 @@ Esta configuración afecta a todos los modos texto en los buffers.
        (add-hook 'text-mode-hook #'shackra:text-mode)
      #+END_SRC
 
-*** HELM
+** helm
+#+BEGIN_SRC emacs-lisp
+  (require 'helm-config)
+  (require 'helm-files)
+  (require 'helm-grep)
+  (require 'helm-buffers)
+  (require 'helm-org)
+#+END_SRC
 Es un paquete que esta en su propia liga. Éste paquete te ayudara a aumentar tu productividad, reducir tu calvicie y hará que tu ex-novia sexy que te dejo hace 20 años vuelva muerta de amor por vos ;)
 
 Acá se definen primero los keybindings para Helm, todo en un solo sitio.
@@ -1000,13 +985,13 @@ Y acá el resto de la configuración de Helm
   (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
      #+END_SRC
      
-*** helm-flycheck
+** helm-flycheck
 Muestra los errores y advertencias marcados por flycheck usando Helm!
 
 #+BEGIN_SRC emacs-lisp 
   (define-key flycheck-mode-map (kbd "C-c h !") 'helm-flycheck)
 #+END_SRC
-*** Projectile
+** Projectile
 Es un paquete que nos permite el manejo de archivos en proyectos. Un proyecto, por definición, puede ser
 cualquier repositorio de código fuente de software, como =mercurial=, =git=, etc. También es posible definir
 un proyecto en una carpeta dejando caer en él un archivo =.projectile=, dentro de este archivo se puede
@@ -1023,7 +1008,7 @@ definir qué archivos/carpetas ignorar y cuales no. Para más información ver l
         )
      #+END_SRC
 
-*** Multi-term
+** multi-term
 Ofrece un excelente emulador de terminal *dentro* de Emacs
 #+BEGIN_SRC emacs-lisp 
   (defun shackra:maybe-disable-yasnippet ()
@@ -1055,7 +1040,10 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
   (global-set-key [C-prior] 'multi-term-prev)
 #+END_SRC
 
-*** company
+** company
+#+BEGIN_SRC emacs-lisp
+(require 'company)
+#+END_SRC
 El paquete da funcionalidades de auto completado. Esta opcion es
 cada día más popular como remplazo a =auto-complete=.
 
@@ -1075,7 +1063,7 @@ cada día más popular como remplazo a =auto-complete=.
        (add-to-list 'company-backends 'company-yasnippet t)
      #+END_SRC
      
-*** Python
+** python
 Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-indent-mode debido a un [[https://github.com/mlf176f2/auto-indent-mode.el/issues/43][fallo]] en el modo Python. Por lo tanto, estoy reuniendo la tecla RET con la función =newline-and-indent= que funciona de lo más bien.
 
 #+BEGIN_SRC emacs-lisp 
@@ -1123,13 +1111,13 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
   ;; (define-key python-mode-map (kbd "RET") 'py-newline-and-indent)
 #+END_SRC
 
-*** Jedi.el
+** jedi.el
 Es un paquete de auto completado de Python para Emacs. Su objetivo es ayudar al programador en Python de una forma no destructiva. También ayuda a encontrar información sobre objetos Python como /docstrings/, argumentos de funciones y localización de código.
 
 #+BEGIN_SRC emacs-lisp
   (setf jedi:complete-on-dot t)
 #+END_SRC
-*** iedit-mode
+** iedit-mode
 =iedit-mode= es un modo que permite editar un termino repetido en varios lugares a la vez en el buffer actual, es como =multiple-cursors=, pero sin la tener que marcar un area y luego llamar al modo mayor. En Python se llama a =iedit-mode-toggle-on-function= con @@html:<kbd>C</kbd>@@@@html:<kbd>c</kbd>@@ @@html:<kbd>,</kbd>@@.
 
 Cuando =iedit-mode= esta activo, presionar la tecla @@html:<kbd>RET</kbd>@@ hará que se desactive, al igual que sucede con =multiple-cursors=.
@@ -1138,15 +1126,16 @@ Cuando =iedit-mode= esta activo, presionar la tecla @@html:<kbd>RET</kbd>@@ har�
   (define-key iedit-mode-keymap (kbd "RET") 'iedit-mode)
 #+END_SRC
 
-*** Expand-region
-Provee una manera fácil de hacer selección de elementos en el buffer con presionar solo una tecla. Puede ver
-éste paquete en acción en este episodio de [[http://emacsrocks.com/e09.html][Emacs Rocks]].
+** expand-region
+#+BEGIN_SRC emacs-lisp
+  (require 'expand-region)
+#+END_SRC
+Provee una manera fácil de hacer selección de elementos en el buffer con presionar solo una tecla. Puede ver éste paquete en acción en este episodio de [[http://emacsrocks.com/e09.html][Emacs Rocks]].
 
-     #+BEGIN_SRC emacs-lisp 
-       (global-set-key (kbd "C-'") 'er/expand-region)
-     #+END_SRC
-
-*** multiple-cursos
+#+BEGIN_SRC emacs-lisp 
+  (global-set-key (kbd "C-'") 'er/expand-region)
+#+END_SRC
+** multiple-cursos
 Marca varias partes del buffer dependiendo de la selección que hagas.
      
      #+BEGIN_SRC emacs-lisp 
@@ -1161,7 +1150,7 @@ este paquete puedes tener configuraciones de teclas muy variadas, lo mejor es qu
 proyecto en Github para más [[https://github.com/magnars/multiple-cursors.el#basic-usage][información]]. Las teclas usadas reflejan la reducida cantidad que existen en mi
 laptop.
      
-*** flycheck-mode
+** flycheck-mode
 revisión-al-vuelo de la sintaxis mientras editas código. Hace una selección automática del mejor revisor de sintaxis que dispongas.
      
 Tiene soporte para muchos lenguajes. Lo recomiendo por encima de flymake.
@@ -1176,11 +1165,14 @@ Tiene soporte para muchos lenguajes. Lo recomiendo por encima de flymake.
          '(add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode))
      #+END_SRC
 
-*** web-mode
+** web-mode
+#+BEGIN_SRC emacs-lisp
+  (require 'web-mode)
+#+END_SRC
 Un modo mayor autónomo que permite la edición de plantillas web: documentos HTML con partes embebidas
 (CSS/Javascript) y bloques (del lado de cliente/servidor)
 
-     #+BEGIN_SRC emacs-lisp 
+#+BEGIN_SRC emacs-lisp 
        (defun shackra:web-mode ()
          (auto-fill-mode -1)
          (electric-indent-local-mode t)
@@ -1207,8 +1199,8 @@ Un modo mayor autónomo que permite la edición de plantillas web: documentos HT
        (define-key web-mode-map (kbd "C-n") 'web-mode-tag-match)
 
        (add-hook 'web-mode-hook #'shackra:web-mode)
-     #+END_SRC
-*** mu4e
+#+END_SRC
+** mu4e
 Un versátil cliente de correo electrónico. Éste paquete se carga de manera condicional si esta instalado en el sistema del usuario. Desgraciadamente no puedes instalarlo desde Melpa o algún otro repositorio de paquetes de Emacs.
 
 Para saber como configurar mu4e para escribir correos con diferentes cuentas de correo, puedes mirar la
@@ -1304,7 +1296,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
                             :body "El archivo '~/.secret/mu4e-cuentas.el' no se pudo cargar")))
 #+END_SRC
 
-*** dired y dired+
+** dired y dired+
 Extiende funcionalidades de =dired=. Se agrega una función personalizada que mata el buffer al presionar =q=,
 porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear salir de ella.
 
@@ -1344,7 +1336,7 @@ porque verdaderamente no quiero saber nada más de esa carpeta en caso de desear
 
   (add-hook 'dired-mode-hook #'shackra:dired)
 #+END_SRC
-*** avy-jump
+** avy-jump
 reemplazo para [[*ace-jump][ace-jump]]
 #+BEGIN_SRC emacs-lisp 
   (global-set-key (kbd "C-z") 'avy-goto-char)
@@ -1357,7 +1349,7 @@ reemplazo para [[*ace-jump][ace-jump]]
    avy-background t
    avy-timeout-seconds 5)
 #+END_SRC
-*** magit
+** magit
 Git en Emacs.
 
 A decir verdad, amo a Mercurial y odio a Git.
@@ -1368,7 +1360,7 @@ A decir verdad, amo a Mercurial y odio a Git.
              magit-auto-revert-mode nil)
      #+END_SRC
 
-*** monky
+** monky
 Mercurial en Emacs
 
 Amo Mercurial ;)
@@ -1378,18 +1370,21 @@ Amo Mercurial ;)
        (setf monky-process-type 'cmdserver)
      #+END_SRC
 
-*** Visual-regexp y Visual-regexp-steroids
+** visual-regexp y visual-regexp-steroids
+#+BEGIN_SRC emacs-lisp
+  (require 'visual-regexp)
+  (require 'visual-regexp-steroids)
+#+END_SRC
 expresiones regulares con algo más moderno que lo ofrecido por Emacs:
 
-       #+BEGIN_SRC emacs-lisp 
-         (define-key global-map (kbd "C-c r") 'vr/replace)
-         (define-key global-map (kbd "C-c q") 'vr/query-replace)
-         (define-key global-map (kbd "C-c m") 'vr/mc-mark)
-         (define-key esc-map (kbd "C-r") 'vr/isearch-backward) ;; C-M-r
-         (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s
-       #+END_SRC
-
-*** Para todos los modos mayores de programación
+#+BEGIN_SRC emacs-lisp 
+  (define-key global-map (kbd "C-c r") 'vr/replace)
+  (define-key global-map (kbd "C-c q") 'vr/query-replace)
+  (define-key global-map (kbd "C-c m") 'vr/mc-mark)
+  (define-key esc-map (kbd "C-r") 'vr/isearch-backward) ;; C-M-r
+  (define-key esc-map (kbd "C-s") 'vr/isearch-forward) ;; C-M-s
+#+END_SRC
+** prog-mode
 En lo personal, me gustaría que al escribir los comentarios en mi código fuente, las lineas se rompan al
 llegar a la columna 79.
 
@@ -1414,23 +1409,27 @@ llegar a la columna 79.
       (define-key prog-mode-map (kbd "RET") 'newline-and-indent)
     #+END_SRC
 
-*** golang
-configuración para golang en emacs.
+** go
+#+BEGIN_SRC emacs-lisp
+  (when (file-exists-p "/usr/share/emacs/site-lisp/go-mode.el")
+    (require 'go-mode-load)
+    (require 'company-go))
+#+END_SRC
+configuración para golang en Emacs.
 
-       #+BEGIN_SRC emacs-lisp 
-         (defun shackra:go-mode ()
-           (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
-           (local-set-key (kbd "C-c i") 'go-goto-imports)
-           (local-set-key (kbd "M-.") 'godef-jump)
-           (set (make-local-variable 'company-backends) '(company-go
-                                                          company-files))
-           (go-eldoc-setup)
-           (nlinum-mode))
-
-         (add-hook 'go-mode-hook #'shackra:go-mode)
-       #+END_SRC
+#+BEGIN_SRC emacs-lisp 
+  (when (file-exists-p "/usr/share/emacs/site-lisp/go-mode.el")
+    (defun shackra:go-mode ()
+      (local-set-key (kbd "C-c C-r") 'go-remove-unused-imports)
+      (local-set-key (kbd "C-c i") 'go-goto-imports)
+      (local-set-key (kbd "M-.") 'godef-jump)
+      (set (make-local-variable 'company-backends) '(company-go
+                                                     company-files))
+      (go-eldoc-setup))
+    (add-hook 'go-mode-hook #'shackra:go-mode))
+#+END_SRC
        
-*** rustlang
+** rustlang
 configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Mozilla y "su web abierta" por lo que le hicieron (o no hicieron, si quiere) con Brendan Eich. LAS PERSONAS TIENEN EL DERECHO A FINANCIAR CON SU DINERO AQUELLAS CAMPAÑAS EN FAVOR DEL MATRIMONIO Y LA FAMILIA, NO HAY RAZÓN PARA QUE SEAN PERSEGUIDAS Y PIERDAN SUS TRABAJOS PORQUE LOS FASCISTAS DEL MOVIMIENTO LGTB QUIEREN QUE QUIENES PIENSAN DISTINTOS DE ELLOS SE MANTENGAN IGNORANTES SOBRE [[http://whatismarriagebook.com/][QUÉ ES EL MATRIMONIO]] EN REALIDAD Y CUAL ES SU FUNDAMENTO. ¡Mozilla, hipócrita, cuanta tolerancia y respeto hacía los demás!.
 
 #+BEGIN_SRC emacs-lisp 
@@ -1441,9 +1440,8 @@ configuración para rustlang en Emacs. Yo aun no olvido lo hipócrita que es Moz
   (add-hook 'rust-mode-hook #'shackra:rust-mode)
 #+END_SRC
 
-*** C++
-configuración para habilitar auto-completado en Emacs para la
-programación en el lenguaje C++
+** C++
+configuración para habilitar auto-completado en Emacs para la programación en el lenguaje C++
 
 #+BEGIN_SRC emacs-lisp 
   (defun my-irony-mode-hook ()
@@ -1466,471 +1464,17 @@ programación en el lenguaje C++
               (my-irony-mode-hook)
               (irony-cdb-autosetup-compile-options)))
   #+END_SRC
-*** Muse
-Configuración para Muse, un modo mayor en Emacs para la escritura y publicación de libros a varios formatos.
 
-#+BEGIN_SRC emacs-lisp 
-  ;; proyectos Muse
-  (setf
-   muse-project-alist
-   '(("WikiCatolica" ("~/Documentos/deshackra.com/wikicatolica.deshackra.com" :default "index")
-      (:base "html" :path "~/Documentos/deshackra.com/wikicatolica.deshackra.com/salidahtml"))))
+** mediawiki
+#+BEGIN_SRC emacs-lisp
+  (require 'mediawiki)
 #+END_SRC
-
-*** gancho para antes de guardar el archivo
-puede que gustemos de hacer algo con el archivo antes de guardarlo. Acá se enganchan un par de funciones.
-
-      #+BEGIN_SRC emacs-lisp 
-        (add-hook 'before-save-hook 'web-beautify-html-buffer t t)
-        (add-hook 'before-save-hook 'gofmt-before-save)
-       #+END_SRC
-
-*** langtool
-CLOSED: [2015-07-21 mar 12:36]
-- State "TERMINADO"  from "EN-REVISIÓN" [2015-07-21 mar 12:36]
-- State "EN REVISIÓN" from ""           [2014-10-27 lun 15:26] \\
-  al momento de usar los comandos, da errores
-[[https://www.languagetool.org/es/][Language Tool]] es una herramienta de software libre para revisión gramatical, ortográfica y de estilo.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (require 'langtool)
-  (setf langtool-java-classpath "/usr/share/languagetool:/usr/share/java/languagetool/*"
-        langtool-mother-tongue "es")
-#+END_SRC
-
-*** Jabber
-Chat de jabber desde Emacs!!
-
-#+BEGIN_SRC emacs-lisp 
-  (setf
-   ;; ver http://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
-   jabber-account-list `(
-                         ("jorgedice@blah.im/emacs"
-                          (:password . ,(secrets-get-secret "Login" "contraseña usual"))
-                          (:network-server . "jabber.blah.im")
-                          (:port . 5222)
-                          (:nickname . "Shackra Sislock")
-                          (:connection-type . starttls))
-                         )
-   jabber-history-enabled t
-   jabber-use-global-history nil
-   jabber-backlog-number 40
-   jabber-backlog-days 30
-   jabber-alert-presence-message-function (lambda (who oldstatus newstatus statusnext) nil)
-   jabber-invalid-certificate-servers '("chat.deshackra.com")
-   jabber-default-status "«Faith is always at a disadvantage; it is a perpetually defeated thing which survives all of its conquerors» ~G. K. Chesterton."
-   )
-
-  (defun my-jabber-chat-delete-or-bury ()
-    (interactive)
-    (if (eq 'jabber-chat-mode major-mode)
-        (condition-case e 
-            (delete-frame)
-          (error 
-           (if (string= "Attempt to delete the sole visible or iconified frame" 
-                        (cadr e))
-               (bury-buffer))))))
-
-  (add-hook 'jabber-chat-mode-hook #'turn-off-auto-fill)
-  (add-hook 'jabber-chat-mode-hook #'turn-on-visual-line-mode)
-  (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
-
-  (if (daemonp)
-      ;; Nos conectamos a Jabber sólo cuando Emacs corre como demonio
-      (jabber-connect-all))
-#+END_SRC
-
-*** GNU TLS
-Una implementación libre de los protocolos SSL, TLS y DTLS. Interado con Emacs
-
-#+BEGIN_SRC emacs-lisp 
-  (setf gnutls-min-prime-bits 1024)
-#+END_SRC
-
-*** notify.el
-CLOSED: [2015-01-14 mié 02:20]
-- State "TERMINADO"  from "EN-REVISIÓN" [2015-01-14 mié 02:20]
-- State "EN-REVISIÓN" from ""           [2014-11-03 lun 14:13] \\
-  el método definido no es multiplataforma
-Permite a emacs enviar notificaciones por DBus o diferentes medios
-
-#+BEGIN_SRC emacs-lisp 
-  (setf notify-method 'notify-via-libnotify)
-#+END_SRC
-*** MediaWiki
-Acceso para Emacs a sitios que usan Wikimedia
-#+BEGIN_SRC emacs-lisp 
-  (setf mediawiki-site-alist
-        `(
-          ("Wikipedia en español" "https://es.wikipedia.org/w/" "jorgejavieran"
-           ,(secrets-get-secret "Login" "contraseña usual") "Portal:Iglesia_católica")
-          ("Wikipedia en Inglés" "https://en.wikipedia.org/w/" "jorgejavieran"
-           ,(secrets-get-secret "Login" "contraseña usual") "Portal:Catholicism")))
-
+Accede, edita o crea artículos en cualquier instancia de Mediawiki desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (load-file "~/.secret/mediawiki.el")
   (define-key mediawiki-mode-map (kbd "C-c o") 'mediawiki-browse)
 #+END_SRC
-*** EN-ESPERA skewer-mode
-- State "EN-ESPERA"  from ""           [2015-07-21 mar 12:36] \\
-  Por el momento no quiero que se active esto
-#+BEGIN_SRC emacs-lisp :tangle no
-  (add-hook 'js2-mode-hook 'skewer-mode)
-  (add-hook 'css-mode-hook 'skewer-css-mode)
-  (add-hook 'html-mode-hook 'skewer-html-mode)
-  (add-hook 'web-mode-hook 'skewer-html-mode)
-#+END_SRC
-*** TRAMP
-Un paquete para la edición de archivos remotos
-
-#+BEGIN_SRC emacs-lisp 
-  (setf tramp-default-method "ssh")
-
-  (add-to-list 'tramp-default-method-alist '("\\`localhost\\'" "\\`root\\'" "su"))
-#+END_SRC
-*** js2-mode
-Un modo mayor para editar JavaScript
-
-#+BEGIN_SRC emacs-lisp 
-  (add-to-list 'auto-mode-alist '("\\.js\\'" .  js2-mode))
-#+END_SRC
-*** CSS
-#+BEGIN_SRC emacs-lisp 
-  (add-hook 'css-mode-hook (lambda ()
-                             (add-hook 'before-save-hook 'web-beautify-css-buffer t t)))
-#+END_SRC
-*** find-file
-#+BEGIN_SRC emacs-lisp 
-  (add-hook 'find-file-hook 'find-file-sudo)
-#+END_SRC
-*** httpd-mode
-Servidor web dentro de Emacs
-#+BEGIN_SRC emacs-lisp 
-  (setf httpd-port 9300)
-#+END_SRC
-*** recentf
-Mantiene una lista de archivos visitados recientemente
-
-#+BEGIN_SRC emacs-lisp 
-  (add-to-list 'recentf-exclude ".git/")
-  (add-to-list 'recentf-exclude ".hg/")
-  (add-to-list 'recentf-exclude "elpa/")
-  (add-to-list 'recentf-exclude "\\.emacs.d/org-clock-save.el\\'")
-  (add-to-list 'recentf-exclude "INBOX/")
-#+END_SRC
-*** delete-frame-functions
-#+BEGIN_SRC emacs-lisp 
-  (add-hook 'delete-frame-functions 'shackra:run-delete-frame-hooks)
-#+END_SRC
-
-*** SLIME
-Es un modo de Emacs para desarrollo con Common Lisp.
-
-#+BEGIN_SRC emacs-lisp 
-  (setf inferior-lisp-program "clisp")
-#+END_SRC
-*** twittering-mode
-Twitter desde Emacs
-#+BEGIN_SRC emacs-lisp 
-  (setf twittering-use-master-password t
-        twittering-icon-mode t
-        twittering-display-remaining t)
-
-  (define-key twittering-mode-map (kbd "C-c f") 'twittering-favorite)
-#+END_SRC
-*** helm-unicode
-Permite escoger caracteres /unicode/ por nombre usando [[*HELM][Helm]].
-
-#+BEGIN_SRC emacs-lisp 
-  (define-key global-map (kbd "C-c h u") 'helm-unicode)
-#+END_SRC
-*** ScreenShot
-Hace capturas de pantalla de Emacs, desde Emacs
-
-#+BEGIN_SRC emacs-lisp 
-  (setf screenshot-schemes
-        '(
-          ("local"
-           :dir "~/Imágenes/emacs/")
-          ("Carpeta actual"
-           :dir default-directory)))
-  (setf screenshot-default-scheme "local"
-        screenshot-take-delay 3)
-#+END_SRC
-*** elfeed
-Lector de /RSS feeds/ dentro de Emacs
-#+BEGIN_SRC emacs-lisp 
-  (setf elfeed-feeds
-        '(
-          ("http://www.nacion.com/rss/nacional/" periodico)
-          ("http://www.nacion.com/rss/sucesos/" periodico)
-          "http://infocatolica.com/atom.php"
-          "http://www.teologoresponde.com.ar/feed/"
-          "http://www.polygon.com/rss/index.xml"
-          ("http://endlessparentheses.com/atom.xml" emacs)
-          ("oremacs.com/atom.xml" emacs)
-          ))
-
-  (add-hook 'elfeed-new-entry-hook
-            (elfeed-make-tagger :before "5 days ago"
-                                :remove 'unread))
-
-  (global-set-key (kbd "C-x w") 'elfeed)
-#+END_SRC
-*** appt
-/Appointments/ me alerta de mis citas o pendientes que tengo por hacer.
-
-#+BEGIN_SRC emacs-lisp 
-  ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
-  ;; a http://redd.it/35kbf6
-  (require 'appt)
-  (appt-activate t)
-
-  (setf appt-message-warning-time 5
-        appt-display-interval (1+ appt-message-warning-time)
-        appt-display-mode-line nil)
-
-  (defun shackra:org-agenda-to-appt ()
-    (interactive)
-    (setf appt-time-msg-list nil)
-    (org-agenda-to-appt))
-
-  (shackra:org-agenda-to-appt)
-  (run-at-time "12:05am" (* 24 3600) 'shackra:org-agenda-to-appt)
-
-  (defun shackra:appt-muestra-notificacion (min-to-app new-time msg)
-    (if (atom min-to-app)
-        ;; envía la notificación usando libnotify. Esto no funcionara si DBus no
-        ;; se esta usando
-        (notifications-notify
-         :title "Agenda Org"
-         :body (format "<b>Cita en %s minuto(s):</b><br>%s<br>" min-to-app msg)
-         :app-name "Emacs: Org"
-         :app-icon "/usr/share/icons/Adwaita/32x32/status/appointment-soon.png"
-         :urgency "critical"
-         :sound-file "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
-         :timeout 0)
-      ;; no entiendo este trozo de código, pero asumo que itera una lista de
-      ;; cosas por hacer.
-      (dolist (i (number-sequence 0 (1- (length min-to-app))))
-        (notifications-notify
-         :title "Agenda Org"
-         :body (format "<b>Cita en %s minuto(s):</b> %s" (nth i min-to-app) (nth i msg))
-         :app-name "Emacs: Org"
-         :app-icon "/usr/share/icons/Adwaita/32x32/status/appointment-soon.png"
-         :urgency "critical"
-         :sound-file "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
-         :timeout 0))))
-
-  ;; Muestra las citas como notificaciones en el manejador de ventanas
-  (setf appt-disp-window-function 'shackra:appt-muestra-notificacion)
-
-  (defun shackra:appt-update-when-file-updated ()
-    "Actualiza appt cuando cierto archivo es actualizado"
-    (if (string= (buffer-file-name) (concat org-directory "/cosasporhacer.org"))
-                   (shackra:org-agenda-to-appt)))
-
-  ;; automáticamente actualiza las citas cuando el archivo cosasporhacer.org es
-  ;; salvado (ahí es donde yo guardo mi lista de cosas por hacer, y mi agenda)
-  (add-hook 'after-save-hook #'shackra:appt-update-when-file-updated)
-#+END_SRC
-*** header2
-Añade y actualiza de manera automática las cabeceras de los archivos de tus proyectos!
-
-Actualiza las cabeceras de los archivos antes de guardar el archivo visitado.
-
-#+BEGIN_SRC emacs-lisp 
-  (add-hook 'write-file-hooks 'auto-update-file-header)
-#+END_SRC
-
-Funcion para generar el texto de la licencia dependiendo de si el archivo es parte de un proyecto o no
-
-#+BEGIN_SRC emacs-lisp 
-  (defun shackra:header-render-license ()
-    "Retorna el texto de la licencia adecuado si se esta dentro de un proyecto o no"
-    (if (projectile-project-p)
-        (let ((projname nil))
-          (setf projname (format-spec-make ?n (projectile-project-name)))
-          (format-spec "This file is part of %n.
-
-  %n is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  %n is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with %n. If not, see <http://www.gnu.org/licenses/>." projname))
-
-  ;; Licensia para proyectos que constan de un sólo archivo
-  "This program is free software: you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 3 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>."))
-
-  (defun shackra:header-free-software ()
-    "Inserta un texto diciendo que el archivo es software libre o parte de un proyecto de software libre"
-    (let ((header-multiline ""))
-      (setf header-multiline (shackra:header-render-license))
-      (header-multiline)))
-
-  (defun shackra:header-project-name ()
-    "Inserta el nombre del proyecto, en caso de estar dentro de uno"
-    (when (projectile-project-p)
-      (insert header-prefix-string (format "Project: %n\n" (projectile-project-name)))))
-
-  (defun shackra:header-sep-line ()
-    "Inserta una linea de separación"
-    (insert header-prefix-string)
-    (insert-char ?-
-                 (- fill-column
-                    (current-column)))
-    (insert "\n"))
-
-  (defun shackra:header-blank-noprefix ()
-    "Inserta una linea en blanco para hacer espacio con las lineas de comentarios"
-    (insert "\n"))
-
-  (defun shackra:header-code ()
-    "Inserta \"Code: \""
-    (insert header-prefix-string "Code:\n\n"))
-#+END_SRC
-
-Función para renderizar las dos primeras lineas de las cabeceras de forma diferente en Python
-
-#+BEGIN_SRC emacs-lisp 
-  (defun shackra:header-python-shebang-coding ()
-    "Inserta los famosos shebang (#!) y “coding”"
-    (if (eq shackra:var-python-ver 2)
-        (insert "#!/usr/bin/python2\n")
-      (insert "#!/usr/bin/python3\n"))
-    ;; TODO: Insertar la leyenda VENI, SANCTE SPIRITUS centrado
-    (insert header-prefix-string "-*- coding: utf-8 -*-\n\n"))
-#+END_SRC
-*** sh-mode
-
-#+BEGIN_SRC emacs-lisp 
-  (add-hook 'sh-mode-hook (lambda ()
-                            (set (make-local-variable 'fill-column) 79)
-                            (set (make-local-variable 'comment-auto-fill-only-comments) t)
-                            (auto-fill-mode t)))
-#+END_SRC
-*** chronos
-Chronos es un modo mayor que lleva cronómetros en cuenta regresiva o en conteo normal
-#+BEGIN_SRC emacs-lisp
-  (setf chronos-notification-wav "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga")
-  ;; Cuando un contador expira, le pedimos a Chronos que nos lo haga saber
-  (add-hook 'chronos-expiry-functions #'chronos-desktop-notifications-notify)
-#+END_SRC
-*** AUCTeX
-#+BEGIN_SRC emacs-lisp
-  ;; remueve la versión preinstalada de AUCTeX
-  (setf TeX-auto-save t
-        TeX-parse-self t
-        TeX-newline-function 'newline-and-indent
-        ;; identa bien bonito los comandos de LaTeX que están dentro de un ambiente
-        LaTeX-item-indent 0)
-  (setq-default TeX-master nil)
-  (setq-default TeX-engine 'xetex)
-  (setq-default TeX-PDF-mode t)
-  (company-auctex-init)
-#+END_SRC
-*** fm-bookmarks
-Muestra tus marcadores de los manejadores de archivos, como PCmanFM o Nautilus, en Dired
-
-#+BEGIN_SRC emacs-lisp
-  (require 'fm-bookmarks)
-  ;; abre fm-bookmarks dentro de dired con '
-  (define-key dired-mode-map (kbd "'") #'fm-bookmarks)
-  ;; abre fm-bookmarks fuera de dired
-  (global-set-key (kbd "C-x '") #'fm-bookmarks)
-  ;; 'media sólo esta disponible para el sistema operativo GNU/Linux y derivados
-  (setf fm-bookmarks-enabled-file-managers '(pcmanfm custom media))
-  ;; Marcadores personalizados
-  (setf fm-bookmarks-custom-bookmarks
-        '(("Raíz" . "/")
-          ("Archivos temporales" . "/tmp/")
-          ("Proyectos" . "/home/jorge/proyectos/")
-          ("Freelance" . "/home/jorge/proyectos/bitbucket.org/jorgefreelance/")))
-  ;; esconde ubicaciones repetidas (ya que varios manejadores de archivos pueden
-  ;; contener marcadores a ubicaciones iguales)
-  (defvar fm-bookmarks-hide-duplicated t)
-  ;; hagase la cache
-  (setq fm-bookmarks-enable-cache t)
-#+END_SRC
-*** dired-rainbow
-Colorea archivos por extensión o por su =chmod=
-
-#+BEGIN_SRC emacs-lisp
-  (require 'dired-rainbow)
-
-  (defconst dired-audio-files-extensions
-    '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
-    "Dired Audio files extensions")
-  (dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
-
-  (defconst dired-video-files-extensions
-      '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
-        "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
-      "Dired Video files extensions")
-  (dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
-#+END_SRC
-*** general-close
-Inserta el delimitador de cierre de manera automática con una sola tecla
-#+BEGIN_SRC emacs-lisp
-  (require 'general-close)
-  (global-set-key (kbd "M-ñ") 'general-close)
-#+END_SRC
-*** ws-butler
-Remueve los espacios en blanco de los finales de linea de manera no intrusiva
-#+BEGIN_SRC emacs-lisp
-  ;; activado para todos los modos de programación
-  (add-hook 'prog-mode-hook 'ws-butler-mode)
-#+END_SRC
-*** visual bookmarks
-Los útiles marcadores de Emacs a la vista del usuario
-#+BEGIN_SRC emacs-lisp
-  (setq-default bm-buffer-persistence t)
-  (setf bm-cycle-all-buffers t)
-  (setf bm-highlight-style 'bm-highlight-only-fringe)
-  (add-hook 'after-init-hook 'bm-repository-load)
-  (add-hook 'find-file-hook 'bm-buffer-restore)
-  (add-hook 'kill-buffer-hook 'bm-buffer-save)
-  (add-hook 'kill-emacs-hook '(lambda nil
-                                (bm-buffer-save-all)
-                                (bm-repository-save)))
-  ;; interface para helm
-  (global-set-key (kbd "C-c b") 'helm-bm)
-#+END_SRC
-*** auto-package-update
-Actualiza tus paquetes de Emacs de manera automática
-#+BEGIN_SRC emacs-lisp
-  ;; en lugar de 7, quiero que actualices cada 3
-  (setf auto-package-update-interval 3)
-
-  (add-hook 'auto-package-update-before-hook
-            (lambda () (message "Actualizare los paquetes ahora")))
-
-  (add-hook 'after-init-hook 'auto-package-update-maybe)
-#+END_SRC
-*** helm-descbinds
-Helm mostrara los atajos de teclado asignados para diferente comandos
-#+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-h b") 'helm-descbinds)
-  (setf helm-descbinds-window-style 'split-window)
-  (add-hook 'after-init-hook 'helm-descbinds-mode)
-#+END_SRC
-** Alias
+* Alias
 Nombres cortos para comandos usados frecuentemente
 #+BEGIN_SRC emacs-lisp
   (defalias 'cx 'mu4e)

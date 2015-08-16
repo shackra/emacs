@@ -94,9 +94,7 @@
  '(jabber-muc-private-buffer-format "*-muc-priv-%g-%n-*")
  '(jabber-roster-buffer "*-roster-*")
  '(magit-use-overlays nil)
- '(org-agenda-files
-   (quote
-    ("/home/jorge/org/cosasporhacer.org" "/home/jorge/org/agenda.org")))
+ '(org-agenda-files (quote ("/home/jorge/org/cosasporhacer.org")))
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
  '(org-catch-invisible-edits (quote show))
  '(org-clock-persist (quote history))
