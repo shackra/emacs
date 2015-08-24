@@ -740,6 +740,67 @@ Se cambio la combinación de teclas para =er/expand-region= a C-¡ debido a que 
 combinación C-' para otra cosa.
 
 #+BEGIN_SRC emacs-lisp 
+  (setf org-capture-templates
+        '(
+          ("t" "Tareas")
+
+          ("tp" "Añadir tarea 'Por hacer'" entry (file+headline "cosasporhacer.org" "Tareas")
+           "* POR-HACER %^{breve descripcion}
+  :PROPERTIES:
+  :CREATED:%U
+  :END:
+  %?")
+          ("tc" "Calendario" entry (file+headline "cosasporhacer.org" "Calendario")
+           "* %^{Nombre del evento}
+  SCHEDULED: %:date")
+
+        ("r" "Recados")
+        ("rd" "Nuevo recado" entry (file "~/recados.org")
+         "* ENTREGAR recado de %^{Nombre de persona}
+  :PROPERTIES:
+  :DE: %\\1
+  :CONTACTO: %^{contacto}
+  :CREATED: %T
+  :END:
+  %?" :kill-buffer t)
+        ("g" "Algún día/Tal vez" entry (file+headline "quizas.org" "En 'veremos'")
+           "* %^{breve descripcion}
+  %?
+  Added: %U" :kill-buffer t)
+
+          ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
+           "---
+  %?
+
+  Escrito el: %U
+  En: %a" :empty-lines 1 :kill-buffer t)))
+
+  (setf org-todo-keywords
+        '(
+          ;; Secuencia para TAREAS
+          ;; POR-HACER significa que la tarea necesita atención
+          ;; EN-PROGRESO significa que la tarea tiene mi atención y la estoy
+          ;;   realizando
+          ;; EN-ESPERA significa que la tarea se a pospuesto para después
+          ;; EN-REVISIÓN significa que la tarea necesita ser revisada/hay alguna
+          ;;   contrariedad
+          ;; CANCELADO significa que la tarea a sido cancelada
+          ;; TERMINADO significa que la tarea se a realizado con exito
+          (sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)")
+          (sequence "ENTREGAR(n)" "|" "OLVIDALO(x@)" "ENTREGADO(N!)")))
+
+  (setf org-todo-keyword-faces
+        '(
+          ("POR-HACER"   . (:background "#f4a460" :foreground "#8b4513" :weight bold))
+          ("EN-PROGRESO" . (:background "#87cefa" :foreground "#483d8b" :weight bold))
+          ("EN-ESPERA"   . (:background "#ffe4e1" :foreground "#8b8989" :weight bold))
+          ("EN-REVISIÓN" . (:background "#fff68f" :foreground "#8b6508" :weight bold))
+          ("TERMINADO"   . (:background "#98fb98" :foreground "#556b2f" :weight bold))
+          ("CANCELADO"   . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))
+          ("ENTREGAR"    . (:background "#f4a460" :foreground "#8b4513" :weight bold))
+          ("ENTREGADO"   . (:background "#98fb98" :foreground "#556b2f" :weight bold))
+          ("OLVIDALO"    . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))))
+
   (setf org-footnote-auto-adjust t
         org-html-htmlize-output-type 'css
         org-html-htmlize-font-prefix "org-"
@@ -750,53 +811,19 @@ combinación C-' para otra cosa.
         org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
         org-catch-invisible-edits 'show
         org-return-follow-link t
-        ;;org-blank-before-new-entry t
         org-startup-indented t
         org-startup-folded nil
         org-imenu-depth 5
-        org-log-done 'time
+        org-log-done 'note
+        org-log-reschedule 'note
+        org-log-redeadline 'note
+        org-log-note-clock-out 'note
+        org-log-refile 'note
+        org-log-into-drawer t
         org-clock-persist 'history
         org-default-notes-file (concat org-directory "/diario.org")
 
-        org-agenda-files (list (concat org-directory "/cosasporhacer.org"))
-
-        org-capture-templates `(("p" "Añadir tarea 'Por hacer'" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Tareas")
-                                 "* POR-HACER %^{breve descripcion}\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
-                                 "---\n%?\n\nEscrito el: %U\nEn: %a" :empty-lines 1)
-                                ("c" "Calendario" entry (file+headline ,(concat org-directory "/cosasporhacer.org") "Calendario")
-                                 "* %^{Nombre del evento}\n SCHEDULED: %:date" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("g" "Algún día/Tal vez" entry (file+headline ,(concat org-directory "/quizas.org") "En 'veremos'")
-                                 "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("l" "Algún día/Tal vez (Libros)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Libros por leer")
-                                 "* Leer %^{titulo del libro} por %^{autor o autores}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("v" "Algún día/Tal vez (Peliculas)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Películas por ver")
-                                 "* Ver la pelicula %^{titulo de la pelicula}\n %?\n Added: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("m" "Algún día/Tal vez (Música)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Música por escuchar")
-                                 "* Escuchar cierta(s) cancion(es) de %^{artista}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("b" "Algún día/Tal vez (Blogs)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Blogs por leer")
-                                 "* Leer [[%:url][%^{titulo de la entrada de blog}]] por %^{autor}\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("z" "Algún día/Tal vez (Por hacer)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por hacer")
-                                 "* %^{breve descripcion de la tarea}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("w" "Algún día/Tal vez (Aprender)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Cosas por aprender")
-                                 "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                ("n" "Algún día/Tal vez (Nuevo proyecto)" entry (file+olp ,(concat org-directory "/quizas.org") "En 'veremos'" "Nuevos proyectos")
-                                 "* %^{breve descripcion}\n %?\nAdded: %U" :clock-in nil :clock-keep nil :clock-resume nil)
-                                )
-
-        org-todo-keywords '((sequence "POR-HACER(p)"
-                                      "EN-PROGRESO(g)"
-                                      "EN-ESPERA(e@/!)"
-                                      "EN-REVISIÓN(r@/!)"
-                                      "|" "CANCELADO(c@)"
-                                      "TERMINADO(t!)"))
-
-        org-todo-keyword-faces '(("POR-HACER" . (:foreground "#ff4500" :weight bold))
-                                 ("EN-PROGRESO" . (:foreground "#ffa500" :weight bold))
-                                 ("EN-ESPERA" . (:foreground "#0000ff" :weight bold))
-                                 ("EN-REVISIÓN" . (:foreground "#ffff00" :weight bold))
-                                 ("TERMINADO" . (:foreground "#32cd32" :weight bold))
-                                 ("CANCELADO" . (:foreground "#8b0000" :weight bold))))
+        org-agenda-files (list (concat org-directory "/cosasporhacer.org")))
 
   (global-set-key (kbd "C-c l") 'org-store-link)
   (global-set-key (kbd "C-c a") 'org-agenda)
@@ -814,6 +841,27 @@ combinación C-' para otra cosa.
   (add-hook 'org-mode-hook #'visual-fill-column-mode)
   (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
 #+END_SRC
+** =org-capture=
+#+BEGIN_SRC emacs-lisp
+  (require 'org-capture)
+  (require 'org-protocol)
+
+  ;;; Org Capture
+  ;;;; Thank you random guy from StackOverflow
+  ;;;; http://stackoverflow.com/questions/23517372/hook-or-advice-when-aborting-org-capture-before-template-selection
+
+  (defadvice org-capture
+      (after make-full-window-frame activate)
+    "Advise capture to be the only window when used as a popup"
+    (if (equal "emacs-capture" (frame-parameter nil 'name))
+        (delete-other-windows)))
+
+  (defadvice org-capture-finalize
+      (after delete-capture-frame activate)
+    "Advise capture-finalize to close the frame"
+    (if (equal "emacs-capture" (frame-parameter nil 'name))
+        (delete-frame)))
+#+END_SRC
 ** =org-page=
 #+BEGIN_SRC emacs-lisp
   (require 'org-page)
@@ -824,20 +872,21 @@ la variable =op/category-config-alist= fue redefinida (o al menos eso creo) porq
 castellanizar los enlaces y sus títulos en el blog.
 
 #+BEGIN_SRC emacs-lisp 
-    (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com/"
-          op/repository-org-branch "master"
-          op/repository-html-branch nil
-          op/site-domain "http://elblog.deshackra.com"
-          op/site-main-title "El blog de Shackra"
-          op/site-sub-title "No seas tan abierto de mente o tu cerebro se caerá" ;; ~G.K. Chesterton
-          op/personal-github-link "https://github.com/shackra"
-          op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
-          op/theme 'shackra)
+  (setf op/repository-directory "/home/jorge/Documentos/elblog.deshackra.com/"
+        op/repository-org-branch "master"
+        op/tag-rss t
+        op/repository-html-branch nil
+        op/site-domain "http://elblog.deshackra.com"
+        op/site-main-title "El blog de Shackra"
+        op/site-sub-title "No seas tan abierto de mente o tu cerebro se caerá" ;; ~G.K. Chesterton
+        op/personal-github-link "https://github.com/shackra"
+        op/theme-root-directory (expand-file-name "org-page-themes" user-emacs-directory)
+        op/theme 'shackra)
 
-    (eval-after-load 'ox
-      '(progn
-         (add-to-list 'org-export-filter-src-block-functions
-                      'org2html-wrap-blocks-in-code)))
+  (eval-after-load 'ox
+    '(progn
+       (add-to-list 'org-export-filter-src-block-functions
+                    'org2html-wrap-blocks-in-code)))
 #+END_SRC
 ** =text-mode=
 Cualquier modo mayor que herede de =text-mode= sera afectado por esta configuración.
@@ -1043,20 +1092,8 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
     (pyvenv-mode)
     ;; activa la definicion personalizada para este modo mayor para
     ;; header2
-    (setf make-header-hook '(shackra:header-python-shebang-coding
-                             shackra:header-sep-line
-                             shackra:header-project-name
-                             header-file-name
-                             header-creation-date
-                             header-author
-                             shackra:header-sep-line
-                             header-modification-date
-                             header-modification-author
-                             header-update-count
-                             shackra:header-sep-line
-                             shackra:header-free-software
-                             shackra:header-sep-line
-                             shackra:header-code))
+    (setf make-header-hook
+          '(shackra:header-python-shebang-coding))
     (auto-make-header)
     (py-autopep8-enable-on-save))
 
@@ -1683,7 +1720,8 @@ Funcion para generar el texto de la licencia dependiendo de si el archivo es par
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with %n. If not, see <http://www.gnu.org/licenses/>." projname))
+  along with %n. If not, see <http://www.gnu.org/licenses/>.
+  " projname))
 
   ;; Licensia para proyectos que constan de un sólo archivo
   "This program is free software: you can redistribute it and/or modify
@@ -1697,7 +1735,8 @@ Funcion para generar el texto de la licencia dependiendo de si el archivo es par
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>."))
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  "))
 
   (defun shackra:header-free-software ()
     "Inserta un texto diciendo que el archivo es software libre o parte de un proyecto de software libre"
@@ -1732,9 +1771,7 @@ Función para renderizar las dos primeras lineas de las cabeceras de forma difer
 #+BEGIN_SRC emacs-lisp 
   (defun shackra:header-python-shebang-coding ()
     "Inserta los famosos shebang (#!) y “coding”"
-    (if (eq shackra:var-python-ver 2)
-        (insert "#!/usr/bin/python2\n")
-      (insert "#!/usr/bin/python3\n"))
+    (insert (format "#!/usr/bin/python%d\n" shackra:var-python-ver))
     ;; TODO: Insertar la leyenda VENI, SANCTE SPIRITUS centrado
     (insert header-prefix-string "-*- coding: utf-8 -*-\n\n"))
 #+END_SRC
@@ -1851,7 +1888,16 @@ Helm mostrara los atajos de teclado asignados para diferente comandos
   (setf helm-descbinds-window-style 'split-window)
   (add-hook 'after-init-hook 'helm-descbinds-mode)
 #+END_SRC
-** Alias
+** shrink-whitespace
+Trae lo mejor del mundo de =delete-blank-lines= pero no sólo para lineas vacías sino que también para espacios en blanco.
+
+Para ver como funciona, ver esta animación:
+http://i2.wp.com/pragmaticemacs.com/wp-content/uploads/2015/08/wpid-delete-blank-lines.gif?w=620
+
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "M-SPC") 'shrink-whitespace)
+#+END_SRC
+* Alias
 Nombres cortos para comandos usados frecuentemente
 #+BEGIN_SRC emacs-lisp
   (defalias 'xc 'mu4e)

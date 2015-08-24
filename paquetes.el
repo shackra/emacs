@@ -264,6 +264,8 @@
   :ensure s))
 (ignore-errors (use-package screenshot
   :ensure screenshot))
+(ignore-errors (use-package shrink-whitespace
+  :ensure shrink-whitespace))
 (ignore-errors (use-package simple-httpd
   :ensure simple-httpd))
 (ignore-errors (use-package skewer-mode

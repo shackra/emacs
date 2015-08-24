@@ -119,7 +119,8 @@
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python2")
  '(safe-local-variable-values
    (quote
-    ((pyvenv-workon . kuotaru)
+    ((shackra:var-python-version . 3)
+     (pyvenv-workon . kuotaru)
      (shackra:var-python-ver . 2)
      (shackra:var-python-ver . 3)
      (ispell-dictionary . "en")
