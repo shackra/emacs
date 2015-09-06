@@ -134,6 +134,7 @@ Cargamos paquetes que no se instalan con ELPA.
 #+BEGIN_SRC emacs-lisp
   ;; carga un agregado para cuando se escriben correos usando mu4e
   (load-file (expand-file-name "site-packages/u-vm-color/u-vm-color.el" user-emacs-directory))
+  (load-file (expand-file-name "site-packages/profile/profile.el" user-emacs-directory))
 #+END_SRC
 
 ** Ubicación de temas personalizados
@@ -435,7 +436,7 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
     "Genera y sincroniza el blog"
     (interactive)
     ;; borra el directorio con los datos antiguos y vuelve a generar el blog
-    (delete-directory (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com") t nil)
+    ;;(delete-directory (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com") t nil)
     (op/do-publication nil "HEAD^1" "~/Documentos/deshackra.com/elblog.deshackra.com/" nil)
     ;; sincroniza
     (shackra:syncblog))
@@ -1027,7 +1028,7 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
     (yas-minor-mode -1))
 
   (setf multi-term-buffer-name "shell-"
-        multi-term-program "/bin/bash"
+        multi-term-program "/usr/bin/sh"
         multi-term-program-switches "--login"
         term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
                                   (cons "C-p" 'previous-line)
@@ -1210,12 +1211,12 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
 
     (setf mu4e-maildirs-extension-title " Bandejas")
     (setf mu4e-maildirs-extension-custom-list '("/personal/INBOX" "/gmx/INBOX" "/riseup/INBOX"))
-    
+  
     (setf mu4e-view-show-images nil
           org-mu4e-convert-to-html t)
     ;; redactamos el correo con org-mode y convertimos eso a HTML
     (defalias 'org-mail 'org-mu4e-compose-org-mode)
-    
+  
     (global-set-key (kbd "<f7>") 'mu4e)
     (when (fboundp 'imagemagick-register-types)
       (imagemagick-register-types))
@@ -1234,7 +1235,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
            "content=\"text/html;charset=UTF-8\">"
            html))
         (browse-url (concat "file://" tmpfile))))
-    
+  
     (add-to-list 'mu4e-view-actions
                  '("Ver en el navegador" . mu4e-msgv-action-view-in-browser) t)
 
@@ -1244,12 +1245,9 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
             ("date:today..now" "Correo de hoy" ?h)
             ("date:7d..now" "Correo de la semana" ?w)  
             ("maildir:/Mail/Inbox" "Bandeja de entrada" ?p)))
-    
+  
     (setf
      ;; información de cuentas de correo
-     mu4e-user-mail-address-list (list "elcorreo@deshackra.com"
-                                        "kartelo@gmx.com")
-   
      mu4e-compose-signature "Pax et bonum.\nJorge Araya Navarro.\nES: Diseñador Publicitario, Programador Python y colaborador en Parabola GNU/Linux-libre\nEN: Ads Designer, Python programmer and contributor Parabola GNU/Linux-libre\nEO: Anonco grafikisto, Pitino programalingvo programisto kai kontribuanto en Parabola GNU/Linux-libre\nhttps://es.gravatar.com/shackra"
      smtpmail-smtp-server "privateemail.com"
      smtpmail-local-domain "local"
@@ -1259,7 +1257,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
      mu4e-confirm-quit nil
      mu4e-headers-date-format "%d/%m/%Y %H:%M"
      ;; Ajustes para las respuestas
-     message-citation-line-format "El %A %d de %B del %Y a las %H%M horas, %N escribió:\n"
+     message-citation-line-format "\n\nEl %A %d de %B del %Y a las %H%M horas, %N escribió:\n"
      message-citation-line-function 'message-insert-formatted-citation-line
      message-cite-reply-position 'below
      mu4e-get-mail-command "getmail.sh"
