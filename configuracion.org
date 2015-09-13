@@ -1028,7 +1028,7 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
     (yas-minor-mode -1))
 
   (setf multi-term-buffer-name "shell-"
-        multi-term-program "/usr/bin/sh"
+        multi-term-program "/usr/bin/zsh"
         multi-term-program-switches "--login"
         term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
                                   (cons "C-p" 'previous-line)
