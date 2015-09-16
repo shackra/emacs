@@ -1897,7 +1897,7 @@ http://i2.wp.com/pragmaticemacs.com/wp-content/uploads/2015/08/wpid-delete-blank
 #+END_SRC
 ** telephone-line
 Una nueva versión de powerline
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (require 'telephone-line)
   (telephone-line-mode 0)
 #+END_SRC
