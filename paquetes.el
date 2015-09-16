@@ -196,6 +196,8 @@
   :ensure math-symbol-lists))
 (ignore-errors (use-package mediawiki
   :ensure mediawiki))
+(ignore-errors (use-package memoize
+  :ensure memoize))
 (ignore-errors (use-package monky
   :ensure monky))
 (ignore-errors (use-package mu4e-maildirs-extension
@@ -264,6 +266,8 @@
   :ensure s))
 (ignore-errors (use-package screenshot
   :ensure screenshot))
+(ignore-errors (use-package seq
+  :ensure seq))
 (ignore-errors (use-package shrink-whitespace
   :ensure shrink-whitespace))
 (ignore-errors (use-package simple-httpd
@@ -288,6 +292,8 @@
   :ensure sx))
 (ignore-errors (use-package systemd
   :ensure systemd))
+(ignore-errors (use-package telephone-line
+  :ensure telephone-line))
 (ignore-errors (use-package theme-changer
   :ensure theme-changer))
 (ignore-errors (use-package toml-mode

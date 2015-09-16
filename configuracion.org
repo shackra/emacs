@@ -1895,6 +1895,12 @@ http://i2.wp.com/pragmaticemacs.com/wp-content/uploads/2015/08/wpid-delete-blank
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-SPC") 'shrink-whitespace)
 #+END_SRC
+** telephone-line
+Una nueva versión de powerline
+#+BEGIN_SRC emacs-lisp
+  (require 'telephone-line)
+  (telephone-line-mode 0)
+#+END_SRC
 * Alias
 Nombres cortos para comandos usados frecuentemente
 #+BEGIN_SRC emacs-lisp
