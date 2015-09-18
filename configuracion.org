@@ -1886,7 +1886,7 @@ Helm mostrara los atajos de teclado asignados para diferente comandos
   (setf helm-descbinds-window-style 'split-window)
   (add-hook 'after-init-hook 'helm-descbinds-mode)
 #+END_SRC
-** shrink-whitespace
+** =shrink-whitespace=
 Trae lo mejor del mundo de =delete-blank-lines= pero no sólo para lineas vacías sino que también para espacios en blanco.
 
 Para ver como funciona, ver esta animación:
@@ -1895,11 +1895,26 @@ http://i2.wp.com/pragmaticemacs.com/wp-content/uploads/2015/08/wpid-delete-blank
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "M-SPC") 'shrink-whitespace)
 #+END_SRC
-** telephone-line
+** =telephone-line=
 Una nueva versión de powerline
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
   (require 'telephone-line)
-  (telephone-line-mode 0)
+
+  (telephone-line-defsegment* shackra-buffer-vc-modified-segment
+    (list (if (buffer-modified-p)
+              (propertize "❗" 'face 'error)
+            " ")
+          " " (shackra:vc-info)))
+
+  (telephone-line-defsegment* shackra-line-buffer-segment
+    `(""
+      ,(telephone-line-raw mode-line-buffer-identification t)))
+
+  (setf telephone-line-lhs
+        '((accent . (shackra-line-buffer-segment))
+          (nil . (shackra-buffer-vc-modified-segment))))
+ 
+  (telephone-line-mode 1)
 #+END_SRC
 * Alias
 Nombres cortos para comandos usados frecuentemente
