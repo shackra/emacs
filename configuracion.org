@@ -1912,8 +1912,9 @@ Una nueva versión de powerline
 
   (setf telephone-line-lhs
         '((accent . (shackra-line-buffer-segment))
-          (nil . (shackra-buffer-vc-modified-segment))))
- 
+          (nil . (shackra-buffer-vc-modified-segment
+                telephone-line-minor-mode-segment))))
+
   (telephone-line-mode 1)
 #+END_SRC
 * Alias
