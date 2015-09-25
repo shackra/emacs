@@ -1282,7 +1282,7 @@ Para saber como configurar mu4e para escribir correos con diferentes cuentas de 
        ("/gmx/INBOX"      . ?g)))
     (if (file-exists-p "/home/jorge/.secret/mu4e-cuentas.el")
         (load-file "/home/jorge/.secret/mu4e-cuentas.el")
-      (notifications-notify :urgency critical
+      (notifications-notify :urgency "critical"
                             :title "Cuentas de correo electronico"
                             :body "El archivo '~/.secret/mu4e-cuentas.el' no se pudo cargar")))
 #+END_SRC
