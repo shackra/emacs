@@ -1082,7 +1082,7 @@ Configuraciones para mi modo estrella: Python-mode!  Estoy omitiendo usar auto-i
   (setf py-return-key 'py-newline-and-indent
         python-mode-modeline-display "python-mode"
         py-auto-fill-mode t
-        py-shell-name "python2")
+        py-shell-name "ipython")
 #+END_SRC
 #+BEGIN_SRC emacs-lisp 
   (defun shackra:python-mode ()

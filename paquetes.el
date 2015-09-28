@@ -242,8 +242,6 @@
   :ensure pkgbuild-mode))
 (ignore-errors (use-package pony-mode
   :ensure pony-mode))
-(ignore-errors (use-package pos-tip
-  :ensure pos-tip))
 (ignore-errors (use-package pretty-mode
   :ensure pretty-mode))
 (ignore-errors (use-package projectile
