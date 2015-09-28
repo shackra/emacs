@@ -38,8 +38,6 @@
   :ensure company-jedi))
 (ignore-errors (use-package company-math
   :ensure company-math))
-(ignore-errors (use-package company-quickhelp
-  :ensure company-quickhelp))
 (ignore-errors (use-package company-racer
   :ensure company-racer))
 (ignore-errors (use-package company-statistics

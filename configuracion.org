@@ -700,7 +700,6 @@ modos que se activan luego de que emacs carga
     (global-flycheck-mode)
     (global-pretty-mode t)
     (global-company-mode)
-    (company-quickhelp-mode 1) ;; hace que el demonio de Emacs no termine de
     ;; iniciarse
     (company-statistics-mode)
     (global-fixmee-mode 1)
