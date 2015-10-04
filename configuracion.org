@@ -997,8 +997,9 @@ Y acá el resto de la configuración de Helm
                                     "elpa/.+"
                                     "tramp/.+"
                                     "\\*Gofmt Errors\\*"
-                                    "\\*autopep8")
-   
+                                    "\\*autopep8"
+                                    "\\*Pymacs\\*")
+ 
    helm-boring-file-regexp-list (quote
                                  ("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
                                   "\\._darcs$" "\\.la$" "\\.o$" "~$"
@@ -2094,6 +2095,43 @@ Una nueva versión de powerline
                 telephone-line-minor-mode-segment))))
 
   (telephone-line-mode 1)
+#+END_SRC
+** ropemacs
+:PROPERTIES:
+:tangle: yes
+:END:
+Nos permite hacer refactorización en código Python. La documentación esta disponible en [[https://github.com/python-rope/ropemacs][python-rope/ropemacs]].
+
+#+BEGIN_SRC emacs-lisp
+  (require 'pymacs)
+  (pymacs-load "ropemacs" "rope-")
+
+  (define-key ropemacs-local-keymap (kbd "M-.") 'rope-goto-definition)
+#+END_SRC
+*** Preparación previa
+Antes de tener disponible ropemacs, hay que instalar varias cosillas en el sistema. Si su distribución de GNU/Linux es Parabola o Arch, algunas cosillas seran más sencillas de instalar.
+
+Lo primero es instalar Pymacs, ya que estoy en Parabola, voy a instalarlo usando un =PKGBUILD= que alguien más hizo amablemente.
+
+#+BEGIN_SRC sh :tangle no
+  git clone https://aur.archlinux.org/pymacs.git
+  cd pymacs
+  makepkg -si
+  # Se instalo correctamente?
+  python2 -c "import Pymacs" 
+  # Si no hay errores, entonces sí.
+#+END_SRC
+
+Luego, hay que instalar =rope=.
+
+#+BEGIN_SRC sh :tangle no
+  sudo pacman -S python2-rope
+#+END_SRC
+
+Y por ultimo =ropemacs=.
+
+#+BEGIN_SRC sh :tangle no
+  sudo pip2 install ropemacs
 #+END_SRC
 * Alias
 Nombres cortos para comandos usados frecuentemente
