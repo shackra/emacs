@@ -66,20 +66,19 @@ El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcio
 #+END_SRC
 
 Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
-* Nueva configuración
-** Modos
-*** =uniquify=
+* Modos
+** =uniquify=
 #+BEGIN_SRC emacs-lisp
   (use-package uniquify
     :ensure nil
     :init
     (setf uniquify-buffer-name-style 'forward))
 #+END_SRC
-*** =htmlize=
+** =htmlize=
 #+BEGIN_SRC emacs-lisp
   (use-package htmlize)
 #+END_SRC
-*** =hlinum=
+** =hlinum=
 Extiende el modo =linum-mode= y subraya el numero de linea actual.
 #+BEGIN_SRC emacs-lisp
   (use-package hlinum
@@ -87,13 +86,13 @@ Extiende el modo =linum-mode= y subraya el numero de linea actual.
     :config
     (add-hook 'prog-mode-hook #'hlinum-activate))
 #+END_SRC
-*** =fixmee=
+** =fixmee=
 Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
 #+BEGIN_SRC emacs-lisp
   (use-package fixmee
     :diminish fixmee-mode)
 #+END_SRC
-*** =keyfreq=
+** =keyfreq=
 Registra la frecuencia con la que se usan ciertas teclas en Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package keyfreq
@@ -102,7 +101,7 @@ Registra la frecuencia con la que se usan ciertas teclas en Emacs.
     (keyfreq-mode 1)
     (keyfreq-autosave-mode 1))
 #+END_SRC
-*** =undo-tree=
+** =undo-tree=
 Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los cambios realizados como un árbol con ramificaciones de cambios.
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
@@ -114,7 +113,7 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
 #+END_SRC
-*** =theme-changer=
+** =theme-changer=
 Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione adecuadamente hay que especificar las coordenadas geográficas del lugar donde vivimos, para saber más ver [[*Información personal][Información personal]].
 #+BEGIN_SRC emacs-lisp
   (use-package theme-changer
@@ -124,7 +123,7 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
     :config
     (change-theme 'material-light 'material))
 #+END_SRC
-*** =helm=
+** =helm=
 Completado incremental y estrechamiento de selección de candidatos :)
 #+BEGIN_SRC emacs-lisp
   (use-package helm
