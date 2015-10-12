@@ -290,3 +290,60 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
     :config
     (add-hook 'org-mode-hook #'visual-fill-column-mode))
 #+END_SRC
+** =python=
+Modo mayor para programar en Python
+#+BEGIN_SRC emacs-lisp
+  (use-package python
+    :ensure nil
+    :init
+    (setf python-mode-modeline-display "python-mode")
+    :bind-keymap (("C-c >" . python-indent-shift-right)
+                  ("C-c <" . python-indent-shift-left)
+                  ("C-M-," . comment-dwim))
+    :interpreter ("ipython" . python-mode)
+    :preface
+    (use-package pyvenv :defer t)
+    (use-package py-autopep8 :defer t)
+    :config
+    (defun shackra/python-mode ()
+      "Cosas que deseo activar/desactivar cuando voy a programar en Python"
+      (electric-indent-local-mode -1)
+      (pyvenv-mode)
+      (py-autopep8-enable-on-save))
+    (add-hook 'python-mode-hook #'shackra/python-mode))
+#+END_SRC
+** =company=
+Un mejor motor de autocompletado comparado con [[https://github.com/auto-complete/auto-complete][auto-complete/auto-complete]].
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :demand t
+    :preface
+    (use-package company-jedi)
+    (use-package helm-company)
+    :bind-keymap ("C-ñ" . helm-company)
+    :init
+    (setf company-idle-delay 0.3)
+    (setf company-tooltip-limit 30)
+    (setf company-minimum-prefix-length 1)
+    (setf company-echo-delay 0)
+    (setf company-auto-complete nil)
+    :config
+    (add-to-list 'company-backends 'company-dabbrev t)
+    (add-to-list 'company-backends 'company-ispell t)
+    (add-to-list 'company-backends 'company-files t)
+    (add-to-list 'company-backends 'company-yasnippet t)
+    (add-hook 'after-init-hook #'global-company-mode))
+#+END_SRC
+** =jedi=
+Autocompletado para [[*=python=][=python=]].
+#+BEGIN_SRC emacs-lisp
+  (use-package jedi
+    :defer t
+    :init
+    (setf jedi:complete-on-dot t)
+    :config
+    (defun shackra/jedi ()
+      (jedi:setup)
+      (add-to-list 'company-backends 'company-jedi))
+    (add-hook 'python-mode-hook #'shackra/jedi))
+#+END_SRC
