@@ -89,12 +89,12 @@ Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta
 estas son funciones que uso muy a menudo durante la edición de texto, tenerlos como comandos interactivos me ahorra tiempo escribiendo las expresiones regulares una y otra vez.
 
 #+BEGIN_SRC emacs-lisp
-  (defun shackra:no-saltos-linea (start end)
+  (defun shackra/no-saltos-linea (start end)
     "Elimina todos los saltos de linea en la selección"
     (interactive "r")
     (vr/replace "\n+" " " start end))
 
-  (defun shackra:no-multiple-espacios (start end)
+  (defun shackra/no-multiple-espacios (start end)
     "Elimina todos los espacios en blanco seguidos en la selección"
     (interactive "r")
     (vr/replace " +" " " start end))
@@ -121,7 +121,7 @@ Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visit
 Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=.
 *** =find-file= personalizado
 #+BEGIN_SRC emacs-lisp
-  (defun shackra:find-file ()
+  (defun shackra/find-file ()
     (interactive)
     (call-interactively (if (equal current-prefix-arg '(4))
                             'find-file
@@ -133,7 +133,7 @@ Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=
 #+END_SRC
 *** =switch-buffer= personalizado
 #+BEGIN_SRC emacs-lisp
-  (defun shackra:switch-buffer ()
+  (defun shackra/switch-buffer ()
     (interactive)
     (call-interactively (if (equal current-prefix-arg '(4))
                             'helm-mini
@@ -325,14 +325,14 @@ Muchas gracias a [[http://emacs.stackexchange.com/users/202/chen-bin][chen bin]]
 Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos el procedimiento manual de publicar el blog a una carpeta
 
 #+BEGIN_SRC emacs-lisp
-  (defun shackra:ppp ()
+  (defun shackra/ppp ()
     "Llama op/do-publication con una serie de parámetros predeterminados. Útil cuando se esta diseñando un tema"
     (interactive)
     (op/do-publication t t "/tmp/blog" nil))
 #+END_SRC
 ** Generación del blog y sincronización con RacketSpace
 #+BEGIN_SRC emacs-lisp
-  (defun shackra:syncblog ()
+  (defun shackra/syncblog ()
     "Sincroniza el blog generado con el contenedor en Racketspace"
     (interactive)
     ;; usa rclone para hacer la re-sincronización
@@ -341,18 +341,18 @@ Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos 
                    (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com")
                    "rscf:elblog.deshackra.com"))
 
-  (defun shackra:genblog ()
+  (defun shackra/genblog ()
     "Genera y sincroniza el blog"
     (interactive)
     ;; borra el directorio con los datos antiguos y vuelve a generar el blog
     ;;(delete-directory (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com") t nil)
     (op/do-publication nil "HEAD^1" "~/Documentos/deshackra.com/elblog.deshackra.com/" nil)
     ;; sincroniza
-    (shackra:syncblog))
+    (shackra/syncblog))
 #+END_SRC
 ** función para =delete-frame-functions=
 #+BEGIN_SRC emacs-lisp
-  (defun shackra:run-delete-frame-hooks (frame)
+  (defun shackra/run-delete-frame-hooks (frame)
     "Esta función corre algunas funciones que no son llamadas cuando Emacs
   corre como proceso de segundo plano"
     (when (server-running-p)
@@ -369,10 +369,48 @@ Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-sett
 #+END_SRC
 ** No molestes, Shia LaBeouf!
 #+BEGIN_SRC emacs-lisp
-  (defun shackra:org-reschedule-tomorrow ()
+  (defun shackra/org-reschedule-tomorrow ()
     "Re-Programa para mañana una tarea que pude hacer hoy"
     (interactive)
     (org-schedule :time (format-time-string "%Y-%m-%d" (time-add (current-time) (seconds-to-time 86400)))))
+#+END_SRC
+** Modificación de los caracteres en el mode-line
+Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (según [[http://tromey.com/blog/?p%3D831][The Cliffs of Inanity]], también [[http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html][lunarsite]]. referencias sobre =mode-line-format= en la [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Mode-Line-Format.html][referencia de Elisp]])
+
+#+BEGIN_SRC emacs-lisp
+  (defvar shackra/vc-mode nil)
+  (make-variable-buffer-local 'shackra:vc-mode)
+
+  (require 'vc)
+  (defun shackra/vc-command-hook (&rest args)
+    (let ((file-name (buffer-file-name)))
+      (setq shackra/vc-mode (and file-name
+                                 (not (vc-registered file-name))
+                                 (ignore-errors
+                                   (vc-responsible-backend file-name))))))
+
+  (add-hook 'vc-post-command-functions #'shackra/vc-command-hook)
+  (add-hook 'find-file-hook #'shackra/vc-command-hook)
+
+  (defun shackra/vc-info ()
+    (if shackra/vc-mode
+        (propertize "🗶" 'face 'error)
+      " "))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;; Si usas `powerline', editar la variable mode-line-format es algo complicado,
+  ;; pero no imposible
+  (setq-default mode-line-format
+                '("%e"
+                  (:eval (if (buffer-modified-p)
+                             (propertize "  ❗" 'face 'error)
+                           "  "))
+                  (:eval (shackra:vc-info))
+                  " " mode-line-buffer-identification
+                  " " mode-line-position
+                  " " mode-line-modes
+                  mode-line-misc-info))
 #+END_SRC
 * Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que
@@ -392,9 +430,9 @@ configuración sana de ciertas opciones en Emacs
 Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
 #+BEGIN_SRC emacs-lisp
   (use-package text-mode
-    :disabled t
     :ensure nil
     :preface
+    (provide 'text-mode)
     (defun shackra/text-mode ()
       (turn-on-visual-line-mode)
       (flyspell-mode)
@@ -404,24 +442,34 @@ Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configur
     :config
     (add-hook 'text-mode-hook #'shackra/text-mode))
 #+END_SRC
+*** Mover el cursos de manera inteligente al inicio de la linea
+He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0 en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
 #+BEGIN_SRC emacs-lisp
-  ;; arreglo provisional
-  (defun shackra/text-mode ()
-    (turn-on-visual-line-mode)
-    (flyspell-mode)
-    (set (make-local-variable 'fill-column) 90))
+  (use-package sbol
+    :ensure nil
+    :preface (provide 'sbol)
+    :bind (([home] . smart-beginning-of-line)
+           ("C-a" . smart-beginning-of-line))
+    :init
+    (defun smart-beginning-of-line ()
+      "Move point to first non-whitespace character or beginning-of-line.
 
-  (setf visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
-  (add-hook 'text-mode-hook #'shackra/text-mode)
+  Move point to the first non-whitespace character on this line.
+  If point was already at that position, move point to beginning of line."
+    (interactive)
+    (let ((oldpos (point)))
+      (back-to-indentation)
+      (and (= oldpos (point))
+           (beginning-of-line)))))
 #+END_SRC
+
 ** =prog-mode=
 Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
 #+BEGIN_SRC emacs-lisp
   (use-package prog-mode
-    :disabled t
     :ensure nil
-    :bind-keymap ("RET" . newline-and-indent)
     :preface
+    (provide 'prog-mode)
     (use-package rainbow-mode)
     (use-package highlight-escape-sequences)
     (use-package highlight-numbers)
@@ -438,28 +486,8 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
       (rainbow-turn-on)
       (flyspell-prog-mode))
     :config
-    (add-hook 'prog-mode-hook #'shackra/prog-mode)
-    )
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-  ;; arreglo provisional
-  (use-package rainbow-mode)
-  (use-package highlight-escape-sequences)
-  (use-package highlight-numbers)
-
-  (defun shackra/prog-mode ()
-    (set (make-local-variable 'fill-column) 79)
-    (set (make-local-variable 'comment-auto-fill-only-comments) t)
-    ;; Nota: M-q rellena las columnas del párrafo actual
-    ;;       M-o M-s centra una linea de texto
-    (auto-fill-mode t)
-    (highlight-numbers-mode)
-    (hes-mode)
-    (electric-pair-mode)
-    (rainbow-turn-on)
-    (flyspell-prog-mode))
-
-  (add-hook 'prog-mode-hook #'shackra/prog-mode)
+    (define-key prog-mode-map (kbd "RET") 'newline-and-indent)
+    (add-hook 'prog-mode-hook #'shackra/prog-mode))
 #+END_SRC
 ** =uniquify=
 #+BEGIN_SRC emacs-lisp
@@ -761,7 +789,7 @@ Manejo de archivos de un proyecto.
                                 (list (if (buffer-modified-p)
                                           (propertize "❗" 'face 'error)
                                         " ")
-                                      " " (shackra:vc-info)))
+                                      " " (shackra/vc-info)))
 
     (telephone-line-defsegment* shackra-line-buffer-segment
                                 `(""

@@ -62,3 +62,7 @@
     (boundp 'buffer-file-coding-system)
     (setq-default buffer-file-coding-system 'utf-8)
   (setf default-buffer-file-coding-system 'utf-8))
+(add-to-list 'default-frame-alist '(tty-color-mode . -1))
+(require 'cl)
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  (flet ((process-list ())) ad-do-it))
