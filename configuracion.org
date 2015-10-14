@@ -66,7 +66,401 @@ El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcio
 #+END_SRC
 
 Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
+* Códigos elisp
+funciones de Emacs lisp escritas por mi u otras personas (y que yo he recolectado para mi uso personal)
+** función para insertar etiquetas <kbd>
+Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta desde Emacs.stackexchange]].
+#+BEGIN_SRC emacs-lisp
+  (defun endless/insert-key (key)
+    "Ask for a key then insert its description.
+  Will work on both org-mode and any mode that accepts plain html."
+    (interactive "kType key sequence: ")
+    (let* ((is-org-mode (derived-mode-p 'org-mode))
+           (tag (if is-org-mode
+                    "@@html:<kbd>%s</kbd>@@"
+                  "<kbd>%s</kbd>")))
+      (if (null (equal key "\r"))
+          (insert
+           (format tag (help-key-description key nil)))
+        (insert (format tag ""))
+        (forward-char (if is-org-mode -8 -6)))))
+#+END_SRC
+** funciones con expresiones regulares que uso a menudo en edición de texto
+estas son funciones que uso muy a menudo durante la edición de texto, tenerlos como comandos interactivos me ahorra tiempo escribiendo las expresiones regulares una y otra vez.
+
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:no-saltos-linea (start end)
+    "Elimina todos los saltos de linea en la selección"
+    (interactive "r")
+    (vr/replace "\n+" " " start end))
+
+  (defun shackra:no-multiple-espacios (start end)
+    "Elimina todos los espacios en blanco seguidos en la selección"
+    (interactive "r")
+    (vr/replace " +" " " start end))
+#+END_SRC
+** reemplazo para comment-dwim
+Idea original de [[http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html][Re: comment-dwim has no behavior to comment out the current line without a region]]
+#+BEGIN_SRC emacs-lisp
+  (defun comment-dwim-line (&optional arg)
+    "Replacement for the comment-dwim command.
+          If no region is selected and current line is not blank
+          and we are not at the end of the line, then comment
+          current line.  Replaces default behaviour of
+          comment-dwim, when it inserts comment at the end of the
+          line."
+    (interactive "*P")
+    (comment-normalize-vars)
+    (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
+        (comment-or-uncomment-region (line-beginning-position) (line-end-position))
+      (comment-dwim arg)))
+#+END_SRC
+** =find-file= y =switch-buffer= personalizados
+Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visitar archivos y buffers relacionados con el proyecto en el cual estoy trabajando. Projectile-helm es de mucha ayuda, sin embargo la combinación de teclas es muy extensa y la mayoría de veces no las uso.
+
+Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=.
+*** =find-file= personalizado
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:find-file ()
+    (interactive)
+    (call-interactively (if (equal current-prefix-arg '(4))
+                            'find-file
+                          ;; si no se llamo a la función con el argumento
+                          ;; universal C-u. El comando se comporta normalmente
+                          (if (projectile-project-p)
+                              'helm-projectile-find-file
+                            'find-file))))
+#+END_SRC
+*** =switch-buffer= personalizado
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:switch-buffer ()
+    (interactive)
+    (call-interactively (if (equal current-prefix-arg '(4))
+                            'helm-mini
+                          ;; si no se llamo a la función con el argumento
+                          ;; universal C-u. El comando se comporta normalmente
+                          (if (projectile-project-p)
+                              'helm-projectile-switch-to-buffer
+                            'helm-mini))))
+#+END_SRC
+** abrir archivos que estén en modo de solo lectura como root
+Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]], según éste [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][post en Emacs Redux]].
+
+#+BEGIN_SRC emacs-lisp
+  (defun find-file-sudo ()
+    "reabre el archivo actual, si existe, usando sudo"
+    (when (and buffer-file-name
+             (not (file-writable-p buffer-file-name))
+             (file-exists-p buffer-file-name))
+      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+#+END_SRC
+** Encierra los bloques =_SRC= de org en etiquetas =<pre><code>=
+Le pedimos a org-mode que no meta las patas cuando exporta archivos a HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
+
+Muchas gracias a [[http://emacs.stackexchange.com/users/202/chen-bin][chen bin]] por los [[http://emacs.stackexchange.com/a/9839/690][trozos de código]] sacados de su [[https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el][propio proyecto]] :)
+
+#+BEGIN_SRC emacs-lisp
+  (defun org2html-trim-string (string)
+    (replace-regexp-in-string "\\`[ \t\n]*" "" (replace-regexp-in-string "[ \t\n]*\\'" "" string)))
+
+  (defun org2html--char-to-string (ch)
+    (let ((chspc 32)
+          (chsq 39)
+          (ch0 48)
+          (ch9 57)
+          (cha 97)
+          (chz 122)
+          (chA 65)
+          (chZ 90)
+          (chdot 46)
+          (chminus 45)
+          (chunderscore 95)
+          rlt)
+      (cond
+       ((or (and (<= ch0 ch) (<= ch ch9))
+            (and (<= cha ch) (<= ch chz))
+            (and (<= chA ch) (<= ch chZ))
+            (= chunderscore ch)
+            (= chminus ch)
+            )
+        (setq rlt (char-to-string ch)))
+       ((or (= chspc ch) (= chsq ch) (= chdot ch))
+        (setq rlt "-")))
+      rlt
+      ))
+
+  (defun org2html-get-slug (str)
+    (let (slug )
+      (setq slug (mapconcat 'org2html--char-to-string str ""))
+      ;; clean slug a little bit
+      (setq slug (replace-regexp-in-string "\-\-+" "-" slug))
+      (setq slug (replace-regexp-in-string "^\-+" "" slug))
+      (setq slug (replace-regexp-in-string "\-+$" "" slug))
+      (setq slug (org2html-trim-string slug))
+      (setq slug (downcase slug))
+      slug))
+
+  (defun org2html-replace-pre (html)
+    "Replace pre blocks with sourcecode shortcode blocks.
+  shamelessly copied from org2blog/wp-replace-pre()"
+    (save-excursion
+      (let (pos code lang info params header code-start code-end html-attrs pre-class)
+        (with-temp-buffer
+          (insert html)
+          (goto-char (point-min))
+          (save-match-data
+            (while (re-search-forward "<pre\\(.*?\\)>" nil t 1)
+
+              ;; When the codeblock is a src_block
+              (unless
+                  (save-match-data
+                    (setq pre-class (match-string-no-properties 1))
+                    (string-match "example" pre-class))
+                ;; Replace the <pre...> text
+                (setq lang (replace-regexp-in-string ".*src-\\([a-zA-Z0-9]+\\).*" "\\1" pre-class)  )
+
+                (replace-match "")
+                (setq code-start (point))
+
+                ;; Go to end of code and remove </pre>
+                (re-search-forward "</pre.*?>" nil t 1)
+                (replace-match "")
+                (setq code-end (point))
+                (setq code (buffer-substring-no-properties code-start code-end))
+
+                ;; Delete the code
+                (delete-region code-start code-end)
+                ;; Stripping out all the code highlighting done by htmlize
+                (setq code (replace-regexp-in-string "<.*?>" "" code))
+
+                ;; default is highlight.js, it's the best!
+                (insert (concat "\n<pre><code class=\"lang-"
+                                lang
+                                "\">\n"
+                                code
+                                "</code></pre>\n"))
+
+                )))
+
+          ;; Get the new html!
+          (setq html (buffer-substring-no-properties (point-min) (point-max))))
+        ))
+    html)
+
+  (defun org2html--render-subtree ()
+    "Render current subtree"
+    (let ((org-directory default-directory)
+           html-file
+           tags
+           title
+           post-slug
+           html-text)
+
+      ;; set title
+      (setq title (nth 4 (org-heading-components)))
+
+      ;; set POST_SLUG if its does not exist
+      (setq post-slug (org2html-get-slug title))
+      ;; html file
+      (setq html-file (concat (file-name-as-directory default-directory) post-slug ".html"))
+      (setq html-text (org2html-export-into-html-text))
+
+      (save-excursion
+        (setq html-text (org2html-replace-pre html-text)))
+
+      (with-temp-file html-file
+        (insert html-text))
+      (message "%s created" html-file)
+      ))
+
+  (defun org2html-export-into-html-text ()
+    (let (html-text b e)
+
+      (save-excursion
+        (org-mark-element)
+        (forward-line) ;; donot export title
+        (setq b (region-beginning))
+        (setq e (region-end))
+        )
+
+      ;; org-export-as will detect active region and narrow to the region
+      (save-excursion
+        (setq html-text
+              (cond
+               ((version-list-< (version-to-list (org-version)) '(8 0 0))
+                (if (fboundp 'org-export-region-as-html)
+                    (org-export-region-as-html b e t 'string)))
+               (t
+                (if (fboundp 'org-export-as)
+                    (org-export-as 'html t nil t)))
+               )))
+      html-text))
+
+  (defun org2html-export-subtree ()
+    "Export current first level subtree into HTML"
+    (interactive)
+    (let ((org-directory default-directory)
+          html-file
+          tags
+          title
+          post-slug
+          html-text)
+
+      ;; just goto the root element
+      (condition-case nil
+          (outline-up-heading 8)
+        (error
+         (message "at the beginning ...")))
+
+      ;; should be nil
+      (org2html--render-subtree)
+      ))
+
+
+  (defun org2html-wrap-blocks-in-code (src backend info)
+    (if (org-export-derived-backend-p backend 'html)
+        (org2html-replace-pre src)))
+#+END_SRC
+** Recrea el blog para probar el diseño
+Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos el procedimiento manual de publicar el blog a una carpeta
+
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:ppp ()
+    "Llama op/do-publication con una serie de parámetros predeterminados. Útil cuando se esta diseñando un tema"
+    (interactive)
+    (op/do-publication t t "/tmp/blog" nil))
+#+END_SRC
+** Generación del blog y sincronización con RacketSpace
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:syncblog ()
+    "Sincroniza el blog generado con el contenedor en Racketspace"
+    (interactive)
+    ;; usa rclone para hacer la re-sincronización
+    (start-process "sync rclone" (get-buffer-create "*rclone*") "rclone"
+                   "sync"
+                   (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com")
+                   "rscf:elblog.deshackra.com"))
+
+  (defun shackra:genblog ()
+    "Genera y sincroniza el blog"
+    (interactive)
+    ;; borra el directorio con los datos antiguos y vuelve a generar el blog
+    ;;(delete-directory (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com") t nil)
+    (op/do-publication nil "HEAD^1" "~/Documentos/deshackra.com/elblog.deshackra.com/" nil)
+    ;; sincroniza
+    (shackra:syncblog))
+#+END_SRC
+** función para =delete-frame-functions=
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:run-delete-frame-hooks (frame)
+    "Esta función corre algunas funciones que no son llamadas cuando Emacs
+  corre como proceso de segundo plano"
+    (when (server-running-p)
+      (savehist-save)
+      (recentf-save-list)))
+#+END_SRC
+** salva algunos buffers al perder Emacs el foco
+Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-settings-with-big.html][Programming: Seven specialty Emacs settings with big payoffs]]
+
+#+BEGIN_SRC emacs-lisp
+  (defun guardar-todo ()
+    (interactive)
+    (save-some-buffers t))
+#+END_SRC
+** No molestes, Shia LaBeouf!
+#+BEGIN_SRC emacs-lisp
+  (defun shackra:org-reschedule-tomorrow ()
+    "Re-Programa para mañana una tarea que pude hacer hoy"
+    (interactive)
+    (org-schedule :time (format-time-string "%Y-%m-%d" (time-add (current-time) (seconds-to-time 86400)))))
+#+END_SRC
+* Custom.el
+ El archivo customize sera éste. Cualquier modificación de Emacs que
+ se haga a través de =customize= ira al archivo especificado.
+
+#+BEGIN_SRC emacs-lisp
+  (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
+  (load custom-file)
+#+END_SRC
+* Sane defaults
+configuración sana de ciertas opciones en Emacs
+#+BEGIN_SRC emacs-lisp
+  (load-file (expand-file-name "sane.el" user-emacs-directory))
+#+END_SRC
 * Modos
+** =text-mode=
+Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
+#+BEGIN_SRC emacs-lisp
+  (use-package text-mode
+    :disabled t
+    :ensure nil
+    :preface
+    (defun shackra/text-mode ()
+      (turn-on-visual-line-mode)
+      (flyspell-mode)
+      (set (make-local-variable 'fill-column) 90))
+    :init
+    (setf visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+    :config
+    (add-hook 'text-mode-hook #'shackra/text-mode))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  ;; arreglo provisional
+  (defun shackra/text-mode ()
+    (turn-on-visual-line-mode)
+    (flyspell-mode)
+    (set (make-local-variable 'fill-column) 90))
+
+  (setf visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+  (add-hook 'text-mode-hook #'shackra/text-mode)
+#+END_SRC
+** =prog-mode=
+Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
+#+BEGIN_SRC emacs-lisp
+  (use-package prog-mode
+    :disabled t
+    :ensure nil
+    :bind-keymap ("RET" . newline-and-indent)
+    :preface
+    (use-package rainbow-mode)
+    (use-package highlight-escape-sequences)
+    (use-package highlight-numbers)
+    :init
+    (defun shackra/prog-mode ()
+      (set (make-local-variable 'fill-column) 79)
+      (set (make-local-variable 'comment-auto-fill-only-comments) t)
+      ;; Nota: M-q rellena las columnas del párrafo actual
+      ;;       M-o M-s centra una linea de texto
+      (auto-fill-mode t)
+      (highlight-numbers-mode)
+      (hes-mode)
+      (electric-pair-mode)
+      (rainbow-turn-on)
+      (flyspell-prog-mode))
+    :config
+    (add-hook 'prog-mode-hook #'shackra/prog-mode)
+    )
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  ;; arreglo provisional
+  (use-package rainbow-mode)
+  (use-package highlight-escape-sequences)
+  (use-package highlight-numbers)
+
+  (defun shackra/prog-mode ()
+    (set (make-local-variable 'fill-column) 79)
+    (set (make-local-variable 'comment-auto-fill-only-comments) t)
+    ;; Nota: M-q rellena las columnas del párrafo actual
+    ;;       M-o M-s centra una linea de texto
+    (auto-fill-mode t)
+    (highlight-numbers-mode)
+    (hes-mode)
+    (electric-pair-mode)
+    (rainbow-turn-on)
+    (flyspell-prog-mode))
+
+  (add-hook 'prog-mode-hook #'shackra/prog-mode)
+#+END_SRC
 ** =uniquify=
 #+BEGIN_SRC emacs-lisp
   (use-package uniquify
@@ -208,6 +602,8 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
           org-return-follow-link t
           org-startup-indented t
           org-startup-folded nil
+          ;; Don't ruin S-arrow to switch windows please (use M-+ and M-- instead to toggle)
+          org-replace-disputed-keys t
           org-imenu-depth 5
           org-log-done 'note
           org-log-reschedule 'note
@@ -318,7 +714,15 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
   (use-package company
     :demand t
     :preface
-    (use-package company-jedi)
+    (use-package company-jedi
+      :defer t
+      :init
+      (setf jedi:complete-on-dot t)
+      :config
+      (defun shackra/jedi ()
+        (jedi:setup)
+        (add-to-list 'company-backends 'company-jedi))
+      (add-hook 'python-mode-hook #'shackra/jedi))
     (use-package helm-company)
     :bind-keymap ("C-ñ" . helm-company)
     :init
@@ -329,21 +733,42 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     (setf company-auto-complete nil)
     :config
     (add-to-list 'company-backends 'company-dabbrev t)
-    (add-to-list 'company-backends 'company-ispell t)
     (add-to-list 'company-backends 'company-files t)
     (add-to-list 'company-backends 'company-yasnippet t)
     (add-hook 'after-init-hook #'global-company-mode))
 #+END_SRC
-** =jedi=
-Autocompletado para [[*=python=][=python=]].
+** =projectile=
+Manejo de archivos de un proyecto.
 #+BEGIN_SRC emacs-lisp
-  (use-package jedi
-    :defer t
+  (use-package projectile
     :init
-    (setf jedi:complete-on-dot t)
+    (setf
+     projectile-completion-system 'helm
+     projectile-file-exists-remote-cache-expire (* 10 60)
+     projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
+                                         "*.o" "*.pyc" "*.elc" "*.exe"
+                                         "*.zip" "*.tar.*" "*.rar" "*.7z")
+     projectile-switch-project-action  'helm-projectile-find-file)
     :config
-    (defun shackra/jedi ()
-      (jedi:setup)
-      (add-to-list 'company-backends 'company-jedi))
-    (add-hook 'python-mode-hook #'shackra/jedi))
+    (add-hook 'after-init-hook #'projectile-global-mode))
+#+END_SRC
+** =telephone-line=
+"/Soy como =powerline=, pero mejor/"
+#+BEGIN_SRC emacs-lisp
+  (use-package telephone-line
+    :config
+    (telephone-line-defsegment* shackra-buffer-vc-modified-segment
+                                (list (if (buffer-modified-p)
+                                          (propertize "❗" 'face 'error)
+                                        " ")
+                                      " " (shackra:vc-info)))
+
+    (telephone-line-defsegment* shackra-line-buffer-segment
+                                `(""
+                                  ,(telephone-line-raw mode-line-buffer-identification t)))
+    (setf telephone-line-lhs
+          '((accent . (shackra-line-buffer-segment))
+            (nil . (shackra-buffer-vc-modified-segment
+                    telephone-line-minor-mode-segment))))
+    (telephone-line-mode 1))
 #+END_SRC
