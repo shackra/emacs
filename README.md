@@ -14,19 +14,41 @@ más recientes que le haya realizado a la configuración.
 Mi configuración esta escrita en un archivo de org-mode, escribir la configuración en un archivo de esos es
 algo que los chicos cool hacen hoy día. El archivo `init.el` contiene el siguiente código:
 
+    ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
+    (setf package-enable-at-startup nil)
     ;; init.el para esta configuración. Tu Emacs debe ser versión 24.
     (package-initialize)
+    (add-to-list 'package-archives
+                 '("melpa" . "http://melpa.org/packages/") t)
+    (when (< emacs-major-version 24)
+      ;; Para importes librerias que requieren compatibilidad como cl-lib
+      (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+    
+    ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
+    ;; lo instalamos
+    (when (not (package-installed-p 'use-package))
+      (progn
+        (unless package-archive-contents
+          (package-refresh-contents))
+        (package-install 'use-package)))
+    
+    (require 'use-package)
+    (setf use-package-always-ensure t)
     (require 'ob-tangle)
-    (org-babel-load-file
-        (expand-file-name "emacs-init.org"
-                          user-emacs-directory))
-    (put 'upcase-region 'disabled nil)
+    ;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
+    ;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
+    ;; ahorrarme unos segundos cuando Emacs se carga.
+    (if (file-newer-than-file-p
+         (expand-file-name "configuracion.org" user-emacs-directory)
+         (expand-file-name "configuracion.el" user-emacs-directory))
+        ;; enreda los bloques de código en un archivo elisp
+        (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
+      ;; en caso contrario, carga el archivo ya existente :)
+      (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
+    (put 'downcase-region 'disabled nil)
 
-Entonces el archivo `emacs-init.org` es procesado, el código elisp extraído y la configuración es leída por
-Emacs. Mi configuración tienen una lista completa de los paquetes instalados desde ELPA, así que debería
-funcionar sin más porque los paquetes que falten serán instalados, evitando que alguna sección de mi
-configuración falle por la falta de determinado paquete.
+Entonces el archivo `configuracion.org` es procesado, el código elisp extraído y la configuración es leída por
+Emacs. Yo uso el macro [`use-package`](https://github.com/jwiegley/use-package) para mi configuración para mantener el orden y desactivar alguna funcionalidad cuando me parezca necesario, `use-package` evita caer en [*la bancarrota .emacs*](http://emacsblog.org/2007/10/07/declaring-emacs-bankruptcy/) que es cuando tu configuración crece a grandes proporciones y es inmanejable o editable.
 
 En Github es posible ver archivos org-mode *renderizados* de forma correcta, si deseas revisar mi
-configuración es mejor que lo hagas
-[desde la copia espejo](https://github.com/shackra/.emacs.d/blob/master/emacs-init.org).
+configuración es mejor que lo hagas [desde la copia espejo](https://github.com/shackra/.emacs.d/blob/master/emacs-init.org).
