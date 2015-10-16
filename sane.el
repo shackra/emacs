@@ -38,7 +38,6 @@
 			     interactive-only)
  fill-column 80
  blink-matching-paren nil
- recentf-max-saved-items 100
  history-length 1000
  x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)
  enable-recursive-minibuffers t
@@ -46,8 +45,7 @@
  undo-tree-mode-lighter ""
  ediff-diff-options "-w"
  ediff-split-window-function 'split-window-horizontally
- ediff-window-setup-function 'ediff-setup-windows-plain
- )
+ ediff-window-setup-function 'ediff-setup-windows-plain)
 
 (set-default 'indent-tabs-mode nil)
 (set-default 'indicate-empty-lines t)

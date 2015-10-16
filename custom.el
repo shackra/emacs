@@ -101,6 +101,7 @@
  '(org-ctrl-k-protect-subtree t)
  '(org-default-notes-file "/home/jorge/org/diario.org")
  '(org-directory "/home/jorge/org")
+ '(org-fontify-quote-and-verse-blocks t)
  '(org-footnote-auto-adjust t)
  '(org-habit-graph-column 55)
  '(org-imenu-depth 5)
@@ -137,4 +138,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(jabber-chat-text-foreign ((t (:foreground "white smoke")))))
+ '(jabber-chat-text-foreign ((t (:foreground "white smoke"))))
+ '(org-default ((t (:inherit default :family "Source Sans Pro"))))
+ '(org-document-info ((t (:foreground "#81d4fa" :height 1.35 :family "Source Sans Pro"))))
+ '(org-document-title ((t (:foreground "#ffffff" :weight bold :height 1.35 :family "Source Sans Pro")))))
