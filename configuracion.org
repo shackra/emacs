@@ -943,7 +943,6 @@ Revisión de errores en el código fuente, al vuelo.
     (setf flycheck-disabled-checkers '(emacs-lisp -checkdoc) ;; deshabilita el majadero revisor de documentación
           flycheck-indication-mode 'left-fringe)
     :config
-    (add-hook 'flycheck-mode-hook 'flycheck-color-mode-line-mode)
     (add-hook 'prog-mode-hook #'flycheck-mode))
 #+END_SRC
 ** =recentf=
