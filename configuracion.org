@@ -970,6 +970,7 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
 Manejo de archivos de un proyecto.
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
+    :diminish projectile-mode
     :init
     (setf
      projectile-completion-system 'helm
