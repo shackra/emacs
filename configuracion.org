@@ -505,6 +505,161 @@ Nombres más cortos para comandos usados frecuentemente
   (defalias 'ed 'eval-defun)
 #+END_SRC
 * Modos
+** =helm=
+Completado incremental y estrechamiento de selección de candidatos :)
+#+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :demand t
+    :diminish helm-mode
+    :bind ("C-x f" .  helm-recentf)
+    :config
+    (require 'helm-config)
+    (use-package helm-grep
+      :ensure nil
+      :config
+      ;; Instalar ack o ack-grep
+      (when (executable-find "ack")
+        (setf helm-grep-default-command "ack -Hn --no-group --no-color %e %p %f"
+              helm-grep-default-recurse-command "ack -H --no-group --no-color %e %p %f"))
+      ;; en caso de que ack-grep sea el programa disponible
+      (when (executable-find "ack-grep")
+        (setf helm-grep-default-command "ack-grep -Hn --no-group --no-color %e %p %f"
+              helm-grep-default-recurse-command "ack-grep -H --no-group --no-color %e %p %f")))
+    (use-package helm-files
+      :ensure nil
+      :config
+      (setf helm-boring-file-regexp-list '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
+                                           "\\._darcs$" "\\.la$" "\\.o$" "~$"
+                                           "\\.pyc$" "\\.elc$" "TAGS" "\#*\#"
+                                           "\\.exe$" "\\.jar$" "\\.img$" "\\.iso$"
+                                           "\\.xlsx$" "\\.epub$" "\\.docx$")))
+    (use-package helm-buffers
+      :ensure nil
+      :bind ("C-x b" . helm-mini)
+      :config
+      (setf helm-buffers-fuzzy-matching t
+          helm-truncate-lines t
+          helm-ff-skip-boring-buffers t
+          helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode"
+                                           "\\*Echo Area" "\\*Minibuf" "\\*monky-cmd-process\\*"
+                                           "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
+                                           "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
+                                           "\\*.+(.+)" "elpa/.+" "tramp/.+"
+                                           "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*")))
+    (setf helm-autoresize-max-height 40
+          helm-autoresize-min-height 20
+          helm-split-window-in-side-p t
+          helm-move-to-line-cycle-in-source t
+          helm-ff-search-library-in-sexp t
+          helm-scroll-amount 8
+          helm-ff-file-name-history-use-recentf t
+          helm-locate-command "locate %s -e -A --regex %s"
+          helm-locate-fuzzy-match t
+          helm-M-x-fuzzy-match t
+          helm-recentf-fuzzy-match    t
+          helm-projectile-sources-list '(helm-source-projectile-files-list)
+          helm-semantic-fuzzy-match t
+          helm-imenu-fuzzy-match t)
+    (use-package helm-descbinds
+      :config
+      (bind-keys :map help-map
+                  ("b" . helm-descbinds)))
+    (helm-mode 1)
+    (helm-adaptative-mode 1)
+    (helm-autoresize-mode 1))
+#+END_SRC
+** =hydra=
+"/Cut off one head, Two more shall take its place. Hail HYDRA!/" [[http://marvel-movies.wikia.com/wiki/HYDRA][―miembro HYDRA]].
+
+Permite tratar combinaciones de teclas como grupos... es algo difícil de explicar, puede ver este vídeo [[https://www.youtube.com/watch?v=_qZliI1BKzI][Switching Emacs windows with hydra and ace-window - YouTube]] para entender de qué trata este paquete.
+#+BEGIN_SRC emacs-lisp
+  (use-package hydra
+    :demand t
+    :preface
+    (use-package windmove
+      :ensure nil)
+    (use-package winner
+      :ensure nil)
+    (use-package windresize)
+    (use-package ace-window
+      :config
+      (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+    :config
+    (require 'hydra-examples)
+    (defhydra hydra-zoom (global-map "<f2>")
+      "Acercamiento"
+      ("f" text-scale-increase "in")
+      ("j" text-scale-decrease "out"))
+    
+    (defhydra hydra-mc (:columns 2)
+      "Multiples cursores"
+      ("a" mc/edit-beginnings-of-lines "mc/edit-beginnings-of-lines")
+      ("s" mc/unmark-next-like-this "mc/unmark-next-like-this")
+      ("d" mc/skip-to-previous-like-this "mc/skip-to-previous-like-this")
+      ("f" mc/mark-previous-symbol-like-this "mc/mark-previous-symbol-like-this")
+      
+      ("j" mc/mark-next-symbol-like-this "mc/mark-next-symbol-like-this")
+      ("k" mc/skip-to-next-like-this "mc/skip-to-next-like-this")
+      ("l" mc/unmark-previous-like-this "mc/unmark-previous-like-this")
+      ("ñ" mc/edit-ends-of-lines "mc/edit-ends-of-lines"))
+    
+    ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
+    ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
+    ;; del macro para hydra
+    (defhydra hydra-win (:columns 4 :color amaranth)
+      "Manejo de ventanas"
+      ("j" windmove-left "Mover cursor, izquierda")
+      ("k" windmove-down "Mover cursor, abajo")
+      ("l" windmove-up "Mover cursor, arriba")
+      ("ñ" windmove-right "Mover cursor, derecha")
+      ("f" hydra-move-splitter-left "Cambiar tamaño, izquierda")
+      ("d" hydra-move-splitter-down "Cambiar tamaño, abajo")
+      ("s" hydra-move-splitter-up "Cambiar tamaño, arriba")
+      ("a" hydra-move-splitter-right "Cambiar tamaño, derecha")
+      ("g" helm-mini "Cambiar buffer")
+      ("h" helm-find-files "Abrir/Crear archivo")
+      ("F" follow-mode "Activa follow-mode")
+      ("z" (lambda ()
+             (interactive)
+             (ace-window 1)
+             (add-hook 'ace-window-end-once-hook
+                       'hydra-win/body))
+       "Cambiar a ventana...")
+      ("v" (lambda ()
+             (interactive)
+             (split-window-right)
+             (windmove-right))
+       "Divide ventana, vertical")
+      ("x" (lambda ()
+             (interactive)
+             (split-window-below)
+             (windmove-down))
+       "Divide ventana, horizontal")
+      ("c" (lambda ()
+             (interactive)
+             (ace-window 4)
+             (add-hook 'ace-window-end-once-hook
+                       'hydra-win/body))
+       "Cambiar a ventana...")
+      ("H" save-buffer "Salvar buffer")
+      ("b" delete-window "Borrar ventana")
+      ("B" (lambda ()
+             (interactive)
+             (ace-window 16)
+             (add-hook 'ace-window-end-once-hook
+                       'hydra-win/body))
+       "Borrar ventana...")
+      ("n" delete-other-windows "Borrar, otra ventana")
+      ("m" ace-maximize-window "Maximizar ventana")
+      ("," (progn
+             (winner-undo)
+             (setq this-command 'winner-undo))
+       "Deshacer cambio anterior")
+      ("." winner-redo "Rehacer cambio anterior")
+      ("SPC" nil "salir"))
+    (bind-key "C-z" 'hydra-win/body)
+    )
+#+END_SRC
 ** =text-mode=
 Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
 #+BEGIN_SRC emacs-lisp
@@ -539,7 +694,6 @@ He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a
       (and (= oldpos (point))
            (beginning-of-line)))))
 #+END_SRC
-
 ** =prog-mode=
 Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
 #+BEGIN_SRC emacs-lisp
@@ -624,69 +778,6 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
       :ensure t)
     :config
     (change-theme 'material-light 'material))
-#+END_SRC
-** =helm=
-Completado incremental y estrechamiento de selección de candidatos :)
-#+BEGIN_SRC emacs-lisp
-  (use-package helm
-    :demand t
-    :diminish helm-mode
-    :bind ("C-x f" .  helm-recentf)
-    :config
-    (require 'helm-config)
-    (use-package helm-grep
-      :ensure nil
-      :config
-      ;; Instalar ack o ack-grep
-      (when (executable-find "ack")
-        (setf helm-grep-default-command "ack -Hn --no-group --no-color %e %p %f"
-              helm-grep-default-recurse-command "ack -H --no-group --no-color %e %p %f"))
-      ;; en caso de que ack-grep sea el programa disponible
-      (when (executable-find "ack-grep")
-        (setf helm-grep-default-command "ack-grep -Hn --no-group --no-color %e %p %f"
-              helm-grep-default-recurse-command "ack-grep -H --no-group --no-color %e %p %f")))
-    (use-package helm-files
-      :ensure nil
-      :config
-      (setf helm-boring-file-regexp-list '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
-                                           "\\._darcs$" "\\.la$" "\\.o$" "~$"
-                                           "\\.pyc$" "\\.elc$" "TAGS" "\#*\#"
-                                           "\\.exe$" "\\.jar$" "\\.img$" "\\.iso$"
-                                           "\\.xlsx$" "\\.epub$" "\\.docx$")))
-    (use-package helm-buffers
-      :ensure nil
-      :bind ("C-x b" . helm-mini)
-      :config
-      (setf helm-buffers-fuzzy-matching t
-          helm-truncate-lines t
-          helm-ff-skip-boring-buffers t
-          helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode"
-                                           "\\*Echo Area" "\\*Minibuf" "\\*monky-cmd-process\\*"
-                                           "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
-                                           "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
-                                           "\\*.+(.+)" "elpa/.+" "tramp/.+"
-                                           "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*")))
-    (setf helm-autoresize-max-height 40
-          helm-autoresize-min-height 20
-          helm-split-window-in-side-p t
-          helm-move-to-line-cycle-in-source t
-          helm-ff-search-library-in-sexp t
-          helm-scroll-amount 8
-          helm-ff-file-name-history-use-recentf t
-          helm-locate-command "locate %s -e -A --regex %s"
-          helm-locate-fuzzy-match t
-          helm-M-x-fuzzy-match t
-          helm-recentf-fuzzy-match    t
-          helm-projectile-sources-list '(helm-source-projectile-files-list)
-          helm-semantic-fuzzy-match t
-          helm-imenu-fuzzy-match t)
-    (use-package helm-descbinds
-      :config
-      (bind-keys :map help-map
-                  ("b" . helm-descbinds)))
-    (helm-mode 1)
-    (helm-adaptative-mode 1)
-    (helm-autoresize-mode 1))
 #+END_SRC
 ** =org-mode=
 El modo Org (Org-mode) es un modo de edición del editor de texto Emacs mediante el cual se editan documentos jerárquicos en texto plano.
@@ -810,14 +901,25 @@ Modo mayor para programar en Python
     :ensure nil
     :init
     (setf python-mode-modeline-display "python-mode")
-    :bind-keymap (("C-c >" . python-indent-shift-right)
-                  ("C-c <" . python-indent-shift-left)
-                  ("C-M-," . comment-dwim))
+    :bind-keymap ("C-M-," . comment-dwim)
     :interpreter ("ipython" . python-mode)
     :preface
     (use-package pyvenv :defer t)
     (use-package py-autopep8 :defer t)
     :config
+    (if (fboundp 'defhydra)
+        (prog1 (defhydra hydra-py (:columns 2)
+                 "Python (re) sangrado de bloques"
+                 ("<" python-indent-shift-left "Decrementa el sangrado")
+                 (">" python-indent-shift-right "Incrementa el sangrado")
+                 ("SPC" indent-region "sangra la región" :color blue))
+          ;; atamos la funcion hydra-py
+          (bind-key "C-c <" 'hydra-py/body python-mode-map))
+      ;; Hydra no esta disponible, no podemos definir nuestra hydra entonces
+      ;; atamos los atajos del teclado como si nada
+      (bind-key "C-c <" 'python-indent-shift-left python-mode-map)
+      (bind-key "C-c >" 'python-indent-shift-right python-mode-map))
+    
     (defun shackra/python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
       (electric-indent-local-mode -1)
@@ -890,18 +992,6 @@ Manejo de archivos de un proyecto.
                     telephone-line-minor-mode-segment))))
     (telephone-line-mode 1))
 #+END_SRC
-** =hydra=
-"/Cut off one head, Two more shall take its place. Hail HYDRA!/" [[http://marvel-movies.wikia.com/wiki/HYDRA][―miembro HYDRA]].
-
-Permite tratar combinaciones de teclas como grupos... es algo difícil de explicar, puede ver este vídeo [[https://www.youtube.com/watch?v=_qZliI1BKzI][Switching Emacs windows with hydra and ace-window - YouTube]] para entender de qué trata este paquete.
-#+BEGIN_SRC emacs-lisp
-  (use-package hydra
-    :config
-    (defhydra hydra-zoom (global-map "<f2>")
-      "Acercamiento"
-      ("f" text-scale-increase "in")
-      ("j" text-scale-decrease "out")))
-#+END_SRC
 ** =subword-mode=
 Navegación y edición de /SubPalabras/. Siendo "HolaMundoAdios" una nomenclatura, =subword-mode= permite mover el cursor entre cada subpalabra, deteniéndolo en "Adios", "Mundo" y "Hola" si se mueve el cursor de derecha a izquierda presionando la tecla CTRL. Este modo menor es muy útil, especialmente para aquellos desarrolladores en Java que usan variables con JorobasDeCamello.
 #+BEGIN_SRC emacs-lisp
@@ -972,7 +1062,11 @@ Multiples cursores en Emacs.
   (use-package multiple-cursors
     :defer 4
     :config
-    (bind-keys :prefix-map shackra/mc-map
+    ;; Si mi hydra esta definida
+    (if (fboundp 'hydra-mc/body)
+        ;; La usamos
+        (bind-key "C-c m m" 'hydra-mc/body)
+      (bind-keys :prefix-map shackra/mc-map
                :prefix "C-c m"
                ("a" . mc/mark-all-symbols-like-this-in-defun)
                ("s" . mc/mark-all-symbols-like-this)
@@ -990,7 +1084,7 @@ Multiples cursores en Emacs.
 
                ("t" . mc/edit-lines)
                ("y" . mc/edit-beginnings-of-lines)
-               ("u" . mc/edit-ends-of-lines)))
+               ("u" . mc/edit-ends-of-lines))))
 #+END_SRC
 ** =avy-jump=
 El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ basado en caracteres.
@@ -998,7 +1092,6 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
   (use-package avy
     :defer 3
     :config
-    (unbind-key "C-z" global-map)
     (bind-keys :prefix-map shackra/avy-mode-map
                :prefix "C-c z"
                ("j" . avy-goto-line)
@@ -1063,7 +1156,7 @@ Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
     :ensure nil
-    :defer t
+    :defer 3
     :preface
     ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
