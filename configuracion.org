@@ -936,6 +936,41 @@ Modo mayor para programar en Python
       (py-autopep8-enable-on-save))
     (add-hook 'python-mode-hook #'shackra/python-mode))
 #+END_SRC
+** ropemacs
+Nos permite hacer refactorización en código Python. La documentación esta disponible en [[https://github.com/python-rope/ropemacs][python-rope/ropemacs]].
+#+BEGIN_SRC emacs-lisp
+  (use-package pymacs
+    :disabled t
+    :ensure nil
+    :config
+    (pymacs-load "ropemacs" "rope")
+    (bind-key "M-." 'rope-goto-definition ropemacs-local-keymap))
+#+END_SRC
+*** Preparación previa
+Antes de tener disponible ropemacs, hay que instalar varias cosillas en el sistema. Si su distribución de GNU/Linux es Parabola o Arch, algunas cosillas seran más sencillas de instalar.
+
+Lo primero es instalar Pymacs, ya que estoy en Parabola, voy a instalarlo usando un =PKGBUILD= que alguien más hizo amablemente.
+
+#+BEGIN_SRC sh :tangle no
+  git clone https://aur.archlinux.org/pymacs.git
+  cd pymacs
+  makepkg -si
+  # Se instalo correctamente?
+  python2 -c "import Pymacs" 
+  # Si no hay errores, entonces sí.
+#+END_SRC
+
+Luego, hay que instalar =rope=.
+
+#+BEGIN_SRC sh :tangle no
+  sudo pacman -S python2-rope
+#+END_SRC
+
+Y por ultimo =ropemacs=.
+
+#+BEGIN_SRC sh :tangle no
+  sudo pip2 install ropemacs
+#+END_SRC
 ** =company=
 Un mejor motor de autocompletado comparado con [[https://github.com/auto-complete/auto-complete][auto-complete/auto-complete]].
 #+BEGIN_SRC emacs-lisp
@@ -1138,7 +1173,8 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
     :config
     (defun shackra/maybe-disable-yasnippet ()
       "Desactiva yasnippet a pedido"
-      (yas-minor-mode -1))
+      (unless (fboundp 'yas-minor-mode)
+        (yas-minor-mode -1)))
 
     (setf multi-term-buffer-name "sh-"
           multi-term-program "/usr/bin/zsh"
