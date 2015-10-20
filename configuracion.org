@@ -911,7 +911,7 @@ Modo mayor para programar en Python
     :init
     (setf python-mode-modeline-display "python-mode")
     :bind-keymap ("C-M-," . comment-dwim)
-    :interpreter ("ipython" . python-mode)
+    :interpreter ("python3" . python-mode)
     :preface
     (use-package pyvenv :defer t)
     (use-package py-autopep8 :defer t)
@@ -979,14 +979,23 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     :diminish company-mode
     :preface
     (use-package company-jedi
+      :disabled t
       :defer t
       :init
       (setf jedi:complete-on-dot t)
       :config
       (defun shackra/jedi ()
         (jedi:setup)
-        (add-to-list 'company-backends 'company-jedi))
+        (unless (member 'company-jedi 'company-backends)
+          (add-to-list 'company-backends 'company-jedi)))
       (add-hook 'python-mode-hook #'shackra/jedi))
+    (use-package company-anaconda
+      :config
+      (defun shackra/anaconda ()
+        (unless (member 'company-anaconda 'company-backends)
+          (add-to-list 'company-backends 'company-anaconda))
+        (anaconda-mode))
+      (add-hook 'python-mode-hook #'shackra/anaconda))
     (use-package helm-company)
     :bind-keymap ("C-ñ" . helm-company)
     :init
@@ -1298,7 +1307,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
           appt-display-mode-line nil)
     ;; Muestra las citas como notificaciones en el manejador de ventanas
     (setf appt-disp-window-function 'shackra/appt-muestra-notificacion)
-    (setf appt-delete-window-function nil)
+    ;;(setf appt-delete-window-function nil)
     :config
     (defun shackra/appt-update-when-file-updated ()
     "Actualiza appt cuando cierto archivo es actualizado"
@@ -1323,4 +1332,17 @@ Acceso a Stackoverflow y subsitios desde Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package sx
     :defer 10)
+#+END_SRC
+** =toml=
+/El lenguaje minimalista y obvio de Tom/
+#+BEGIN_SRC emacs-lisp
+  (use-package toml-mode
+    :defer 10)
+#+END_SRC
+** =yaml=
+/YAML: YAML Ain't Markup Language/
+#+BEGIN_SRC emacs-lisp
+  (use-package yaml-mode
+    :defer 10
+    :mode "\\.yml$")
 #+END_SRC
