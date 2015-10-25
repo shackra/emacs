@@ -657,7 +657,20 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
        "Deshacer cambio anterior")
       ("." winner-redo "Rehacer cambio anterior")
       ("SPC" nil "salir"))
-    (bind-key "C-z" 'hydra-win/body)
+    ;; re-implementación de las funciones que habia escrito anteriormente
+    (defun shackra/split-window-vertically ()
+      "Divide la ventana por la mitad verticalmente y mueve el cursor a la ventana nueva. Ejecuta el comando hydra-win"
+      (interactive)
+      (split-window-vertically)
+      (other-window 1)
+      (hydra-win/body))
+
+    (defun shackra/split-window-horizontally ()
+      "Divide la ventana por la mitad horizontalmente y mueve el cursor a la ventana nueva. Ejecuta el comando hydra-win"
+      (interactive)
+      (split-window-horizontally)
+      (other-window 1)
+      (hydra-win/body))
     )
 #+END_SRC
 ** =text-mode=
