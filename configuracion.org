@@ -1172,6 +1172,17 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
     :defer t
     :bind ([C-f12] . magit-status)
     :init
+    (use-package gitignore-mode)
+    (use-package gitconfig-mode)
+    (use-package magit-gh-pulls
+      :config
+      (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
+    (use-package git-commit-insert-issue
+      :config
+      (add-hook 'git-commit-mode-hook 'git-commit-insert-issue-mode))
+    (use-package magit-gitflow
+      :config
+      (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
     (setf magit-last-seen-setup-instructions "1.4.0"
         magit-auto-revert-mode nil))
 #+END_SRC
@@ -1185,6 +1196,8 @@ Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emac
     :bind ([f12] . monky-status)
     :init
     (setf monky-process-type 'cmdserver))
+
+  (use-package hgignore-mode)
 #+END_SRC
 ** =multi-term=
 Ofrece un excelente emulador de terminal *dentro* de Emacs 
