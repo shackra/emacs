@@ -545,7 +545,8 @@ Completado incremental y estrechamiento de selección de candidatos :)
                                            "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
                                            "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
                                            "\\*.+(.+)" "elpa/.+" "tramp/.+"
-                                           "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*")))
+                                           "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*"
+                                           "\\*magit-process:" "\\*magit-diff:" "\\*anaconda-mode\\*")))
     (setf helm-autoresize-max-height 40
           helm-autoresize-min-height 20
           helm-split-window-in-side-p t
@@ -1290,11 +1291,13 @@ Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-th
 #+BEGIN_SRC sh :tangle no
   sudo pip install python-potr
 #+END_SRC
+
 #+BEGIN_SRC emacs-lisp
   (use-package jabber
     :if (daemonp)
     :defer 10
     :init
+    (setf fsm-debug nil)
     ;; ver http://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
     (setf jabber-account-list `(("jorgedice@blah.im/emacs"
                                  (:password . ,(secrets-get-secret "Login" "contraseña usual"))
