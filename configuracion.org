@@ -911,7 +911,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 #+END_SRC
-** pkgbuild-mode
+** =pkgbuild-mode=
 Un modo mayor de Emacs para la edición de archivos =PKGBUILD=
 #+BEGIN_SRC emacs-lisp
   (use-package pkgbuild-mode
@@ -996,6 +996,15 @@ Y por ultimo =ropemacs=.
 
 #+BEGIN_SRC sh :tangle no
   sudo pip2 install ropemacs
+#+END_SRC
+** =ycmd=
+/A code-completion & code-comprehension server/
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ycmd
+    :disabled t ;; hasta tener instalado ycmd
+    :config
+    (use-package company-ycmd))
 #+END_SRC
 ** =company=
 Un mejor motor de autocompletado comparado con [[https://github.com/auto-complete/auto-complete][auto-complete/auto-complete]].
