@@ -911,6 +911,18 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 #+END_SRC
+** pkgbuild-mode
+Un modo mayor de Emacs para la edición de archivos =PKGBUILD=
+#+BEGIN_SRC emacs-lisp
+  (use-package pkgbuild-mode
+    :ensure nil
+    :mode "/PKGBUILD$")
+#+END_SRC
+*** Preparación previa
+Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquete correspondiente desde el repositorio de software de la distribución
+#+BEGIN_SRC sh
+  sudo pacman -S emacs-pkgbuild-mode
+#+END_SRC
 ** =visual-fill-column=
 /fill-column for visual-line-mode/
 #+BEGIN_SRC emacs-lisp
