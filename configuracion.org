@@ -611,13 +611,13 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       "Manejo de ventanas"
       ("j" windmove-left "Mover cursor, izquierda")
       ("k" windmove-down "Mover cursor, abajo")
-      ("l" windmove-up "Mover cursor, arriba")
-      ("ñ" windmove-right "Mover cursor, derecha")
-      ("f" hydra-move-splitter-left "Cambiar tamaño, izquierda")
-      ("d" hydra-move-splitter-down "Cambiar tamaño, abajo")
-      ("s" hydra-move-splitter-up "Cambiar tamaño, arriba")
-      ("a" hydra-move-splitter-right "Cambiar tamaño, derecha")
-      ("g" helm-mini "Cambiar buffer")
+      ("i" windmove-up "Mover cursor, arriba")
+      ("l" windmove-right "Mover cursor, derecha")
+      ("a" hydra-move-splitter-left "Cambiar tamaño, izquierda")
+      ("s" hydra-move-splitter-down "Cambiar tamaño, abajo")
+      ("w" hydra-move-splitter-up "Cambiar tamaño, arriba")
+      ("d" hydra-move-splitter-right "Cambiar tamaño, derecha")
+      ("f" helm-mini "Cambiar buffer")
       ("h" helm-find-files "Abrir/Crear archivo")
       ("F" follow-mode "Activa follow-mode")
       ("z" (lambda ()
@@ -671,8 +671,7 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       (interactive)
       (split-window-horizontally)
       (other-window 1)
-      (hydra-win/body))
-    )
+      (hydra-win/body)))
 #+END_SRC
 ** =text-mode=
 Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
@@ -936,12 +935,12 @@ Modo mayor para programar en Python
     :ensure nil
     :init
     (setf python-mode-modeline-display "python-mode")
-    :bind-keymap ("C-M-," . comment-dwim)
     :interpreter ("python3" . python-mode)
     :preface
     (use-package pyvenv :defer t)
     (use-package py-autopep8 :defer t)
     :config
+    (bind-key "C-M-," 'comment-dwim python-mode-map)
     (if (fboundp 'defhydra)
         (prog1 (defhydra hydra-py (:columns 2)
                  "Python (re) sangrado de bloques"
@@ -1118,8 +1117,8 @@ Revisión de errores en el código fuente, al vuelo.
   (use-package flycheck
     :diminish flycheck-mode
     :init
-    (setf flycheck-disabled-checkers '(emacs-lisp -checkdoc) ;; deshabilita el majadero revisor de documentación
-          flycheck-indication-mode 'left-fringe)
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)) ;; deshabilita el majadero revisor de documentación
+    (setf flycheck-indication-mode 'left-fringe)
     :config
     (add-hook 'prog-mode-hook #'flycheck-mode))
 #+END_SRC
@@ -1395,4 +1394,13 @@ Acceso a Stackoverflow y subsitios desde Emacs.
   (use-package yaml-mode
     :defer 10
     :mode "\\.yml$")
+#+END_SRC
+** mediawiki
+Interfaz para editar paginas en instancias de Mediawiki desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package mediawiki
+    :init
+    (ignore-errors (load-file "~/.secret/mediawiki.el"))
+    :config
+    (add-hook 'mediawiki-mode-hook '(lambda () (turn-off-auto-fill))))
 #+END_SRC
