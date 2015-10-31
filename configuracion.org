@@ -591,7 +591,14 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       "Acercamiento"
       ("f" text-scale-increase "in")
       ("j" text-scale-decrease "out"))
-    
+
+    (defhydra hydra-avy (:color blue :columns 2)
+      "avy jump"
+      ("z" avy-goto-line "Ir a la linea...")
+      ("x" avy-goto-word-1 "Ir a la palabra...")
+      ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
+      ("v" avy-goto-char "Ir a la palabra (2)..."))
+    (bind-key "C-z" 'hydra-avy/body)
     (defhydra hydra-mc (:columns 2)
       "Multiples cursores"
       ("a" mc/edit-beginnings-of-lines "mc/edit-beginnings-of-lines")
@@ -1181,10 +1188,10 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
     :config
     (bind-keys :prefix-map shackra/avy-mode-map
                :prefix "C-c z"
-               ("j" . avy-goto-line)
-               ("k" . avy-goto-word-1)
-               ("l" . avy-goto-char-in-line)
-               ("ñ" . avy-goto-char)))
+               ("z" . avy-goto-line)
+               ("x" . avy-goto-word-1)
+               ("c" . avy-goto-char-in-line)
+               ("v" . avy-goto-char)))
 #+END_SRC
 ** =magit=
 Git en Emacs. A decir verdad, amo Mercurial y odio Git.
@@ -1403,4 +1410,15 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs
     (ignore-errors (load-file "~/.secret/mediawiki.el"))
     :config
     (add-hook 'mediawiki-mode-hook '(lambda () (turn-off-auto-fill))))
+#+END_SRC
+** =vimish-fold=
+Pleguar o desplegar bloques de texto
+#+BEGIN_SRC emacs-lisp
+  (use-package vimish-fold
+    :diminish vimish-fold-mode
+    :defer 10
+    :config
+    (bind-key "C-c f" 'vimish-fold)
+    (bind-key "C-c u" 'vimish-fold-unfold)
+    (add-hook 'prog-mode #'vimish-fold-mode))
 #+END_SRC
