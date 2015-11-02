@@ -747,6 +747,29 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
     :init
     (setf uniquify-buffer-name-style 'forward))
 #+END_SRC
+** dired
+Manejador de archivos de serie para Emacs.
+
+Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction/][Dired as Default File Manager - Introduction]].
+#+BEGIN_SRC emacs-lisp
+  (use-package dired
+    :ensure nil
+    :init
+    (setq-default dired-omit-mode t)
+    (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
+    (bind-key "C-o" 'dired-omit-mode dired-mode-map)
+    (use-package dired+
+      :init
+      (diredp-toggle-find-file-reuse-dir 1)
+      (setf diredp-hide-details-initially-flag nil))
+    (use-package dired-details+
+      ;; Sólo activa este paquete en caso de que la versión de Emacs no sea mayor
+      ;; a 24.4.
+      :if (version< emacs-version "24.4")
+      :init
+      (setf dired-details-propagate-flag t
+            dired-details-initially-hide nil)))
+#+END_SRC
 ** =htmlize=
 #+BEGIN_SRC emacs-lisp
   (use-package htmlize)
