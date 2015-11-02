@@ -758,10 +758,25 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
     (setq-default dired-omit-mode t)
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
     (bind-key "C-o" 'dired-omit-mode dired-mode-map)
+    (defun shackra/dired-no-esconder-detalles ()
+      "No esconder los detalles de los archivos en dired, se ven muy bien"
+      (dired-hide-details-mode 0))
+    (defun dired-sort-group-dirs ()
+      "Sort dired listings with directories first."
+      (save-excursion
+        (let (buffer-read-only)
+          (forward-line 2) ;; beyond dir. header 
+          (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+        (set-buffer-modified-p nil)))
+    :config
+    (add-hook 'dired-mode-hook 'shackra/dired-no-esconder-detalles)
+    (defadvice dired-readin
+        (after dired-after-updating-hook first () activate)
+      "Sort dired listings with directories first before adding marks."
+      (dired-sort-group-dirs))
     (use-package dired+
       :init
-      (diredp-toggle-find-file-reuse-dir 1)
-      (setf diredp-hide-details-initially-flag nil))
+      (diredp-toggle-find-file-reuse-dir 1))
     (use-package dired-details+
       ;; Sólo activa este paquete en caso de que la versión de Emacs no sea mayor
       ;; a 24.4.
@@ -1438,7 +1453,6 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs
 Pleguar o desplegar bloques de texto
 #+BEGIN_SRC emacs-lisp
   (use-package vimish-fold
-    :diminish vimish-fold-mode
     :defer 10
     :config
     (bind-key "C-c f" 'vimish-fold)
