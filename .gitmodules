@@ -4,3 +4,6 @@
 [submodule "site-packages/profile"]
 	path = site-packages/profile
 	url = https://github.com/DamienCassou/profile.git
+[submodule "site-packages/EGO"]
+	path = site-packages/EGO
+	url = https://github.com/emacs-china/EGO.git
