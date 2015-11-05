@@ -955,6 +955,47 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 #+END_SRC
+** EGO
+Generador estático de sitios web que depende de Emacs, Git y Org-mode.
+#+BEGIN_SRC emacs-lisp
+  (use-package ego
+    :if (string-equal system-type "gnu/linux")
+    :load-path  "~/.emacs.d/site-packages/EGO"
+    :preface
+    (use-package mustache)
+    (use-package dash)
+    (use-package htmlize)
+    (use-package ht)
+    (use-package simple-httpd)
+    :ensure nil
+    :config
+    (ego/add-to-alist 'ego/project-config-alist
+                     `(("El blog de Shackra"
+                       :repository-directory "~/Documentos/elblog.deshackra.com/"
+                       :repository-html-branch nil
+                       :repository-org-branch "master"
+                       :default-category "blog"
+                       :site-domain "http://elblog.deshackra.com"
+                       :site-main-title "El blog de Shackra"
+                       :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
+                       :ignore-file-name-regexp "README"
+                       :rss ("RSS" "/rss.xml")
+                       :about ("Sobre mi" "/about")
+                       ;;op/personal-github-link "https://github.com/shackra"
+                       ;;op/theme-root-directory (expand-file-name
+                       ;;"org-page-themes" user-emacs-directory)
+                       :theme-root-directory (list (expand-file-name "org-page-themes" user-emacs-directory))
+                       :theme (shackra)
+                       :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
+                       :confound-email t
+                       :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
+                       :web-server-port 5777)))
+
+    (eval-after-load 'ox
+      '(progn
+         (add-to-list 'org-export-filter-src-block-functions
+                      'org2html-wrap-blocks-in-code))))
+#+END_SRC
 ** =pkgbuild-mode=
 Un modo mayor de Emacs para la edición de archivos =PKGBUILD=
 #+BEGIN_SRC emacs-lisp
