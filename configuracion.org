@@ -722,9 +722,10 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
           org-log-refile 'note
           org-log-into-drawer t
           org-clock-persist 'history
-          org-default-notes-file (concat org-directory "/diario.org")
+          org-default-notes-file (expand-file-name "quizas.org" org-directory)
 
-          org-agenda-files (list (concat org-directory "/cosasporhacer.org")))
+          org-agenda-files (list (expand-file-name "cosasporhacer.org" org-directory)
+                                 (expand-file-name "fechas.org" org-directory)))
       (setf org-todo-keywords
           '(
             ;; Secuencia para TAREAS
@@ -737,44 +738,41 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ;; CANCELADO significa que la tarea a sido cancelada
             ;; TERMINADO significa que la tarea se a realizado con exito
             (sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)")
-            (sequence "ENTREGAR(n)" "|" "OLVIDALO(x@)" "ENTREGADO(N!)")))
+            ;; Recados
+            (sequence "ENTREGAR(n)" "|" "OLVIDALO(x@)" "ENTREGADO(N!)")
+            ;; Para aquellas cosas que están en `quiaz.org'
+            (sequence "LEER(l)" "DESCARGAR(d)" "VER(v)" "COMPRAR(b)" "|" "CANCELADO(C@)" "TERMINADO(T!)")
+            ))
     (setf org-todo-keyword-faces
           '(
             ("POR-HACER"   . (:background "#f4a460" :foreground "#8b4513" :weight bold))
             ("EN-PROGRESO" . (:background "#87cefa" :foreground "#483d8b" :weight bold))
             ("EN-ESPERA"   . (:background "#ffe4e1" :foreground "#8b8989" :weight bold))
             ("EN-REVISIÓN" . (:background "#fff68f" :foreground "#8b6508" :weight bold))
+            ("LEER"        . (:background "#f4a460" :foreground "#8b4513" :weight bold))
+            ("DESCARGAR"   . (:background "#87cefa" :foreground "#483d8b" :weight bold))
+            ("VER"         . (:background "#ffe4e1" :foreground "#8b8989" :weight bold))
+            ("COMPRAR"     . (:background "#fff68f" :foreground "#8b6508" :weight bold))
             ("TERMINADO"   . (:background "#98fb98" :foreground "#556b2f" :weight bold))
             ("CANCELADO"   . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))
             ("ENTREGAR"    . (:background "#f4a460" :foreground "#8b4513" :weight bold))
             ("ENTREGADO"   . (:background "#98fb98" :foreground "#556b2f" :weight bold))
             ("OLVIDALO"    . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))))
     (setf org-capture-templates
-          '(
-            ("t" "Tareas")
-
-            ("tp" "Añadir tarea 'Por hacer'" entry (file+headline "cosasporhacer.org" "Tareas")
-             "* POR-HACER %^{breve descripcion}
+          '(("p" "Añadir tarea por hacer" entry (file+headline "cosasporhacer.org" "Tareas")
+             "* POR-HACER %^{breve descripcion} %^g
   :PROPERTIES:
   :CREATED:%U
   :END:
   %?")
-            ("tc" "Calendario" entry (file+headline "cosasporhacer.org" "Calendario")
-             "* %^{Nombre del evento}
+            ("f" "Fechas o eventos" entry (file "fechas.org")
+             "* POR-HACER %^{Nombre del evento} %^g
   SCHEDULED: %:date")
-
-            ("r" "Recados")
-            ("rd" "Nuevo recado" entry (file "~/recados.org")
+            ("r" "Nuevo" entry (file "~/recados.org")
              "* ENTREGAR recado de %^{Nombre de persona}
   :PROPERTIES:
   :DE: %\\1
   :CONTACTO: %^{contacto}
-  :CREATED: %T
-  :END:
-  %?" :kill-buffer t)
-            ("g" "Algún día/Tal vez" entry (file+headline "quizas.org" "En 'veremos'")
-             "* %^{breve descripcion}
-  :PROPERTIES:
   :CREATED: %T
   :END:
   %?" :kill-buffer t)
@@ -783,7 +781,56 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :PROPERTIES:
   :CREATED: %T
   :END:
-  %?" :empty-lines 1 :kill-buffer t)))
+  %?" :empty-lines 1 :kill-buffer t)
+            
+            ("g" "Algún día")
+
+            ("gp" "Tarea" entry (file+headline "quizas.org" "Cosas por hacer")
+             "* %^{breve descripcion}
+  :PROPERTIES:
+  :CREATED:%U
+  :END:
+  %?" :kill-buffer t)
+            ("gt" "Aprender" entry (file+headline "quizas.org" "Cosas por hacer")
+             "* Aprender sobre %^{cosa}
+  :PROPERTIES:
+  :CREATED: %T
+  :END:
+  %?" :kill-buffer t)
+            ("gl" "Libro" entry (file+headline "quizas.org" "Libros")
+             "* Leer /%^{Titulo}/ por %^{Autor}
+  :PROPERTIES:
+  :CREATED: %T
+  :AUTOR: %\\2
+  :END:
+  %?" :kill-buffer t)
+            ("gb" "Blog" entry (file+headline "quizas.org" "Blogs")
+             "* Leer entrada de blog /%^{copy as org}/
+  :PROPERTIES:
+  :CREATED: %T
+  :END:
+  %\\1%?" :kill-buffer t)
+            ("gx" "Idea de proyecto" (file+headline "quizas.org" "Ideas para posibles proyectos")
+             "* %^{Titulo o breve descripción} ^%g
+  :PROPERTIES:
+  :CREATED: %T
+  :END:
+  %?" :kill-buffer t)
+            ("gm" "Películas" entry (file+headline "quizas.org" "Películas")
+             "* Ver /%^{Titulo}/
+  :PROPERTIES:
+  :CREATED: %T
+  :END:
+  [[https://kat.cr/usearch/\"%\\1\" category:movies seeds:5 lang_id:2][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
+            ("ga" "Anime" entry (file+headline "quizas.org" "Anime")
+             "* Ver /%^{Anime}/
+  :PROPERTIES:
+  :CREATED: %T
+  :CATEGORY: anime
+  :EPISODIO: 1
+  :EPISODIOS: %^{numero de episodios}
+  :END:
+  [[https://kat.cr/usearch/\"%\\1\" category:english-translated seeds:5 is_safe:1/][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
     (use-package org-bullets
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
