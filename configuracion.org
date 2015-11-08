@@ -1377,7 +1377,8 @@ Tumblr desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package tumblesocks
     :config
-    (setf tumblesocks-blog "shackra.tumblr.com"))
+    (setf tumblesocks-blog "shackra.tumblr.com")
+    (defalias 'ts 'tumblesocks-view-dashboard))
 #+END_SRC
 ** =twittering-mode=
 Twitter desde Emacs
@@ -1391,6 +1392,7 @@ Twitter desde Emacs
     (setf twittering-timer-interval 300)
     (setf twittering-url-show-status nil)
     :config
+    (defalias 'tt 'twit)
     (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
     (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
 #+END_SRC
