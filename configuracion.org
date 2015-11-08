@@ -764,11 +764,14 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :PROPERTIES:
   :CREATED:%U
   :END:
-  %?")
+  %?" :kill-buffer t)
             ("f" "Fechas o eventos" entry (file "fechas.org")
              "* POR-HACER %^{Nombre del evento} %^g
-  SCHEDULED: %:date")
-            ("r" "Nuevo" entry (file "~/recados.org")
+  SCHEDULED: %^T%?
+  :PROPERTIES:
+  :CREATED: %U
+  :END:" :kill-buffer t)
+            ("r" "Recado" entry (file "~/recados.org")
              "* ENTREGAR recado de %^{Nombre de persona}
   :PROPERTIES:
   :DE: %\\1
@@ -788,7 +791,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ("gp" "Tarea" entry (file+headline "quizas.org" "Cosas por hacer")
              "* %^{breve descripcion}
   :PROPERTIES:
-  :CREATED:%U
+  :CREATED: %U
   :END:
   %?" :kill-buffer t)
             ("gt" "Aprender" entry (file+headline "quizas.org" "Cosas por hacer")
@@ -935,6 +938,24 @@ Modo mayor para programar en Python
       (pyvenv-mode)
       (py-autopep8-enable-on-save))
     (add-hook 'python-mode-hook #'shackra/python-mode))
+#+END_SRC
+** =auctex-mode=
+Paquete extensivo para escribir y formatear documentos TeX
+#+BEGIN_SRC emacs-lisp
+  (use-package auctex
+    :preface
+    (provide 'auctex)
+    :config
+    (setf TeX-auto-save t
+          TeX-parse-self t
+          TeX-newline-function 'newline-and-indent
+          LaTeX-item-indent 0)
+    (setq-default TeX-master nil)
+    (setq-default TeX-engine 'xetex)
+    (setq-default TeX-PDF-mode t)
+    (use-package company-auctex
+      :config
+      (company-auctex-init)))
 #+END_SRC
 ** ropemacs
 Nos permite hacer refactorización en código Python. La documentación esta disponible en [[https://github.com/python-rope/ropemacs][python-rope/ropemacs]].
@@ -1350,6 +1371,28 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
     ;; automáticamente actualiza las citas cuando el archivo cosasporhacer.org es
     ;; salvado (ahí es donde yo guardo mi lista de cosas por hacer, y mi agenda)
     (add-hook 'after-save-hook #'shackra/appt-update-when-file-updated))
+#+END_SRC
+** =tumblesocks-mode=
+Tumblr desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package tumblesocks
+    :config
+    (setf tumblesocks-blog "shackra.tumblr.com"))
+#+END_SRC
+** =twittering-mode=
+Twitter desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package twittering-mode
+    :bind-keymap ("C-c f" . twittering-favorite)
+    :init
+    (setf twittering-use-master-password t)
+    (setf twittering-display-remaining t)
+    (setf twittering-icon-mode t)
+    (setf twittering-timer-interval 300)
+    (setf twittering-url-show-status nil)
+    :config
+    (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
+    (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
 #+END_SRC
 ** =sx=
 Acceso a Stackoverflow y subsitios desde Emacs.
