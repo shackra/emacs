@@ -1383,6 +1383,9 @@ Tumblr desde Emacs
 ** =twittering-mode=
 Twitter desde Emacs
 #+BEGIN_SRC emacs-lisp
+  (if (fboundp 'twit)
+      (defalias 'tt 'twit))
+
   (use-package twittering-mode
     :bind-keymap ("C-c f" . twittering-favorite)
     :init
