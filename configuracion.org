@@ -768,7 +768,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ("ENTREGADO"   . (:background "#98fb98" :foreground "#556b2f" :weight bold))
             ("OLVIDALO"    . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))))
     (setf org-capture-templates
-          '(("p" "Añadir tarea por hacer" entry (file+headline "cosasporhacer.org" "Tareas")
+          '(("p" "Añadir tarea por hacer" entry (file "cosasporhacer.org")
              "* POR-HACER %^{breve descripcion} %^g
   :PROPERTIES:
   :CREATED:%U
