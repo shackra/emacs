@@ -338,6 +338,14 @@ Nombres más cortos para comandos usados frecuentemente
   (defalias 'ed 'eval-defun)
 #+END_SRC
 * Modos
+** org-babel
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (sh . t)))
+#+END_SRC
 ** =helm=
 Completado incremental y estrechamiento de selección de candidatos :)
 #+BEGIN_SRC emacs-lisp
@@ -438,6 +446,7 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       ("s" mc/unmark-next-like-this "mc/unmark-next-like-this")
       ("d" mc/skip-to-previous-like-this "mc/skip-to-previous-like-this")
       ("f" mc/mark-previous-symbol-like-this "mc/mark-previous-symbol-like-this")
+      ("g" mc/mark-all-dwim)
       
       ("j" mc/mark-next-symbol-like-this "mc/mark-next-symbol-like-this")
       ("k" mc/skip-to-next-like-this "mc/skip-to-next-like-this")
@@ -1148,7 +1157,7 @@ Multiples cursores en Emacs.
     ;; Si mi hydra esta definida
     (if (fboundp 'hydra-mc/body)
         ;; La usamos
-        (bind-key "C-c m m" 'hydra-mc/body)
+        (bind-key "C-c m" 'hydra-mc/body)
       (bind-keys :prefix-map shackra/mc-map
                :prefix "C-c m"
                ("a" . mc/mark-all-symbols-like-this-in-defun)
