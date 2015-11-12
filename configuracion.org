@@ -1,8 +1,8 @@
 #+TITLE: Mi configuración de GNU Emacs
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Sislock)
 #+EMAIL: elcorreo@deshackra.com
-#+OPTIONS: toc:3 num:nil ^:nil
-#+STARTUP: content
+#+OPTIONS: toc:4 num:nil ^:nil
+#+STARTUP: overview
 
 #+begin_quote
 Latin: Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam
@@ -337,16 +337,12 @@ Nombres más cortos para comandos usados frecuentemente
   (defalias 'er 'eval-region)
   (defalias 'ed 'eval-defun)
 #+END_SRC
-* Modos
-** org-babel
-#+BEGIN_SRC emacs-lisp
-  (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)
-       (sh . t)))
-#+END_SRC
-** =helm=
+* Paquetes de extensiones
+** Utilidades
+*** =helm=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:38]
+:END:      
 Completado incremental y estrechamiento de selección de candidatos :)
 #+BEGIN_SRC emacs-lisp
   (use-package helm
@@ -410,7 +406,10 @@ Completado incremental y estrechamiento de selección de candidatos :)
     (helm-adaptative-mode 1)
     (helm-autoresize-mode 1))
 #+END_SRC
-** =hydra=
+*** =hydra=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:45]
+:END:      
 "/Cut off one head, Two more shall take its place. Hail HYDRA!/" [[http://marvel-movies.wikia.com/wiki/HYDRA][―miembro HYDRA]].
 
 Permite tratar combinaciones de teclas como grupos... es algo difícil de explicar, puede ver este vídeo [[https://www.youtube.com/watch?v=_qZliI1BKzI][Switching Emacs windows with hydra and ace-window - YouTube]] para entender de qué trata este paquete.
@@ -522,74 +521,10 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       (other-window 1)
       (hydra-win/body)))
 #+END_SRC
-** =text-mode=
-Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
-#+BEGIN_SRC emacs-lisp
-  (use-package text-mode
-    :ensure nil
-    :preface
-    (provide 'text-mode)
-    (defun shackra/text-mode ()
-      (flyspell-mode)
-      (set (make-local-variable 'fill-column) 100)
-      (turn-on-visual-line-mode))
-    :config
-    (add-hook 'text-mode-hook #'shackra/text-mode))
-#+END_SRC
-*** Mover el cursos de manera inteligente al inicio de la linea
-He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0 en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
-#+BEGIN_SRC emacs-lisp
-  (use-package sbol
-    :ensure nil
-    :preface (provide 'sbol)
-    :bind (([home] . smart-beginning-of-line)
-           ("C-a" . smart-beginning-of-line))
-    :init
-    (defun smart-beginning-of-line ()
-      "Move point to first non-whitespace character or beginning-of-line.
-
-  Move point to the first non-whitespace character on this line.
-  If point was already at that position, move point to beginning of line."
-    (interactive)
-    (let ((oldpos (point)))
-      (back-to-indentation)
-      (and (= oldpos (point))
-           (beginning-of-line)))))
-#+END_SRC
-** =prog-mode=
-Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
-#+BEGIN_SRC emacs-lisp
-  (use-package prog-mode
-    :ensure nil
-    :preface
-    (provide 'prog-mode)
-    (use-package rainbow-mode)
-    (use-package highlight-escape-sequences)
-    (use-package highlight-numbers)
-    :init
-    (defun shackra/prog-mode ()
-      (set (make-local-variable 'fill-column) 79)
-      (set (make-local-variable 'comment-auto-fill-only-comments) t)
-      ;; Nota: M-q rellena las columnas del párrafo actual
-      ;;       M-o M-s centra una linea de texto
-      (auto-fill-mode t)
-      (highlight-numbers-mode)
-      (hes-mode)
-      (electric-pair-mode)
-      (rainbow-turn-on)
-      (flyspell-prog-mode))
-    :config
-    (bind-key "RET" 'newline-and-indent)
-    (add-hook 'prog-mode-hook #'shackra/prog-mode))
-#+END_SRC
-** =uniquify=
-#+BEGIN_SRC emacs-lisp
-  (use-package uniquify
-    :ensure nil
-    :init
-    (setf uniquify-buffer-name-style 'forward))
-#+END_SRC
-** dired
+*** dired
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:45]
+:END:      
 Manejador de archivos de serie para Emacs.
 
 Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction/][Dired as Default File Manager - Introduction]].
@@ -627,28 +562,10 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
       (setf dired-details-propagate-flag t
             dired-details-initially-hide nil)))
 #+END_SRC
-** =htmlize=
-#+BEGIN_SRC emacs-lisp
-  (use-package htmlize)
-#+END_SRC
-** =hlinum=
-Extiende el modo =linum-mode= y subraya el numero de linea actual.
-#+BEGIN_SRC emacs-lisp
-  (use-package hlinum
-    :disabled t
-    :config
-    (add-hook 'prog-mode-hook #'hlinum-activate))
-#+END_SRC
-** =fixmee=
-Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
-#+BEGIN_SRC emacs-lisp
-  (use-package fixmee
-    :diminish fixmee-mode
-    :defer 5
-    :config
-    (add-hook 'prog-mode #'fixmee-mode))
-#+END_SRC
-** =keyfreq=
+*** =keyfreq=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:45]
+:END:      
 Registra la frecuencia con la que se usan ciertas teclas en Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package keyfreq
@@ -657,7 +574,10 @@ Registra la frecuencia con la que se usan ciertas teclas en Emacs.
     (keyfreq-mode 1)
     (keyfreq-autosave-mode 1))
 #+END_SRC
-** =undo-tree=
+*** =undo-tree=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:45]
+:END:      
 Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los cambios realizados como un árbol con ramificaciones de cambios.
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
@@ -669,7 +589,10 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
 #+END_SRC
-** =swiper=
+*** =swiper=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:46]
+:END:      
 Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje de la serie /Dora la exploradora/.
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
@@ -678,7 +601,10 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
     (bind-key "C-s" 'swiper global-map)
     (bind-key "C-r" 'swiper global-map))
 #+END_SRC
-** =theme-changer=
+*** =theme-changer=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:46]
+:END:      
 Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione adecuadamente hay que especificar las coordenadas geográficas del lugar donde vivimos, para saber más ver [[*Información personal][Información personal]].
 #+BEGIN_SRC emacs-lisp
   (use-package theme-changer
@@ -688,7 +614,453 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
     :config
     (change-theme 'material-light 'material))
 #+END_SRC
-** =org-mode=
+*** =hlinum=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:47]
+:END:      
+Extiende el modo =linum-mode= y subraya el numero de linea actual.
+#+BEGIN_SRC emacs-lisp
+  (use-package hlinum
+    :disabled t
+    :config
+    (add-hook 'prog-mode-hook #'hlinum-activate))
+#+END_SRC
+*** =ycmd=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:49]
+:END:      
+/A code-completion & code-comprehension server/
+
+#+BEGIN_SRC emacs-lisp
+  (use-package ycmd
+    :disabled t ;; hasta tener instalado ycmd
+    :config
+    (use-package company-ycmd))
+#+END_SRC
+*** =company=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:50]
+:END:      
+Un mejor motor de autocompletado comparado con [[https://github.com/auto-complete/auto-complete][auto-complete/auto-complete]].
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :demand t
+    :diminish company-mode
+    :preface
+    (use-package company-jedi
+      :disabled t
+      :defer t
+      :init
+      (setf jedi:complete-on-dot t)
+      :config
+      (defun shackra/jedi ()
+        (jedi:setup)
+        (unless (member 'company-jedi 'company-backends)
+          (add-to-list 'company-backends 'company-jedi)))
+      (add-hook 'python-mode-hook #'shackra/jedi))
+    (use-package company-anaconda
+      :config
+      (defun shackra/anaconda ()
+        (unless (member 'company-anaconda 'company-backends)
+          (add-to-list 'company-backends 'company-anaconda))
+        (anaconda-mode))
+      (add-hook 'python-mode-hook #'shackra/anaconda))
+    (use-package helm-company)
+    :bind-keymap ("C-ñ" . helm-company)
+    :init
+    (setf company-idle-delay 0.3)
+    (setf company-tooltip-limit 30)
+    (setf company-minimum-prefix-length 1)
+    (setf company-echo-delay 0)
+    (setf company-auto-complete nil)
+    :config
+    (add-to-list 'company-backends 'company-dabbrev t)
+    (add-to-list 'company-backends 'company-files t)
+    (add-hook 'after-init-hook #'global-company-mode))
+#+END_SRC
+*** =projectile=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:50]
+:END:      
+Manejo de archivos de un proyecto.
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :diminish projectile-mode
+    :init
+    (setf
+     projectile-completion-system 'helm
+     projectile-file-exists-remote-cache-expire (* 10 60)
+     projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
+                                         "*.o" "*.pyc" "*.elc" "*.exe"
+                                         "*.zip" "*.tar.*" "*.rar" "*.7z")
+     projectile-switch-project-action  'helm-projectile-find-file)
+    :config
+    (add-hook 'after-init-hook #'projectile-global-mode))
+#+END_SRC
+*** =recentf=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
+Archivos recientes abiertos en Emacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package recentf
+    :ensure nil
+    :init
+    (setf recentf-max-saved-items 100)
+    :config
+    (add-to-list 'recentf-exclude ".git/")
+    (add-to-list 'recentf-exclude ".hg/")
+    (add-to-list 'recentf-exclude "elpa/")
+    (add-to-list 'recentf-exclude "\\.emacs.d/org-clock-save.el\\'")
+    (add-to-list 'recentf-exclude "INBOX/"))
+#+END_SRC
+*** =expand-region=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
+Incrementa la selección por unidades semánticas.
+#+BEGIN_SRC emacs-lisp
+  (use-package expand-region
+    :defer 3
+    :bind ("C-c 0" . er/expand-region))
+#+END_SRC
+*** =avy-jump=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
+El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ basado en caracteres.
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :defer 3
+    :config
+    (bind-keys :prefix-map shackra/avy-mode-map
+               :prefix "C-c z"
+               ("z" . avy-goto-line)
+               ("x" . avy-goto-word-1)
+               ("c" . avy-goto-char-in-line)
+               ("v" . avy-goto-char)))
+#+END_SRC
+*** =multi-term=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
+Ofrece un excelente emulador de terminal *dentro* de Emacs 
+#+BEGIN_SRC emacs-lisp
+  (use-package multi-term
+    :bind ([f1] . multi-term)
+    :config
+    (defun shackra/maybe-disable-yasnippet ()
+      "Desactiva yasnippet a pedido"
+      (if (fboundp 'yas-minor-mode)
+          (yas-minor-mode -1)))
+
+    (setf multi-term-buffer-name "sh-"
+          multi-term-program "/usr/bin/zsh"
+          multi-term-program-switches "--login"
+          term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
+                                    (cons "C-p" 'previous-line)
+                                    (cons "C-n" 'next-line)
+                                    (cons "M-f" 'term-send-forward-word)
+                                    (cons "M-b" 'term-send-backward-word)
+                                    (cons "C-c C-j" 'term-line-mode)
+                                    (cons "C-c C-k" 'term-char-mode)
+                                    (cons "M-DEL" 'term-send-backward-kill-word)
+                                    (cons "M-d" 'term-send-forward-kill-word)
+                                    (cons "<C-left>" 'term-send-backward-word)
+                                    (cons "<C-right>" 'term-send-forward-word)
+                                    (cons "C-r" 'term-send-reverse-search-history)
+                                    (cons "M-p" 'term-send-raw-meta)
+                                    (cons "M-y" 'term-send-raw-meta)
+                                    (cons "C-y" 'term-send-raw)))
+
+    (add-hook 'term-mode-hook #'shackra/maybe-disable-yasnippet))
+#+END_SRC
+*** =magit=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
+Git en Emacs. A decir verdad, amo Mercurial y odio Git.
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :defer t
+    :bind ([C-f12] . magit-status)
+    :init
+    (use-package gitignore-mode)
+    (use-package gitconfig-mode)
+    (use-package magit-gh-pulls
+      :config
+      (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
+    (use-package git-commit-insert-issue
+      :config
+      (add-hook 'git-commit-mode-hook 'git-commit-insert-issue-mode))
+    (use-package magit-gitflow
+      :config
+      (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
+    (setf magit-last-seen-setup-instructions "1.4.0"
+        magit-auto-revert-mode nil))
+#+END_SRC
+*** =monky=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
+Mercurial en Emacs. Amo Mercurial ;)
+
+Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emacs/comments/3nzp7a/best_way_to_use_mercurial_with_emacs/][Best way to use Mercurial with Emacs? : emacs]]
+#+BEGIN_SRC emacs-lisp
+  (use-package monky
+    :defer t
+    :bind ([f12] . monky-status)
+    :init
+    (setf monky-process-type 'cmdserver))
+
+  (use-package hgignore-mode)
+#+END_SRC
+** Comunicación
+*** =mu4e=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:52]
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
+Un versátil cliente de correo electrónico para Emacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package mu4e
+    :ensure nil
+    :defer 3
+    :preface
+    ;;; message view action
+    (defun mu4e-msgv-action-view-in-browser (msg)
+      "Ver el cuerpo del mensaje HTML en el navegador web"
+      (interactive)
+      (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
+            (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
+        (unless html (error "No hay partes en HTML para este mensaje"))
+        (with-temp-file tmpfile
+          (insert
+           "<html>"
+           "<head><meta http-equiv=\"content-type\""
+           "content=\"text/html;charset=UTF-8\">"
+           html))
+        (browse-url (concat "file://" tmpfile))))
+    :config
+    (defalias 'xc 'mu4e)
+    (use-package mu4e-contrib
+      :ensure nil)
+    (use-package mu4e-maildirs-extension
+      :init
+      (setf mu4e-maildirs-extension-title " Bandejas")
+      (setf mu4e-maildirs-extension-custom-list '("/personal/INBOX" "/gmx/INBOX" "/riseup/INBOX")))
+
+    (if (file-exists-p "/home/jorge/.secret/mu4e-cuentas.el")
+        (load-file "/home/jorge/.secret/mu4e-cuentas.el")
+      (notifications-notify :urgency 'critical
+                            :title "Cuentas de correo electrónico"
+                            :body "No se pudo cargar: ~/.secret/mu4e-cuentas.el"))
+    ;; html2text es un paquete que debe estar instalado en tu sistema
+   (setf mu4e-html2text-command 'mu4e-shr2text
+         mu4e-confirm-quit nil)
+    (setf mu4e-bookmarks
+          '(("flag:unread" "No leido" ?n)
+            ("flag:flagged" "Marcados" ?m)
+            ("date:today..now" "Correo de hoy" ?h)
+            ("date:7d..now" "Correo de la semana" ?w)))
+    (setf mu4e-maildir-shortcuts
+          '(("/personal/INBOX" . ?p)
+            ("/gmx/INBOX"      . ?g)
+            ("/riseup/INBOX"   . ?r)))
+    ;; carga los datos de mi cuenta de correo
+    (load-file (expand-file-name "mu4e-personal.el" user-emacs-directory))
+    (add-to-list 'mu4e-view-actions
+                 '("Navegador web" . mu4e-msgv-action-view-in-browser) t))
+#+END_SRC
+*** =jabber.el=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:52]
+:END:      
+¡¡Chat de jabber desde Emacs!!
+
+*Nota:* Deshabilitado por extraño mensaje de error
+#+BEGIN_EXAMPLE
+  Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
+#+END_EXAMPLE
+
+Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-the-Record_Messaging][Off-the-Record]] a través de [[https://github.com/legoscia/emacs-jabber-otr][legoscia/emacs-jabber-otr]], el único requisito es tener el paquete [[https://github.com/python-otr/pure-python-otr][python-otr/pure-python-otr]] instalado en el sistema.
+#+BEGIN_SRC sh :tangle no
+  sudo pip install python-potr
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (use-package jabber
+    :disabled t ;; no inicia de manera exitosa por un error
+    :if (daemonp)
+    :defer 10
+    :init
+    (setf fsm-debug nil)
+    ;; ver http://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
+    (setf jabber-account-list `(("jorgedice@blah.im/emacs"
+                                 (:password . ,(secrets-get-secret "Login" "contraseña usual"))
+                                 (:network-server . "jabber.blah.im")
+                                 (:port . 5222)
+                                 (:nickname . "Shackra Sislock")
+                                 (:connection-type . starttls))))
+    :config
+    (use-package jabber-otr
+      :disabled t)
+    (setf jabber-history-enabled t
+          jabber-use-global-history nil
+          jabber-backlog-number 40
+          jabber-backlog-days 30
+          jabber-alert-presence-message-function (lambda (who oldstatus newstatus statusnext) nil)
+          jabber-default-status "«Faith is always at a disadvantage; it is a perpetually defeated thing which survives all of its conquerors» ~G. K. Chesterton.")
+    (add-hook 'jabber-chat-mode-hook #'turn-off-auto-fill)
+    (add-hook 'jabber-chat-mode-hook #'turn-on-visual-line-mode)
+    (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
+    (jabber-connect-all))
+#+END_SRC
+*** =tumblesocks-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:53]
+:END:      
+Tumblr desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package tumblesocks
+    :config
+    (setf tumblesocks-blog "shackra.tumblr.com")
+    (defalias 'ts 'tumblesocks-view-dashboard))
+#+END_SRC
+*** =twittering-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:53]
+:END:      
+Twitter desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (if (fboundp 'twit)
+      (defalias 'tt 'twit))
+
+  (use-package twittering-mode
+    :bind-keymap ("C-c f" . twittering-favorite)
+    :init
+    (setf twittering-use-master-password t)
+    (setf twittering-display-remaining t)
+    (setf twittering-icon-mode t)
+    (setf twittering-timer-interval 300)
+    (setf twittering-url-show-status nil)
+    :config
+    (defalias 'tt 'twit)
+    (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
+    (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
+#+END_SRC
+*** =sx=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:53]
+:END:      
+Acceso a Stackoverflow y subsitios desde Emacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package sx
+    :defer 10)
+#+END_SRC
+*** EGO
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:57]
+- Refiled on [2015-11-12 jue 16:46]
+:END:      
+Generador estático de sitios web que depende de Emacs, Git y Org-mode.
+#+BEGIN_SRC emacs-lisp
+  (use-package ego
+    :if (string-equal system-type "gnu/linux")
+    :load-path  "~/.emacs.d/site-packages/EGO"
+    :preface
+    (use-package mustache)
+    (use-package dash)
+    (use-package htmlize)
+    (use-package ht)
+    (use-package simple-httpd)
+    :ensure nil
+    :config
+    ;; Le pedimos a org-mode que no meta las patas cuando exporta archivos a
+    ;; HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
+    ;; Muchas gracias a Chen Bin[1] por los trozos de código[2] sacados de su
+    ;; propio proyecto[3] :)
+    ;;
+    ;; [1]: http://emacs.stackexchange.com/users/202/chen-bin
+    ;; [2]: http://emacs.stackexchange.com/a/9839/690
+    ;; [3]: https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el
+    (load-file (expand-file-name "srcprecode.el" user-emacs-directory))
+    (ego/add-to-alist 'ego/project-config-alist
+                     `(("El blog de Shackra"
+                       :repository-directory "~/Documentos/elblog.deshackra.com/"
+                       :repository-html-branch nil
+                       :repository-org-branch "master"
+                       :default-category "blog"
+                       :site-domain "http://elblog.deshackra.com"
+                       :site-main-title "El blog de Shackra"
+                       :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
+                       :ignore-file-name-regexp "README"
+                       :rss ("RSS" "/rss.xml")
+                       :about ("Sobre mi" "/about")
+                       ;;op/personal-github-link "https://github.com/shackra"
+                       ;;op/theme-root-directory (expand-file-name
+                       ;;"org-page-themes" user-emacs-directory)
+                       :theme-root-directory (list (expand-file-name "org-page-themes" user-emacs-directory))
+                       :theme (shackra)
+                       :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
+                       :confound-email t
+                       :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
+                       :web-server-port 5777)))
+
+    (eval-after-load 'ox
+      '(progn
+         (add-to-list 'org-export-filter-src-block-functions
+                      'org2html-wrap-blocks-in-code))))
+#+END_SRC
+*** mediawiki
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:58]
+- Refiled on [2015-11-12 jue 16:53]
+:END:      
+Interfaz para editar paginas en instancias de Mediawiki desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package mediawiki
+    :init
+    (ignore-errors (load-file "~/.secret/mediawiki.el"))
+    :config
+    (add-hook 'mediawiki-mode-hook '(lambda () (turn-off-auto-fill))))
+#+END_SRC
+** Desarrollo de software
+*** org-babel
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+     'org-babel-load-languages
+     '((emacs-lisp . t)
+       (python . t)
+       (sh . t)))
+#+END_SRC
+*** =prog-mode=
+Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
+#+BEGIN_SRC emacs-lisp
+  (use-package prog-mode
+    :ensure nil
+    :preface
+    (provide 'prog-mode)
+    (use-package rainbow-mode)
+    (use-package highlight-escape-sequences)
+    (use-package highlight-numbers)
+    :init
+    (defun shackra/prog-mode ()
+      (set (make-local-variable 'fill-column) 79)
+      (set (make-local-variable 'comment-auto-fill-only-comments) t)
+      ;; Nota: M-q rellena las columnas del párrafo actual
+      ;;       M-o M-s centra una linea de texto
+      (auto-fill-mode t)
+      (highlight-numbers-mode)
+      (hes-mode)
+      (electric-pair-mode)
+      (rainbow-turn-on)
+      (flyspell-prog-mode))
+    :config
+    (bind-key "RET" 'newline-and-indent)
+    (add-hook 'prog-mode-hook #'shackra/prog-mode))
+#+END_SRC
+*** =org-mode=
 El modo Org (Org-mode) es un modo de edición del editor de texto Emacs mediante el cual se editan documentos jerárquicos en texto plano.
 
 Su uso encaja con distintas necesidades, como la creación de notas de cosas por hacer, la planificación de proyectos y hasta la escritura de páginas web. Por ejemplo, los elementos to-do (cosas por hacer) pueden disponer de prioridades y fechas de vencimiento, pueden estar subdivididos en subtareas o en listas de verificación, y pueden etiquetarse o dársele propiedades. También puede generarse automáticamente una agenda de las entradas de cosas por hacer. ~[[https://es.wikipedia.org/wiki/Org-mode][org-mode - Wikipedia, la enciclopedia libre]]
@@ -847,75 +1219,19 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 #+END_SRC
-** EGO
-Generador estático de sitios web que depende de Emacs, Git y Org-mode.
-#+BEGIN_SRC emacs-lisp
-  (use-package ego
-    :if (string-equal system-type "gnu/linux")
-    :load-path  "~/.emacs.d/site-packages/EGO"
-    :preface
-    (use-package mustache)
-    (use-package dash)
-    (use-package htmlize)
-    (use-package ht)
-    (use-package simple-httpd)
-    :ensure nil
-    :config
-    ;; Le pedimos a org-mode que no meta las patas cuando exporta archivos a
-    ;; HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
-    ;; Muchas gracias a Chen Bin[1] por los trozos de código[2] sacados de su
-    ;; propio proyecto[3] :)
-    ;;
-    ;; [1]: http://emacs.stackexchange.com/users/202/chen-bin
-    ;; [2]: http://emacs.stackexchange.com/a/9839/690
-    ;; [3]: https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el
-    (load-file (expand-file-name "srcprecode.el" user-emacs-directory))
-    (ego/add-to-alist 'ego/project-config-alist
-                     `(("El blog de Shackra"
-                       :repository-directory "~/Documentos/elblog.deshackra.com/"
-                       :repository-html-branch nil
-                       :repository-org-branch "master"
-                       :default-category "blog"
-                       :site-domain "http://elblog.deshackra.com"
-                       :site-main-title "El blog de Shackra"
-                       :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
-                       :ignore-file-name-regexp "README"
-                       :rss ("RSS" "/rss.xml")
-                       :about ("Sobre mi" "/about")
-                       ;;op/personal-github-link "https://github.com/shackra"
-                       ;;op/theme-root-directory (expand-file-name
-                       ;;"org-page-themes" user-emacs-directory)
-                       :theme-root-directory (list (expand-file-name "org-page-themes" user-emacs-directory))
-                       :theme (shackra)
-                       :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
-                       :confound-email t
-                       :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
-                       :web-server-port 5777)))
-
-    (eval-after-load 'ox
-      '(progn
-         (add-to-list 'org-export-filter-src-block-functions
-                      'org2html-wrap-blocks-in-code))))
-#+END_SRC
-** =pkgbuild-mode=
+*** =pkgbuild-mode=
 Un modo mayor de Emacs para la edición de archivos =PKGBUILD=
 #+BEGIN_SRC emacs-lisp
   (use-package pkgbuild-mode
     :ensure nil
     :mode "/PKGBUILD$")
 #+END_SRC
-*** Preparación previa
+**** Preparación previa
 Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquete correspondiente desde el repositorio de software de la distribución
 #+BEGIN_SRC sh
   sudo pacman -S emacs-pkgbuild-mode
 #+END_SRC
-** =visual-fill-column=
-/fill-column for visual-line-mode/
-#+BEGIN_SRC emacs-lisp
-  (use-package visual-fill-column
-    :defer t)
-#+END_SRC
-** =python=
+*** =python=
 Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
   (use-package python
@@ -948,22 +1264,12 @@ Modo mayor para programar en Python
       (py-autopep8-enable-on-save))
     (add-hook 'python-mode-hook #'shackra/python-mode))
 #+END_SRC
-** =paredit-mode=
+*** =paredit-mode=
 Modo menor para editar paréntesis
 #+BEGIN_SRC emacs-lisp
   (use-package paredit)
 #+END_SRC
-** visual-regexp
-#+BEGIN_SRC emacs-lisp
-  (use-package visual-regexp-steroids
-    :bind (("C-c r" . vr/replace)
-           ("C-c q" . vr/query-replace)))
-
-  (use-package re-builder
-    :init
-    (setq reb-re-syntax 'string))
-#+END_SRC
-** =auctex-mode=
+*** =auctex-mode=
 Paquete extensivo para escribir y formatear documentos TeX
 #+BEGIN_SRC emacs-lisp
   (use-package auctex
@@ -981,7 +1287,7 @@ Paquete extensivo para escribir y formatear documentos TeX
       :config
       (company-auctex-init)))
 #+END_SRC
-** ropemacs
+*** ropemacs
 Nos permite hacer refactorización en código Python. La documentación esta disponible en [[https://github.com/python-rope/ropemacs][python-rope/ropemacs]].
 #+BEGIN_SRC emacs-lisp
   (use-package pymacs
@@ -991,7 +1297,7 @@ Nos permite hacer refactorización en código Python. La documentación esta dis
     (pymacs-load "ropemacs" "rope")
     (bind-key "M-." 'rope-goto-definition ropemacs-local-keymap))
 #+END_SRC
-*** Preparación previa
+**** Preparación previa
 Antes de tener disponible ropemacs, hay que instalar varias cosillas en el sistema. Si su distribución de GNU/Linux es Parabola o Arch, algunas cosillas seran más sencillas de instalar.
 
 Lo primero es instalar Pymacs, ya que estoy en Parabola, voy a instalarlo usando un =PKGBUILD= que alguien más hizo amablemente.
@@ -1016,107 +1322,25 @@ Y por ultimo =ropemacs=.
 #+BEGIN_SRC sh :tangle no
   sudo pip2 install ropemacs
 #+END_SRC
-** =ycmd=
-/A code-completion & code-comprehension server/
-
+*** =toml=
+/El lenguaje minimalista y obvio de Tom/
 #+BEGIN_SRC emacs-lisp
-  (use-package ycmd
-    :disabled t ;; hasta tener instalado ycmd
-    :config
-    (use-package company-ycmd))
+  (use-package toml-mode
+    :defer 10)
 #+END_SRC
-** =company=
-Un mejor motor de autocompletado comparado con [[https://github.com/auto-complete/auto-complete][auto-complete/auto-complete]].
+*** =yaml=
+/YAML: YAML Ain't Markup Language/
 #+BEGIN_SRC emacs-lisp
-  (use-package company
-    :demand t
-    :diminish company-mode
-    :preface
-    (use-package company-jedi
-      :disabled t
-      :defer t
-      :init
-      (setf jedi:complete-on-dot t)
-      :config
-      (defun shackra/jedi ()
-        (jedi:setup)
-        (unless (member 'company-jedi 'company-backends)
-          (add-to-list 'company-backends 'company-jedi)))
-      (add-hook 'python-mode-hook #'shackra/jedi))
-    (use-package company-anaconda
-      :config
-      (defun shackra/anaconda ()
-        (unless (member 'company-anaconda 'company-backends)
-          (add-to-list 'company-backends 'company-anaconda))
-        (anaconda-mode))
-      (add-hook 'python-mode-hook #'shackra/anaconda))
-    (use-package helm-company)
-    :bind-keymap ("C-ñ" . helm-company)
-    :init
-    (setf company-idle-delay 0.3)
-    (setf company-tooltip-limit 30)
-    (setf company-minimum-prefix-length 1)
-    (setf company-echo-delay 0)
-    (setf company-auto-complete nil)
-    :config
-    (add-to-list 'company-backends 'company-dabbrev t)
-    (add-to-list 'company-backends 'company-files t)
-    (add-hook 'after-init-hook #'global-company-mode))
+  (use-package yaml-mode
+    :defer 10
+    :mode "\\.yml$")
 #+END_SRC
-** =projectile=
-Manejo de archivos de un proyecto.
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :diminish projectile-mode
-    :init
-    (setf
-     projectile-completion-system 'helm
-     projectile-file-exists-remote-cache-expire (* 10 60)
-     projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
-                                         "*.o" "*.pyc" "*.elc" "*.exe"
-                                         "*.zip" "*.tar.*" "*.rar" "*.7z")
-     projectile-switch-project-action  'helm-projectile-find-file)
-    :config
-    (add-hook 'after-init-hook #'projectile-global-mode))
-#+END_SRC
-** =telephone-line=
-"/Soy como =powerline=, pero mejor/"
-#+BEGIN_SRC emacs-lisp
-  (use-package telephone-line
-    :config
-    (telephone-line-defsegment* shackra-buffer-vc-modified-segment
-                                (list (if (buffer-modified-p)
-                                          (propertize "❗" 'face 'error)
-                                        " ")
-                                      " " (shackra/vc-info)))
-
-    (telephone-line-defsegment* shackra-line-buffer-segment
-                                `(""
-                                  ,(telephone-line-raw mode-line-buffer-identification t)))
-    (setf telephone-line-lhs
-          '((accent . (shackra-line-buffer-segment))
-            (nil . (shackra-buffer-vc-modified-segment
-                    telephone-line-minor-mode-segment))))
-    (telephone-line-mode 1))
-#+END_SRC
-** =subword-mode=
-Navegación y edición de /SubPalabras/. Siendo "HolaMundoAdios" una nomenclatura, =subword-mode= permite mover el cursor entre cada subpalabra, deteniéndolo en "Adios", "Mundo" y "Hola" si se mueve el cursor de derecha a izquierda presionando la tecla CTRL. Este modo menor es muy útil, especialmente para aquellos desarrolladores en Java que usan variables con JorobasDeCamello.
-#+BEGIN_SRC emacs-lisp
-  (use-package subword
-    :ensure nil
-    :diminish subword-mode)
-#+END_SRC
-** =visual-line-mode=
-Envuelve las filas de texto si son muy anchas visualmente en nuevas filas.
-#+BEGIN_SRC emacs-lisp
-  (use-package visual-line
-    :diminish visual-line-mode
-    :preface (provide 'visual-line)
-    :ensure nil
-    :init
-    (setf visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
-#+END_SRC
-** =auto-fill-mode=
+** Edición de texto y generalidades relacionadas
+*** =auto-fill-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:56]
+- Refiled on [2015-11-12 jue 16:50]
+:END:      
 Rompe lineas de texto de manera automática en cierta columna
 #+BEGIN_SRC emacs-lisp
   (use-package auto-fill
@@ -1124,14 +1348,22 @@ Rompe lineas de texto de manera automática en cierta columna
     :diminish auto-fill-function
     :preface (provide 'auto-fill))
 #+END_SRC
-** =flyspell-mode=
+*** =flyspell-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:56]
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
 Revisión ortográfica al vuelo.
 #+BEGIN_SRC emacs-lisp
   (use-package flyspell
     :diminish flyspell-mode
     :ensure nil)
 #+END_SRC
-** =flycheck-mode=
+*** =flycheck-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:56]
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
 Revisión de errores en el código fuente, al vuelo.
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -1142,28 +1374,11 @@ Revisión de errores en el código fuente, al vuelo.
     :config
     (add-hook 'prog-mode-hook #'flycheck-mode))
 #+END_SRC
-** =recentf=
-Archivos recientes abiertos en Emacs.
-#+BEGIN_SRC emacs-lisp
-  (use-package recentf
-    :ensure nil
-    :init
-    (setf recentf-max-saved-items 100)
-    :config
-    (add-to-list 'recentf-exclude ".git/")
-    (add-to-list 'recentf-exclude ".hg/")
-    (add-to-list 'recentf-exclude "elpa/")
-    (add-to-list 'recentf-exclude "\\.emacs.d/org-clock-save.el\\'")
-    (add-to-list 'recentf-exclude "INBOX/"))
-#+END_SRC
-** =expand-region=
-Incrementa la selección por unidades semánticas.
-#+BEGIN_SRC emacs-lisp
-  (use-package expand-region
-    :defer 3
-    :bind ("C-c 0" . er/expand-region))
-#+END_SRC
-** =multiple-cursors=
+*** =multiple-cursors=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:56]
+- Refiled on [2015-11-12 jue 16:51]
+:END:      
 Multiples cursores en Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
@@ -1193,184 +1408,188 @@ Multiples cursores en Emacs.
                ("y" . mc/edit-beginnings-of-lines)
                ("u" . mc/edit-ends-of-lines))))
 #+END_SRC
-** =avy-jump=
-El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ basado en caracteres.
+*** visual-regexp
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:57]
+- Refiled on [2015-11-12 jue 16:49]
+:END:      
 #+BEGIN_SRC emacs-lisp
-  (use-package avy
-    :defer 3
-    :config
-    (bind-keys :prefix-map shackra/avy-mode-map
-               :prefix "C-c z"
-               ("z" . avy-goto-line)
-               ("x" . avy-goto-word-1)
-               ("c" . avy-goto-char-in-line)
-               ("v" . avy-goto-char)))
-#+END_SRC
-** =magit=
-Git en Emacs. A decir verdad, amo Mercurial y odio Git.
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :defer t
-    :bind ([C-f12] . magit-status)
+  (use-package visual-regexp-steroids
+    :bind (("C-c r" . vr/replace)
+           ("C-c q" . vr/query-replace)))
+
+  (use-package re-builder
     :init
-    (use-package gitignore-mode)
-    (use-package gitconfig-mode)
-    (use-package magit-gh-pulls
-      :config
-      (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
-    (use-package git-commit-insert-issue
-      :config
-      (add-hook 'git-commit-mode-hook 'git-commit-insert-issue-mode))
-    (use-package magit-gitflow
-      :config
-      (add-hook 'magit-mode-hook 'turn-on-magit-gitflow))
-    (setf magit-last-seen-setup-instructions "1.4.0"
-        magit-auto-revert-mode nil))
+    (setq reb-re-syntax 'string))
 #+END_SRC
-** =monky=
-Mercurial en Emacs. Amo Mercurial ;)
-
-Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emacs/comments/3nzp7a/best_way_to_use_mercurial_with_emacs/][Best way to use Mercurial with Emacs? : emacs]]
+*** =visual-fill-column=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:57]
+- Refiled on [2015-11-12 jue 16:49]
+:END:      
+/fill-column for visual-line-mode/
 #+BEGIN_SRC emacs-lisp
-  (use-package monky
-    :defer t
-    :bind ([f12] . monky-status)
-    :init
-    (setf monky-process-type 'cmdserver))
-
-  (use-package hgignore-mode)
+  (use-package visual-fill-column
+    :defer t)
 #+END_SRC
-** =multi-term=
-Ofrece un excelente emulador de terminal *dentro* de Emacs 
+*** =subword-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:57]
+- Refiled on [2015-11-12 jue 16:50]
+:END:      
+Navegación y edición de /SubPalabras/. Siendo "HolaMundoAdios" una nomenclatura, =subword-mode= permite mover el cursor entre cada subpalabra, deteniéndolo en "Adios", "Mundo" y "Hola" si se mueve el cursor de derecha a izquierda presionando la tecla CTRL. Este modo menor es muy útil, especialmente para aquellos desarrolladores en Java que usan variables con JorobasDeCamello.
 #+BEGIN_SRC emacs-lisp
-  (use-package multi-term
-    :bind ([f1] . multi-term)
-    :config
-    (defun shackra/maybe-disable-yasnippet ()
-      "Desactiva yasnippet a pedido"
-      (if (fboundp 'yas-minor-mode)
-          (yas-minor-mode -1)))
-
-    (setf multi-term-buffer-name "sh-"
-          multi-term-program "/usr/bin/zsh"
-          multi-term-program-switches "--login"
-          term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
-                                    (cons "C-p" 'previous-line)
-                                    (cons "C-n" 'next-line)
-                                    (cons "M-f" 'term-send-forward-word)
-                                    (cons "M-b" 'term-send-backward-word)
-                                    (cons "C-c C-j" 'term-line-mode)
-                                    (cons "C-c C-k" 'term-char-mode)
-                                    (cons "M-DEL" 'term-send-backward-kill-word)
-                                    (cons "M-d" 'term-send-forward-kill-word)
-                                    (cons "<C-left>" 'term-send-backward-word)
-                                    (cons "<C-right>" 'term-send-forward-word)
-                                    (cons "C-r" 'term-send-reverse-search-history)
-                                    (cons "M-p" 'term-send-raw-meta)
-                                    (cons "M-y" 'term-send-raw-meta)
-                                    (cons "C-y" 'term-send-raw)))
-
-    (add-hook 'term-mode-hook #'shackra/maybe-disable-yasnippet))
-#+END_SRC
-** =mu4e=
-Un versátil cliente de correo electrónico para Emacs.
-#+BEGIN_SRC emacs-lisp
-  (use-package mu4e
+  (use-package subword
     :ensure nil
-    :defer 3
-    :preface
-    ;;; message view action
-    (defun mu4e-msgv-action-view-in-browser (msg)
-      "Ver el cuerpo del mensaje HTML en el navegador web"
-      (interactive)
-      (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
-            (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
-        (unless html (error "No hay partes en HTML para este mensaje"))
-        (with-temp-file tmpfile
-          (insert
-           "<html>"
-           "<head><meta http-equiv=\"content-type\""
-           "content=\"text/html;charset=UTF-8\">"
-           html))
-        (browse-url (concat "file://" tmpfile))))
-    :config
-    (defalias 'xc 'mu4e)
-    (use-package mu4e-contrib
-      :ensure nil)
-    (use-package mu4e-maildirs-extension
-      :init
-      (setf mu4e-maildirs-extension-title " Bandejas")
-      (setf mu4e-maildirs-extension-custom-list '("/personal/INBOX" "/gmx/INBOX" "/riseup/INBOX")))
-
-    (if (file-exists-p "/home/jorge/.secret/mu4e-cuentas.el")
-        (load-file "/home/jorge/.secret/mu4e-cuentas.el")
-      (notifications-notify :urgency 'critical
-                            :title "Cuentas de correo electrónico"
-                            :body "No se pudo cargar: ~/.secret/mu4e-cuentas.el"))
-    ;; html2text es un paquete que debe estar instalado en tu sistema
-   (setf mu4e-html2text-command 'mu4e-shr2text
-         mu4e-confirm-quit nil)
-    (setf mu4e-bookmarks
-          '(("flag:unread" "No leido" ?n)
-            ("flag:flagged" "Marcados" ?m)
-            ("date:today..now" "Correo de hoy" ?h)
-            ("date:7d..now" "Correo de la semana" ?w)))
-    (setf mu4e-maildir-shortcuts
-          '(("/personal/INBOX" . ?p)
-            ("/gmx/INBOX"      . ?g)
-            ("/riseup/INBOX"   . ?r)))
-    ;; carga los datos de mi cuenta de correo
-    (load-file (expand-file-name "mu4e-personal.el" user-emacs-directory))
-    (add-to-list 'mu4e-view-actions
-                 '("Navegador web" . mu4e-msgv-action-view-in-browser) t))
+    :diminish subword-mode)
 #+END_SRC
-** =jabber.el=
-¡¡Chat de jabber desde Emacs!!
-
-*Nota:* Deshabilitado por extraño mensaje de error
-#+BEGIN_EXAMPLE
-  Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
-#+END_EXAMPLE
-
-Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-the-Record_Messaging][Off-the-Record]] a través de [[https://github.com/legoscia/emacs-jabber-otr][legoscia/emacs-jabber-otr]], el único requisito es tener el paquete [[https://github.com/python-otr/pure-python-otr][python-otr/pure-python-otr]] instalado en el sistema.
-#+BEGIN_SRC sh :tangle no
-  sudo pip install python-potr
-#+END_SRC
-
+*** =hungry-delete=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:58]
+- Refiled on [2015-11-12 jue 16:53]
+:END:      
+Borra espacios en blanco consecutivos con sólo presionar =backspace= una vez :)
 #+BEGIN_SRC emacs-lisp
-  (use-package jabber
-    :disabled t ;; no inicia de manera exitosa por un error
-    :if (daemonp)
-    :defer 10
-    :init
-    (setf fsm-debug nil)
-    ;; ver http://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
-    (setf jabber-account-list `(("jorgedice@blah.im/emacs"
-                                 (:password . ,(secrets-get-secret "Login" "contraseña usual"))
-                                 (:network-server . "jabber.blah.im")
-                                 (:port . 5222)
-                                 (:nickname . "Shackra Sislock")
-                                 (:connection-type . starttls))))
+  (use-package hungry-delete
     :config
-    (use-package jabber-otr
-      :disabled t)
-    (setf jabber-history-enabled t
-          jabber-use-global-history nil
-          jabber-backlog-number 40
-          jabber-backlog-days 30
-          jabber-alert-presence-message-function (lambda (who oldstatus newstatus statusnext) nil)
-          jabber-default-status "«Faith is always at a disadvantage; it is a perpetually defeated thing which survives all of its conquerors» ~G. K. Chesterton.")
-    (add-hook 'jabber-chat-mode-hook #'turn-off-auto-fill)
-    (add-hook 'jabber-chat-mode-hook #'turn-on-visual-line-mode)
-    (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
-    (jabber-connect-all))
+    (global-hungry-delete-mode))
 #+END_SRC
-** =notify=
+*** =aggressive-indent-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:58]
+- Refiled on [2015-11-12 jue 16:53]
+:END:      
+Porque =electric-indent-mode= no es lo suficientemente bueno.
+#+BEGIN_SRC emacs-lisp
+  (use-package aggressive-indent
+    :diminish aggressive-indent-mode
+    :config
+    (add-to-list
+     'aggressive-indent-dont-indent-if
+     '(and (derived-mode-p 'c++-mode)
+           (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
+                               (thing-at-point 'line)))))
+    (global-aggressive-indent-mode 1)
+    (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
+#+END_SRC
+*** =text-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 17:00]
+:END:      
+Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
+#+BEGIN_SRC emacs-lisp
+  (use-package text-mode
+    :ensure nil
+    :preface
+    (provide 'text-mode)
+    (defun shackra/text-mode ()
+      (flyspell-mode)
+      (set (make-local-variable 'fill-column) 100)
+      (turn-on-visual-line-mode))
+    :config
+    (add-hook 'text-mode-hook #'shackra/text-mode))
+#+END_SRC
+**** Mover el cursos de manera inteligente al inicio de la linea
+He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0 en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
+#+BEGIN_SRC emacs-lisp
+  (use-package sbol
+    :ensure nil
+    :preface (provide 'sbol)
+    :bind (([home] . smart-beginning-of-line)
+           ("C-a" . smart-beginning-of-line))
+    :init
+    (defun smart-beginning-of-line ()
+      "Move point to first non-whitespace character or beginning-of-line.
+
+  Move point to the first non-whitespace character on this line.
+  If point was already at that position, move point to beginning of line."
+    (interactive)
+    (let ((oldpos (point)))
+      (back-to-indentation)
+      (and (= oldpos (point))
+           (beginning-of-line)))))
+#+END_SRC
+** Otros
+*** =htmlize=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:47]
+:END:      
+#+BEGIN_SRC emacs-lisp
+  (use-package htmlize)
+#+END_SRC
+*** =fixmee=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:49]
+:END:      
+Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
+#+BEGIN_SRC emacs-lisp
+  (use-package fixmee
+    :diminish fixmee-mode
+    :defer 5
+    :config
+    (add-hook 'prog-mode #'fixmee-mode))
+#+END_SRC
+*** =telephone-line=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:50]
+:END:      
+"/Soy como =powerline=, pero mejor/"
+#+BEGIN_SRC emacs-lisp
+  (use-package telephone-line
+    :config
+    (telephone-line-defsegment* shackra-buffer-vc-modified-segment
+                                (list (if (buffer-modified-p)
+                                          (propertize "❗" 'face 'error)
+                                        " ")
+                                      " " (shackra/vc-info)))
+
+    (telephone-line-defsegment* shackra-line-buffer-segment
+                                `(""
+                                  ,(telephone-line-raw mode-line-buffer-identification t)))
+    (setf telephone-line-lhs
+          '((accent . (shackra-line-buffer-segment))
+            (nil . (shackra-buffer-vc-modified-segment
+                    telephone-line-minor-mode-segment))))
+    (telephone-line-mode 1))
+#+END_SRC
+*** =visual-line-mode=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:50]
+:END:      
+Envuelve las filas de texto si son muy anchas visualmente en nuevas filas.
+#+BEGIN_SRC emacs-lisp
+  (use-package visual-line
+    :diminish visual-line-mode
+    :preface (provide 'visual-line)
+    :ensure nil
+    :init
+    (setf visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
+#+END_SRC
+*** =notify=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:52]
+:END:      
 Permite a emacs enviar notificaciones por DBus o diferentes medios. En este caso usare libnotify (el método definido no es multiplataforma).
 #+BEGIN_SRC emacs-lisp
   (setf notify-method 'notify-via-libnotify)
 #+END_SRC
-** =appt=
+*** =vimish-fold=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:53]
+:END:      
+Pleguar o desplegar bloques de texto
+#+BEGIN_SRC emacs-lisp
+  (use-package vimish-fold
+    :defer 10
+    :config
+    (bind-key "C-c f" 'vimish-fold)
+    (bind-key "C-c u" 'vimish-fold-unfold)
+    (add-hook 'prog-mode #'vimish-fold-mode))
+#+END_SRC
+*** =appt=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:53]
+:END:      
 Appointments me alerta de mis citas o pendientes que tengo por hacer.
 #+BEGIN_SRC emacs-lisp
   ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
@@ -1403,89 +1622,13 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
     ;; salvado (ahí es donde yo guardo mi lista de cosas por hacer, y mi agenda)
     (add-hook 'after-save-hook #'shackra/appt-update-when-file-updated))
 #+END_SRC
-** =tumblesocks-mode=
-Tumblr desde Emacs
+*** =uniquify=
+:LOGBOOK:  
+- Refiled on [2015-11-12 jue 16:54]
+:END:      
 #+BEGIN_SRC emacs-lisp
-  (use-package tumblesocks
-    :config
-    (setf tumblesocks-blog "shackra.tumblr.com")
-    (defalias 'ts 'tumblesocks-view-dashboard))
-#+END_SRC
-** =twittering-mode=
-Twitter desde Emacs
-#+BEGIN_SRC emacs-lisp
-  (if (fboundp 'twit)
-      (defalias 'tt 'twit))
-
-  (use-package twittering-mode
-    :bind-keymap ("C-c f" . twittering-favorite)
+  (use-package uniquify
+    :ensure nil
     :init
-    (setf twittering-use-master-password t)
-    (setf twittering-display-remaining t)
-    (setf twittering-icon-mode t)
-    (setf twittering-timer-interval 300)
-    (setf twittering-url-show-status nil)
-    :config
-    (defalias 'tt 'twit)
-    (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
-    (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
-#+END_SRC
-** =sx=
-Acceso a Stackoverflow y subsitios desde Emacs.
-#+BEGIN_SRC emacs-lisp
-  (use-package sx
-    :defer 10)
-#+END_SRC
-** =toml=
-/El lenguaje minimalista y obvio de Tom/
-#+BEGIN_SRC emacs-lisp
-  (use-package toml-mode
-    :defer 10)
-#+END_SRC
-** =yaml=
-/YAML: YAML Ain't Markup Language/
-#+BEGIN_SRC emacs-lisp
-  (use-package yaml-mode
-    :defer 10
-    :mode "\\.yml$")
-#+END_SRC
-** mediawiki
-Interfaz para editar paginas en instancias de Mediawiki desde Emacs
-#+BEGIN_SRC emacs-lisp
-  (use-package mediawiki
-    :init
-    (ignore-errors (load-file "~/.secret/mediawiki.el"))
-    :config
-    (add-hook 'mediawiki-mode-hook '(lambda () (turn-off-auto-fill))))
-#+END_SRC
-** =vimish-fold=
-Pleguar o desplegar bloques de texto
-#+BEGIN_SRC emacs-lisp
-  (use-package vimish-fold
-    :defer 10
-    :config
-    (bind-key "C-c f" 'vimish-fold)
-    (bind-key "C-c u" 'vimish-fold-unfold)
-    (add-hook 'prog-mode #'vimish-fold-mode))
-#+END_SRC
-** =aggressive-indent-mode=
-Porque =electric-indent-mode= no es lo suficientemente bueno.
-#+BEGIN_SRC emacs-lisp
-  (use-package aggressive-indent
-    :diminish aggressive-indent-mode
-    :config
-    (add-to-list
-     'aggressive-indent-dont-indent-if
-     '(and (derived-mode-p 'c++-mode)
-           (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-                               (thing-at-point 'line)))))
-    (global-aggressive-indent-mode 1)
-    (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
-#+END_SRC
-** =hungry-delete=
-Borra espacios en blanco consecutivos con sólo presionar =backspace= una vez :)
-#+BEGIN_SRC emacs-lisp
-  (use-package hungry-delete
-    :config
-    (global-hungry-delete-mode))
+    (setf uniquify-buffer-name-style 'forward))
 #+END_SRC
