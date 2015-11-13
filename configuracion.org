@@ -42,6 +42,62 @@ activamos algunas opciones para depuración en caso de que Emacs falle en cargar
   (toggle-debug-on-error)
   (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+END_SRC
+* Seguridad
+Emacs no es muy seguro por defecto, por ejemplo, al descargar paquetes de los [[*Repositorio%20de%20paquetes][Repositorio de paquetes]] no comprobara las credenciales SSL del sitio web. Más aun, los desarrolladores de extensiones no suelen firmar los /commits/ de sus extensiones, lo que permitiría que un atacante cambie algunas lineas de código elisp de un paquete para crear una puerta trasera. Más información aquí [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html#fnref:4][Deciphering Glyph :: Your Text Editor Is Malware]].
+
+Esta configuración mitigara un poco el problema con la confianza ciega que tiene Emacs con las credenciales SSL.
+** Instalación de certificados que Emacs pueda leer
+Para esto seria necesario tener Python 2.7.x instalado en el sistema.
+
+#+BEGIN_SRC sh :results silent
+  pip3 install -U --user certifi
+#+END_SRC
+
+Probamos que el modulo a sido instalado correctamente
+
+#+BEGIN_SRC sh :results output :exports both
+  python3 -m certifi
+#+END_SRC
+
+#+RESULTS:
+: /home/jorge/.local/lib/python3.5/site-packages/certifi/cacert.pem
+
+** Configuración de verificación de TLS
+#+BEGIN_SRC emacs-lisp
+  (let ((trustfile
+         (replace-regexp-in-string
+          "\\\\" "/"
+          (replace-regexp-in-string
+           "\n" ""
+           (shell-command-to-string "python3 -m certifi")))))
+    (setf tls-program
+          (list
+           (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
+                   (if (eq window-system 'w32) ".exe" "") trustfile)))
+    (setf tls-checktrust t)
+    (setf gnutls-verify-error t)
+    (setf gnutls-trustfiles (list trustfile)))
+#+END_SRC
+** Verificación de que todo este funcionando de manera correcta
+#+BEGIN_SRC emacs-lisp :tangle no :results output :exports both
+  (let ((bad-hosts
+         (loop for bad
+               in `("https://wrong.host.badssl.com/"
+                    "https://self-signed.badssl.com/")
+               if (condition-case e
+                      (url-retrieve
+                       bad (lambda (retrieved) t))
+                    (error nil))
+               collect bad)))
+    (if bad-hosts
+        (print (format "tls misconfigured; retrieved %s ok"
+                       bad-hosts))
+      (url-retrieve "https://badssl.com"
+                    (lambda (retrieved) t))))
+#+END_SRC
+#+RESULTS:
+: 
+: "tls misconfigured; retrieved (https://self-signed.badssl.com/) ok"
 
 * Información personal
 #+BEGIN_SRC emacs-lisp
@@ -59,10 +115,10 @@ El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcio
 
 #+BEGIN_SRC emacs-lisp :tangle no
   (add-to-list 'package-archives
-               '("melpa" . "http://melpa.org/packages/") t)
+               '("melpa" . "https://melpa.org/packages/") t)
   (when (< emacs-major-version 24)
     ;; Para importes librerias que requieren compatibilidad como cl-lib
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
 #+END_SRC
 
 Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
