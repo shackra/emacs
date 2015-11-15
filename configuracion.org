@@ -19,21 +19,41 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
 Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
 =~/.emacs.d/init.el=:
 
-#+BEGIN_SRC emacs-lisp :tangle no
-;; init.el para esta configuración. Tu Emacs debe ser versión 24.
-(package-initialize)
-(require 'ob-tangle)
-;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
-;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
-;; ahorrarme unos segundos cuando Emacs se carga.
-(if (file-newer-than-file-p
-     (expand-file-name "configuracion.org" user-emacs-directory)
-     (expand-file-name "configuracion.el" user-emacs-directory))
-    ;; enreda los bloques de código en un archivo elisp
-    (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
-  ;; en caso contrario, carga el archivo ya existente :)
-  (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
-(put 'downcase-region 'disabled nil)
+#+BEGIN_SRC emacs-lisp :tangle init.el :tangle no
+  (load-file (expand-file-name "security.el" user-emacs-directory))
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
+  (setf package-enable-at-startup nil)
+  (package-initialize)
+
+  ;; repositorios de paquetes
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")))
+  (when (< emacs-major-version 24)
+    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+
+  ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
+  ;; lo instalamos
+  (when (not (package-installed-p 'use-package))
+    (progn
+      (unless package-archive-contents
+        (package-refresh-contents))
+      (package-install 'use-package)))
+
+  (put 'downcase-region 'disabled nil)
+  (require 'use-package)
+  (setf use-package-always-ensure t)
+
+  (require 'ob-tangle)
+  ;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
+  ;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
+  ;; ahorrarme unos segundos cuando Emacs se carga.
+  (if (file-newer-than-file-p
+       (expand-file-name "configuracion.org" user-emacs-directory)
+       (expand-file-name "configuracion.el" user-emacs-directory))
+      ;; enreda los bloques de código en un archivo elisp
+      (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
+    ;; en caso contrario, carga el archivo ya existente :)
+    (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
+
 #+END_SRC
 
 activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
@@ -63,7 +83,7 @@ Probamos que el modulo a sido instalado correctamente
 : /home/jorge/.local/lib/python3.5/site-packages/certifi/cacert.pem
 
 ** Configuración de verificación de TLS
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle security.el
   (let ((trustfile
          (replace-regexp-in-string
           "\\\\" "/"
@@ -76,28 +96,19 @@ Probamos que el modulo a sido instalado correctamente
                    (if (eq window-system 'w32) ".exe" "") trustfile)))
     (setf tls-checktrust t)
     (setf gnutls-verify-error t)
+    (setf gnutls-log-level 0)
     (setf gnutls-trustfiles (list trustfile)))
 #+END_SRC
+
 ** Verificación de que todo este funcionando de manera correcta
+Por alguna extraña razón, sólo la primer linea de código dispara un error. Sin embargo las otras dos lineas no disparan ninguno.
 #+BEGIN_SRC emacs-lisp :tangle no :results output :exports both
-  (let ((bad-hosts
-         (loop for bad
-               in `("https://wrong.host.badssl.com/"
-                    "https://self-signed.badssl.com/")
-               if (condition-case e
-                      (url-retrieve
-                       bad (lambda (retrieved) t))
-                    (error nil))
-               collect bad)))
-    (if bad-hosts
-        (print (format "tls misconfigured; retrieved %s ok"
-                       bad-hosts))
-      (url-retrieve "https://badssl.com"
-                    (lambda (retrieved) t))))
+  (url-retrieve "https://wrong.host.badssl.com/" (lambda (retrieved) t))
+  (url-retrieve "https://self-signed.badssl.com/" (lambda (retrieved) t))
+  (url-retrieve "https://badssl.com/" (lambda (retrieved) t))
 #+END_SRC
+
 #+RESULTS:
-: 
-: "tls misconfigured; retrieved (https://self-signed.badssl.com/) ok"
 
 * Información personal
 #+BEGIN_SRC emacs-lisp
