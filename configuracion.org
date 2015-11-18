@@ -487,7 +487,9 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
     (use-package windmove
       :ensure nil)
     (use-package winner
-      :ensure nil)
+      :ensure nil
+      :config
+      (winner-mode 1))
     (use-package windresize)
     (use-package ace-window
       :config
