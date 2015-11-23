@@ -534,8 +534,8 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       ("s" hydra-move-splitter-down "Cambiar tamaño, abajo")
       ("w" hydra-move-splitter-up "Cambiar tamaño, arriba")
       ("d" hydra-move-splitter-right "Cambiar tamaño, derecha")
-      ("f" helm-mini "Cambiar buffer")
-      ("h" helm-find-files "Abrir/Crear archivo")
+      ("b" helm-mini "Cambiar buffer")
+      ("f" helm-find-files "Abrir/Crear archivo")
       ("F" follow-mode "Activa follow-mode")
       ("z" (lambda ()
              (interactive)
@@ -560,7 +560,7 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
                        'hydra-win/body))
        "Cambiar a ventana...")
       ("H" save-buffer "Salvar buffer")
-      ("b" delete-window "Borrar ventana")
+      ("h" delete-window "Borrar ventana")
       ("B" (lambda ()
              (interactive)
              (ace-window 16)
@@ -910,6 +910,13 @@ Un versátil cliente de correo electrónico para Emacs.
            "content=\"text/html;charset=UTF-8\">"
            html))
         (browse-url (concat "file://" tmpfile))))
+    (defadvice mu4e (before mu4e-start activate)
+      "Antes de ejecutar `mu4e' borramos todas las ventanas"
+      (delete-other-windows))
+    (defadvice mu4e-quit (after mu4e-close-and-push activate)
+      "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
+      (start-process "pushmail" nil "pushmail.sh")
+      (winner-undo))
     :config
     (defalias 'xc 'mu4e)
     (use-package mu4e-contrib
@@ -925,8 +932,8 @@ Un versátil cliente de correo electrónico para Emacs.
                             :title "Cuentas de correo electrónico"
                             :body "No se pudo cargar: ~/.secret/mu4e-cuentas.el"))
     ;; html2text es un paquete que debe estar instalado en tu sistema
-   (setf mu4e-html2text-command 'mu4e-shr2text
-         mu4e-confirm-quit nil)
+    (setf mu4e-html2text-command 'mu4e-shr2text
+          mu4e-confirm-quit nil)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados" ?m)
