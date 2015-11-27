@@ -884,6 +884,14 @@ Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emac
 
   (use-package hgignore-mode)
 #+END_SRC
+*** =kill-or-bury-alive=
+Permite designar qué buffers queremos matar o enterrar (/bury/).
+#+BEGIN_SRC emacs-lisp
+  (use-package kill-or-bury-alive
+    :bind (("C-x k" . kill-or-bury-alive))
+    :config (setf kill-or-bury-alive-must-die-list
+                  '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode "^\\*Backtrace\\*$")))
+#+END_SRC
 ** Comunicación
 *** =mu4e=
 :LOGBOOK:  
@@ -1707,4 +1715,9 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
     :ensure nil
     :init
     (setf uniquify-buffer-name-style 'forward))
+#+END_SRC
+*** =systemd=
+Modo mayor para editar archivos de servicio systemd.
+#+BEGIN_SRC emacs-lisp
+  (use-package systemd)
 #+END_SRC
