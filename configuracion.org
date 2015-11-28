@@ -817,30 +817,36 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package multi-term
     :bind ([f1] . multi-term)
-    :config
+    :init
     (defun shackra/maybe-disable-yasnippet ()
       "Desactiva yasnippet a pedido"
       (if (fboundp 'yas-minor-mode)
           (yas-minor-mode -1)))
-
+    (defun shackra/term-line-or-char-mode ()
+      "Cambia entre `term-line-mode' y `term-char-mode'"
+      (interactive)
+      (when (string= (buffer-local-value 'major-mode (current-buffer)) "term-mode")
+        (if (term-in-char-mode)
+            (term-line-mode)
+          (term-char-mode))))
+    :config
     (setf multi-term-buffer-name "sh-"
           multi-term-program "/usr/bin/zsh"
-          multi-term-program-switches "--login"
-          term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
-                                    (cons "C-p" 'previous-line)
-                                    (cons "C-n" 'next-line)
-                                    (cons "M-f" 'term-send-forward-word)
-                                    (cons "M-b" 'term-send-backward-word)
-                                    (cons "C-c C-j" 'term-line-mode)
-                                    (cons "C-c C-k" 'term-char-mode)
-                                    (cons "M-DEL" 'term-send-backward-kill-word)
-                                    (cons "M-d" 'term-send-forward-kill-word)
-                                    (cons "<C-left>" 'term-send-backward-word)
-                                    (cons "<C-right>" 'term-send-forward-word)
-                                    (cons "C-r" 'term-send-reverse-search-history)
-                                    (cons "M-p" 'term-send-raw-meta)
-                                    (cons "M-y" 'term-send-raw-meta)
-                                    (cons "C-y" 'term-send-raw)))
+          multi-term-program-switches "--login")
+    (add-to-list 'term-bind-key-alist '(("C-c C-c"   . term-interrupt-subjob)
+                                        ("C-p"       . previous-line)
+                                        ("C-n"       . next-line)
+                                        ("M-f"       . term-send-forward-word)
+                                        ("M-b"       . term-send-backward-word)
+                                        ("C-c C-j"   . shackra/term-line-or-char-mode)
+                                        ("C-DEL"     . term-send-backward-kill-word)
+                                        ("M-d"       . term-send-forward-kill-word)
+                                        ("<C-left>"  . term-send-backward-word)
+                                        ("<C-right>" . term-send-forward-word)
+                                        ("C-r"       . term-send-reverse-search-history)
+                                        ("M-p"       . term-send-raw-meta)
+                                        ("M-y"       . term-send-raw-meta)
+                                        ("C-y"       . term-send-raw)))
 
     (add-hook 'term-mode-hook #'shackra/maybe-disable-yasnippet))
 #+END_SRC
@@ -888,9 +894,12 @@ Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emac
 Permite designar qué buffers queremos matar o enterrar (/bury/).
 #+BEGIN_SRC emacs-lisp
   (use-package kill-or-bury-alive
-    :bind (("C-x k" . kill-or-bury-alive))
-    :config (setf kill-or-bury-alive-must-die-list
-                  '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode "^\\*Backtrace\\*$")))
+    :bind (("C-x k" . kill-or-bury-alive)
+           ("C-u C-x k" . kill-this-buffer))
+    :config
+    (setf kill-or-bury-alive-must-die-list
+          '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode "^\\*Backtrace\\*$"))
+    (add-to-list 'kill-or-bury-alive-long-lasting-list "^\\*sh-<[:digit:]+>\\*$" t))
 #+END_SRC
 ** Comunicación
 *** =mu4e=
