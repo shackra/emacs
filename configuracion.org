@@ -833,20 +833,20 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
     (setf multi-term-buffer-name "sh-"
           multi-term-program "/usr/bin/zsh"
           multi-term-program-switches "--login")
-    (add-to-list 'term-bind-key-alist '(("C-c C-c"   . term-interrupt-subjob)
-                                        ("C-p"       . previous-line)
-                                        ("C-n"       . next-line)
-                                        ("M-f"       . term-send-forward-word)
-                                        ("M-b"       . term-send-backward-word)
-                                        ("C-c C-j"   . shackra/term-line-or-char-mode)
-                                        ("C-DEL"     . term-send-backward-kill-word)
-                                        ("M-d"       . term-send-forward-kill-word)
-                                        ("<C-left>"  . term-send-backward-word)
-                                        ("<C-right>" . term-send-forward-word)
-                                        ("C-r"       . term-send-reverse-search-history)
-                                        ("M-p"       . term-send-raw-meta)
-                                        ("M-y"       . term-send-raw-meta)
-                                        ("C-y"       . term-send-raw)))
+    (add-to-list 'term-bind-key-alist '("C-c C-c"   . term-interrupt-subjob))
+    (add-to-list 'term-bind-key-alist '("C-p"       . previous-line))
+    (add-to-list 'term-bind-key-alist '("C-n"       . next-line))
+    (add-to-list 'term-bind-key-alist '("M-f"       . term-send-forward-word))
+    (add-to-list 'term-bind-key-alist '("M-b"       . term-send-backward-word))
+    (add-to-list 'term-bind-key-alist '("C-c C-j"   . shackra/term-line-or-char-mode))
+    (add-to-list 'term-bind-key-alist '("C-DEL"     . term-send-backward-kill-word))
+    (add-to-list 'term-bind-key-alist '("M-d"       . term-send-forward-kill-word))
+    (add-to-list 'term-bind-key-alist '("<C-left>"  . term-send-backward-word))
+    (add-to-list 'term-bind-key-alist '("<C-right>" . term-send-forward-word))
+    (add-to-list 'term-bind-key-alist '("C-r"       . term-send-reverse-search-history))
+    (add-to-list 'term-bind-key-alist '("M-p"       . term-send-raw-meta))
+    (add-to-list 'term-bind-key-alist '("M-y"       . term-send-raw-meta))
+    (add-to-list 'term-bind-key-alist '("C-y"       . term-paste))
 
     (add-hook 'term-mode-hook #'shackra/maybe-disable-yasnippet))
 #+END_SRC
@@ -894,8 +894,7 @@ Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emac
 Permite designar qué buffers queremos matar o enterrar (/bury/).
 #+BEGIN_SRC emacs-lisp
   (use-package kill-or-bury-alive
-    :bind (("C-x k" . kill-or-bury-alive)
-           ("C-u C-x k" . kill-this-buffer))
+    :bind (("C-x k" . kill-or-bury-alive))
     :config
     (setf kill-or-bury-alive-must-die-list
           '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode "^\\*Backtrace\\*$"))
