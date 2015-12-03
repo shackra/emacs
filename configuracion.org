@@ -102,14 +102,11 @@ Probamos que el modulo a sido instalado correctamente
 
 ** Verificación de que todo este funcionando de manera correcta
 Por alguna extraña razón, sólo la primer linea de código dispara un error. Sin embargo las otras dos lineas no disparan ninguno.
-#+BEGIN_SRC emacs-lisp :tangle no :results output :exports both
+#+BEGIN_SRC emacs-lisp :tangle no :results silent :exports both
   (url-retrieve "https://wrong.host.badssl.com/" (lambda (retrieved) t))
   (url-retrieve "https://self-signed.badssl.com/" (lambda (retrieved) t))
   (url-retrieve "https://badssl.com/" (lambda (retrieved) t))
 #+END_SRC
-
-#+RESULTS:
-
 * Información personal
 #+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Araya Navarro"

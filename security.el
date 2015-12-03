@@ -1,3 +1,5 @@
+(if (fboundp 'gnutls-available-p)
+    (fmakunbound 'gnutls-available-p))
 
 (let ((trustfile
        (replace-regexp-in-string
