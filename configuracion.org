@@ -1,7 +1,7 @@
 #+TITLE: Mi configuración de GNU Emacs
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Sislock)
 #+EMAIL: elcorreo@deshackra.com
-#+OPTIONS: toc:4 num:nil ^:nil
+#+OPTIONS: toc:5 num:nil ^:nil
 #+STARTUP: overview
 
 #+begin_quote
@@ -19,21 +19,41 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
 Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
 =~/.emacs.d/init.el=:
 
-#+BEGIN_SRC emacs-lisp :tangle no
-;; init.el para esta configuración. Tu Emacs debe ser versión 24.
-(package-initialize)
-(require 'ob-tangle)
-;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
-;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
-;; ahorrarme unos segundos cuando Emacs se carga.
-(if (file-newer-than-file-p
-     (expand-file-name "configuracion.org" user-emacs-directory)
-     (expand-file-name "configuracion.el" user-emacs-directory))
-    ;; enreda los bloques de código en un archivo elisp
-    (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
-  ;; en caso contrario, carga el archivo ya existente :)
-  (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
-(put 'downcase-region 'disabled nil)
+#+BEGIN_SRC emacs-lisp :tangle init.el :tangle no
+  (load-file (expand-file-name "security.el" user-emacs-directory))
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
+  (setf package-enable-at-startup nil)
+  (package-initialize)
+
+  ;; repositorios de paquetes
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")))
+  (when (< emacs-major-version 24)
+    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+
+  ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
+  ;; lo instalamos
+  (when (not (package-installed-p 'use-package))
+    (progn
+      (unless package-archive-contents
+        (package-refresh-contents))
+      (package-install 'use-package)))
+
+  (put 'downcase-region 'disabled nil)
+  (require 'use-package)
+  (setf use-package-always-ensure t)
+
+  (require 'ob-tangle)
+  ;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
+  ;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
+  ;; ahorrarme unos segundos cuando Emacs se carga.
+  (if (file-newer-than-file-p
+       (expand-file-name "configuracion.org" user-emacs-directory)
+       (expand-file-name "configuracion.el" user-emacs-directory))
+      ;; enreda los bloques de código en un archivo elisp
+      (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
+    ;; en caso contrario, carga el archivo ya existente :)
+    (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
+
 #+END_SRC
 
 activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
@@ -42,7 +62,51 @@ activamos algunas opciones para depuración en caso de que Emacs falle en cargar
   (toggle-debug-on-error)
   (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
 #+END_SRC
+* Seguridad
+Emacs no es muy seguro por defecto, por ejemplo, al descargar paquetes de los [[*Repositorio%20de%20paquetes][Repositorio de paquetes]] no comprobara las credenciales SSL del sitio web. Más aun, los desarrolladores de extensiones no suelen firmar los /commits/ de sus extensiones, lo que permitiría que un atacante cambie algunas lineas de código elisp de un paquete para crear una puerta trasera. Más información aquí [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html#fnref:4][Deciphering Glyph :: Your Text Editor Is Malware]].
 
+Esta configuración mitigara un poco el problema con la confianza ciega que tiene Emacs con las credenciales SSL.
+** Instalación de certificados que Emacs pueda leer
+Para esto seria necesario tener Python 2.7.x instalado en el sistema.
+
+#+BEGIN_SRC sh :results silent
+  pip3 install -U --user certifi
+#+END_SRC
+
+Probamos que el modulo a sido instalado correctamente
+
+#+BEGIN_SRC sh :results output :exports both
+  python3 -m certifi
+#+END_SRC
+
+#+RESULTS:
+: /home/jorge/.local/lib/python3.5/site-packages/certifi/cacert.pem
+
+** Configuración de verificación de TLS
+#+BEGIN_SRC emacs-lisp :tangle security.el
+  (let ((trustfile
+         (replace-regexp-in-string
+          "\\\\" "/"
+          (replace-regexp-in-string
+           "\n" ""
+           (shell-command-to-string "python3 -m certifi")))))
+    (setf tls-program
+          (list
+           (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
+                   (if (eq window-system 'w32) ".exe" "") trustfile)))
+    (setf tls-checktrust t)
+    (setf gnutls-verify-error t)
+    (setf gnutls-log-level 0)
+    (setf gnutls-trustfiles (list trustfile)))
+#+END_SRC
+
+** Verificación de que todo este funcionando de manera correcta
+Por alguna extraña razón, sólo la primer linea de código dispara un error. Sin embargo las otras dos lineas no disparan ninguno.
+#+BEGIN_SRC emacs-lisp :tangle no :results silent :exports both
+  (url-retrieve "https://wrong.host.badssl.com/" (lambda (retrieved) t))
+  (url-retrieve "https://self-signed.badssl.com/" (lambda (retrieved) t))
+  (url-retrieve "https://badssl.com/" (lambda (retrieved) t))
+#+END_SRC
 * Información personal
 #+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Araya Navarro"
@@ -58,11 +122,11 @@ distribuciones de GNU/Linux.
 El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben, aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información.
 
 #+BEGIN_SRC emacs-lisp :tangle no
-  (add-to-list 'package-archives
-               '("melpa" . "http://melpa.org/packages/") t)
+  ;; repositorios de paquetes
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")))
   (when (< emacs-major-version 24)
-    ;; Para importes librerias que requieren compatibilidad como cl-lib
-    (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+
 #+END_SRC
 
 Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
@@ -261,32 +325,6 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
     (split-window-horizontally)
     (other-window 1))
 #+END_SRC
-** funciones para usar con [[*=appt=][=appt=]]
-#+BEGIN_SRC emacs-lisp
-  (defun shackra/appt-muestra-notificacion (min-to-app new-time msg)
-    (if (atom min-to-app)
-        ;; envía la notificación usando libnotify. Esto no funcionara si DBus no
-        ;; se esta usando
-        (notifications-notify
-         :title "Agenda Org"
-         :body (format "<b>Cita en %s minuto(s):</b><br>%s<br>" min-to-app msg)
-         :app-name "Emacs: Org"
-         :app-icon "/usr/share/icons/Adwaita/32x32/status/appointment-soon.png"
-         :urgency 'critical
-         :sound-file "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
-         :timeout 0)
-      ;; no entiendo este trozo de código, pero asumo que itera una lista de
-      ;; cosas por hacer.
-      (dolist (i (number-sequence 0 (1- (length min-to-app))))
-        (notifications-notify
-         :title "Agenda Org"
-         :body (format "<b>Cita en %s minuto(s):</b> %s" (nth i min-to-app) (nth i msg))
-         :app-name "Emacs: Org"
-         :app-icon "/usr/share/icons/Adwaita/32x32/status/appointment-soon.png"
-         :urgency 'critical
-         :sound-file "/usr/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga"
-         :timeout 0))))
-#+END_SRC
 * Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira al archivo especificado.
@@ -308,12 +346,12 @@ Establecemos la tipografía a usar, mi preferida es [[http://adobe-fonts.github.
     :preface (provide 'misfuentes)
     :config
     (ignore-errors
-      (set-frame-font "SourceCodePro 12")
-      (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-12"))))
+      (set-frame-font "Monoid 9")
+      (add-to-list (quote default-frame-alist) (quote (font . "Monoid-9"))))
 
     (defun shackra/arregla-emojis (&optional frame)
       (ignore-errors
-        (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
+        (set-fontset-font "fontset-default" nil (font-spec :size 10 :name "Symbola") frame 'append)))
 
     (add-hook 'after-make-frame-functions 'shackra/arregla-emojis)
     (shackra/arregla-emojis))
@@ -375,15 +413,15 @@ Completado incremental y estrechamiento de selección de candidatos :)
       :bind ("C-x b" . helm-mini)
       :config
       (setf helm-buffers-fuzzy-matching t
-          helm-truncate-lines t
-          helm-ff-skip-boring-buffers t
-          helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode"
-                                           "\\*Echo Area" "\\*Minibuf" "\\*monky-cmd-process\\*"
-                                           "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
-                                           "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
-                                           "\\*.+(.+)" "elpa/.+" "tramp/.+"
-                                           "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*"
-                                           "\\*magit-process:" "\\*magit-diff:" "\\*anaconda-mode\\*")))
+            helm-truncate-lines t
+            helm-ff-skip-boring-buffers t
+            helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode"
+                                             "\\*Echo Area" "\\*Minibuf" "\\*monky-cmd-process\\*"
+                                             "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
+                                             "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
+                                             "\\*.+(.+)" "elpa/.+" "tramp/.+"
+                                             "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*"
+                                             "\\*magit-process:" "\\*magit-diff:" "\\*anaconda-mode\\*")))
     (setf helm-autoresize-max-height 40
           helm-autoresize-min-height 20
           helm-split-window-in-side-p t
@@ -401,9 +439,8 @@ Completado incremental y estrechamiento de selección de candidatos :)
     (use-package helm-descbinds
       :config
       (bind-keys :map help-map
-                  ("b" . helm-descbinds)))
+                 ("b" . helm-descbinds)))
     (helm-mode 1)
-    (helm-adaptative-mode 1)
     (helm-autoresize-mode 1))
 #+END_SRC
 *** =hydra=
@@ -420,7 +457,9 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
     (use-package windmove
       :ensure nil)
     (use-package winner
-      :ensure nil)
+      :ensure nil
+      :config
+      (winner-mode 1))
     (use-package windresize)
     (use-package ace-window
       :config
@@ -465,8 +504,8 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       ("s" hydra-move-splitter-down "Cambiar tamaño, abajo")
       ("w" hydra-move-splitter-up "Cambiar tamaño, arriba")
       ("d" hydra-move-splitter-right "Cambiar tamaño, derecha")
-      ("f" helm-mini "Cambiar buffer")
-      ("h" helm-find-files "Abrir/Crear archivo")
+      ("b" helm-mini "Cambiar buffer")
+      ("f" helm-find-files "Abrir/Crear archivo")
       ("F" follow-mode "Activa follow-mode")
       ("z" (lambda ()
              (interactive)
@@ -491,7 +530,7 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
                        'hydra-win/body))
        "Cambiar a ventana...")
       ("H" save-buffer "Salvar buffer")
-      ("b" delete-window "Borrar ventana")
+      ("h" delete-window "Borrar ventana")
       ("B" (lambda ()
              (interactive)
              (ace-window 16)
@@ -748,30 +787,36 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package multi-term
     :bind ([f1] . multi-term)
-    :config
+    :init
     (defun shackra/maybe-disable-yasnippet ()
       "Desactiva yasnippet a pedido"
       (if (fboundp 'yas-minor-mode)
           (yas-minor-mode -1)))
-
+    (defun shackra/term-line-or-char-mode ()
+      "Cambia entre `term-line-mode' y `term-char-mode'"
+      (interactive)
+      (when (string= (buffer-local-value 'major-mode (current-buffer)) "term-mode")
+        (if (term-in-char-mode)
+            (term-line-mode)
+          (term-char-mode))))
+    :config
     (setf multi-term-buffer-name "sh-"
           multi-term-program "/usr/bin/zsh"
-          multi-term-program-switches "--login"
-          term-bind-key-alist (list (cons "C-c C-c" 'term-interrupt-subjob)
-                                    (cons "C-p" 'previous-line)
-                                    (cons "C-n" 'next-line)
-                                    (cons "M-f" 'term-send-forward-word)
-                                    (cons "M-b" 'term-send-backward-word)
-                                    (cons "C-c C-j" 'term-line-mode)
-                                    (cons "C-c C-k" 'term-char-mode)
-                                    (cons "M-DEL" 'term-send-backward-kill-word)
-                                    (cons "M-d" 'term-send-forward-kill-word)
-                                    (cons "<C-left>" 'term-send-backward-word)
-                                    (cons "<C-right>" 'term-send-forward-word)
-                                    (cons "C-r" 'term-send-reverse-search-history)
-                                    (cons "M-p" 'term-send-raw-meta)
-                                    (cons "M-y" 'term-send-raw-meta)
-                                    (cons "C-y" 'term-send-raw)))
+          multi-term-program-switches "--login")
+    (add-to-list 'term-bind-key-alist '("C-c C-c"   . term-interrupt-subjob))
+    (add-to-list 'term-bind-key-alist '("C-p"       . previous-line))
+    (add-to-list 'term-bind-key-alist '("C-n"       . next-line))
+    (add-to-list 'term-bind-key-alist '("M-f"       . term-send-forward-word))
+    (add-to-list 'term-bind-key-alist '("M-b"       . term-send-backward-word))
+    (add-to-list 'term-bind-key-alist '("C-c C-j"   . shackra/term-line-or-char-mode))
+    (add-to-list 'term-bind-key-alist '("C-DEL"     . term-send-backward-kill-word))
+    (add-to-list 'term-bind-key-alist '("M-d"       . term-send-forward-kill-word))
+    (add-to-list 'term-bind-key-alist '("<C-left>"  . term-send-backward-word))
+    (add-to-list 'term-bind-key-alist '("<C-right>" . term-send-forward-word))
+    (add-to-list 'term-bind-key-alist '("C-r"       . term-send-reverse-search-history))
+    (add-to-list 'term-bind-key-alist '("M-p"       . term-send-raw-meta))
+    (add-to-list 'term-bind-key-alist '("M-y"       . term-send-raw-meta))
+    (add-to-list 'term-bind-key-alist '("C-y"       . term-paste))
 
     (add-hook 'term-mode-hook #'shackra/maybe-disable-yasnippet))
 #+END_SRC
@@ -815,6 +860,16 @@ Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emac
 
   (use-package hgignore-mode)
 #+END_SRC
+*** =kill-or-bury-alive=
+Permite designar qué buffers queremos matar o enterrar (/bury/).
+#+BEGIN_SRC emacs-lisp
+  (use-package kill-or-bury-alive
+    :bind (("C-x k" . kill-or-bury-alive))
+    :config
+    (setf kill-or-bury-alive-must-die-list
+          '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode "^\\*Backtrace\\*$"))
+    (add-to-list 'kill-or-bury-alive-long-lasting-list "^\\*sh-<[:digit:]+>\\*$" t))
+#+END_SRC
 ** Comunicación
 *** =mu4e=
 :LOGBOOK:  
@@ -841,6 +896,13 @@ Un versátil cliente de correo electrónico para Emacs.
            "content=\"text/html;charset=UTF-8\">"
            html))
         (browse-url (concat "file://" tmpfile))))
+    (defadvice mu4e (before mu4e-start activate)
+      "Antes de ejecutar `mu4e' borramos todas las ventanas"
+      (delete-other-windows))
+    (defadvice mu4e-quit (after mu4e-close-and-push activate)
+      "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
+      (start-process "pushmail" nil "pushmail.sh")
+      (winner-undo))
     :config
     (defalias 'xc 'mu4e)
     (use-package mu4e-contrib
@@ -856,8 +918,8 @@ Un versátil cliente de correo electrónico para Emacs.
                             :title "Cuentas de correo electrónico"
                             :body "No se pudo cargar: ~/.secret/mu4e-cuentas.el"))
     ;; html2text es un paquete que debe estar instalado en tu sistema
-   (setf mu4e-html2text-command 'mu4e-shr2text
-         mu4e-confirm-quit nil)
+    (setf mu4e-html2text-command 'mu4e-shr2text
+          mu4e-confirm-quit nil)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados" ?m)
@@ -1597,6 +1659,32 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
   (use-package appt
     :ensure nil
     :init
+    (use-package alert
+      :init
+      (setf alert-default-style 'libnotify)
+      :config
+      (defun shackra/appt-muestra-notificacion (min-to-app new-time msg)
+        "Envia notificaciones usando libnotify. Esto no funcionara si DBus no esta instalado y corriendo"
+        ;; `min-to-app' puede ser una lista, o no.
+        (if (atom min-to-app)
+            (alert
+             (if (<= min-to-app 1)
+                 (format "<b>Cita en %s minuto</b>" min-to-app)
+               (format "<b>Cita en %s minutos</b>" min-to-app))
+             :title msg
+             :mode 'Emacs-Org
+             :severity 'high
+             :persistent t)
+          ;; no entiendo este trozo de código, pero asumo que itera una lista de
+          ;; cosas por hacer.
+          (dolist (i (number-sequence 0 (1- (length min-to-app))))
+            (alert
+             (if (<= (nth i min-to-app) 1)
+                 (format "<b>Cita en %s minuto</b>" (nth i min-to-app))
+               (format "<b>Cita en %s minutos</b>" (nth i min-to-app)))
+             :title (nth i msg)
+             :mode 'Emacs-Org
+             :severity 'normal)))))
     (setf appt-message-warning-time 10
           appt-display-interval (1+ appt-message-warning-time)
           appt-display-mode-line nil)
@@ -1605,10 +1693,10 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
     ;;(setf appt-delete-window-function nil)
     :config
     (defun shackra/appt-update-when-file-updated ()
-    "Actualiza appt cuando cierto archivo es actualizado"
-    ;; TODO: iterar una lista de agendas que se definen para org-mode
-    (if (string= (buffer-file-name) (concat org-directory "/cosasporhacer.org"))
-                   (shackra/org-agenda-to-appt)))
+      "Actualiza appt cuando cierto archivo es actualizado"
+      ;; TODO: iterar una lista de agendas que se definen para org-mode
+      (if (string= (buffer-file-name) (concat org-directory "/cosasporhacer.org"))
+          (shackra/org-agenda-to-appt)))
 
     (defun shackra/org-agenda-to-appt ()
       (interactive)
@@ -1631,4 +1719,15 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
     :ensure nil
     :init
     (setf uniquify-buffer-name-style 'forward))
+#+END_SRC
+*** =systemd=
+Modo mayor para editar archivos de servicio systemd.
+#+BEGIN_SRC emacs-lisp
+  (use-package systemd)
+#+END_SRC
+*** =pretty-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package pretty-mode
+    :config
+    (add-hook 'prog-mode-hook 'turn-on-pretty-mode))
 #+END_SRC
