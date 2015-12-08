@@ -372,12 +372,12 @@ Establecemos la tipografía a usar, mi preferida es [[http://adobe-fonts.github.
     :preface (provide 'misfuentes)
     :config
     (ignore-errors
-      (set-frame-font "SourceCodePro 12")
-      (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-12"))))
+      (set-frame-font "Monoid 9")
+      (add-to-list (quote default-frame-alist) (quote (font . "Monoid-9"))))
 
     (defun shackra/arregla-emojis (&optional frame)
       (ignore-errors
-        (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
+        (set-fontset-font "fontset-default" nil (font-spec :size 10 :name "Symbola") frame 'append)))
 
     (add-hook 'after-make-frame-functions 'shackra/arregla-emojis)
     (shackra/arregla-emojis))
@@ -439,15 +439,15 @@ Completado incremental y estrechamiento de selección de candidatos :)
       :bind ("C-x b" . helm-mini)
       :config
       (setf helm-buffers-fuzzy-matching t
-          helm-truncate-lines t
-          helm-ff-skip-boring-buffers t
-          helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode"
-                                           "\\*Echo Area" "\\*Minibuf" "\\*monky-cmd-process\\*"
-                                           "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
-                                           "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
-                                           "\\*.+(.+)" "elpa/.+" "tramp/.+"
-                                           "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*"
-                                           "\\*magit-process:" "\\*magit-diff:" "\\*anaconda-mode\\*")))
+            helm-truncate-lines t
+            helm-ff-skip-boring-buffers t
+            helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode"
+                                             "\\*Echo Area" "\\*Minibuf" "\\*monky-cmd-process\\*"
+                                             "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
+                                             "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
+                                             "\\*.+(.+)" "elpa/.+" "tramp/.+"
+                                             "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*"
+                                             "\\*magit-process:" "\\*magit-diff:" "\\*anaconda-mode\\*")))
     (setf helm-autoresize-max-height 40
           helm-autoresize-min-height 20
           helm-split-window-in-side-p t
@@ -465,9 +465,8 @@ Completado incremental y estrechamiento de selección de candidatos :)
     (use-package helm-descbinds
       :config
       (bind-keys :map help-map
-                  ("b" . helm-descbinds)))
+                 ("b" . helm-descbinds)))
     (helm-mode 1)
-    (helm-adaptative-mode 1)
     (helm-autoresize-mode 1))
 #+END_SRC
 *** =hydra=
@@ -1725,4 +1724,10 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
 Modo mayor para editar archivos de servicio systemd.
 #+BEGIN_SRC emacs-lisp
   (use-package systemd)
+#+END_SRC
+*** =pretty-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package pretty-mode
+    :config
+    (add-hook 'prog-mode-hook 'turn-on-pretty-mode))
 #+END_SRC
