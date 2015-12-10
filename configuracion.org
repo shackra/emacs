@@ -83,7 +83,10 @@ Probamos que el modulo a sido instalado correctamente
 : /home/jorge/.local/lib/python3.5/site-packages/certifi/cacert.pem
 
 ** Configuración de verificación de TLS
-#+BEGIN_SRC emacs-lisp :tangle security.el
+#+BEGIN_SRC emacs-lisp :tangle security.el :tangle no
+  (if (fboundp 'gnutls-available-p)
+      (fmakunbound 'gnutls-available-p))
+
   (let ((trustfile
          (replace-regexp-in-string
           "\\\\" "/"
@@ -698,12 +701,14 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
           (add-to-list 'company-backends 'company-jedi)))
       (add-hook 'python-mode-hook #'shackra/jedi))
     (use-package company-anaconda
+      :diminish anaconda-mode
       :config
       (defun shackra/anaconda ()
         (unless (member 'company-anaconda 'company-backends)
           (add-to-list 'company-backends 'company-anaconda))
         (anaconda-mode))
-      (add-hook 'python-mode-hook #'shackra/anaconda))
+      (add-hook 'python-mode-hook #'shackra/anaconda)
+      (add-hook 'python-mode-hook 'eldoc-mode))
     (use-package helm-company)
     :bind-keymap ("C-ñ" . helm-company)
     :init
@@ -869,6 +874,13 @@ Permite designar qué buffers queremos matar o enterrar (/bury/).
     (setf kill-or-bury-alive-must-die-list
           '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode "^\\*Backtrace\\*$"))
     (add-to-list 'kill-or-bury-alive-long-lasting-list "^\\*sh-<[:digit:]+>\\*$" t))
+#+END_SRC
+*** eldoc
+Muestra en el =área de eco= la lista de argumentos de una función que (podrías) estar escribiendo
+#+BEGIN_SRC emacs-lisp
+  (use-package eldoc
+    :ensure nil
+    :diminish eldoc-mode)
 #+END_SRC
 ** Comunicación
 *** =mu4e=
@@ -1476,9 +1488,13 @@ Multiples cursores en Emacs.
 - Refiled on [2015-11-12 jue 16:49]
 :END:      
 #+BEGIN_SRC emacs-lisp
-  (use-package visual-regexp-steroids
-    :bind (("C-c r" . vr/replace)
-           ("C-c q" . vr/query-replace)))
+  (use-package visual-regexp
+    :config
+    (use-package visual-regexp-steroids
+      :init
+      (require 'visual-regexp-steroids)
+      :bind (("C-c r" . vr/replace)
+             ("C-c q" . vr/query-replace))))
 
   (use-package re-builder
     :init
@@ -1513,6 +1529,7 @@ Navegación y edición de /SubPalabras/. Siendo "HolaMundoAdios" una nomenclatur
 Borra espacios en blanco consecutivos con sólo presionar =backspace= una vez :)
 #+BEGIN_SRC emacs-lisp
   (use-package hungry-delete
+    :diminish hungry-delete-mode
     :config
     (global-hungry-delete-mode))
 #+END_SRC
