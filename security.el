@@ -1,6 +1,3 @@
-(if (fboundp 'gnutls-available-p)
-    (fmakunbound 'gnutls-available-p))
-
 (let ((trustfile
        (replace-regexp-in-string
         "\\\\" "/"
@@ -15,3 +12,6 @@
   (setf gnutls-verify-error t)
   (setf gnutls-log-level 0)
   (setf gnutls-trustfiles (list trustfile)))
+
+(if (fboundp 'gnutls-available-p)
+    (fmakunbound 'gnutls-available-p))
