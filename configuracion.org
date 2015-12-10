@@ -83,7 +83,10 @@ Probamos que el modulo a sido instalado correctamente
 : /home/jorge/.local/lib/python3.5/site-packages/certifi/cacert.pem
 
 ** Configuración de verificación de TLS
-#+BEGIN_SRC emacs-lisp :tangle security.el
+#+BEGIN_SRC emacs-lisp :tangle security.el :tangle no
+  (if (fboundp 'gnutls-available-p)
+      (fmakunbound 'gnutls-available-p))
+
   (let ((trustfile
          (replace-regexp-in-string
           "\\\\" "/"
@@ -703,7 +706,8 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
         (unless (member 'company-anaconda 'company-backends)
           (add-to-list 'company-backends 'company-anaconda))
         (anaconda-mode))
-      (add-hook 'python-mode-hook #'shackra/anaconda))
+      (add-hook 'python-mode-hook #'shackra/anaconda)
+      (add-hook 'python-mode-hook 'eldoc-mode))
     (use-package helm-company)
     :bind-keymap ("C-ñ" . helm-company)
     :init
