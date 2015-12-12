@@ -354,7 +354,7 @@ Establecemos la tipografía a usar, mi preferida es [[http://adobe-fonts.github.
 
     (defun shackra/arregla-emojis (&optional frame)
       (ignore-errors
-        (set-fontset-font "fontset-default" nil (font-spec :size 10 :name "Symbola") frame 'append)))
+        (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
 
     (add-hook 'after-make-frame-functions 'shackra/arregla-emojis)
     (shackra/arregla-emojis))
