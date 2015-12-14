@@ -1685,7 +1685,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
         ;; `min-to-app' puede ser una lista, o no.
         (if (atom min-to-app)
             (alert
-             (if (<= min-to-app 1)
+             (if (<= (string-to-int min-to-app) 1)
                  (format "<b>Cita en %s minuto</b>" min-to-app)
                (format "<b>Cita en %s minutos</b>" min-to-app))
              :title msg
@@ -1696,12 +1696,13 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
           ;; cosas por hacer.
           (dolist (i (number-sequence 0 (1- (length min-to-app))))
             (alert
-             (if (<= (nth i min-to-app) 1)
+             (if (<= (string-to-int (nth i min-to-app)) 1)
                  (format "<b>Cita en %s minuto</b>" (nth i min-to-app))
                (format "<b>Cita en %s minutos</b>" (nth i min-to-app)))
              :title (nth i msg)
              :mode 'Emacs-Org
-             :severity 'normal)))))
+             :severity 'high
+             :persistent t)))))
     (setf appt-message-warning-time 10
           appt-display-interval (1+ appt-message-warning-time)
           appt-display-mode-line nil)
@@ -1710,9 +1711,10 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
     ;;(setf appt-delete-window-function nil)
     :config
     (defun shackra/appt-update-when-file-updated ()
-      "Actualiza appt cuando cierto archivo es actualizado"
-      ;; TODO: iterar una lista de agendas que se definen para org-mode
-      (if (string= (buffer-file-name) (concat org-directory "/cosasporhacer.org"))
+      "Actualiza appt cuando ciertos archivos son actualizados"
+      ;; si `org-directory' es prefijo en el nombre del archivo del buffer
+      ;; actual, ejecuta la funcion `shackra/org-agenda-to-appt'
+      (if (string-prefix-p (buffer-file-name) org-directory)
           (shackra/org-agenda-to-appt)))
 
     (defun shackra/org-agenda-to-appt ()
@@ -1747,4 +1749,12 @@ Modo mayor para editar archivos de servicio systemd.
   (use-package pretty-mode
     :config
     (add-hook 'prog-mode-hook 'turn-on-pretty-mode))
+#+END_SRC
+*** Editor de subtítulos
+Un modo mayor que permite agregar subtítulos a vídeos. Requiere MPlayer.
+#+BEGIN_SRC emacs-lisp
+  (use-package sese
+    :ensure nil
+    :load-path "site-packages/sese/"
+    :mode "\\.sese$")
 #+END_SRC
