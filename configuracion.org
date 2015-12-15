@@ -872,7 +872,7 @@ Permite designar qué buffers queremos matar o enterrar (/bury/).
     :bind (("C-x k" . kill-or-bury-alive))
     :config
     (setf kill-or-bury-alive-must-die-list
-          '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode prog-mode text-mode "^\\*Backtrace\\*$"))
+          '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode prog-mode text-mode rust-mode "^\\*Backtrace\\*$"))
     (add-to-list 'kill-or-bury-alive-long-lasting-list "^\\*sh-<[:digit:]+>\\*$" t))
 #+END_SRC
 *** eldoc
@@ -1170,18 +1170,18 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
           ;; Don't ruin S-arrow to switch windows please (use M-+ and M-- instead to toggle)
           org-replace-disputed-keys t
           org-imenu-depth 5
-          org-log-done 'note
+          org-log-done nil
           org-log-reschedule 'note
           org-log-redeadline 'note
-          org-log-note-clock-out 'note
-          org-log-refile 'note
-          org-log-into-drawer t
+          org-log-note-clock-out nil
+          org-log-refile nil
+          org-log-into-drawer nil
           org-clock-persist 'history
           org-default-notes-file (expand-file-name "quizas.org" org-directory)
 
-          org-agenda-files (list (expand-file-name "cosasporhacer.org" org-directory)
+          org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)
                                  (expand-file-name "fechas.org" org-directory)))
-      (setf org-todo-keywords
+    (setf org-todo-keywords
           '(
             ;; Secuencia para TAREAS
             ;; POR-HACER significa que la tarea necesita atención
@@ -1213,8 +1213,12 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ("ENTREGAR"    . (:background "#f4a460" :foreground "#8b4513" :weight bold))
             ("ENTREGADO"   . (:background "#98fb98" :foreground "#556b2f" :weight bold))
             ("OLVIDALO"    . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))))
+    ;; según http://orgmode.org/manual/Link-abbreviations.html#Link-abbreviations
+    (setf org-link-abbrev-alist
+          '(("katpelicula" . "https://kat.cr/usearch/\"%s\" category:movies seeds:5 lang_id:2")
+            ("katanime" . "https://kat.cr/usearch/\"%s\" category:english-translated seeds:5 is_safe:1/")))
     (setf org-capture-templates
-          '(("p" "Añadir tarea por hacer" entry (file "cosasporhacer.org")
+          '(("p" "Añadir tarea por hacer" entry (file "cosas por hacer.org")
              "* POR-HACER %^{breve descripcion} %^g
   :PROPERTIES:
   :CREATED:%U
@@ -1279,7 +1283,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :PROPERTIES:
   :CREATED: %T
   :END:
-  [[https://kat.cr/usearch/\"%\\1\" category:movies seeds:5 lang_id:2][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
+  [[katpelicula:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
             ("ga" "Anime" entry (file+headline "quizas.org" "Anime")
              "* Ver /%^{Anime}/
   :PROPERTIES:
@@ -1288,7 +1292,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :EPISODIO: 1
   :EPISODIOS: %^{numero de episodios}
   :END:
-  [[https://kat.cr/usearch/\"%\\1\" category:english-translated seeds:5 is_safe:1/][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
+  [[katanime:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
     (use-package org-bullets
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
@@ -1408,6 +1412,29 @@ Y por ultimo =ropemacs=.
   (use-package yaml-mode
     :defer 10
     :mode "\\.yml$")
+#+END_SRC
+*** =rust=
+Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de programación de sistemas que corre realmente rapido, previene fallos de segmentación (segfaults), y garantiza seguridad en programas multi-hilo.
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :init
+    (use-package rustfmt
+      :config
+      (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
+    (use-package  cargo)
+    (use-package racer
+      :init
+      (setf racer-rust-src-path (getenv "RUST_SRC_PATH"))
+      (setf racer-cmd (expand-file-name "~/.cargo/bin/racer"))
+      :config
+      (add-hook 'rust-mode-hook #'racer-mode)
+      (add-hook 'racer-mode-hook #'eldoc-mode)
+      (use-package company-racer
+        :config
+        (add-to-list 'company-backends 'company-racer)))
+    (use-package flycheck-rust
+      :config
+      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
