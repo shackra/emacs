@@ -1741,7 +1741,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
       "Actualiza appt cuando ciertos archivos son actualizados"
       ;; si `org-directory' es prefijo en el nombre del archivo del buffer
       ;; actual, ejecuta la funcion `shackra/org-agenda-to-appt'
-      (if (string-prefix-p (buffer-file-name) org-directory)
+      (if (string-prefix-p org-directory (buffer-file-name))
           (shackra/org-agenda-to-appt)))
 
     (defun shackra/org-agenda-to-appt ()
