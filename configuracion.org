@@ -872,7 +872,7 @@ Permite designar qué buffers queremos matar o enterrar (/bury/).
     :bind (("C-x k" . kill-or-bury-alive))
     :config
     (setf kill-or-bury-alive-must-die-list
-          '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode prog-mode text-mode "^\\*Backtrace\\*$"))
+          '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode prog-mode text-mode rust-mode "^\\*Backtrace\\*$"))
     (add-to-list 'kill-or-bury-alive-long-lasting-list "^\\*sh-<[:digit:]+>\\*$" t))
 #+END_SRC
 *** eldoc
@@ -1213,8 +1213,12 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ("ENTREGAR"    . (:background "#f4a460" :foreground "#8b4513" :weight bold))
             ("ENTREGADO"   . (:background "#98fb98" :foreground "#556b2f" :weight bold))
             ("OLVIDALO"    . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))))
+    ;; según http://orgmode.org/manual/Link-abbreviations.html#Link-abbreviations
+    (setf org-link-abbrev-alist
+          '(("katpelicula" . "https://kat.cr/usearch/\"%s\" category:movies seeds:5 lang_id:2")
+            ("katanime" . "https://kat.cr/usearch/\"%s\" category:english-translated seeds:5 is_safe:1/")))
     (setf org-capture-templates
-          '(("p" "Añadir tarea por hacer" entry (file "cosasporhacer.org")
+          '(("p" "Añadir tarea por hacer" entry (file "cosas por hacer.org")
              "* POR-HACER %^{breve descripcion} %^g
   :PROPERTIES:
   :CREATED:%U
@@ -1279,7 +1283,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :PROPERTIES:
   :CREATED: %T
   :END:
-  [[https://kat.cr/usearch/\"%\\1\" category:movies seeds:5 lang_id:2][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
+  [[katpelicula:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
             ("ga" "Anime" entry (file+headline "quizas.org" "Anime")
              "* Ver /%^{Anime}/
   :PROPERTIES:
@@ -1288,7 +1292,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :EPISODIO: 1
   :EPISODIOS: %^{numero de episodios}
   :END:
-  [[https://kat.cr/usearch/\"%\\1\" category:english-translated seeds:5 is_safe:1/][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
+  [[katanime:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
     (use-package org-bullets
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
