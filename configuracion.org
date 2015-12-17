@@ -1007,19 +1007,23 @@ Tumblr desde Emacs
 :END:      
 Twitter desde Emacs
 #+BEGIN_SRC emacs-lisp
-  (if (fboundp 'twit)
-      (defalias 'tt 'twit))
-
   (use-package twittering-mode
-    :bind-keymap ("C-c f" . twittering-favorite)
     :init
+    (defalias 'tt 'twit)
     (setf twittering-use-master-password t)
     (setf twittering-display-remaining t)
     (setf twittering-icon-mode t)
     (setf twittering-timer-interval 300)
     (setf twittering-url-show-status nil)
     :config
-    (defalias 'tt 'twit)
+    (defun shackra/tt-fav-rett (&optional arg)
+      "Marca como favorito y retweetea un tweet"
+      (interactive "P")
+      (twittering-retweet t)
+      (twittering-favorite))
+    (bind-key "C-c f" 'twittering-favorite twittering-mode-map)
+    (bind-key "C-c F" 'shackra/tt-fav-rett twittering-mode-map)
+    
     (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
     (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
 #+END_SRC
