@@ -1425,7 +1425,7 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     (use-package rustfmt
       :config
       (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
-    (use-package  cargo)
+    (use-package cargo)
     (use-package racer
       :init
       (setf racer-rust-src-path (getenv "RUST_SRC_PATH"))
