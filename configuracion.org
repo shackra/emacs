@@ -726,13 +726,17 @@ Manejo de archivos de un proyecto.
   (use-package projectile
     :diminish projectile-mode
     :init
+    (use-package helm-projectile
+      :init
+      (setf projectile-completion-system 'helm
+            projectile-switch-project-action  'helm-projectile-find-file)
+      :config
+      (helm-projectile-on))
     (setf
-     projectile-completion-system 'helm
      projectile-file-exists-remote-cache-expire (* 10 60)
      projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
                                          "*.o" "*.pyc" "*.elc" "*.exe"
-                                         "*.zip" "*.tar.*" "*.rar" "*.7z")
-     projectile-switch-project-action  'helm-projectile-find-file)
+                                         "*.zip" "*.tar.*" "*.rar" "*.7z"))
     :config
     (add-hook 'after-init-hook #'projectile-global-mode))
 #+END_SRC
