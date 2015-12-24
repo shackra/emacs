@@ -1467,6 +1467,33 @@ Revisión ortográfica al vuelo.
   (use-package flyspell
     :diminish flyspell-mode
     :ensure nil)
+
+  (use-package shackra/ispell-dict-switch
+    :bind (("<f8>" . shackra/ispell-cycle-dict))
+    :ensure nil
+    :preface (provide 'shackra/ispell-dict-switch)
+    :config
+    (setf shackra/ispell-dict-list (list "es" "en"))
+    :init
+    (defvar shackra/ispell-dict-list (list) "Lista de diccionarios para cambiar")
+    (defun shackra--ispell-current-dict ()
+      "Obtiene el diccionario actual o retorna el establecido por defecto"
+      (if ispell-current-dictionary
+          (cl-position ispell-current-dictionary shackra/ispell-dict-list :test 'string=)
+        ;; TODO: LANG podría estar o no
+        ;; establecida, lo que podría
+        ;; causar problemas.
+        (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)))
+    (defun shackra/ispell-cycle-dict ()
+      "Cambia de un diccionario a otro"
+      (interactive)
+      (let ((dict-list-size (- (length shackra/ispell-dict-list) 1))
+            (dict-current-index (shackra--ispell-current-dict)))
+        (if (> (+ dict-current-index 1) dict-list-size)
+            (setf dict-current-index 0)
+          (setf dict-current-index (+ dict-current-index 1)))
+        ;; luego de realizar la matemática, cambiamos el diccionario
+        (ispell-change-dictionary (nth dict-current-index shackra/ispell-dict-list)))))
 #+END_SRC
 *** =flycheck-mode=
 :LOGBOOK:  
