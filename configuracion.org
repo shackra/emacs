@@ -1493,7 +1493,11 @@ Revisión ortográfica al vuelo.
             (setf dict-current-index 0)
           (setf dict-current-index (+ dict-current-index 1)))
         ;; luego de realizar la matemática, cambiamos el diccionario
-        (ispell-change-dictionary (nth dict-current-index shackra/ispell-dict-list)))))
+        (ispell-change-dictionary (nth dict-current-index shackra/ispell-dict-list)))
+      ;; Nuevo diccionario, nada de palabras subrayadas
+      (flyspell-delete-all-overlays)
+      ;; Mandamos a revisar la ortografía del párrafo en que estamos
+      (flyspell-region (line-beginning-position) (line-end-position))))
 #+END_SRC
 *** =flycheck-mode=
 :LOGBOOK:  
