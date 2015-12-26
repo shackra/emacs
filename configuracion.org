@@ -26,7 +26,8 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
   (package-initialize)
 
   ;; repositorios de paquetes
-  (setf package-archives '(("melpa" . "https://melpa.org/packages/")))
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("org" . "http://orgmode.org/elpa/")))
   (when (< emacs-major-version 24)
     (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
 
@@ -37,6 +38,12 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
       (unless package-archive-contents
         (package-refresh-contents))
       (package-install 'use-package)))
+
+  (when (not (package-installed-p 'org))
+    (progn
+      (unless package-archive-contents
+        (package-refresh-contents))
+      (package-install 'org)))
 
   (put 'downcase-region 'disabled nil)
   (require 'use-package)
@@ -126,7 +133,10 @@ El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcio
 
 #+BEGIN_SRC emacs-lisp :tangle no
   ;; repositorios de paquetes
-  (setf package-archives '(("melpa" . "https://melpa.org/packages/")))
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ;; por alguna razón, el repositorio de org-mode tiene
+                           ;; da acceso pobre a traves de HTTPS
+                           ("org" . "http://orgmode.org/elpa/")))
   (when (< emacs-major-version 24)
     (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
 
@@ -1040,23 +1050,14 @@ Acceso a Stackoverflow y subsitios desde Emacs.
   (use-package sx
     :defer 10)
 #+END_SRC
-*** EGO
+*** org-webpage
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:57]
 - Refiled on [2015-11-12 jue 16:46]
 :END:      
 Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 #+BEGIN_SRC emacs-lisp
-  (use-package ego
-    :if (string-equal system-type "gnu/linux")
-    :load-path  "~/.emacs.d/site-packages/EGO"
-    :preface
-    (use-package mustache)
-    (use-package dash)
-    (use-package htmlize)
-    (use-package ht)
-    (use-package simple-httpd)
-    :ensure nil
+  (use-package org-webpage
     :config
     ;; Le pedimos a org-mode que no meta las patas cuando exporta archivos a
     ;; HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
@@ -1067,27 +1068,26 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
     ;; [2]: http://emacs.stackexchange.com/a/9839/690
     ;; [3]: https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el
     (load-file (expand-file-name "srcprecode.el" user-emacs-directory))
-    (ego/add-to-alist 'ego/project-config-alist
-                     `(("El blog de Shackra"
-                       :repository-directory "~/Documentos/elblog.deshackra.com/"
-                       :repository-html-branch nil
-                       :repository-org-branch "master"
-                       :default-category "blog"
-                       :site-domain "http://elblog.deshackra.com"
-                       :site-main-title "El blog de Shackra"
-                       :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
-                       :ignore-file-name-regexp "README"
-                       :rss ("RSS" "/rss.xml")
-                       :about ("Sobre mi" "/about")
-                       ;;op/personal-github-link "https://github.com/shackra"
-                       ;;op/theme-root-directory (expand-file-name
-                       ;;"org-page-themes" user-emacs-directory)
-                       :theme-root-directory (list (expand-file-name "org-page-themes" user-emacs-directory))
-                       :theme (shackra)
-                       :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
-                       :confound-email t
-                       :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
-                       :web-server-port 5777)))
+    (owp/add-project-config `(("El blog de Shackra"
+                               :repository-directory "~/Documentos/elblog.deshackra.com/"
+                               :remote (git "git@bitbucket.org:shackra/blog.git" "master")
+                               :default-category "blog"
+                               :site-domain "http://elblog.deshackra.com"
+                               :site-main-title "El blog de Shackra"
+                               :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
+                               :ignore-file-name-regexp "README"
+                               :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog")
+                               :rss ("RSS feed" "/rss.xml")
+                               :about ("Sobre mi" "/about")
+                               ;;op/personal-github-link "https://github.com/shackra"
+                               ;;op/theme-root-directory (expand-file-name
+                               ;;"org-page-themes" user-emacs-directory)
+                               :theme-root-directory ,(list (expand-file-name "org-page-themes" user-emacs-directory))
+                               :theme (shackra)
+                               :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
+                               :confound-email t
+                               :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
+                               :web-server-port 5777)))
 
     (eval-after-load 'ox
       '(progn
