@@ -1082,7 +1082,7 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
                               :default-category "blog"
                               :about ("Sobre mi" "/about")
                               :rss ("RSS feed" "/rss.xml")
-                              :summary (("etiquetas" :tags) ("fecha" :date))
+                              :summary (("Categorías" :tags))
                               :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
                               :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
                               :web-server-port 5777))
