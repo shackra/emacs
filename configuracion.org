@@ -944,11 +944,12 @@ Un versátil cliente de correo electrónico para Emacs.
         (browse-url (concat "file://" tmpfile))))
     (defadvice mu4e (before mu4e-start activate)
       "Antes de ejecutar `mu4e' borramos todas las ventanas"
+      (window-configuration-to-register :mu4e-fullscreen)
       (delete-other-windows))
     (defadvice mu4e-quit (after mu4e-close-and-push activate)
       "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
       (start-process "pushmail" nil "pushmail.sh")
-      (winner-undo))
+      (jump-to-register :mu4e-fullscreen))
     :config
     (defalias 'xc 'mu4e)
     (use-package mu4e-contrib
@@ -960,12 +961,13 @@ Un versátil cliente de correo electrónico para Emacs.
 
     (if (file-exists-p "/home/jorge/.secret/mu4e-cuentas.el")
         (load-file "/home/jorge/.secret/mu4e-cuentas.el")
-      (notifications-notify :urgency 'critical
-                            :title "Cuentas de correo electrónico"
-                            :body "No se pudo cargar: ~/.secret/mu4e-cuentas.el"))
+      (alert :urgency 'critical
+             :title "Cuentas de correo electrónico"
+             :body "No se pudo cargar: ~/.secret/mu4e-cuentas.el"))
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text
-          mu4e-confirm-quit nil)
+          mu4e-confirm-quit nil
+          mu4e-update-interval 300)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados" ?m)
