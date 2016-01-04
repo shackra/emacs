@@ -4,7 +4,8 @@
 (package-initialize)
 
 ;; repositorios de paquetes
-(setf package-archives '(("melpa" . "https://melpa.org/packages/")))
+(setf package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("org" . "http://orgmode.org/elpa/")))
 (when (< emacs-major-version 24)
   (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
 
@@ -15,6 +16,12 @@
     (unless package-archive-contents
       (package-refresh-contents))
     (package-install 'use-package)))
+
+(when (not (package-installed-p 'org))
+  (progn
+    (unless package-archive-contents
+      (package-refresh-contents))
+    (package-install 'org)))
 
 (put 'downcase-region 'disabled nil)
 (require 'use-package)

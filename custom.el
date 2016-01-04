@@ -62,34 +62,8 @@
  '(holiday-other-holidays
    (quote
     ((holiday-fixed 11 19 "Día Internacional del Hombre"))))
- '(jabber-activity-mode nil)
- '(jabber-alert-info-message-hooks (quote (jabber-info-libnotify)))
- '(jabber-alert-message-hooks (quote (jabber-message-libnotify jabber-message-scroll)))
- '(jabber-alert-muc-hooks (quote (jabber-muc-libnotify-personal jabber-muc-scroll)))
- '(jabber-alert-presence-hooks (quote (jabber-presence-libnotify)))
- '(jabber-auto-reconnect t)
- '(jabber-chat-buffer-format "*-chat-%n-*")
- '(jabber-chat-delayed-time-format "%d-%m-%Y %H:%M")
- '(jabber-chat-fill-long-lines nil)
- '(jabber-chat-foreign-prompt-format "[%t] %n > ")
- '(jabber-groupchat-buffer-format "*-gc-%n-*")
- '(jabber-groupchat-prompt-format "[%t] %n > ")
- '(jabber-info-message-alist
-   (quote
-    ((roster . "Actualizada la vizualización del roster")
-     (browse . "Solicitud de navegación completada"))))
- '(jabber-libnotify-app "Jabber.el")
- '(jabber-libnotify-icon "emacs")
- '(jabber-libnotify-message-header "Mensaje en Jabber")
- '(jabber-libnotify-timeout 10000)
- '(jabber-libnotify-urgency "normal")
- '(jabber-message-alert-same-buffer nil)
- '(jabber-mode-line-compact nil)
- '(jabber-muc-completion-delimiter ", ")
- '(jabber-muc-private-buffer-format "*-muc-priv-%g-%n-*")
- '(jabber-roster-buffer "*-roster-*")
  '(magit-use-overlays nil)
- '(org-agenda-files (quote ("/home/jorge/org/cosasporhacer.org")))
+ '(org-agenda-files (quote ("/home/jorge/org/cosas por hacer.org")))
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
  '(org-catch-invisible-edits (quote show))
  '(org-clock-persist (quote history))
@@ -111,8 +85,8 @@
    (quote
     ((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))))
  '(py-autopep8-options nil)
- '(python-shell-interpreter "python2")
- '(pyvenv-virtualenvwrapper-python "/usr/bin/python2")
+ '(python-shell-interpreter "python3")
+ '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
  '(safe-local-variable-values
    (quote
     ((shackra:var-python-version . 3)

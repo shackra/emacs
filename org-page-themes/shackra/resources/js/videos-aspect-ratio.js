@@ -1,7 +1,7 @@
 // sacado de https://css-tricks.com/NetMag/FluidWidthVideo/Article-FluidWidthVideo.php
 
 // Find all YouTube videos
-var $allVideos = $("iframe[src^='https://player.vimeo.com'], iframe[src^='//www.youtube.com']"),
+var $allVideos = $("iframe[src^='https://player.vimeo.com'], iframe[src^='https://www.youtube.com']"),
 
     // The element that is fluid width
     $fluidEl = $("article");

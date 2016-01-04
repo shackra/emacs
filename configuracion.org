@@ -26,7 +26,8 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
   (package-initialize)
 
   ;; repositorios de paquetes
-  (setf package-archives '(("melpa" . "https://melpa.org/packages/")))
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("org" . "http://orgmode.org/elpa/")))
   (when (< emacs-major-version 24)
     (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
 
@@ -37,6 +38,12 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
       (unless package-archive-contents
         (package-refresh-contents))
       (package-install 'use-package)))
+
+  (when (not (package-installed-p 'org))
+    (progn
+      (unless package-archive-contents
+        (package-refresh-contents))
+      (package-install 'org)))
 
   (put 'downcase-region 'disabled nil)
   (require 'use-package)
@@ -83,7 +90,10 @@ Probamos que el modulo a sido instalado correctamente
 : /home/jorge/.local/lib/python3.5/site-packages/certifi/cacert.pem
 
 ** Configuración de verificación de TLS
-#+BEGIN_SRC emacs-lisp :tangle security.el
+#+BEGIN_SRC emacs-lisp :tangle security.el :tangle no
+  (if (fboundp 'gnutls-available-p)
+      (fmakunbound 'gnutls-available-p))
+
   (let ((trustfile
          (replace-regexp-in-string
           "\\\\" "/"
@@ -123,7 +133,10 @@ El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcio
 
 #+BEGIN_SRC emacs-lisp :tangle no
   ;; repositorios de paquetes
-  (setf package-archives '(("melpa" . "https://melpa.org/packages/")))
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ;; por alguna razón, el repositorio de org-mode tiene
+                           ;; da acceso pobre a traves de HTTPS
+                           ("org" . "http://orgmode.org/elpa/")))
   (when (< emacs-major-version 24)
     (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
 
@@ -351,7 +364,7 @@ Establecemos la tipografía a usar, mi preferida es [[http://adobe-fonts.github.
 
     (defun shackra/arregla-emojis (&optional frame)
       (ignore-errors
-        (set-fontset-font "fontset-default" nil (font-spec :size 10 :name "Symbola") frame 'append)))
+        (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
 
     (add-hook 'after-make-frame-functions 'shackra/arregla-emojis)
     (shackra/arregla-emojis))
@@ -386,7 +399,8 @@ Completado incremental y estrechamiento de selección de candidatos :)
   (use-package helm
     :demand t
     :diminish helm-mode
-    :bind ("C-x f" .  helm-recentf)
+    :bind (("C-x f" .  helm-recentf)
+           ("M-y" . helm-show-kill-ring))
     :config
     (require 'helm-config)
     (use-package helm-grep
@@ -698,12 +712,14 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
           (add-to-list 'company-backends 'company-jedi)))
       (add-hook 'python-mode-hook #'shackra/jedi))
     (use-package company-anaconda
+      :diminish anaconda-mode
       :config
       (defun shackra/anaconda ()
         (unless (member 'company-anaconda 'company-backends)
           (add-to-list 'company-backends 'company-anaconda))
         (anaconda-mode))
-      (add-hook 'python-mode-hook #'shackra/anaconda))
+      (add-hook 'python-mode-hook #'shackra/anaconda)
+      (add-hook 'python-mode-hook 'eldoc-mode))
     (use-package helm-company)
     :bind-keymap ("C-ñ" . helm-company)
     :init
@@ -871,8 +887,34 @@ Permite designar qué buffers queremos matar o enterrar (/bury/).
     :bind (("C-x k" . kill-or-bury-alive))
     :config
     (setf kill-or-bury-alive-must-die-list
-          '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode "^\\*Backtrace\\*$"))
+          '("^\\*Help\\*$" "^\\*Packages\\*$" dired-mode prog-mode text-mode rust-mode "^\\*Backtrace\\*$"))
     (add-to-list 'kill-or-bury-alive-long-lasting-list "^\\*sh-<[:digit:]+>\\*$" t))
+#+END_SRC
+*** eldoc
+Muestra en el =área de eco= la lista de argumentos de una función que (podrías) estar escribiendo
+#+BEGIN_SRC emacs-lisp
+  (use-package eldoc
+    :ensure nil
+    :diminish eldoc-mode)
+#+END_SRC
+*** =auto-revert-mode=
+Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-revert-mode
+    :ensure nil
+    :init
+    (global-auto-revert-mode))
+#+END_SRC
+*** YASnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :init
+    (defun shackra/yas ()
+      (yas-reload-all)
+      (yas-minor-mode-on))
+    :config
+    (add-hook 'prog-mode-hook 'shackra/yas))
 #+END_SRC
 ** Comunicación
 *** =mu4e=
@@ -999,19 +1041,23 @@ Tumblr desde Emacs
 :END:      
 Twitter desde Emacs
 #+BEGIN_SRC emacs-lisp
-  (if (fboundp 'twit)
-      (defalias 'tt 'twit))
-
   (use-package twittering-mode
-    :bind-keymap ("C-c f" . twittering-favorite)
     :init
+    (defalias 'tt 'twit)
     (setf twittering-use-master-password t)
     (setf twittering-display-remaining t)
     (setf twittering-icon-mode t)
     (setf twittering-timer-interval 300)
     (setf twittering-url-show-status nil)
     :config
-    (defalias 'tt 'twit)
+    (defun shackra/tt-fav-rett (&optional arg)
+      "Marca como favorito y retweetea un tweet"
+      (interactive "P")
+      (twittering-retweet t)
+      (twittering-favorite))
+    (bind-key "C-c f" 'twittering-favorite twittering-mode-map)
+    (bind-key "C-c F" 'shackra/tt-fav-rett twittering-mode-map)
+    
     (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
     (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
 #+END_SRC
@@ -1024,23 +1070,14 @@ Acceso a Stackoverflow y subsitios desde Emacs.
   (use-package sx
     :defer 10)
 #+END_SRC
-*** EGO
+*** org-webpage
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:57]
 - Refiled on [2015-11-12 jue 16:46]
 :END:      
 Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 #+BEGIN_SRC emacs-lisp
-  (use-package ego
-    :if (string-equal system-type "gnu/linux")
-    :load-path  "~/.emacs.d/site-packages/EGO"
-    :preface
-    (use-package mustache)
-    (use-package dash)
-    (use-package htmlize)
-    (use-package ht)
-    (use-package simple-httpd)
-    :ensure nil
+  (use-package org-webpage
     :config
     ;; Le pedimos a org-mode que no meta las patas cuando exporta archivos a
     ;; HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
@@ -1051,27 +1088,24 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
     ;; [2]: http://emacs.stackexchange.com/a/9839/690
     ;; [3]: https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el
     (load-file (expand-file-name "srcprecode.el" user-emacs-directory))
-    (ego/add-to-alist 'ego/project-config-alist
-                     `(("El blog de Shackra"
-                       :repository-directory "~/Documentos/elblog.deshackra.com/"
-                       :repository-html-branch nil
-                       :repository-org-branch "master"
-                       :default-category "blog"
-                       :site-domain "http://elblog.deshackra.com"
-                       :site-main-title "El blog de Shackra"
-                       :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
-                       :ignore-file-name-regexp "README"
-                       :rss ("RSS" "/rss.xml")
-                       :about ("Sobre mi" "/about")
-                       ;;op/personal-github-link "https://github.com/shackra"
-                       ;;op/theme-root-directory (expand-file-name
-                       ;;"org-page-themes" user-emacs-directory)
-                       :theme-root-directory (list (expand-file-name "org-page-themes" user-emacs-directory))
-                       :theme (shackra)
-                       :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
-                       :confound-email t
-                       :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
-                       :web-server-port 5777)))
+    (owp/add-project-config '("El blog de Shackra"
+                              :repository-directory "~/Documentos/elblog.deshackra.com/"
+                              :ignore-file-name-regexp "README"
+                              :publishing-directory "~/Documentos/deshackra.com/elblog.deshackra.com"
+                              :site-domain "http://elblog.deshackra.com"
+                              :site-main-title "El blog de Shackra"
+                              :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
+                              :theme-root-directory (:eval (list (expand-file-name "org-page-themes" user-emacs-directory)))
+                              :theme (shackra)
+                              :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog")
+                              :confound-email t
+                              :default-category "blog"
+                              :about ("Sobre mi" "/about")
+                              :rss ("RSS feed" "/rss.xml")
+                              :summary (("etiquetas" :tags))
+                              :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
+                              :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
+                              :web-server-port 5777))
 
     (eval-after-load 'ox
       '(progn
@@ -1108,7 +1142,10 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
     :preface
     (provide 'prog-mode)
     (use-package rainbow-mode)
-    (use-package highlight-escape-sequences)
+    (use-package highlight-escape-sequences
+      :config
+      (put 'hes-escape-backslash-face 'face-alias 'font-lock-builtin-face)
+      (put 'hes-escape-sequence-face 'face-alias 'font-lock-builtin-face))
     (use-package highlight-numbers)
     :init
     (defun shackra/prog-mode ()
@@ -1162,18 +1199,18 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
           ;; Don't ruin S-arrow to switch windows please (use M-+ and M-- instead to toggle)
           org-replace-disputed-keys t
           org-imenu-depth 5
-          org-log-done 'note
+          org-log-done nil
           org-log-reschedule 'note
           org-log-redeadline 'note
-          org-log-note-clock-out 'note
-          org-log-refile 'note
-          org-log-into-drawer t
+          org-log-note-clock-out nil
+          org-log-refile nil
+          org-log-into-drawer nil
           org-clock-persist 'history
           org-default-notes-file (expand-file-name "quizas.org" org-directory)
 
-          org-agenda-files (list (expand-file-name "cosasporhacer.org" org-directory)
+          org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)
                                  (expand-file-name "fechas.org" org-directory)))
-      (setf org-todo-keywords
+    (setf org-todo-keywords
           '(
             ;; Secuencia para TAREAS
             ;; POR-HACER significa que la tarea necesita atención
@@ -1205,8 +1242,12 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ("ENTREGAR"    . (:background "#f4a460" :foreground "#8b4513" :weight bold))
             ("ENTREGADO"   . (:background "#98fb98" :foreground "#556b2f" :weight bold))
             ("OLVIDALO"    . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))))
+    ;; según http://orgmode.org/manual/Link-abbreviations.html#Link-abbreviations
+    (setf org-link-abbrev-alist
+          '(("katpelicula" . "https://kat.cr/usearch/\"%s\" category:movies seeds:5 lang_id:2")
+            ("katanime" . "https://kat.cr/usearch/\"%s\" category:english-translated seeds:5 is_safe:1/")))
     (setf org-capture-templates
-          '(("p" "Añadir tarea por hacer" entry (file "cosasporhacer.org")
+          '(("p" "Añadir tarea por hacer" entry (file "cosas por hacer.org")
              "* POR-HACER %^{breve descripcion} %^g
   :PROPERTIES:
   :CREATED:%U
@@ -1271,7 +1312,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :PROPERTIES:
   :CREATED: %T
   :END:
-  [[https://kat.cr/usearch/\"%\\1\" category:movies seeds:5 lang_id:2][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
+  [[katpelicula:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
             ("ga" "Anime" entry (file+headline "quizas.org" "Anime")
              "* Ver /%^{Anime}/
   :PROPERTIES:
@@ -1280,7 +1321,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :EPISODIO: 1
   :EPISODIOS: %^{numero de episodios}
   :END:
-  [[https://kat.cr/usearch/\"%\\1\" category:english-translated seeds:5 is_safe:1/][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
+  [[katanime:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
     (use-package org-bullets
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
@@ -1353,41 +1394,6 @@ Paquete extensivo para escribir y formatear documentos TeX
       :config
       (company-auctex-init)))
 #+END_SRC
-*** ropemacs
-Nos permite hacer refactorización en código Python. La documentación esta disponible en [[https://github.com/python-rope/ropemacs][python-rope/ropemacs]].
-#+BEGIN_SRC emacs-lisp
-  (use-package pymacs
-    :disabled t
-    :ensure nil
-    :config
-    (pymacs-load "ropemacs" "rope")
-    (bind-key "M-." 'rope-goto-definition ropemacs-local-keymap))
-#+END_SRC
-**** Preparación previa
-Antes de tener disponible ropemacs, hay que instalar varias cosillas en el sistema. Si su distribución de GNU/Linux es Parabola o Arch, algunas cosillas seran más sencillas de instalar.
-
-Lo primero es instalar Pymacs, ya que estoy en Parabola, voy a instalarlo usando un =PKGBUILD= que alguien más hizo amablemente.
-
-#+BEGIN_SRC sh :tangle no
-  git clone https://aur.archlinux.org/pymacs.git
-  cd pymacs
-  makepkg -si
-  # Se instalo correctamente?
-  python2 -c "import Pymacs" 
-  # Si no hay errores, entonces sí.
-#+END_SRC
-
-Luego, hay que instalar =rope=.
-
-#+BEGIN_SRC sh :tangle no
-  sudo pacman -S python2-rope
-#+END_SRC
-
-Y por ultimo =ropemacs=.
-
-#+BEGIN_SRC sh :tangle no
-  sudo pip2 install ropemacs
-#+END_SRC
 *** =toml=
 /El lenguaje minimalista y obvio de Tom/
 #+BEGIN_SRC emacs-lisp
@@ -1400,6 +1406,50 @@ Y por ultimo =ropemacs=.
   (use-package yaml-mode
     :defer 10
     :mode "\\.yml$")
+#+END_SRC
+*** =rust=
+Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de programación de sistemas que corre realmente rapido, previene fallos de segmentación (segfaults), y garantiza seguridad en programas multi-hilo.
+#+BEGIN_SRC emacs-lisp
+  (use-package rust-mode
+    :init
+    (use-package rustfmt
+      :config
+      (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
+    (use-package cargo)
+    (use-package racer
+      :init
+      (setf racer-rust-src-path (getenv "RUST_SRC_PATH"))
+      (setf racer-cmd (expand-file-name "~/.cargo/bin/racer"))
+      :config
+      (add-hook 'rust-mode-hook #'racer-mode)
+      (add-hook 'racer-mode-hook #'eldoc-mode)
+      (use-package company-racer
+        :config
+        (add-to-list 'company-backends 'company-racer)))
+    (use-package flycheck-rust
+      :config
+      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+#+END_SRC
+*** emacs-traad
+Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
+#+BEGIN_SRC emacs-lisp
+  (use-package traad
+    :init
+    (use-package traad-projectile
+      :if (fboundp 'projectile-project-p)
+      :ensure nil
+      :init
+      (defun shackra/traad-open ()
+        "Inicia un servidor traad usando la ubicación del proyecto actual"
+        (interactive)
+        (if (projectile-project-p)
+            (traad-open (projectile-project-root))
+          (message "No estas en ningún proyecto!"))))
+    :config
+    ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
+    ;; de manera automática
+    (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad") user-emacs-directory)))
+        (traad-install-server)))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
@@ -1424,6 +1474,37 @@ Revisión ortográfica al vuelo.
   (use-package flyspell
     :diminish flyspell-mode
     :ensure nil)
+
+  (use-package shackra/ispell-dict-switch
+    :bind (("<f8>" . shackra/ispell-cycle-dict))
+    :ensure nil
+    :preface (provide 'shackra/ispell-dict-switch)
+    :config
+    (setf shackra/ispell-dict-list (list "es" "en"))
+    :init
+    (defvar shackra/ispell-dict-list (list) "Lista de diccionarios para cambiar")
+    (defun shackra--ispell-current-dict ()
+      "Obtiene el diccionario actual o retorna el establecido por defecto"
+      (if ispell-current-dictionary
+          (cl-position ispell-current-dictionary shackra/ispell-dict-list :test 'string=)
+        ;; TODO: LANG podría estar o no
+        ;; establecida, lo que podría
+        ;; causar problemas.
+        (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)))
+    (defun shackra/ispell-cycle-dict ()
+      "Cambia de un diccionario a otro"
+      (interactive)
+      (let ((dict-list-size (- (length shackra/ispell-dict-list) 1))
+            (dict-current-index (shackra--ispell-current-dict)))
+        (if (> (+ dict-current-index 1) dict-list-size)
+            (setf dict-current-index 0)
+          (setf dict-current-index (+ dict-current-index 1)))
+        ;; luego de realizar la matemática, cambiamos el diccionario
+        (ispell-change-dictionary (nth dict-current-index shackra/ispell-dict-list)))
+      ;; Nuevo diccionario, nada de palabras subrayadas
+      (flyspell-delete-all-overlays)
+      ;; Mandamos a revisar la ortografía del párrafo en que estamos
+      (flyspell-region (line-beginning-position) (line-end-position))))
 #+END_SRC
 *** =flycheck-mode=
 :LOGBOOK:  
@@ -1480,9 +1561,13 @@ Multiples cursores en Emacs.
 - Refiled on [2015-11-12 jue 16:49]
 :END:      
 #+BEGIN_SRC emacs-lisp
-  (use-package visual-regexp-steroids
-    :bind (("C-c r" . vr/replace)
-           ("C-c q" . vr/query-replace)))
+  (use-package visual-regexp
+    :config
+    (use-package visual-regexp-steroids
+      :init
+      (require 'visual-regexp-steroids)
+      :bind (("C-c r" . vr/replace)
+             ("C-c q" . vr/query-replace))))
 
   (use-package re-builder
     :init
@@ -1517,6 +1602,7 @@ Navegación y edición de /SubPalabras/. Siendo "HolaMundoAdios" una nomenclatur
 Borra espacios en blanco consecutivos con sólo presionar =backspace= una vez :)
 #+BEGIN_SRC emacs-lisp
   (use-package hungry-delete
+    :diminish hungry-delete-mode
     :config
     (global-hungry-delete-mode))
 #+END_SRC
@@ -1582,6 +1668,10 @@ He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a
 :END:      
 #+BEGIN_SRC emacs-lisp
   (use-package htmlize)
+#+END_SRC
+*** mustache
+#+BEGIN_SRC emacs-lisp
+  (use-package mustache-mode)
 #+END_SRC
 *** =fixmee=
 :LOGBOOK:  
@@ -1672,7 +1762,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
         ;; `min-to-app' puede ser una lista, o no.
         (if (atom min-to-app)
             (alert
-             (if (<= min-to-app 1)
+             (if (<= (string-to-int min-to-app) 1)
                  (format "<b>Cita en %s minuto</b>" min-to-app)
                (format "<b>Cita en %s minutos</b>" min-to-app))
              :title msg
@@ -1683,12 +1773,13 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
           ;; cosas por hacer.
           (dolist (i (number-sequence 0 (1- (length min-to-app))))
             (alert
-             (if (<= (nth i min-to-app) 1)
+             (if (<= (string-to-int (nth i min-to-app)) 1)
                  (format "<b>Cita en %s minuto</b>" (nth i min-to-app))
                (format "<b>Cita en %s minutos</b>" (nth i min-to-app)))
              :title (nth i msg)
              :mode 'Emacs-Org
-             :severity 'normal)))))
+             :severity 'high
+             :persistent t)))))
     (setf appt-message-warning-time 10
           appt-display-interval (1+ appt-message-warning-time)
           appt-display-mode-line nil)
@@ -1697,9 +1788,10 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
     ;;(setf appt-delete-window-function nil)
     :config
     (defun shackra/appt-update-when-file-updated ()
-      "Actualiza appt cuando cierto archivo es actualizado"
-      ;; TODO: iterar una lista de agendas que se definen para org-mode
-      (if (string= (buffer-file-name) (concat org-directory "/cosasporhacer.org"))
+      "Actualiza appt cuando ciertos archivos son actualizados"
+      ;; si `org-directory' es prefijo en el nombre del archivo del buffer
+      ;; actual, ejecuta la funcion `shackra/org-agenda-to-appt'
+      (if (string-prefix-p org-directory (buffer-file-name))
           (shackra/org-agenda-to-appt)))
 
     (defun shackra/org-agenda-to-appt ()
@@ -1734,4 +1826,12 @@ Modo mayor para editar archivos de servicio systemd.
   (use-package pretty-mode
     :config
     (add-hook 'prog-mode-hook 'turn-on-pretty-mode))
+#+END_SRC
+*** Editor de subtítulos
+Un modo mayor que permite agregar subtítulos a vídeos. Requiere MPlayer.
+#+BEGIN_SRC emacs-lisp
+  (use-package sese
+    :ensure nil
+    :load-path "site-packages/sese/"
+    :mode "\\.sese$")
 #+END_SRC
