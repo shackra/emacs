@@ -399,7 +399,8 @@ Completado incremental y estrechamiento de selección de candidatos :)
   (use-package helm
     :demand t
     :diminish helm-mode
-    :bind ("C-x f" .  helm-recentf)
+    :bind (("C-x f" .  helm-recentf)
+           ("M-y" . helm-show-kill-ring))
     :config
     (require 'helm-config)
     (use-package helm-grep
@@ -896,6 +897,25 @@ Muestra en el =área de eco= la lista de argumentos de una función que (podría
     :ensure nil
     :diminish eldoc-mode)
 #+END_SRC
+*** =auto-revert-mode=
+Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package auto-revert-mode
+    :ensure nil
+    :init
+    (global-auto-revert-mode))
+#+END_SRC
+*** YASnippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :diminish yas-minor-mode
+    :init
+    (defun shackra/yas ()
+      (yas-reload-all)
+      (yas-minor-mode-on))
+    :config
+    (add-hook 'prog-mode-hook 'shackra/yas))
+#+END_SRC
 ** Comunicación
 *** =mu4e=
 :LOGBOOK:  
@@ -1122,7 +1142,10 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
     :preface
     (provide 'prog-mode)
     (use-package rainbow-mode)
-    (use-package highlight-escape-sequences)
+    (use-package highlight-escape-sequences
+      :config
+      (put 'hes-escape-backslash-face 'face-alias 'font-lock-builtin-face)
+      (put 'hes-escape-sequence-face 'face-alias 'font-lock-builtin-face))
     (use-package highlight-numbers)
     :init
     (defun shackra/prog-mode ()
@@ -1371,41 +1394,6 @@ Paquete extensivo para escribir y formatear documentos TeX
       :config
       (company-auctex-init)))
 #+END_SRC
-*** ropemacs
-Nos permite hacer refactorización en código Python. La documentación esta disponible en [[https://github.com/python-rope/ropemacs][python-rope/ropemacs]].
-#+BEGIN_SRC emacs-lisp
-  (use-package pymacs
-    :disabled t
-    :ensure nil
-    :config
-    (pymacs-load "ropemacs" "rope")
-    (bind-key "M-." 'rope-goto-definition ropemacs-local-keymap))
-#+END_SRC
-**** Preparación previa
-Antes de tener disponible ropemacs, hay que instalar varias cosillas en el sistema. Si su distribución de GNU/Linux es Parabola o Arch, algunas cosillas seran más sencillas de instalar.
-
-Lo primero es instalar Pymacs, ya que estoy en Parabola, voy a instalarlo usando un =PKGBUILD= que alguien más hizo amablemente.
-
-#+BEGIN_SRC sh :tangle no
-  git clone https://aur.archlinux.org/pymacs.git
-  cd pymacs
-  makepkg -si
-  # Se instalo correctamente?
-  python2 -c "import Pymacs" 
-  # Si no hay errores, entonces sí.
-#+END_SRC
-
-Luego, hay que instalar =rope=.
-
-#+BEGIN_SRC sh :tangle no
-  sudo pacman -S python2-rope
-#+END_SRC
-
-Y por ultimo =ropemacs=.
-
-#+BEGIN_SRC sh :tangle no
-  sudo pip2 install ropemacs
-#+END_SRC
 *** =toml=
 /El lenguaje minimalista y obvio de Tom/
 #+BEGIN_SRC emacs-lisp
@@ -1441,6 +1429,27 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     (use-package flycheck-rust
       :config
       (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+#+END_SRC
+*** emacs-traad
+Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
+#+BEGIN_SRC emacs-lisp
+  (use-package traad
+    :init
+    (use-package traad-projectile
+      :if (fboundp 'projectile-project-p)
+      :ensure nil
+      :init
+      (defun shackra/traad-open ()
+        "Inicia un servidor traad usando la ubicación del proyecto actual"
+        (interactive)
+        (if (projectile-project-p)
+            (traad-open (projectile-project-root))
+          (message "No estas en ningún proyecto!"))))
+    :config
+    ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
+    ;; de manera automática
+    (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad") user-emacs-directory)))
+        (traad-install-server)))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
