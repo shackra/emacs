@@ -951,6 +951,8 @@ Un versátil cliente de correo electrónico para Emacs.
       (start-process "pushmail" nil "pushmail.sh")
       (jump-to-register :mu4e-fullscreen))
     :config
+    ;; inicia mu4e luego de arrancar Emacs
+    (add-hook 'after-init-hook '(lambda () (mu4e t)) t)
     (defalias 'xc 'mu4e)
     (use-package mu4e-contrib
       :ensure nil)
@@ -1451,7 +1453,54 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
     ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
     ;; de manera automática
     (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad") user-emacs-directory)))
-        (traad-install-server)))
+        (traad-install-server))
+    (use-package hydra-traad
+      :ensure nil
+      :if (fboundp 'defhydra)
+      :bind (("C-c t" .  hydra-traad/body))
+      :init
+      (defhydra hydra-traad-history (:color blue)
+        "Historial de cambios de rope"
+        ("u" traad-undo "deshacer")
+        ("r" traad-redo "re-hacer")
+        ("h" traad-display-history "mostrar historial de cambios")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad-rename (:color blue)
+        "Renombrar con rope"
+        ("f" traad-rename-current-file "archivo/modulo actual")
+        ("r" traad-rename "objeto en locación actual")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad-signature (:color blue)
+        "Cambiar firma con rope"
+        ("n" traad-normalize-arguments "normalizar argumentos")
+        ("r" traad-remove-argument "remover argumentos")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad-extraction (:color blue)
+        "Extracción con rope"
+        ("m" traad-extract-method "método")
+        ("v" traad-extract-variable "variable")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad-imports (:color blue)
+        "Importaciones con rope"
+        ("o" traad-organize-imports "organizar")
+        ("s" traad-expand-star-imports "expandir *")
+        ("f" traad-froms-to-imports "convertir 'from' a normales")
+        ("r" traad-relatives-to-absolutes "convertir relativos a absolutos")
+        ("l" traad-handle-long-imports "manejar importaciones largas")
+        ("S" traad-imports-super-smackdown "Smackdown!")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad (:columns 2)
+        "Refactorización en Python con rope"
+        ("h" hydra-traad-history/body "Historial" :exit t)
+        ("r" hydra-traad-rename/body "Renombrar" :exit t)
+        ("s" hydra-traad-signature/body "Firma" :exit t)
+        ("e" hydra-traad-extraction/body "Extracción" :exit t)
+        ("i" hydra-traad-imports/body "Importaciones" :exit t))))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
