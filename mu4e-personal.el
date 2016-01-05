@@ -11,7 +11,6 @@
  message-cite-reply-position 'below
  mu4e-get-mail-command "getmail.sh"
  mu4e-maildir "/home/jorge/correo"
- mu4e-update-interval nil
  mu4e-auto-retrieve-keys t
  mu4e-headers-leave-behavior 'apply
  mu4e-headers-visible-lines 8
