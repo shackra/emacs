@@ -901,6 +901,8 @@ Muestra en el =área de eco= la lista de argumentos de una función que (podría
 Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package auto-revert-mode
+    :preface
+    (provide 'auto-revert-mode)
     :ensure nil
     :init
     (global-auto-revert-mode))
@@ -926,7 +928,6 @@ Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
     :ensure nil
-    :defer 3
     :preface
     ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
@@ -942,10 +943,12 @@ Un versátil cliente de correo electrónico para Emacs.
            "content=\"text/html;charset=UTF-8\">"
            html))
         (browse-url (concat "file://" tmpfile))))
+  
     (defadvice mu4e (before mu4e-start activate)
       "Antes de ejecutar `mu4e' borramos todas las ventanas"
       (window-configuration-to-register :mu4e-fullscreen)
       (delete-other-windows))
+  
     (defadvice mu4e-quit (after mu4e-close-and-push activate)
       "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
       (start-process "pushmail" nil "pushmail.sh")
@@ -959,7 +962,9 @@ Un versátil cliente de correo electrónico para Emacs.
     (use-package mu4e-maildirs-extension
       :init
       (setf mu4e-maildirs-extension-title " Bandejas")
-      (setf mu4e-maildirs-extension-custom-list '("/personal/INBOX" "/gmx/INBOX" "/riseup/INBOX")))
+      (setf mu4e-maildirs-extension-custom-list '("/personal/INBOX" "/gmx/INBOX" "/riseup/INBOX"))
+      :config
+      (add-hook 'mu4e-main-mode-hook 'mu4e-maildirs-extension))
 
     (if (file-exists-p "/home/jorge/.secret/mu4e-cuentas.el")
         (load-file "/home/jorge/.secret/mu4e-cuentas.el")
@@ -1441,6 +1446,8 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
     :init
     (use-package traad-projectile
       :if (fboundp 'projectile-project-p)
+      :preface
+      (provide 'traad-projectile)
       :ensure nil
       :init
       (defun shackra/traad-open ()
