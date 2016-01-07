@@ -338,6 +338,44 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
     (split-window-horizontally)
     (other-window 1))
 #+END_SRC
+** =defadvice= temporal
+#+BEGIN_SRC emacs-lisp
+  (defmacro my/with-advice (adlist &rest body)
+    "Execute BODY with temporary advice in ADLIST.
+
+  Each element of ADLIST should be a list of the form
+    (SYMBOL WHERE FUNCTION [PROPS])
+  suitable for passing to `advice-add'.  The BODY is wrapped in an
+  `unwind-protect' form, so the advice will be removed even in the
+  event of an error or nonlocal exit."
+    (declare (debug ((&rest (&rest form)) body))
+             (indent 1))
+    `(progn
+       ,@(mapcar (lambda (adform)
+                   (cons 'advice-add adform))
+                 adlist)
+       (unwind-protect (progn ,@body)
+         ,@(mapcar (lambda (adform)
+                     `(advice-remove ,(car adform) ,(nth 2 adform)))
+                   adlist))))
+#+END_SRC
+** Omitir confirmación para =y-or-n-p=
+#+BEGIN_SRC emacs-lisp
+  (defun my/bypass-confirmation (function &rest args)
+    "Call FUNCTION with ARGS, bypassing all `y-or-n-p' prompts."
+    (my/with-advice
+     ((#'y-or-n-p :override (lambda (prompt) t)))
+     (apply function args)))
+
+  (defun my/bypass-confirmation-all (function &rest args)
+    "Call FUNCTION with ARGS, bypassing all prompts.
+  This includes both `y-or-n-p' and `yes-or-no-p'."
+    (my/with-advice
+     ((#'y-or-n-p    :override (lambda (prompt) t))
+      (#'yes-or-no-p :override (lambda (prompt) t)))
+     (apply function args)))
+#+END_SRC
+
 * Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira al archivo especificado.
@@ -1062,11 +1100,11 @@ Twitter desde Emacs
     (defun shackra/tt-fav-rett (&optional arg)
       "Marca como favorito y retweetea un tweet"
       (interactive "P")
-      (twittering-retweet t)
-      (twittering-favorite))
+      (my/bypass-confirmation-all #'twittering-retweet t)
+      (my/bypass-confirmation-all #'twittering-favorite))
     (bind-key "C-c f" 'twittering-favorite twittering-mode-map)
     (bind-key "C-c F" 'shackra/tt-fav-rett twittering-mode-map)
-    
+  
     (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
     (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
 #+END_SRC
