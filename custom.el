@@ -89,7 +89,8 @@
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
  '(safe-local-variable-values
    (quote
-    ((shackra:var-python-version . 3)
+    ((buffer-read-only . 1)
+     (shackra:var-python-version . 3)
      (pyvenv-workon . kuotaru)
      (shackra:var-python-ver . 2)
      (shackra:var-python-ver . 3)
