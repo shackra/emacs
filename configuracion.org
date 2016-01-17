@@ -428,6 +428,13 @@ Nombres más cortos para comandos usados frecuentemente
 #+END_SRC
 * Paquetes de extensiones
 ** Utilidades
+*** sensitive
+Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package sensitive
+    :config
+    (load-sensitive-files))
+#+END_SRC
 *** =helm=
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:38]
@@ -437,9 +444,12 @@ Completado incremental y estrechamiento de selección de candidatos :)
   (use-package helm
     :demand t
     :diminish helm-mode
-    :bind (("C-x f" .  helm-recentf)
-           ("M-y" . helm-show-kill-ring))
+    :bind (("M-y" . helm-show-kill-ring)
+           ("C-x f" . helm-recentf))
     :config
+    ;; re-ata combinaciones de teclas a los comandos de helm
+    (substitute-key-definition 'find-file 'helm-find-files (current-global-map))
+    (substitute-key-definition 'execute-extended-command 'helm-M-x (current-global-map))
     (require 'helm-config)
     (use-package helm-grep
       :ensure nil
@@ -462,8 +472,8 @@ Completado incremental y estrechamiento de selección de candidatos :)
                                            "\\.xlsx$" "\\.epub$" "\\.docx$")))
     (use-package helm-buffers
       :ensure nil
-      :bind ("C-x b" . helm-mini)
       :config
+      (substitute-key-definition 'switch-to-buffer 'helm-mini (current-global-map))
       (setf helm-buffers-fuzzy-matching t
             helm-truncate-lines t
             helm-ff-skip-boring-buffers t
@@ -472,7 +482,7 @@ Completado incremental y estrechamiento de selección de candidatos :)
                                              "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
                                              "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
                                              "\\*.+(.+)" "elpa/.+" "tramp/.+"
-                                             "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*"
+                                             "\\*Gofmt Errors\\*" "\\*autopep8"
                                              "\\*magit-process:" "\\*magit-diff:" "\\*anaconda-mode\\*")))
     (setf helm-autoresize-max-height 40
           helm-autoresize-min-height 20
@@ -492,7 +502,6 @@ Completado incremental y estrechamiento de selección de candidatos :)
       :config
       (bind-keys :map help-map
                  ("b" . helm-descbinds)))
-    (helm-mode 1)
     (helm-autoresize-mode 1))
 #+END_SRC
 *** =hydra=
@@ -981,12 +990,12 @@ Un versátil cliente de correo electrónico para Emacs.
            "content=\"text/html;charset=UTF-8\">"
            html))
         (browse-url (concat "file://" tmpfile))))
-  
+
     (defadvice mu4e (before mu4e-start activate)
       "Antes de ejecutar `mu4e' borramos todas las ventanas"
       (window-configuration-to-register :mu4e-fullscreen)
       (delete-other-windows))
-  
+
     (defadvice mu4e-quit (after mu4e-close-and-push activate)
       "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
       (start-process "pushmail" nil "pushmail.sh")
@@ -1000,15 +1009,14 @@ Un versátil cliente de correo electrónico para Emacs.
     (use-package mu4e-maildirs-extension
       :init
       (setf mu4e-maildirs-extension-title " Bandejas")
-      (setf mu4e-maildirs-extension-custom-list '("/personal/INBOX" "/gmx/INBOX" "/riseup/INBOX"))
       :config
       (add-hook 'mu4e-main-mode-hook 'mu4e-maildirs-extension))
-
-    (if (file-exists-p "/home/jorge/.secret/mu4e-cuentas.el")
-        (load-file "/home/jorge/.secret/mu4e-cuentas.el")
-      (alert :urgency 'critical
-             :title "Cuentas de correo electrónico"
-             :body "No se pudo cargar: ~/.secret/mu4e-cuentas.el"))
+    (use-package profile
+      :ensure nil
+      :load-path "site-packages/profile/"
+      :bind-keymap (("C-c f" . profile-force-profile-in-compose))
+      :config
+      (add-hook 'mu4e-compose-pre-hook #'profile-set-profile-in-compose))
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text
           mu4e-confirm-quit nil
@@ -1018,14 +1026,13 @@ Un versátil cliente de correo electrónico para Emacs.
             ("flag:flagged" "Marcados" ?m)
             ("date:today..now" "Correo de hoy" ?h)
             ("date:7d..now" "Correo de la semana" ?w)))
-    (setf mu4e-maildir-shortcuts
-          '(("/personal/INBOX" . ?p)
-            ("/gmx/INBOX"      . ?g)
-            ("/riseup/INBOX"   . ?r)))
-    ;; carga los datos de mi cuenta de correo
-    (load-file (expand-file-name "mu4e-personal.el" user-emacs-directory))
     (add-to-list 'mu4e-view-actions
                  '("Navegador web" . mu4e-msgv-action-view-in-browser) t))
+#+END_SRC
+*** profile
+Múltiples cuentas de correo para mu4e
+#+BEGIN_SRC emacs-lisp
+  
 #+END_SRC
 *** =jabber.el=
 :LOGBOOK:  
@@ -1756,6 +1763,13 @@ He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a
       (back-to-indentation)
       (and (= oldpos (point))
            (beginning-of-line)))))
+#+END_SRC
+*** transcription-mode
+Modo mayor para editar transcripciones
+#+BEGIN_SRC emacs-lisp
+  (use-package transcription-mode
+    :ensure nil
+    :load-path "site-packages/transcription-mode")
 #+END_SRC
 ** Otros
 *** =htmlize=

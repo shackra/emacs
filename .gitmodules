@@ -7,3 +7,6 @@
 [submodule "site-packages/EGO"]
 	path = site-packages/EGO
 	url = https://github.com/emacs-china/EGO.git
+[submodule "site-packages/transcription-mode"]
+	path = site-packages/transcription-mode
+	url = https://github.com/skeeto/transcription-mode.git
