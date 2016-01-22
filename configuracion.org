@@ -432,6 +432,8 @@ Nombres más cortos para comandos usados frecuentemente
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package sensitive
+    :disabled t
+    :init (setf sensitive-root "~/.secret/things/")
     :config
     (load-sensitive-files))
 #+END_SRC
@@ -1013,6 +1015,8 @@ Un versátil cliente de correo electrónico para Emacs.
       (add-hook 'mu4e-main-mode-hook 'mu4e-maildirs-extension))
     (use-package profile
       :ensure nil
+      :preface
+      (require 'profile)
       :load-path "site-packages/profile/"
       :bind-keymap (("C-c f" . profile-force-profile-in-compose))
       :config
