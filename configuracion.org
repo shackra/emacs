@@ -398,7 +398,7 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
     :config
     (defun font-exists-p (font)
       "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
-      (if (null (x-list-fonts font))
+      (if (not (find-font (font-spec :name font)))
           nil
         t)))
 
