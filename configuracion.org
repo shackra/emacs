@@ -390,19 +390,34 @@ configuración sana de ciertas opciones en Emacs
   (load-file (expand-file-name "sane.el" user-emacs-directory))
 #+END_SRC
 ** Tipografía
-Establecemos la tipografía a usar, mi preferida es [[http://adobe-fonts.github.io/source-code-pro/][Source Code Pro]]
+Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
 #+BEGIN_SRC emacs-lisp
+  (use-package existefuente
+    :ensure nil
+    :preface (provide 'existefuente)
+    :config
+    (defun font-exists-p (font)
+      "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
+      (if (null (x-list-fonts font))
+          nil
+        t)))
+
   (use-package misfuentes
     :ensure nil
     :preface (provide 'misfuentes)
     :config
-    (ignore-errors
-      (set-frame-font "Monoid 9")
-      (add-to-list (quote default-frame-alist) (quote (font . "Monoid-9"))))
+    (if (font-exists-p "Monoid")
+        (progn
+          (set-frame-font "Monoid 9")
+          (add-to-list (quote default-frame-alist) (quote (font . "Monoid-9"))))
+      (if (font-exists-p "Source Code Pro")
+          (progn
+            (set-frame-font "Source Code Pro 10")
+            (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-10"))))))
 
     (defun shackra/arregla-emojis (&optional frame)
-      (ignore-errors
-        (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
+      (if (font-exists-p "Symbola")
+          (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
 
     (add-hook 'after-make-frame-functions 'shackra/arregla-emojis)
     (shackra/arregla-emojis))
