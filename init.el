@@ -1,13 +1,14 @@
-(load-file (expand-file-name "security.el" user-emacs-directory))
+
+(if (eq system-type 'gnu/linux)
+    (load-file (expand-file-name "security.el" user-emacs-directory)))
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
 (setf package-enable-at-startup nil)
 (package-initialize)
 
 ;; repositorios de paquetes
 (setf package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("org" . "http://orgmode.org/elpa/")))
-(when (< emacs-major-version 24)
-  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+                         ("org" . "http://orgmode.org/elpa/")
+                         ("gnu" . "https://elpa.gnu.org/packages/")))
 
 ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
 ;; lo instalamos

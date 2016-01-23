@@ -20,16 +20,16 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
 =~/.emacs.d/init.el=:
 
 #+BEGIN_SRC emacs-lisp :tangle init.el :tangle no
-  (load-file (expand-file-name "security.el" user-emacs-directory))
+  (if (eq system-type 'gnu/linux)
+      (load-file (expand-file-name "security.el" user-emacs-directory)))
   ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
   (setf package-enable-at-startup nil)
   (package-initialize)
 
   ;; repositorios de paquetes
   (setf package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "http://orgmode.org/elpa/")))
-  (when (< emacs-major-version 24)
-    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
+                           ("org" . "http://orgmode.org/elpa/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")))
 
   ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
   ;; lo instalamos
@@ -338,6 +338,44 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
     (split-window-horizontally)
     (other-window 1))
 #+END_SRC
+** =defadvice= temporal
+#+BEGIN_SRC emacs-lisp
+  (defmacro my/with-advice (adlist &rest body)
+    "Execute BODY with temporary advice in ADLIST.
+
+  Each element of ADLIST should be a list of the form
+    (SYMBOL WHERE FUNCTION [PROPS])
+  suitable for passing to `advice-add'.  The BODY is wrapped in an
+  `unwind-protect' form, so the advice will be removed even in the
+  event of an error or nonlocal exit."
+    (declare (debug ((&rest (&rest form)) body))
+             (indent 1))
+    `(progn
+       ,@(mapcar (lambda (adform)
+                   (cons 'advice-add adform))
+                 adlist)
+       (unwind-protect (progn ,@body)
+         ,@(mapcar (lambda (adform)
+                     `(advice-remove ,(car adform) ,(nth 2 adform)))
+                   adlist))))
+#+END_SRC
+** Omitir confirmación para =y-or-n-p=
+#+BEGIN_SRC emacs-lisp
+  (defun my/bypass-confirmation (function &rest args)
+    "Call FUNCTION with ARGS, bypassing all `y-or-n-p' prompts."
+    (my/with-advice
+     ((#'y-or-n-p :override (lambda (prompt) t)))
+     (apply function args)))
+
+  (defun my/bypass-confirmation-all (function &rest args)
+    "Call FUNCTION with ARGS, bypassing all prompts.
+  This includes both `y-or-n-p' and `yes-or-no-p'."
+    (my/with-advice
+     ((#'y-or-n-p    :override (lambda (prompt) t))
+      (#'yes-or-no-p :override (lambda (prompt) t)))
+     (apply function args)))
+#+END_SRC
+
 * Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que
  se haga a través de =customize= ira al archivo especificado.
@@ -352,19 +390,34 @@ configuración sana de ciertas opciones en Emacs
   (load-file (expand-file-name "sane.el" user-emacs-directory))
 #+END_SRC
 ** Tipografía
-Establecemos la tipografía a usar, mi preferida es [[http://adobe-fonts.github.io/source-code-pro/][Source Code Pro]]
+Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
 #+BEGIN_SRC emacs-lisp
+  (use-package existefuente
+    :ensure nil
+    :preface (provide 'existefuente)
+    :config
+    (defun font-exists-p (font)
+      "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
+      (if (null (x-list-fonts font))
+          nil
+        t)))
+
   (use-package misfuentes
     :ensure nil
     :preface (provide 'misfuentes)
     :config
-    (ignore-errors
-      (set-frame-font "Monoid 9")
-      (add-to-list (quote default-frame-alist) (quote (font . "Monoid-9"))))
+    (if (font-exists-p "Monoid")
+        (progn
+          (set-frame-font "Monoid 9")
+          (add-to-list (quote default-frame-alist) (quote (font . "Monoid-9"))))
+      (if (font-exists-p "Source Code Pro")
+          (progn
+            (set-frame-font "Source Code Pro 10")
+            (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-10"))))))
 
     (defun shackra/arregla-emojis (&optional frame)
-      (ignore-errors
-        (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
+      (if (font-exists-p "Symbola")
+          (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
 
     (add-hook 'after-make-frame-functions 'shackra/arregla-emojis)
     (shackra/arregla-emojis))
@@ -390,6 +443,15 @@ Nombres más cortos para comandos usados frecuentemente
 #+END_SRC
 * Paquetes de extensiones
 ** Utilidades
+*** sensitive
+Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package sensitive
+    :disabled t
+    :init (setf sensitive-root "~/.secret/things/")
+    :config
+    (load-sensitive-files))
+#+END_SRC
 *** =helm=
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:38]
@@ -399,9 +461,12 @@ Completado incremental y estrechamiento de selección de candidatos :)
   (use-package helm
     :demand t
     :diminish helm-mode
-    :bind (("C-x f" .  helm-recentf)
-           ("M-y" . helm-show-kill-ring))
+    :bind (("M-y" . helm-show-kill-ring)
+           ("C-x f" . helm-recentf))
     :config
+    ;; re-ata combinaciones de teclas a los comandos de helm
+    (substitute-key-definition 'find-file 'helm-find-files (current-global-map))
+    (substitute-key-definition 'execute-extended-command 'helm-M-x (current-global-map))
     (require 'helm-config)
     (use-package helm-grep
       :ensure nil
@@ -424,8 +489,8 @@ Completado incremental y estrechamiento de selección de candidatos :)
                                            "\\.xlsx$" "\\.epub$" "\\.docx$")))
     (use-package helm-buffers
       :ensure nil
-      :bind ("C-x b" . helm-mini)
       :config
+      (substitute-key-definition 'switch-to-buffer 'helm-mini (current-global-map))
       (setf helm-buffers-fuzzy-matching t
             helm-truncate-lines t
             helm-ff-skip-boring-buffers t
@@ -434,7 +499,7 @@ Completado incremental y estrechamiento de selección de candidatos :)
                                              "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
                                              "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
                                              "\\*.+(.+)" "elpa/.+" "tramp/.+"
-                                             "\\*Gofmt Errors\\*" "\\*autopep8" "\\*Pymacs\\*"
+                                             "\\*Gofmt Errors\\*" "\\*autopep8"
                                              "\\*magit-process:" "\\*magit-diff:" "\\*anaconda-mode\\*")))
     (setf helm-autoresize-max-height 40
           helm-autoresize-min-height 20
@@ -454,7 +519,6 @@ Completado incremental y estrechamiento de selección de candidatos :)
       :config
       (bind-keys :map help-map
                  ("b" . helm-descbinds)))
-    (helm-mode 1)
     (helm-autoresize-mode 1))
 #+END_SRC
 *** =hydra=
@@ -943,12 +1007,12 @@ Un versátil cliente de correo electrónico para Emacs.
            "content=\"text/html;charset=UTF-8\">"
            html))
         (browse-url (concat "file://" tmpfile))))
-  
+
     (defadvice mu4e (before mu4e-start activate)
       "Antes de ejecutar `mu4e' borramos todas las ventanas"
       (window-configuration-to-register :mu4e-fullscreen)
       (delete-other-windows))
-  
+
     (defadvice mu4e-quit (after mu4e-close-and-push activate)
       "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
       (start-process "pushmail" nil "pushmail.sh")
@@ -962,15 +1026,16 @@ Un versátil cliente de correo electrónico para Emacs.
     (use-package mu4e-maildirs-extension
       :init
       (setf mu4e-maildirs-extension-title " Bandejas")
-      (setf mu4e-maildirs-extension-custom-list '("/personal/INBOX" "/gmx/INBOX" "/riseup/INBOX"))
       :config
       (add-hook 'mu4e-main-mode-hook 'mu4e-maildirs-extension))
-
-    (if (file-exists-p "/home/jorge/.secret/mu4e-cuentas.el")
-        (load-file "/home/jorge/.secret/mu4e-cuentas.el")
-      (alert :urgency 'critical
-             :title "Cuentas de correo electrónico"
-             :body "No se pudo cargar: ~/.secret/mu4e-cuentas.el"))
+    (use-package profile
+      :ensure nil
+      :preface
+      (require 'profile)
+      :load-path "site-packages/profile/"
+      :bind-keymap (("C-c f" . profile-force-profile-in-compose))
+      :config
+      (add-hook 'mu4e-compose-pre-hook #'profile-set-profile-in-compose))
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text
           mu4e-confirm-quit nil
@@ -980,14 +1045,13 @@ Un versátil cliente de correo electrónico para Emacs.
             ("flag:flagged" "Marcados" ?m)
             ("date:today..now" "Correo de hoy" ?h)
             ("date:7d..now" "Correo de la semana" ?w)))
-    (setf mu4e-maildir-shortcuts
-          '(("/personal/INBOX" . ?p)
-            ("/gmx/INBOX"      . ?g)
-            ("/riseup/INBOX"   . ?r)))
-    ;; carga los datos de mi cuenta de correo
-    (load-file (expand-file-name "mu4e-personal.el" user-emacs-directory))
     (add-to-list 'mu4e-view-actions
                  '("Navegador web" . mu4e-msgv-action-view-in-browser) t))
+#+END_SRC
+*** profile
+Múltiples cuentas de correo para mu4e
+#+BEGIN_SRC emacs-lisp
+  
 #+END_SRC
 *** =jabber.el=
 :LOGBOOK:  
@@ -1062,11 +1126,11 @@ Twitter desde Emacs
     (defun shackra/tt-fav-rett (&optional arg)
       "Marca como favorito y retweetea un tweet"
       (interactive "P")
-      (twittering-retweet t)
-      (twittering-favorite))
+      (my/bypass-confirmation-all #'twittering-retweet t)
+      (my/bypass-confirmation-all #'twittering-favorite))
     (bind-key "C-c f" 'twittering-favorite twittering-mode-map)
     (bind-key "C-c F" 'shackra/tt-fav-rett twittering-mode-map)
-    
+  
     (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
     (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
 #+END_SRC
@@ -1718,6 +1782,13 @@ He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a
       (back-to-indentation)
       (and (= oldpos (point))
            (beginning-of-line)))))
+#+END_SRC
+*** transcription-mode
+Modo mayor para editar transcripciones
+#+BEGIN_SRC emacs-lisp
+  (use-package transcription-mode
+    :ensure nil
+    :load-path "site-packages/transcription-mode")
 #+END_SRC
 ** Otros
 *** =htmlize=
