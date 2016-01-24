@@ -1020,26 +1020,37 @@ Un versátil cliente de correo electrónico para Emacs.
     :config
     ;; inicia mu4e luego de arrancar Emacs
     (add-hook 'after-init-hook '(lambda () (mu4e t)) t)
-    (defalias 'xc 'mu4e)
+    (defalias 'm 'mu4e)
     (use-package mu4e-contrib
       :ensure nil)
-    (use-package mu4e-maildirs-extension
-      :init
-      (setf mu4e-maildirs-extension-title " Bandejas")
-      :config
-      (add-hook 'mu4e-main-mode-hook 'mu4e-maildirs-extension))
     ;; html2text es un paquete que debe estar instalado en tu sistema
-    (setf mu4e-html2text-command 'mu4e-shr2text
-          mu4e-confirm-quit nil
-          mu4e-update-interval 300
-          mu4e-context-policy 'pick-first)
+    (setf mu4e-html2text-command 'mu4e-shr2text)
+    (setf mu4e-confirm-quit nil)
+    (setf mu4e-context-policy 'pick-first)
+    (setf mu4e-headers-date-format "%d/%m/%Y %H:%M")
+    (setf message-citation-line-format "\nEl %A %d de %B del %Y a las %H%M horas, %N escribió:\n")
+    (setf message-citation-line-function 'message-insert-formatted-citation-line)
+    (setf message-cite-reply-position 'below)
+    (setf mu4e-auto-retrieve-keys t)
+    (setf mu4e-headers-leave-behavior 'apply)
+    (setf mu4e-headers-visible-lines 8)
+    (setf mu4e-hide-index-messages t)
+    (setf message-kill-buffer-on-exit t)
+    ;; TODO: Modificar esto de manera dinámica para otros sistemas operativos
+    (setf mu4e-attachment-dir  "~/Descargas")
+    ;; TODO: modificar esto segun sistema operativo?
+    (setf mu4e-maildir "~/correo")
+    (setf mu4e-update-interval 300)
+    (setf smtpmail-stream-type  'ssl)
+    (setf smtpmail-smtp-service 465)
+    (setf message-send-mail-function 'smtpmail-send-it)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados" ?m)
             ("date:today..now" "Correo de hoy" ?h)
             ("date:7d..now" "Correo de la semana" ?w)))
     (add-to-list 'mu4e-view-actions
-                 '("Navegador web" . mu4e-msgv-action-view-in-browser) t))
+                 '("navegador web" . mu4e-msgv-action-view-in-browser) t))
 #+END_SRC
 *** profile
 Múltiples cuentas de correo para mu4e
