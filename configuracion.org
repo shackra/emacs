@@ -443,14 +443,14 @@ Nombres más cortos para comandos usados frecuentemente
 #+END_SRC
 * Paquetes de extensiones
 ** Utilidades
-*** sensitive
+*** secreto
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
 #+BEGIN_SRC emacs-lisp
-  (use-package sensitive
-    :disabled t
-    :init (setf sensitive-root "~/.secret/things/")
+  (use-package secreto
+    :ensure nil
+    :load-path "site-packages/secreto.el/"
     :config
-    (load-sensitive-files))
+    (load-secretos))
 #+END_SRC
 *** =helm=
 :LOGBOOK:  
@@ -1028,18 +1028,11 @@ Un versátil cliente de correo electrónico para Emacs.
       (setf mu4e-maildirs-extension-title " Bandejas")
       :config
       (add-hook 'mu4e-main-mode-hook 'mu4e-maildirs-extension))
-    (use-package profile
-      :ensure nil
-      :preface
-      (require 'profile)
-      :load-path "site-packages/profile/"
-      :bind-keymap (("C-c f" . profile-force-profile-in-compose))
-      :config
-      (add-hook 'mu4e-compose-pre-hook #'profile-set-profile-in-compose))
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text
           mu4e-confirm-quit nil
-          mu4e-update-interval 300)
+          mu4e-update-interval 300
+          mu4e-context-policy 'pick-first)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados" ?m)
