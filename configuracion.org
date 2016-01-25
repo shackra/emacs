@@ -562,13 +562,13 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       ("s" mc/unmark-next-like-this "mc/unmark-next-like-this")
       ("d" mc/skip-to-previous-like-this "mc/skip-to-previous-like-this")
       ("f" mc/mark-previous-symbol-like-this "mc/mark-previous-symbol-like-this")
-      ("g" mc/mark-all-dwim)
-      
+      ("g" mc/mark-all-dwim "Marca todas (DWIM)")
+    
       ("j" mc/mark-next-symbol-like-this "mc/mark-next-symbol-like-this")
       ("k" mc/skip-to-next-like-this "mc/skip-to-next-like-this")
       ("l" mc/unmark-previous-like-this "mc/unmark-previous-like-this")
       ("ñ" mc/edit-ends-of-lines "mc/edit-ends-of-lines"))
-    
+  
     ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
     ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
     ;; del macro para hydra
@@ -651,6 +651,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
     :init
     (setq-default dired-omit-mode t)
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
+    (setf dired-dwim-target t)
     (bind-key "C-o" 'dired-omit-mode dired-mode-map)
     (defun shackra/dired-no-esconder-detalles ()
       "No esconder los detalles de los archivos en dired, se ven muy bien"
@@ -982,6 +983,20 @@ Revierte el contenido de un buffer de manera automática cuando el contenido de 
     :config
     (add-hook 'prog-mode-hook 'shackra/yas))
 #+END_SRC
+*** imenu
+Crea menús a partir de secciones de documentos
+#+BEGIN_SRC emacs-lisp
+  (use-package imenu
+    :ensure nil
+    :config
+    (if (fboundp 'helm)
+        (bind-key "C-c i" 'helm-semantic-or-imenu)
+      (bind-key "C-c i" 'imenu))
+    (use-package imenu+
+      :disabled t ;; ver razón en https://redd.it/3ahj2d
+      :init
+      (setf imenup-ignore-comments-flag t)))
+#+END_SRC
 ** Comunicación
 *** =mu4e=
 :LOGBOOK:  
@@ -992,6 +1007,34 @@ Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
     :ensure nil
+    :init
+    ;; html2text es un paquete que debe estar instalado en tu sistema
+    (setf mu4e-html2text-command 'mu4e-shr2text)
+    ;; hace mu4e el programa por defecto para escribir correo
+    (setq mail-user-agent 'mu4e-user-agent)
+    (setf mu4e-confirm-quit nil)
+    (setf mu4e-context-policy 'pick-first)
+    (setf mu4e-headers-date-format "%d/%m/%Y %H:%M")
+    (setf message-citation-line-format "\nEl %A %d de %B del %Y a las %H%M horas, %N escribió:\n")
+    (setf message-citation-line-function 'message-insert-formatted-citation-line)
+    (setf message-cite-reply-position 'below)
+    (setf mu4e-auto-retrieve-keys t)
+    (setf mu4e-headers-leave-behavior 'apply)
+    (setf mu4e-headers-visible-lines 8)
+    (setf mu4e-hide-index-messages t)
+    (setf message-kill-buffer-on-exit t)
+    ;; TODO: Modificar esto de manera dinámica para otros sistemas operativos
+    (setf mu4e-attachment-dir  "~/Descargas")
+    ;; TODO: modificar esto segun sistema operativo?
+    (setf mu4e-maildir "~/correo")
+    (setf smtpmail-stream-type  'ssl)
+    (setf smtpmail-smtp-service 465)
+    (setf message-send-mail-function 'smtpmail-send-it)
+    (setf mu4e-bookmarks
+          '(("flag:unread" "No leido" ?n)
+            ("flag:flagged" "Marcados" ?m)
+            ("date:today..now" "Correo de hoy" ?h)
+            ("date:7d..now" "Correo de la semana" ?w)))
     :preface
     ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
@@ -1021,36 +1064,16 @@ Un versátil cliente de correo electrónico para Emacs.
     ;; inicia mu4e luego de arrancar Emacs
     (add-hook 'after-init-hook '(lambda () (mu4e t)) t)
     (defalias 'm 'mu4e)
+    (add-to-list 'mu4e-view-actions
+                 '("navegador web" . mu4e-msgv-action-view-in-browser) t)
     (use-package mu4e-contrib
       :ensure nil)
-    ;; html2text es un paquete que debe estar instalado en tu sistema
-    (setf mu4e-html2text-command 'mu4e-shr2text)
-    (setf mu4e-confirm-quit nil)
-    (setf mu4e-context-policy 'pick-first)
-    (setf mu4e-headers-date-format "%d/%m/%Y %H:%M")
-    (setf message-citation-line-format "\nEl %A %d de %B del %Y a las %H%M horas, %N escribió:\n")
-    (setf message-citation-line-function 'message-insert-formatted-citation-line)
-    (setf message-cite-reply-position 'below)
-    (setf mu4e-auto-retrieve-keys t)
-    (setf mu4e-headers-leave-behavior 'apply)
-    (setf mu4e-headers-visible-lines 8)
-    (setf mu4e-hide-index-messages t)
-    (setf message-kill-buffer-on-exit t)
-    ;; TODO: Modificar esto de manera dinámica para otros sistemas operativos
-    (setf mu4e-attachment-dir  "~/Descargas")
-    ;; TODO: modificar esto segun sistema operativo?
-    (setf mu4e-maildir "~/correo")
-    (setf mu4e-update-interval 300)
-    (setf smtpmail-stream-type  'ssl)
-    (setf smtpmail-smtp-service 465)
-    (setf message-send-mail-function 'smtpmail-send-it)
-    (setf mu4e-bookmarks
-          '(("flag:unread" "No leido" ?n)
-            ("flag:flagged" "Marcados" ?m)
-            ("date:today..now" "Correo de hoy" ?h)
-            ("date:7d..now" "Correo de la semana" ?w)))
-    (add-to-list 'mu4e-view-actions
-                 '("navegador web" . mu4e-msgv-action-view-in-browser) t))
+    (use-package org-mu4e
+      ;; http://www.djcbsoftware.nl/code/mu/mu4e/Org_002dmode-links.html#Org_002dmode-links
+      :ensure nil
+      :config
+      (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
+      (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map)))
 #+END_SRC
 *** profile
 Múltiples cuentas de correo para mu4e
@@ -1330,6 +1353,12 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :CREATED:%U
   :END:
   %?" :kill-buffer t)
+            ("l" "Añadir tarea por hacer (enlazado a algo)" entry (file "cosas por hacer.org")
+             "* POR-HACER %^{breve descripcion} %^g
+  :PROPERTIES:
+  :CREATED:%U
+  :END:
+  %a %?" :kill-buffer t)
             ("f" "Fechas o eventos" entry (file "fechas.org")
              "* POR-HACER %^{Nombre del evento} %^g
   SCHEDULED: %^T%?
@@ -1350,7 +1379,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :CREATED: %T
   :END:
   %?" :empty-lines 1 :kill-buffer t)
-            
+          
             ("g" "Algún día")
 
             ("gp" "Tarea" entry (file+headline "quizas.org" "Cosas por hacer")
