@@ -45,6 +45,16 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
         (package-refresh-contents))
       (package-install 'org)))
 
+  ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
+  (when (eq system-type 'darwin)
+    (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
+
+  ;; En caso de que /usr/local/bin no este agregado
+  (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
+                                                      (not (eq system-type 'cygwin))
+                                                      (not (eq system-type 'ms-dos))))
+    (setf exec-path (append exec-path '("/usr/local/bin"))))
+
   (put 'downcase-region 'disabled nil)
   (require 'use-package)
   (setf use-package-always-ensure t)
@@ -60,7 +70,6 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
       (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
     ;; en caso contrario, carga el archivo ya existente :)
     (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
-
 #+END_SRC
 
 activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
@@ -1605,6 +1614,30 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
         ("s" hydra-traad-signature/body "Firma" :exit t)
         ("e" hydra-traad-extraction/body "Extracción" :exit t)
         ("i" hydra-traad-imports/body "Importaciones" :exit t))))
+#+END_SRC
+*** web-mode
+Un modo mayor para editar paginas web
+#+BEGIN_SRC emacs-lisp
+  (use-package web-mode
+    :config
+    (use-package emmet-mode
+      :config
+      (add-hook 'sgml-mode-hook 'emmet-mode))
+    (use-package company-web
+      :config
+      (add-to-list 'company-backends 'company-web-html)
+      (use-package ac-html-bootstrap))
+    (use-package web-beautify
+      :config
+      (add-hook 'json-mode-hook
+                (lambda ()
+                  (add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
+      (add-hook 'html-mode-hook
+                (lambda ()
+                  (add-hook 'before-save-hook 'web-beautify-html-buffer t t)))
+      (add-hook 'css-mode-hook
+                (lambda ()
+                  (add-hook 'before-save-hook 'web-beautify-css-buffer t t)))))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
