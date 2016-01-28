@@ -1,4 +1,3 @@
-
 (if (eq system-type 'gnu/linux)
     (load-file (expand-file-name "security.el" user-emacs-directory)))
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
@@ -23,6 +22,16 @@
     (unless package-archive-contents
       (package-refresh-contents))
     (package-install 'org)))
+
+;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
+(when (eq system-type 'darwin)
+  (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
+
+;; En caso de que /usr/local/bin no este agregado
+(when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
+                                                    (not (eq system-type 'cygwin))
+                                                    (not (eq system-type 'ms-dos))))
+  (setf exec-path (append exec-path '("/usr/local/bin"))))
 
 (put 'downcase-region 'disabled nil)
 (require 'use-package)
