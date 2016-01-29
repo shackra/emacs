@@ -51,6 +51,57 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
 
   ;; En caso de que /usr/local/bin no este agregado
   (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
+                                                           (not (eq system-type 'cygwin))
+                                                           (not (eq system-type 'ms-dos))))
+    (setf exec-path (append exec-path '("/usr/local/bin")))
+    (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
+
+  (put 'downcase-region 'disabled nil)
+  (require 'use-package)
+  (setf use-package-always-ensure t)
+
+  (require 'ob-tangle)
+  ;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
+  ;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
+  ;; ahorrarme unos segundos cuando Emacs se carga.
+  (if (file-newer-than-file-p
+       (expand-file-name "configuracion.org" user-emacs-directory)
+       (expand-file-name "configuracion.el" user-emacs-directory))
+      ;; enreda los bloques de código en un archivo elisp
+      (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
+    ;; en caso contrario, carga el archivo ya existente :)
+    (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
+  (if (eq system-type 'gnu/linux)
+      (load-file (expand-file-name "security.el" user-emacs-directory)))
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
+  (setf package-enable-at-startup nil)
+  (package-initialize)
+
+  ;; repositorios de paquetes
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("org" . "http://orgmode.org/elpa/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")))
+
+  ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
+  ;; lo instalamos
+  (when (not (package-installed-p 'use-package))
+    (progn
+      (unless package-archive-contents
+        (package-refresh-contents))
+      (package-install 'use-package)))
+
+  (when (not (package-installed-p 'org))
+    (progn
+      (unless package-archive-contents
+        (package-refresh-contents))
+      (package-install 'org)))
+
+  ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
+  (when (eq system-type 'darwin)
+    (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
+
+  ;; En caso de que /usr/local/bin no este agregado
+  (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
                                                       (not (eq system-type 'cygwin))
                                                       (not (eq system-type 'ms-dos))))
     (setf exec-path (append exec-path '("/usr/local/bin"))))
@@ -1507,7 +1558,10 @@ Paquete extensivo para escribir y formatear documentos TeX
     (setq-default TeX-PDF-mode t)
     (use-package company-auctex
       :config
-      (company-auctex-init)))
+      (company-auctex-init))
+    (if (fboundp 'shackra/yas)
+        (add-hook 'latex-mode-hook 'shackra/yas)
+      (add-hook 'latex-mode-hook 'yas/minor-mode-on)))
 #+END_SRC
 *** =toml=
 /El lenguaje minimalista y obvio de Tom/
@@ -1638,6 +1692,15 @@ Un modo mayor para editar paginas web
       (add-hook 'css-mode-hook
                 (lambda ()
                   (add-hook 'before-save-hook 'web-beautify-css-buffer t t)))))
+#+END_SRC
+*** PHP
+modo mayor para editar código PHP
+#+BEGIN_SRC emacs-lisp
+  (use-package php-mode
+    :config
+    (use-package php-refactor-mode
+      :config
+      (add-hook 'php-mode-hook 'php-refactor-mode)))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
@@ -1946,6 +2009,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
   ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
   ;; a http://redd.it/35kbf6
   (use-package appt
+    :if (not (eq system-type 'darwin))
     :ensure nil
     :init
     (use-package alert
