@@ -31,7 +31,8 @@
 (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
                                                     (not (eq system-type 'cygwin))
                                                     (not (eq system-type 'ms-dos))))
-  (setf exec-path (append exec-path '("/usr/local/bin"))))
+  (setf exec-path (append exec-path '("/usr/local/bin")))
+  (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
 
 (put 'downcase-region 'disabled nil)
 (require 'use-package)
