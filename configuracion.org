@@ -512,6 +512,13 @@ Saca cualquier rastro de tus archivos y datos privados de tu configuración de E
     :config
     (load-secretos))
 #+END_SRC
+*** secretaria
+Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
+#+BEGIN_SRC emacs-lisp
+  (use-package secretaria
+    :disabled t
+    :load-path "site-packages/secreteria/")
+#+END_SRC
 *** =helm=
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:38]
