@@ -1568,7 +1568,7 @@ Paquete extensivo para escribir y formatear documentos TeX
       (company-auctex-init))
     (if (fboundp 'shackra/yas)
         (add-hook 'latex-mode-hook 'shackra/yas)
-      (add-hook 'latex-mode-hook 'yas/minor-mode-on)))
+      (add-hook 'latex-mode-hook 'yas-minor-mode-on)))
 #+END_SRC
 *** =toml=
 /El lenguaje minimalista y obvio de Tom/
