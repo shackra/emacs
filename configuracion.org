@@ -531,9 +531,10 @@ Completado incremental y estrechamiento de selección de candidatos :)
     :bind (("M-y" . helm-show-kill-ring)
            ("C-x f" . helm-recentf))
     :config
+    (add-hook 'after-init-hook '(lambda ()(helm-mode 1)) t)
     ;; re-ata combinaciones de teclas a los comandos de helm
-    (substitute-key-definition 'find-file 'helm-find-files (current-global-map))
     (substitute-key-definition 'execute-extended-command 'helm-M-x (current-global-map))
+    ;; revierte cambios recientes en Helm, según http://emacs.stackexchange.com/a/20276/690
     (require 'helm-config)
     (use-package helm-grep
       :ensure nil
@@ -586,6 +587,11 @@ Completado incremental y estrechamiento de selección de candidatos :)
       :config
       (bind-keys :map help-map
                  ("b" . helm-descbinds)))
+    (use-package helm-adaptive
+      :disabled nil ;; por el momento no es buena idea usar esto, ver https://github.com/emacs-helm/helm/issues/751
+      :ensure nil
+      :config
+      (add-hook 'after-init-hook '(lambda () (helm-adaptive-mode))) t)
     (helm-autoresize-mode 1))
 #+END_SRC
 *** =hydra=
@@ -1347,6 +1353,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
     ;; TODO: Añadir er/expand-region y endless/insert-key
     :config
     (org-clock-persistence-insinuate)
+    (setf org-clock-modeline-total 'today)
     ;; sacado de http://emacs.stackexchange.com/a/2103/690
     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
