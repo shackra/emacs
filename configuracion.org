@@ -516,8 +516,8 @@ Saca cualquier rastro de tus archivos y datos privados de tu configuración de E
 Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
 #+BEGIN_SRC emacs-lisp
   (use-package secretaria
-    :disabled t
-    :load-path "site-packages/secreteria/")
+    :ensure nil
+    :load-path "site-packages/secretaria/")
 #+END_SRC
 *** =helm=
 :LOGBOOK:  
