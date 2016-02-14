@@ -512,6 +512,13 @@ Saca cualquier rastro de tus archivos y datos privados de tu configuración de E
     :config
     (load-secretos))
 #+END_SRC
+*** secretaria
+Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
+#+BEGIN_SRC emacs-lisp
+  (use-package secretaria
+    :ensure nil
+    :load-path "site-packages/secretaria/")
+#+END_SRC
 *** =helm=
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:38]
@@ -1568,7 +1575,7 @@ Paquete extensivo para escribir y formatear documentos TeX
       (company-auctex-init))
     (if (fboundp 'shackra/yas)
         (add-hook 'latex-mode-hook 'shackra/yas)
-      (add-hook 'latex-mode-hook 'yas/minor-mode-on)))
+      (add-hook 'latex-mode-hook 'yas-minor-mode-on)))
 #+END_SRC
 *** =toml=
 /El lenguaje minimalista y obvio de Tom/
@@ -1745,10 +1752,10 @@ Revisión ortográfica al vuelo.
       "Obtiene el diccionario actual o retorna el establecido por defecto"
       (if ispell-current-dictionary
           (cl-position ispell-current-dictionary shackra/ispell-dict-list :test 'string=)
-        ;; TODO: LANG podría estar o no
-        ;; establecida, lo que podría
-        ;; causar problemas.
-        (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)))
+        (if (stringp (getenv "LANG"))
+            (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)
+          "es" ;; retorna español mientras tanto
+          )))
     (defun shackra/ispell-cycle-dict ()
       "Cambia de un diccionario a otro"
       (interactive)
