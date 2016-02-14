@@ -6,7 +6,7 @@
 	url = https://github.com/skeeto/transcription-mode.git
 [submodule "site-packages/secreto.el"]
 	path = site-packages/secreto.el
-	url = git@bitbucket.org:shackra/secreto.el.git
-[submodule "site-packages/secreteria"]
-	path = site-packages/secreteria
+	url = https://bitbucket.org/shackra/secreto.el.git
+[submodule "site-packages/secretaria"]
+	path = site-packages/secretaria
 	url = https://bitbucket.org/shackra/secretaria.el.git
