@@ -1752,10 +1752,10 @@ Revisión ortográfica al vuelo.
       "Obtiene el diccionario actual o retorna el establecido por defecto"
       (if ispell-current-dictionary
           (cl-position ispell-current-dictionary shackra/ispell-dict-list :test 'string=)
-        ;; TODO: LANG podría estar o no
-        ;; establecida, lo que podría
-        ;; causar problemas.
-        (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)))
+        (if (stringp (getenv "LANG"))
+            (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)
+          "es" ;; retorna español mientras tanto
+          )))
     (defun shackra/ispell-cycle-dict ()
       "Cambia de un diccionario a otro"
       (interactive)
