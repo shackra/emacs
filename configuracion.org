@@ -1754,8 +1754,8 @@ Revisión ortográfica al vuelo.
           (cl-position ispell-current-dictionary shackra/ispell-dict-list :test 'string=)
         (if (stringp (getenv "LANG"))
             (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)
-          "es" ;; retorna español mientras tanto
-          )))
+          0))) ;; retorna español mientras tanto
+  
     (defun shackra/ispell-cycle-dict ()
       "Cambia de un diccionario a otro"
       (interactive)
