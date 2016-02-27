@@ -800,10 +800,11 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
 #+BEGIN_SRC emacs-lisp
   (use-package theme-changer
     :init
-    (use-package material-theme
-      :ensure t)
+    (use-package material-theme)
     :config
-    (change-theme 'material-light 'material))
+    (change-theme 'material-light 'material)
+    (use-package tramp-theme
+      :disabled t))
 #+END_SRC
 *** =hlinum=
 :LOGBOOK:  
@@ -1069,6 +1070,37 @@ Crea menús a partir de secciones de documentos
       :disabled t ;; ver razón en https://redd.it/3ahj2d
       :init
       (setf imenup-ignore-comments-flag t)))
+#+END_SRC
+*** Bookmark+
+#+BEGIN_SRC emacs-lisp
+  (use-package bookmark+
+    :init
+    (setf bmkp-auto-light-when-set 'all-in-buffer)
+    (setf bookmark-save-flag 1)
+    :bind (("C-c o" . hydra-bm/body))
+    :config
+    (defhydra hydra-bm (:color amaranth :hint nil)
+      "
+      Marcadores
+
+      Cambiar                          Agregar           Editar  
+    ╭──────────────────────────────────────────────────────────────────────╯
+     [_j_] Anterior (buffer actual)   [_f_] aquí...   [_e_] aquí...
+     [_l_] Siguiente (buffer actul)
+     [_k_] Saltar a...
+     [_K_] Saltar a... (por tipo)
+     [_i_] Saltar a... (otra vent.)
+    -----------------------------------------------------------------------
+  "
+      ("j" bmkp-previous-bookmark-this-buffer)
+      ("l" bmkp-next-bookmark-this-buffer)
+      ("k" bmkp-jump-in-navlist :color blue)
+      ("K" bmkp-jump-to-type :color blue)
+      ("i" bmkp-jump-to-type-other-window :color blue)
+      ("f" bmkp-bookmark-set-confirm-overwrite :color blue)
+      ("e" bmkp-edit-bookmark-name-and-location :color blue)
+      ("L" bookmark-bmenu-list "Menú de marcadores" :color blue)
+      ("<ESC>" nil "Salir")))
 #+END_SRC
 ** Comunicación
 *** =mu4e=
@@ -1594,11 +1626,13 @@ Paquete extensivo para escribir y formatear documentos TeX
 Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de programación de sistemas que corre realmente rapido, previene fallos de segmentación (segfaults), y garantiza seguridad en programas multi-hilo.
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
+    :if (executable-find "rustc")
     :init
     (use-package rustfmt
       :config
       (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
-    (use-package cargo)
+    (use-package cargo
+      :if (executable-find "cargo"))
     (use-package racer
       :init
       (setf racer-rust-src-path (getenv "RUST_SRC_PATH"))
@@ -1608,7 +1642,8 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
       (add-hook 'racer-mode-hook #'eldoc-mode)
       (use-package company-racer
         :config
-        (add-to-list 'company-backends 'company-racer)))
+        (add-hook 'rust-mode-hook '(lambda ()
+                                     (add-to-list (make-local-variable 'company-backends) 'company-racer)))))
     (use-package flycheck-rust
       :config
       (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
@@ -1715,6 +1750,46 @@ modo mayor para editar código PHP
     (use-package php-refactor-mode
       :config
       (add-hook 'php-mode-hook 'php-refactor-mode)))
+#+END_SRC
+*** golang
+#+BEGIN_SRC emacs-lisp
+  (use-package go-mode
+    :if (executable-find "go")
+    :bind (:map go-mode-map
+                ("M-." . godef-jump)
+                ("C-c C-a" . go-import-add)
+                ("C-c C-r" . go-remove-unused-imports)
+                ("C-c C-i" . go-goto-imports))
+    :init
+    (defun shackra/go-compile ()
+      "Cambia el comando para `compile' en archivos go"
+      (when (and (not (string-match "go" compile-command)) (eq major-mode 'go-mode))
+        (set (make-local-variable 'compile-command)
+             "go build -v && go test -v && go vet")))
+    :config
+    (use-package company-go
+      :if (executable-find "gocode")
+      :init
+      (defun shackra/company-go-backend ()
+        (when (eq major-mode 'go-mode)
+          (set (make-local-variable 'company-backends) '(company-go company-files))))
+      :config
+      (add-hook 'go-mode-hook 'shackra/company-go-backend))
+    (use-package go-eldoc
+      :config
+      (add-hook 'go-mode-hook 'go-eldoc-setup))
+    (use-package go-projectile
+      :if (fboundp 'projectile-mode))
+    (use-package go-rename)
+    (use-package go-snippets)
+    (use-package oracle
+      ;; TODO: alimentar `go-oracle-set-scope' automáticamente cada vez que un
+      ;; archivo Golang es abierto.
+      :if (executable-find "oracle")
+      :ensure nil
+      :preface (load-file "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el"))
+    (add-hook 'before-save-hook 'gofmt-before-save)
+    (add-hook 'go-mode-hook 'shackra/go-compile))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=

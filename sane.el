@@ -28,14 +28,6 @@
  auto-revert-verbose nil
  echo-keystrokes 0.1
  shift-select-mode nil
- byte-compile-warnings '(not nresolved
-			     free-vars
-			     callargs
-			     redefine
-			     obsolete
-			     noruntime
-			     cl-functions
-			     interactive-only)
  fill-column 80
  blink-matching-paren nil
  history-length 1000
