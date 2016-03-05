@@ -1113,6 +1113,8 @@ Un versátil cliente de correo electrónico para Emacs.
   (use-package mu4e
     :ensure nil
     :init
+    (setf mu4e-get-mail-command "getmail.sh")
+    (setf mu4e-update-interval 300)
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text)
     ;; hace mu4e el programa por defecto para escribir correo
