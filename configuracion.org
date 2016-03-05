@@ -629,19 +629,26 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
       ("v" avy-goto-char "Ir a la palabra (2)..."))
     (bind-key "C-z" 'hydra-avy/body)
-    (defhydra hydra-mc (:columns 2)
-      "Multiples cursores"
-      ("a" mc/edit-beginnings-of-lines "mc/edit-beginnings-of-lines")
-      ("s" mc/unmark-next-like-this "mc/unmark-next-like-this")
-      ("d" mc/skip-to-previous-like-this "mc/skip-to-previous-like-this")
-      ("f" mc/mark-previous-symbol-like-this "mc/mark-previous-symbol-like-this")
-      ("g" mc/mark-all-dwim "Marca todas (DWIM)")
-    
-      ("j" mc/mark-next-symbol-like-this "mc/mark-next-symbol-like-this")
-      ("k" mc/skip-to-next-like-this "mc/skip-to-next-like-this")
-      ("l" mc/unmark-previous-like-this "mc/unmark-previous-like-this")
-      ("ñ" mc/edit-ends-of-lines "mc/edit-ends-of-lines"))
-  
+    (defhydra hydra-mc (:hint nil)
+      "
+       ^Arriba^            ^Abajo^                ^Otros^
+  --------------------------------------------------------------
+  [_p_]   Siguiente    [_n_]   Siguiente    [_l_] Edit lines
+  [_P_]   Saltar       [_N_]   Saltar       [_a_] Mark all
+  [_M-p_] Desmarcar    [_M-n_] Desmarcar    [_r_] Mark by regexp
+  ^ ^                  ^ ^                  [_q_] Quit
+  "
+    ("l" mc/edit-lines :exit t)
+    ("a" mc/mark-all-like-this :exit t)
+    ("n" mc/mark-next-like-this)
+    ("N" mc/skip-to-next-like-this)
+    ("M-n" mc/unmark-next-like-this)
+    ("p" mc/mark-previous-like-this)
+    ("P" mc/skip-to-previous-like-this)
+    ("M-p" mc/unmark-previous-like-this)
+    ("r" mc/mark-all-in-region-regexp :exit t)
+    ("q" nil))
+
     ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
     ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
     ;; del macro para hydra
@@ -1585,11 +1592,6 @@ Modo mayor para programar en Python
       (py-autopep8-enable-on-save))
     (add-hook 'python-mode-hook #'shackra/python-mode))
 #+END_SRC
-*** =paredit-mode=
-Modo menor para editar paréntesis
-#+BEGIN_SRC emacs-lisp
-  (use-package paredit)
-#+END_SRC
 *** =auctex-mode=
 Paquete extensivo para escribir y formatear documentos TeX
 #+BEGIN_SRC emacs-lisp
@@ -2023,6 +2025,15 @@ Modo mayor para editar transcripciones
   (use-package transcription-mode
     :ensure nil
     :load-path "site-packages/transcription-mode")
+#+END_SRC
+*** paredit
+Un modo menor para la edición de paréntesis. Para aprender qué hace este modo menor y sus posibilidades, ver [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]].
+#+BEGIN_SRC emacs-lisp
+  (use-package paredit
+    :config 
+    (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+    (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+    (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode))
 #+END_SRC
 ** Otros
 *** =htmlize=
