@@ -1793,6 +1793,20 @@ modo mayor para editar código PHP
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook 'shackra/go-compile))
 #+END_SRC
+*** javascript
+modo mayor para editar JavaScript
+#+BEGIN_SRC emacs-lisp
+  (use-package js2-mode
+    :config
+    (use-package js2-refactor
+      :config
+      (add-hook 'js2-mode-hook #'js2-refactor-mode))
+    (use-package skewer-mode
+      :config
+      (add-hook 'js2-mode-hook 'skewer-mode)
+      (add-hook 'css-mode-hook 'skewer-css-mode)
+      (add-hook 'html-mode-hook 'skewer-html-mode)))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
 :LOGBOOK:  
