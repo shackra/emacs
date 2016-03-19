@@ -1393,6 +1393,9 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
       :diminish org-indent-mode)
     ;; TODO: Añadir er/expand-region y endless/insert-key
     :config
+    (use-package ox-reveal
+      :init
+      (setf org-reveal-root "http://cdn.deshackra.com/revealjs"))
     (org-clock-persistence-insinuate)
     (setf org-clock-modeline-total 'today)
     ;; sacado de http://emacs.stackexchange.com/a/2103/690
