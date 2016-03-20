@@ -7,7 +7,7 @@
  '(ansi-color-names-vector
    ["#151515" "#953331" "#546a29" "#909737" "#385e6b" "#7f355e" "#34676f" "#c6a57b"])
  '(auth-source-save-behavior nil)
- '(bmkp-last-as-first-bookmark-file "/home/jorge/.emacs.d/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(byte-compile-warnings nil)
  '(calendar-christian-all-holidays-flag t)
  '(calendar-date-style (quote european))

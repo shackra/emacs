@@ -1766,13 +1766,19 @@ modo mayor para editar código PHP
                 ("C-c C-i" . go-goto-imports)
                 ("C-c C-c" . compile))
     :init
-    (defun shackra/go-compile ()
-      "Cambia el comando para `compile' en archivos go"
+    (use-package f) ;; requerido para `shackra/go-update-compile-definition'
+    (defun shackra/go-update-compile-definition ()
+      "Actualiza la definición del comando COMPILE para go-mode"
+      (interactive)
       (when (and (not (string-match "go" compile-command)) (eq major-mode 'go-mode))
         (set (make-local-variable 'compile-command)
-             ;; TODO: formatear la cadena con el comando `go run' sólo si estamos
-             ;; compilando un archivo `main'
-             (format "go build -v && go test -v && go vet%s" ""))))
+             ;; FIXME: agregar `.exe' para los ejecutables de Windows
+             (format "go build -v && go test -v && go vet%s"
+                     (if (save-excursion
+                           (goto-char (point-min))
+                           (search-forward "package main" (save-excursion (end-of-line) (point)) t))
+                         (format " && ./%s" (f-base (f-dirname (f-full (buffer-name)))))
+                       "")))))
     :config
     (use-package company-go
       :if (executable-find "gocode")
@@ -1796,7 +1802,8 @@ modo mayor para editar código PHP
       :ensure nil
       :preface (load-file "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el"))
     (add-hook 'before-save-hook 'gofmt-before-save)
-    (add-hook 'go-mode-hook 'shackra/go-compile))
+    (add-hook 'go-mode-hook 'shackra/go-update-compile-definition)
+    (add-hook 'after-save-hook 'shackra/go-update-compile-definition))
 #+END_SRC
 *** javascript
 modo mayor para editar JavaScript
