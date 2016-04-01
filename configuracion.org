@@ -1396,6 +1396,8 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
     (org-clock-persistence-insinuate)
     (setf org-clock-modeline-total 'today)
     ;; sacado de http://emacs.stackexchange.com/a/2103/690
+    (setq org-stuck-projects
+          '("+LEVEL=2/-ARCHIVED" ("TERMINADO" "CANCELADO") nil "\\<IGNORE\\>"))
     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
