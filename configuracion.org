@@ -1118,7 +1118,7 @@ Un versátil cliente de correo electrónico para Emacs.
     :ensure nil
     :init
     (setf mu4e-get-mail-command "getmail.sh")
-    (setf mu4e-update-interval 300)
+    (setf mu4e-update-interval 150)
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text)
     ;; hace mu4e el programa por defecto para escribir correo
@@ -1143,9 +1143,7 @@ Un versátil cliente de correo electrónico para Emacs.
     (setf message-send-mail-function 'smtpmail-send-it)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
-            ("flag:flagged" "Marcados" ?m)
-            ("date:today..now" "Correo de hoy" ?h)
-            ("date:7d..now" "Correo de la semana" ?w)))
+            ("flag:flagged" "Marcados como importantes" ?m)))
     :preface
     ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
@@ -1182,7 +1180,9 @@ Un versátil cliente de correo electrónico para Emacs.
     (use-package org-mu4e
       ;; http://www.djcbsoftware.nl/code/mu/mu4e/Org_002dmode-links.html#Org_002dmode-links
       :ensure nil
-      :config
+      :init
+      (setf org-mu4e-link-query-in-headers-mode nil)
+      :config 
       (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
       (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map)))
 #+END_SRC
