@@ -1143,7 +1143,8 @@ Un versátil cliente de correo electrónico para Emacs.
     (setf message-send-mail-function 'smtpmail-send-it)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
-            ("flag:flagged" "Marcados como importantes" ?m)))
+            ("flag:flagged" "Marcados como importantes" ?m)
+            ("maildir:/personal/Drafts OR maildir:/personal/Borradores OR maildir:/gmx/Drafts OR maildir:/gmx/Borradores" "Borradores" ?b)))
     :preface
     ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
