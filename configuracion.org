@@ -366,7 +366,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 
   (defun shackra/vc-info ()
     (if shackra/vc-mode
-        (propertize "🗶" 'face 'error)
+        (propertize "±" 'face 'error)
       " "))
 #+END_SRC
 
@@ -376,7 +376,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
   (setq-default mode-line-format
                 '("%e"
                   (:eval (if (buffer-modified-p)
-                             (propertize "  ❗" 'face 'error)
+                             (propertize " ↓ " 'face 'error)
                            "  "))
                   (:eval (shackra/vc-info))
                   " " mode-line-buffer-identification
@@ -808,10 +808,12 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
   (use-package theme-changer
     :init
     (use-package material-theme)
+    (use-package base16-theme)
     :config
-    (change-theme 'material-light 'material)
+    (change-theme 'base16-mocha-dark 'material)
     (use-package tramp-theme
-      :disabled t))
+      :disabled t)
+    )
 #+END_SRC
 *** =hlinum=
 :LOGBOOK:  
@@ -1106,6 +1108,10 @@ Crea menús a partir de secciones de documentos
       ("L" bookmark-bmenu-list "Menú de marcadores" :color blue)
       ("<ESC>" nil "Salir")))
 #+END_SRC
+*** Firefox desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package moz-controller)
+#+END_SRC
 ** Comunicación
 *** =mu4e=
 :LOGBOOK:  
@@ -1373,6 +1379,7 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
       (flyspell-prog-mode))
     :config
     (bind-key "RET" 'newline-and-indent)
+    (bind-key* "C-M-," 'comment-dwim)
     (add-hook 'prog-mode-hook #'shackra/prog-mode))
 #+END_SRC
 *** =org-mode=
@@ -1905,26 +1912,26 @@ Multiples cursores en Emacs.
     ;; Si mi hydra esta definida
     (if (fboundp 'hydra-mc/body)
         ;; La usamos
-        (bind-key "C-c m" 'hydra-mc/body)
+        (bind-key "C-c n" 'hydra-mc/body)
       (bind-keys :prefix-map shackra/mc-map
-               :prefix "C-c m"
-               ("a" . mc/mark-all-symbols-like-this-in-defun)
-               ("s" . mc/mark-all-symbols-like-this)
-               ("d" . mc/mark-next-symbol-like-this)
-               ("f" . mc/mark-previous-symbol-like-this)
-               ("j" . mc/mark-all-words-like-this)
-               ("k" . mc/mark-next-word-like-this)
-               ("l" . mc/mark-previous-like-this)
-               ("ñ" . mc/mark-sgml-tag-pair)
+                 :prefix "C-c n"
+                 ("a" . mc/mark-all-symbols-like-this-in-defun)
+                 ("s" . mc/mark-all-symbols-like-this)
+                 ("d" . mc/mark-next-symbol-like-this)
+                 ("f" . mc/mark-previous-symbol-like-this)
+                 ("j" . mc/mark-all-words-like-this)
+                 ("k" . mc/mark-next-word-like-this)
+                 ("l" . mc/mark-previous-like-this)
+                 ("ñ" . mc/mark-sgml-tag-pair)
 
-               ("v" . mc/insert-numbers)
-               ("b" . mc/sort-regions)
-               ("n" . mc/reverse-regions)
-               ("m" . set-rectangular-region-anchor)
+                 ("v" . mc/insert-numbers)
+                 ("b" . mc/sort-regions)
+                 ("n" . mc/reverse-regions)
+                 ("m" . set-rectangular-region-anchor)
 
-               ("t" . mc/edit-lines)
-               ("y" . mc/edit-beginnings-of-lines)
-               ("u" . mc/edit-ends-of-lines))))
+                 ("t" . mc/edit-lines)
+                 ("y" . mc/edit-beginnings-of-lines)
+                 ("u" . mc/edit-ends-of-lines))))
 #+END_SRC
 *** visual-regexp
 :LOGBOOK:  
@@ -2082,7 +2089,7 @@ Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
     :config
     (telephone-line-defsegment* shackra-buffer-vc-modified-segment
                                 (list (if (buffer-modified-p)
-                                          (propertize "❗" 'face 'error)
+                                          (propertize "↓" 'face 'error)
                                         " ")
                                       " " (shackra/vc-info)))
 
