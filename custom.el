@@ -6,6 +6,8 @@
  ;; If there is more than one, they won't work right.
  '(ansi-color-names-vector
    ["#151515" "#953331" "#546a29" "#909737" "#385e6b" "#7f355e" "#34676f" "#c6a57b"])
+ '(ansi-term-color-vector
+   [unspecified "#3B3228" "#cb6077" "#beb55b" "#f4bc87" "#8ab3b5" "#a89bb9" "#8ab3b5" "#d0c8c6"] t)
  '(auth-source-save-behavior nil)
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(byte-compile-warnings nil)
