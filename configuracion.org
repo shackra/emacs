@@ -1739,7 +1739,8 @@ Un modo mayor para editar paginas web
     :config
     (use-package emmet-mode
       :config
-      (add-hook 'sgml-mode-hook 'emmet-mode))
+      (add-hook 'sgml-mode-hook 'emmet-mode)
+      (add-hook 'web-mode-hook 'emmet-mode))
     (use-package company-web
       :config
       (add-to-list 'company-backends 'company-web-html)
@@ -1827,7 +1828,9 @@ modo mayor para editar JavaScript
       :config
       (add-hook 'js2-mode-hook 'skewer-mode)
       (add-hook 'css-mode-hook 'skewer-css-mode)
-      (add-hook 'html-mode-hook 'skewer-html-mode)))
+      (add-hook 'html-mode-hook 'skewer-html-mode)
+      (when (fboundp 'web-mode)
+        (add-hook 'web-mode-hook 'skewer-html-mode))))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
