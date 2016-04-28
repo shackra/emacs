@@ -1580,8 +1580,7 @@ Modo mayor para programar en Python
     :preface
     (use-package pyvenv :defer t)
     (use-package py-autopep8 :defer t)
-    :config
-    (bind-key "C-M-," 'comment-dwim python-mode-map)
+    :config 
     (if (fboundp 'defhydra)
         (prog1 (defhydra hydra-py (:columns 2)
                  "Python (re) sangrado de bloques"
@@ -1589,12 +1588,23 @@ Modo mayor para programar en Python
                  (">" python-indent-shift-right "Incrementa el sangrado")
                  ("SPC" indent-region "sangra la región" :color blue))
           ;; atamos la funcion hydra-py
-          (bind-key "C-c <" 'hydra-py/body python-mode-map))
+          (bind-key "C-c <" 'hydra-py/body python-mode-map)
+          (bind-key "C-c >" 'hydra-py/body python-mode-map))
       ;; Hydra no esta disponible, no podemos definir nuestra hydra entonces
       ;; atamos los atajos del teclado como si nada
       (bind-key "C-c <" 'python-indent-shift-left python-mode-map)
       (bind-key "C-c >" 'python-indent-shift-right python-mode-map))
-    
+
+    (use-package pony-mode
+      :init
+      (defun shackra/pony-remove-beautify-html ()
+        "Quita el gancho para embellecer el HTML"
+        (remove-hook 'before-save-hook 'web-beautify-html t))
+      :config
+      ;; quitamos el gancho que embellece el HTML cuando es guardado para que no
+      ;; estropeé las plantillas de DJango
+      (add-hook 'pony-minor-mode-hook #'shackra/pony-remove-beautify-html))
+
     (defun shackra/python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
       (electric-indent-local-mode -1)
@@ -1831,6 +1841,13 @@ modo mayor para editar JavaScript
       (add-hook 'html-mode-hook 'skewer-html-mode)
       (when (fboundp 'web-mode)
         (add-hook 'web-mode-hook 'skewer-html-mode))))
+#+END_SRC
+*** =html-mode=
+#+BEGIN_SRC emacs-lisp
+  (use-package sgml-mode
+    :ensure nil
+    :init
+    (setf sgml-basic-offset 4))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=

@@ -55,6 +55,7 @@
      (ffap-alternate-file)
      (tmm-menubar)
      (execute-extended-command))))
+ '(hl-sexp-background-color "#1c1f26")
  '(holiday-christian-holidays
    (quote
     ((holiday-easter-etc)
@@ -121,6 +122,28 @@
      (encoding . utf-8))))
  '(tramp-default-method "ssh")
  '(tramp-encoding-shell "/bin/bash")
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#f36c60")
+     (40 . "#ff9800")
+     (60 . "#fff59d")
+     (80 . "#8bc34a")
+     (100 . "#81d4fa")
+     (120 . "#4dd0e1")
+     (140 . "#b39ddb")
+     (160 . "#f36c60")
+     (180 . "#ff9800")
+     (200 . "#fff59d")
+     (220 . "#8bc34a")
+     (240 . "#81d4fa")
+     (260 . "#4dd0e1")
+     (280 . "#b39ddb")
+     (300 . "#f36c60")
+     (320 . "#ff9800")
+     (340 . "#fff59d")
+     (360 . "#8bc34a"))))
+ '(vc-annotate-very-old-color nil)
  '(vr/default-replace-preview t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
