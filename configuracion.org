@@ -1599,7 +1599,7 @@ Modo mayor para programar en Python
       :init
       (defun shackra/pony-remove-beautify-html ()
         "Quita el gancho para embellecer el HTML"
-        (remove-hook 'before-save-hook 'web-beautify-html t))
+        (remove-hook 'before-save-hook 'web-beautify-html-buffer t))
       :config
       ;; quitamos el gancho que embellece el HTML cuando es guardado para que no
       ;; estropeé las plantillas de DJango
