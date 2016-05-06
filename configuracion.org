@@ -455,32 +455,35 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
   (use-package existefuente
     :ensure nil
     :preface (provide 'existefuente)
-    :config
+    :init
     (defun font-exists-p (font)
       "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
       (if (not (find-font (font-spec :name font)))
           nil
-        t)))
+        t))
+    (defun shackra/arregla-emojis (&optional frame)
+      (if (font-exists-p "Symbola")
+          (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append))))
 
   (use-package misfuentes
     :ensure nil
     :preface (provide 'misfuentes)
-    :config
-    (if (font-exists-p "Monoid")
-        (progn
-          (set-frame-font "Monoid 9")
-          (add-to-list (quote default-frame-alist) (quote (font . "Monoid-9"))))
-      (if (font-exists-p "Source Code Pro")
+    :init
+    (defun shackra/font-set (&optional frame)
+      (if (font-exists-p "Monoid")
           (progn
-            (set-frame-font "Source Code Pro 10")
-            (add-to-list (quote default-frame-alist) (quote (font . "SourceCodePro-10"))))))
-
-    (defun shackra/arregla-emojis (&optional frame)
-      (if (font-exists-p "Symbola")
-          (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append)))
-
-    (add-hook 'after-make-frame-functions 'shackra/arregla-emojis)
-    (shackra/arregla-emojis))
+            (set-frame-font "Monoid 9")
+            (add-to-list 'default-frame-alist '(font . "Monoid-9")))
+        (if (font-exists-p "Source Code Pro")
+            (progn
+              (set-frame-font "Source Code Pro 10")
+              (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))))))
+    :config 
+    (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
+    (add-hook 'after-make-frame-functions #'shackra/font-set)
+    (unless (daemonp)
+      (shackra/arregla-emojis)
+      (shackra/font-set)))
 #+END_SRC
 * mapeo de combinaciones de teclas
 Combinaciones de teclas que no pertenecen a ningún paquete en particular.
@@ -634,20 +637,22 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
        ^Arriba^            ^Abajo^                ^Otros^
   --------------------------------------------------------------
   [_p_]   Siguiente    [_n_]   Siguiente    [_l_] Edit lines
-  [_P_]   Saltar       [_N_]   Saltar       [_a_] Mark all
-  [_M-p_] Desmarcar    [_M-n_] Desmarcar    [_r_] Mark by regexp
-  ^ ^                  ^ ^                  [_q_] Quit
+  [_P_]   Saltar       [_N_]   Saltar       [_a_] All like this
+  [_M-p_] Desmarcar    [_M-n_] Desmarcar    [_A_] All like this in defun
+  ^ ^                  ^ ^                  [_r_] Mark by regexp
+                       ^ ^                [_q_] Quit
   "
-    ("l" mc/edit-lines :exit t)
-    ("a" mc/mark-all-like-this :exit t)
-    ("n" mc/mark-next-like-this)
-    ("N" mc/skip-to-next-like-this)
-    ("M-n" mc/unmark-next-like-this)
-    ("p" mc/mark-previous-like-this)
-    ("P" mc/skip-to-previous-like-this)
-    ("M-p" mc/unmark-previous-like-this)
-    ("r" mc/mark-all-in-region-regexp :exit t)
-    ("q" nil))
+  ("l" mc/edit-lines :exit t)
+  ("a" mc/mark-all-like-this :exit t)
+  ("A" mc/mark-all-like-this-in-defun :exit t)
+  ("n" mc/mark-next-like-this)
+  ("N" mc/skip-to-next-like-this)
+  ("M-n" mc/unmark-next-like-this)
+  ("p" mc/mark-previous-like-this)
+  ("P" mc/skip-to-previous-like-this)
+  ("M-p" mc/unmark-previous-like-this)
+  ("r" mc/mark-all-in-region-regexp :exit t)
+  ("q" nil))
 
     ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
     ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
@@ -1599,11 +1604,11 @@ Modo mayor para programar en Python
       :init
       (defun shackra/pony-remove-beautify-html ()
         "Quita el gancho para embellecer el HTML"
-        (remove-hook 'html-mode-hook 'web-beautify-html-buffer t))
+        (remove-hook 'before-save-hook 'web-beautify-html-buffer t))
       :config
       ;; quitamos el gancho que embellece el HTML cuando es guardado para que no
       ;; estropeé las plantillas de DJango
-      (add-hook 'pony-minor-mode-hook #'shackra/pony-remove-beautify-html))
+      (add-hook 'pony-tpl-minor-mode-hook #'shackra/pony-remove-beautify-html))
 
     (defun shackra/python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
