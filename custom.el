@@ -3,11 +3,7 @@
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ansi-color-names-vector
-   ["#151515" "#953331" "#546a29" "#909737" "#385e6b" "#7f355e" "#34676f" "#c6a57b"])
- '(ansi-term-color-vector
-   [unspecified "#3B3228" "#cb6077" "#beb55b" "#f4bc87" "#8ab3b5" "#a89bb9" "#8ab3b5" "#d0c8c6"] t)
+ ;; If there is more than one, they won't work right. 
  '(auth-source-save-behavior nil)
  '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(byte-compile-warnings nil)
@@ -90,6 +86,7 @@
  '(org-ctrl-k-protect-subtree t)
  '(org-default-notes-file "/home/jorge/org/diario.org")
  '(org-directory "/home/jorge/org")
+ '(org-export-backends (quote (ascii html icalendar latex md texinfo)))
  '(org-fontify-quote-and-verse-blocks t)
  '(org-footnote-auto-adjust t)
  '(org-habit-graph-column 55)

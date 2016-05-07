@@ -470,6 +470,7 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
     :preface (provide 'misfuentes)
     :init
     (defun shackra/font-set (&optional frame)
+      (select-frame frame)
       (if (font-exists-p "Monoid")
           (progn
             (set-frame-font "Monoid 9")
@@ -2254,4 +2255,18 @@ Un modo mayor que permite agregar subtítulos a vídeos. Requiere MPlayer.
     :ensure nil
     :load-path "site-packages/sese/"
     :mode "\\.sese$")
+#+END_SRC
+*** interfaz para AUR
+#+BEGIN_SRC emacs-lisp
+  (use-package aurel
+    :init
+    (setf aurel-download-directory "~/proyectos/aur/aurel")
+    (setf aurel-aur-user-package-info-check t))
+#+END_SRC
+*** =golden-ratio=
+Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de ellas
+#+BEGIN_SRC emacs-lisp
+  (use-package golden-ratio
+    :init
+    (setf golden-ratio-auto-scale t))
 #+END_SRC
