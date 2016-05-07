@@ -2268,5 +2268,7 @@ Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de e
 #+BEGIN_SRC emacs-lisp
   (use-package golden-ratio
     :init
-    (setf golden-ratio-auto-scale t))
+    (setf golden-ratio-auto-scale nil)
+    :config
+    (golden-ratio-mode 1))
 #+END_SRC
