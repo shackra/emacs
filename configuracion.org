@@ -727,6 +727,7 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
     :preface (require 'undo-tree)
+    :diminish undo-tree-mode
     :bind (("C-ç" . undo)
            ("M-ç" . redo))
     :init
