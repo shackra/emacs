@@ -1,3 +1,4 @@
+(ido-mode nil) ;; yo uso Helm ya, gracias
 (tooltip-mode -1)
 (recentf-mode 1)
 (savehist-mode 1)
