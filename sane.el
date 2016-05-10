@@ -1,6 +1,3 @@
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
 (tooltip-mode -1)
 (recentf-mode 1)
 (savehist-mode 1)
@@ -9,18 +6,15 @@
 (column-number-mode 1)
 (global-subword-mode 1)
 (global-font-lock-mode 1)
-(show-paren-mode t)
 (delete-selection-mode 1)
 
 (setf
  x-underline-at-descent-line t ;; la linea que subraya es puesta en la base de
- ;; la tipografía en lugar de en la linea base.
- load-prefer-newer t
+ ;; la tipografía en lugar de en la linea base. 
  save-interprogram-paste-before-kill t
  bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
  bookmark-save-flag 1
- inhibit-startup-message t
- inhibit-startup-echo-area-message "jorge"
+ inhibit-startup-message t 
  initial-scratch-message nil
  line-spacing 1
  make-backup-files nil
@@ -33,13 +27,10 @@
  history-length 1000
  x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)
  enable-recursive-minibuffers t
- gc-cons-percentage 0.125
- undo-tree-mode-lighter ""
+ gc-cons-percentage 0.125 
  ediff-diff-options "-w"
- ediff-split-window-function 'split-window-horizontally
- ediff-window-setup-function 'ediff-setup-windows-plain)
+ ediff-split-window-function 'split-window-horizontally)
 
-(set-default 'indent-tabs-mode nil)
 (set-default 'indicate-empty-lines t)
 (setq-default truncate-lines t)
 

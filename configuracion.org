@@ -14,7 +14,6 @@ realicemos a mayor gloria tuya.
 
 * Configuración de GNU Emacs en un archivo de org-mode
 He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi configuración, sí, sí... ya sé que esto se puede hacer con comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código Python!.
-
 * Cómo hacer que todo esto funcione: =init.el=
 Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
 =~/.emacs.d/init.el=:
@@ -51,8 +50,8 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
 
   ;; En caso de que /usr/local/bin no este agregado
   (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
-                                                           (not (eq system-type 'cygwin))
-                                                           (not (eq system-type 'ms-dos))))
+                                                      (not (eq system-type 'cygwin))
+                                                      (not (eq system-type 'ms-dos))))
     (setf exec-path (append exec-path '("/usr/local/bin")))
     (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
 
@@ -64,63 +63,15 @@ Pasemos a la materia. Esta configuración se carga de la siguiente manera desde 
   ;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
   ;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
   ;; ahorrarme unos segundos cuando Emacs se carga.
-  (if (file-newer-than-file-p
-       (expand-file-name "configuracion.org" user-emacs-directory)
-       (expand-file-name "configuracion.el" user-emacs-directory))
-      ;; enreda los bloques de código en un archivo elisp
-      (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
-    ;; en caso contrario, carga el archivo ya existente :)
-    (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
-  (if (eq system-type 'gnu/linux)
-      (load-file (expand-file-name "security.el" user-emacs-directory)))
-  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
-  (setf package-enable-at-startup nil)
-  (package-initialize)
+  (when (file-newer-than-file-p
+         (expand-file-name "configuracion.org" user-emacs-directory)
+         (expand-file-name "configuracion.el" user-emacs-directory))
+    ;; enreda los bloques de código en un archivo elisp si el archivo ORG es más
+    ;; nuevo que el archivo elisp 
+    (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))) 
 
-  ;; repositorios de paquetes
-  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "http://orgmode.org/elpa/")
-                           ("gnu" . "https://elpa.gnu.org/packages/")))
-
-  ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
-  ;; lo instalamos
-  (when (not (package-installed-p 'use-package))
-    (progn
-      (unless package-archive-contents
-        (package-refresh-contents))
-      (package-install 'use-package)))
-
-  (when (not (package-installed-p 'org))
-    (progn
-      (unless package-archive-contents
-        (package-refresh-contents))
-      (package-install 'org)))
-
-  ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
-  (when (eq system-type 'darwin)
-    (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
-
-  ;; En caso de que /usr/local/bin no este agregado
-  (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
-                                                      (not (eq system-type 'cygwin))
-                                                      (not (eq system-type 'ms-dos))))
-    (setf exec-path (append exec-path '("/usr/local/bin"))))
-
-  (put 'downcase-region 'disabled nil)
-  (require 'use-package)
-  (setf use-package-always-ensure t)
-
-  (require 'ob-tangle)
-  ;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
-  ;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
-  ;; ahorrarme unos segundos cuando Emacs se carga.
-  (if (file-newer-than-file-p
-       (expand-file-name "configuracion.org" user-emacs-directory)
-       (expand-file-name "configuracion.el" user-emacs-directory))
-      ;; enreda los bloques de código en un archivo elisp
-      (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
-    ;; en caso contrario, carga el archivo ya existente :)
-    (load-file (expand-file-name "configuracion.el" user-emacs-directory)))
+  ;; finalmente, carga la configuración
+  (load-file (expand-file-name "configuracion.el" user-emacs-directory))
 #+END_SRC
 
 activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
@@ -189,20 +140,7 @@ Por alguna extraña razón, sólo la primer linea de código dispara un error. S
 Desde la versión 24 Emacs permite la instalación de paquetes de la misma manera como se realiza en
 distribuciones de GNU/Linux.
 
-El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben, aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  ;; repositorios de paquetes
-  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ;; por alguna razón, el repositorio de org-mode tiene
-                           ;; da acceso pobre a traves de HTTPS
-                           ("org" . "http://orgmode.org/elpa/")))
-  (when (< emacs-major-version 24)
-    (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/")))
-
-#+END_SRC
-
-Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
+El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben, aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información. Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
 * Códigos elisp
 funciones de Emacs lisp escritas por mi u otras personas (y que yo he recolectado para mi uso personal)
 ** función para insertar etiquetas <kbd>
@@ -437,8 +375,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 #+END_SRC
 
 * Custom.el
- El archivo customize sera éste. Cualquier modificación de Emacs que
- se haga a través de =customize= ira al archivo especificado.
+ El archivo customize sera éste. Cualquier modificación de Emacs que se haga a través de =customize= ira al archivo especificado.
 
 #+BEGIN_SRC emacs-lisp
   (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
@@ -447,7 +384,9 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 * Sane defaults
 configuración sana de ciertas opciones en Emacs
 #+BEGIN_SRC emacs-lisp
-  (load-file (expand-file-name "sane.el" user-emacs-directory))
+  (use-package better-defaults
+    :config
+    (load-file (expand-file-name "sane.el" user-emacs-directory)))
 #+END_SRC
 ** Tipografía
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
@@ -770,7 +709,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:45]
 :END:      
-Registra la frecuencia con la que se usan ciertas teclas en Emacs.
+Registra la frecuencia con la que se usan ciertas teclas en Emacs. Esta información se puede utilizar para saber a qué comandos dar combinaciones de teclas más fáciles de presionar.
 #+BEGIN_SRC emacs-lisp
   (use-package keyfreq
     :if (daemonp)
@@ -778,6 +717,8 @@ Registra la frecuencia con la que se usan ciertas teclas en Emacs.
     (keyfreq-mode 1)
     (keyfreq-autosave-mode 1))
 #+END_SRC
+**** ¿Cómo procesar la información estadística obtenida por éste paquete?
+Primero se ejecuta el comando =command-frequency-display= el cual popula un buffer con los datos, el contenido de ese buffer debe ser guardado en un archivo. Luego se usa un [[http://ergoemacs.org/emacs/command-frequency.py][script de Python]] que procesara ese archivo, saneara los datos y creara un archivo HTML el cual contendrá el reporte.
 *** =undo-tree=
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:45]
@@ -785,10 +726,13 @@ Registra la frecuencia con la que se usan ciertas teclas en Emacs.
 Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los cambios realizados como un árbol con ramificaciones de cambios.
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
+    :preface (require 'undo-tree)
     :bind (("C-ç" . undo)
            ("M-ç" . redo))
     :init
-    (setf undo-tree-mode-lighter "")
+    (defadvice undo-tree-make-history-save-file-name
+        (after undo-tree activate)
+      (setq ad-return-value (concat ad-return-value ".7z")))
     :config
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
@@ -1038,11 +982,11 @@ Permite designar qué buffers queremos matar o enterrar (/bury/).
     :bind (("C-x k" . kill-or-bury-alive))
     :config
     (setf kill-or-bury-alive-must-die-list
-          '("^\\*Calendar\\*$" "^\\*Help\\*$" "^\\*Packages\\*$" dired-mode prog-mode text-mode rust-mode "^\\*Backtrace\\*$"))
+          '("^\\*Calendar\\*$" "^\\*Help\\*$" "^\\*Packages\\*$" dired-mode prog-mode text-mode rust-mode fundamental-mode "^\\*Backtrace\\*$"))
     (add-to-list 'kill-or-bury-alive-long-lasting-list "^\\*sh-<[:digit:]+>\\*$" t))
 #+END_SRC
 *** eldoc
-Muestra en el =área de eco= la lista de argumentos de una función que (podrías) estar escribiendo
+Muestra en el =área de eco= la firma de la función actual.
 #+BEGIN_SRC emacs-lisp
   (use-package eldoc
     :ensure nil
@@ -1061,13 +1005,9 @@ Revierte el contenido de un buffer de manera automática cuando el contenido de 
 *** YASnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
-    :diminish yas-minor-mode
-    :init
-    (defun shackra/yas ()
-      (yas-reload-all)
-      (yas-minor-mode-on))
+    :diminish yas-minor-mode 
     :config
-    (add-hook 'prog-mode-hook 'shackra/yas))
+    (add-hook 'prog-mode-hook #'yas-minor-mode-on))
 #+END_SRC
 *** imenu
 Crea menús a partir de secciones de documentos
@@ -1199,21 +1139,11 @@ Un versátil cliente de correo electrónico para Emacs.
       (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
       (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map)))
 #+END_SRC
-*** profile
-Múltiples cuentas de correo para mu4e
-#+BEGIN_SRC emacs-lisp
-  
-#+END_SRC
 *** =jabber.el=
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:52]
 :END:      
 ¡¡Chat de jabber desde Emacs!!
-
-*Nota:* Deshabilitado por extraño mensaje de error
-#+BEGIN_EXAMPLE
-  Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
-#+END_EXAMPLE
 
 Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-the-Record_Messaging][Off-the-Record]] a través de [[https://github.com/legoscia/emacs-jabber-otr][legoscia/emacs-jabber-otr]], el único requisito es tener el paquete [[https://github.com/python-otr/pure-python-otr][python-otr/pure-python-otr]] instalado en el sistema.
 #+BEGIN_SRC sh :tangle no
@@ -1248,12 +1178,16 @@ Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-th
     (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
     (jabber-connect-all))
 #+END_SRC
+**** *Nota:* Deshabilitado por extraño mensaje de error
+#+BEGIN_EXAMPLE
+  Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
+#+END_EXAMPLE
 *** =tumblesocks-mode=
 :LOGBOOK:  
 - Refiled on [2015-11-12 jue 16:53]
 :END:      
 Tumblr desde Emacs
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package tumblesocks
     :config
     (setf tumblesocks-blog "shackra.tumblr.com")
@@ -1341,13 +1275,19 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 - Refiled on [2015-11-12 jue 16:58]
 - Refiled on [2015-11-12 jue 16:53]
 :END:      
-Interfaz para editar paginas en instancias de Mediawiki desde Emacs
+Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wikemacs.org/wiki/Mediawiki.el][Mediawiki.el - WikEmacs]]
 #+BEGIN_SRC emacs-lisp
   (use-package mediawiki
     :init
-    (ignore-errors (load-file "~/.secret/mediawiki.el"))
+    (setf mediawiki-site-alist '(("Wikipedia en español" "https://es.wikipedia.org/w/" "" "" "Portal:Iglesia_católica")
+                                 ("Wikipedia en Inglés" "https://en.wikipedia.org/w/" "" "" "Portal:Catholicism")
+                                 ("Parabola GNU/Linux-libre" "https://wiki.parabola.nu/" "" "" "User:Shackra")
+                                 ("Wikemacs" "http://wikemacs.org/" "" "" "User:Shackra")))
+    (setf mediawiki-site-default "Wikemacs")
     :config
-    (add-hook 'mediawiki-mode-hook '(lambda () (turn-off-auto-fill))))
+    (add-hook 'mediawiki-mode-hook '(lambda ()
+                                      (turn-off-auto-fill)
+                                      (visual-line-mode 1))))
 #+END_SRC
 ** Desarrollo de software
 *** org-babel
@@ -2076,6 +2016,7 @@ Modo mayor para editar transcripciones
 Un modo menor para la edición de paréntesis. Para aprender qué hace este modo menor y sus posibilidades, ver [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]].
 #+BEGIN_SRC emacs-lisp
   (use-package paredit
+    :diminish paredit-mode
     :config 
     (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
     (add-hook 'lisp-mode-hook 'enable-paredit-mode)
@@ -2267,6 +2208,7 @@ Un modo mayor que permite agregar subtítulos a vídeos. Requiere MPlayer.
 Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de ellas
 #+BEGIN_SRC emacs-lisp
   (use-package golden-ratio
+    :diminish golden-ratio-mode
     :init
     (setf golden-ratio-auto-scale nil)
     :config
