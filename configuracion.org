@@ -373,7 +373,24 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
       (#'yes-or-no-p :override (lambda (prompt) t)))
      (apply function args)))
 #+END_SRC
+** usar Emacsclient como git mergetool
+#+BEGIN_SRC emacs-lisp
+  (defun shackra/emerge (local remote base output)
+    "difftool que se abre en emacsclient"
+    (emerge-files-with-ancestor nil local remote base output nil 'shackra/emerge--close-current-frame))
 
+  (defun shackra/emerge--close-current-frame ()
+    "Cierra el frame actual"
+    (delete-frame (selected-frame)))
+#+END_SRC
+Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configuración de Git
+#+BEGIN_EXAMPLE
+  [merge]
+          tool = emacsclient
+  [mergetool "emacsclient"]
+          cmd = emacsclient -c -a \"\" --eval \"(shackra/emerge \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$OUTPUT\\\")\"
+          trustExitCode = true
+#+END_EXAMPLE
 * Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que se haga a través de =customize= ira al archivo especificado.
 
