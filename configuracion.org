@@ -426,15 +426,16 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
     :preface (provide 'misfuentes)
     :init
     (defun shackra/font-set (&optional frame)
-      (select-frame frame)
-      (if (font-exists-p "Monoid")
-          (progn
-            (set-frame-font "Monoid 9")
-            (add-to-list 'default-frame-alist '(font . "Monoid-9")))
-        (if (font-exists-p "Source Code Pro")
+      (when (framep frame)
+        (select-frame frame)
+        (if (font-exists-p "Monoid")
             (progn
-              (set-frame-font "Source Code Pro 10")
-              (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))))))
+              (set-frame-font "Monoid 9")
+              (add-to-list 'default-frame-alist '(font . "Monoid-9")))
+          (if (font-exists-p "Source Code Pro")
+              (progn
+                (set-frame-font "Source Code Pro 10")
+                (add-to-list 'default-frame-alist '(font . "Source Code Pro-10")))))))
     :config 
     (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
     (add-hook 'after-make-frame-functions #'shackra/font-set)
@@ -1107,7 +1108,7 @@ Un versátil cliente de correo electrónico para Emacs.
     ;; TODO: Modificar esto de manera dinámica para otros sistemas operativos
     (setf mu4e-attachment-dir  "~/Descargas")
     ;; TODO: modificar esto segun sistema operativo?
-    (setf mu4e-maildir "~/correo")
+    (setf mu4e-maildir "~/Mail")
     (setf smtpmail-stream-type  'ssl)
     (setf smtpmail-smtp-service 465)
     (setf message-send-mail-function 'smtpmail-send-it)
