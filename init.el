@@ -34,16 +34,6 @@
   (setf exec-path (append exec-path '("/usr/local/bin")))
   (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
 
-;; En caso que ~/.local/bin no este agregado
-(when (and (not (member "/home/jorge/.local/bin" exec-path)) (eq system-type 'gnu/linux))
-  (setf exec-path (append exec-path '("/home/jorge/.local/bin")))
-  (setenv "PATH" (concat (getenv "PATH") ":/home/jorge/.local/bin")))
-
-;; En caso que $GOBIN no este agregado y exista
-(when (and (not (member "/home/jorge/go-workspace/bin" exec-path)) (eq system-type 'gnu/linux))
-  (setf exec-path (append exec-path '("/home/jorge/go-workspace/bin")))
-  (setenv "PATH" (concat (getenv "PATH") ":/home/jorge/go-workspace/bin")))
-
 (put 'downcase-region 'disabled nil)
 (require 'use-package)
 (setf use-package-always-ensure t)
