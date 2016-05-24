@@ -428,14 +428,18 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
     (defun shackra/font-set (&optional frame)
       (when (framep frame)
         (select-frame frame)
-        (if (font-exists-p "Monoid")
+        (if (font-exists-p "Monoisome")
             (progn
-              (set-frame-font "Monoid 9")
-              (add-to-list 'default-frame-alist '(font . "Monoid-9")))
-          (if (font-exists-p "Source Code Pro")
+              (set-frame-font "Monoisome 9")
+              (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
+          (if (font-exists-p "Monoid")
               (progn
-                (set-frame-font "Source Code Pro 10")
-                (add-to-list 'default-frame-alist '(font . "Source Code Pro-10")))))))
+                (set-frame-font "Monoid 9")
+                (add-to-list 'default-frame-alist '(font . "Monoid-9")))
+            (if (font-exists-p "Source Code Pro")
+                (progn
+                  (set-frame-font "Source Code Pro 10")
+                  (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))))))))
     :config 
     (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
     (add-hook 'after-make-frame-functions #'shackra/font-set)
