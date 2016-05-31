@@ -695,11 +695,12 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
 #+BEGIN_SRC emacs-lisp
   (use-package dired
     :ensure nil
+    :bind-keymap (("<f1>" . multi-term)
+                  ("C-o" . dired-omit-mode))
     :init
     (setq-default dired-omit-mode t)
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
-    (setf dired-dwim-target t)
-    (bind-key "C-o" 'dired-omit-mode dired-mode-map)
+    (setf dired-dwim-target t) 
     (defun shackra/dired-no-esconder-detalles ()
       "No esconder los detalles de los archivos en dired, se ven muy bien"
       (dired-hide-details-mode 0))
@@ -712,6 +713,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
         (set-buffer-modified-p nil)))
     :config
     (add-hook 'dired-mode-hook 'shackra/dired-no-esconder-detalles)
+    (add-hook 'dired-mode-hook '(lambda () (ido-mode 0)))
     (defadvice dired-readin
         (after dired-after-updating-hook first () activate)
       "Sort dired listings with directories first before adding marks."
@@ -820,27 +822,24 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
   (use-package company
     :demand t
     :diminish company-mode
-    :preface
-    (use-package company-jedi
-      :disabled t
-      :defer t
-      :init
-      (setf jedi:complete-on-dot t)
-      :config
-      (defun shackra/jedi ()
-        (jedi:setup)
-        (unless (member 'company-jedi 'company-backends)
-          (add-to-list 'company-backends 'company-jedi)))
-      (add-hook 'python-mode-hook #'shackra/jedi))
+    :preface 
     (use-package company-anaconda
+      :if (executable-find "python")
       :diminish anaconda-mode
-      :config
+      :preface
+      (if (executable-find "python")
+          (when (>= (call-process "python" nil nil nil "-m" "jedi") 1)
+            (message (format "Modulo jedi no instalado para interprete Python: %s" "python"))
+            (message "Auto-completado para Python no funcionara sin ese modulo"))
+        (message "LOL! El interprete Python ni siquiera esta instalado en el sistema"))
+      :init
       (defun shackra/anaconda ()
         (unless (member 'company-anaconda 'company-backends)
           (add-to-list 'company-backends 'company-anaconda))
-        (anaconda-mode))
+        (anaconda-mode)) 
+      :config
       (add-hook 'python-mode-hook #'shackra/anaconda)
-      (add-hook 'python-mode-hook 'eldoc-mode))
+      (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
     (use-package helm-company)
     :bind-keymap ("C-ñ" . helm-company)
     :init
@@ -1543,13 +1542,15 @@ Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
   (use-package python
     :ensure nil
-    :init
-    (setf python-mode-modeline-display "python-mode")
+    :if (or (executable-find "python") (executable-find "python3"))
     :interpreter ("python3" . python-mode)
     :preface
     (use-package pyvenv :defer t)
-    (use-package py-autopep8 :defer t)
-    :config 
+    (use-package py-autopep8 :defer t
+      :preface (unless (executable-find "autopep8")
+                 (message "¡autopep8 no esta instalado!")
+                 (message "Use pip install autopep8 para resolver el problema")))
+    :config
     (if (fboundp 'defhydra)
         (prog1 (defhydra hydra-py (:columns 2)
                  "Python (re) sangrado de bloques"
@@ -1560,7 +1561,7 @@ Modo mayor para programar en Python
           (bind-key "C-c <" 'hydra-py/body python-mode-map)
           (bind-key "C-c >" 'hydra-py/body python-mode-map))
       ;; Hydra no esta disponible, no podemos definir nuestra hydra entonces
-      ;; atamos los atajos del teclado como si nada
+      ;; atamos los atajos del teclado como si nada hubiera sucedido
       (bind-key "C-c <" 'python-indent-shift-left python-mode-map)
       (bind-key "C-c >" 'python-indent-shift-right python-mode-map))
 
