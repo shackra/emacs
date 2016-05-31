@@ -9,19 +9,17 @@
                          ("org" . "http://orgmode.org/elpa/")
                          ("gnu" . "https://elpa.gnu.org/packages/")))
 
+(unless package-archive-contents
+  (package-refresh-contents))
+
 ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
 ;; lo instalamos
 (when (not (package-installed-p 'use-package))
-  (progn
-    (unless package-archive-contents
-      (package-refresh-contents))
-    (package-install 'use-package)))
+  (package-install 'use-package))
 
+;; TODO: instalar org en caso de existir alguna actualización
 (when (not (package-installed-p 'org))
-  (progn
-    (unless package-archive-contents
-      (package-refresh-contents))
-    (package-install 'org)))
+  (package-install 'org))
 
 ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
 (when (eq system-type 'darwin)
