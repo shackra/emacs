@@ -1759,6 +1759,7 @@ modo mayor para editar código PHP
     :init
     (use-package f) ;; requerido para `shackra/go-update-compile-definition'
     (setf gofmt-show-errors nil) ;; para mostrar los errores es que existe Flycheck
+    (setf gofmt-command "goimports")
     (defun shackra/go-update-compile-definition ()
       "Actualiza la definición del comando COMPILE para go-mode"
       (interactive)
