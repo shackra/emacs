@@ -1821,6 +1821,12 @@ modo mayor para editar JavaScript
     :init
     (setf sgml-basic-offset 4))
 #+END_SRC
+*** Android
+Desarrollo de aplicaciones para Android desde GNU Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package android-mode
+    :init (custom-set-variables '(android-mode-sdk-dir "~/opt/android")))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
 :LOGBOOK:  
