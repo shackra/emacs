@@ -2246,3 +2246,18 @@ Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de e
     :config
     (golden-ratio-mode 1))
 #+END_SRC
+*** RSS feed
+Lector de RSS feed dentro de Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package elfeed
+    :init
+    (setf url-queue-timeout 30)
+    (defun elfeed-search-format-date (date)
+      (format-time-string "%d-%m-%Y %H:%M" (seconds-to-time date)))
+    :preface
+    (use-package elfeed-org
+      :init
+      (setf rmh-elfeed-org-files (list "~/org/w.org"))
+      :config
+      (elfeed-org)))
+#+END_SRC
