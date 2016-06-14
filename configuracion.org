@@ -2254,8 +2254,24 @@ Lector de RSS feed dentro de Emacs
     (setf url-queue-timeout 30)
     (defun elfeed-search-format-date (date)
       (format-time-string "%d-%m-%Y %H:%M" (seconds-to-time date)))
+    ;; fuentes RSS feed
+    (setf elfeed-feeds '("http://stackoverflow.com/jobs/feed?allowsremote=True&type=Contract"
+                         "https://weworkremotely.com/categories/2-programming/jobs.rss"
+                         ("https://www.reddit.com/r/forhire/.rss" reddit)
+                         ("https://costarica.craigslist.org/search/sof?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=298&nearbyArea=586&searchNearby=2" craigslist)
+                         ("https://toronto.craigslist.ca/search/web?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=235&nearbyArea=252&nearbyArea=27&nearbyArea=275&nearbyArea=337&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=40&nearbyArea=452&nearbyArea=453&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=486&nearbyArea=487&nearbyArea=555&nearbyArea=626&nearbyArea=627&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist Canada)
+                         ("https://toronto.craigslist.ca/search/sof?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=235&nearbyArea=252&nearbyArea=27&nearbyArea=275&nearbyArea=337&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=40&nearbyArea=452&nearbyArea=453&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=486&nearbyArea=487&nearbyArea=555&nearbyArea=626&nearbyArea=627&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist Canada)
+                         ("https://buffalo.craigslist.org/search/web?lang=es&cc=mx&employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=248&nearbyArea=25&nearbyArea=252&nearbyArea=275&nearbyArea=277&nearbyArea=337&nearbyArea=355&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=452&nearbyArea=453&nearbyArea=463&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=487&nearbyArea=626&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist USA)
+                         ("https://buffalo.craigslist.org/search/sof?lang=es&cc=mx&employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=248&nearbyArea=25&nearbyArea=252&nearbyArea=275&nearbyArea=277&nearbyArea=337&nearbyArea=355&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=452&nearbyArea=453&nearbyArea=463&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=487&nearbyArea=626&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist USA)))
+    :config
+    (add-hook 'elfeed-new-entry-hook
+              (elfeed-make-tagger :feed-url "www\\.reddit\\.com/r/forhire/\\.rss"
+                                  :entry-title '(not "Hiring")
+                                  :add 'nointeres
+                                  :remove 'unread))
     :preface
     (use-package elfeed-org
+      :disabled t
       :init
       (setf rmh-elfeed-org-files (list "~/org/w.org"))
       :config

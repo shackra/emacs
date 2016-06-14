@@ -4,8 +4,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(android-mode-sdk-dir "~/opt/android")
+ '(ansi-term-color-vector
+   [unspecified "#3B3228" "#cb6077" "#beb55b" "#f4bc87" "#8ab3b5" "#a89bb9" "#8ab3b5" "#d0c8c6"])
  '(auth-source-save-behavior nil)
- '(bmkp-last-as-first-bookmark-file "/home/jorge/.emacs.d/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(byte-compile-warnings nil)
  '(calendar-christian-all-holidays-flag t)
  '(calendar-date-style (quote european))
