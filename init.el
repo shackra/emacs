@@ -5,7 +5,7 @@
 (package-initialize)
 
 (defun shackra/update-one-package (package)
-  "Actualiza de manera un paquete PACKAGE"
+  "Actualiza un paquete PACKAGE"
   (when (package-installed-p package)
     (let* ((newest-pkg (cadr (assq package package-archive-contents)))
            (installed-pkg (cadr (or (assq package package-alist)
@@ -32,7 +32,6 @@
 (when (not (package-installed-p 'use-package))
   (package-install 'use-package))
 
-;; TODO: instalar org en caso de existir alguna actualización
 (if (not (package-installed-p 'org))
     (package-install 'org)
   ;; El paquete esta instalado. Actualiza el paquete org-mode.
