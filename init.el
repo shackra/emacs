@@ -4,6 +4,21 @@
 (setf package-enable-at-startup nil)
 (package-initialize)
 
+(defun shackra/update-one-package (package)
+  "Actualiza de manera un paquete PACKAGE"
+  (when (package-installed-p package)
+    (let* ((newest-pkg (cadr (assq package package-archive-contents)))
+           (installed-pkg (cadr (or (assq package package-alist)
+                                   (assq package package--builtins)))))
+      (when (version-list-<= (package-desc-version newest-pkg) (package-desc-version installed-pkg))
+        ;; Instalamos la nueva versión de org-mode
+        (package-install newest-pkg)
+        (message (format "Paquete «%s» actualizado de la versión %s a la versión %s"
+                         (package-desc-name newest-pkg)
+                         (car (package-desc-version newest-pkg))
+                         (car (package-desc-version installed-pkg))))
+        (delete-directory (package-desc-dir installed-pkg) t)))))
+
 ;; repositorios de paquetes
 (setf package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "http://orgmode.org/elpa/")
@@ -18,8 +33,10 @@
   (package-install 'use-package))
 
 ;; TODO: instalar org en caso de existir alguna actualización
-(when (not (package-installed-p 'org))
-  (package-install 'org))
+(if (not (package-installed-p 'org))
+    (package-install 'org)
+  ;; El paquete esta instalado. Actualiza el paquete org-mode.
+  (shackra/update-one-package 'org))
 
 ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
 (when (eq system-type 'darwin)
