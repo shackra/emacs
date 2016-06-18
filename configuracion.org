@@ -482,6 +482,9 @@ Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
 #+BEGIN_SRC emacs-lisp
   (use-package secretaria
     :ensure nil
+    :preface
+    (use-package alert)
+    (use-package f)
     :load-path "site-packages/secretaria/")
 #+END_SRC
 *** =helm=

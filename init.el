@@ -7,17 +7,23 @@
 (defun shackra/update-one-package (package)
   "Actualiza un paquete PACKAGE"
   (when (package-installed-p package)
-    (let* ((newest-pkg (cadr (assq package package-archive-contents)))
-           (installed-pkg (cadr (or (assq package package-alist)
-                                   (assq package package--builtins)))))
-      (when (version-list-<= (package-desc-version newest-pkg) (package-desc-version installed-pkg))
+    (let* ((newest-pkg (car-safe (cdr (assq package package-archive-contents))))
+           (new-ver (and newest-pkg (package-desc-version newest-pkg)))
+           (builtin-pkg (cdr (assq package package--builtins)))
+           (installed-pkg (car-safe (cdr (assq package package-alist))))
+           (old-dir (and installed-pkg (package-desc-dir installed-pkg)))
+           (old-ver (or (and installed-pkg (package-desc-version installed-pkg))
+                       (and builtin-pkg (package--bi-desc-version builtin-pkg)))))
+      (when (and new-ver (version-list-< old-ver new-ver)) 
         ;; Instalamos la nueva versión de org-mode
-        (package-install newest-pkg)
-        (message (format "Paquete «%s» actualizado de la versión %s a la versión %s"
-                         (package-desc-name newest-pkg)
-                         (car (package-desc-version newest-pkg))
-                         (car (package-desc-version installed-pkg))))
-        (delete-directory (package-desc-dir installed-pkg) t)))))
+        (condition-case nil
+            ;; en caso de algún error tratando de bajar algún paquete, captura
+            ;; el error para que no interfiera con la inicialización de Emacs
+            (progn (package-install newest-pkg)
+                   (message (format "Paquete «%s» actualizado de la versión %s a la versión %s"
+                                    (package-desc-name newest-pkg) old-ver new-ver))))
+        (unless old-dir
+	  (delete-directory old-dir t))))))
 
 ;; repositorios de paquetes
 (setf package-archives '(("melpa" . "https://melpa.org/packages/")
