@@ -1849,7 +1849,7 @@ Multiples cursores en Emacs.
             ("M-p" mc/skip-to-previous-like-this "Saltar")
             ("C-p" mc/mark-previous-lines "Linea")
             ("SPC" nil "Salir"))
-          (defhydra hydra-mc-other (:columns 5)
+          (defhydra hydra-mc-others (:columns 5)
             "Multiple-cursors: Otros/varios"
             ("a"   mc/mark-all-like-this "Todos como este")
             ("A"   mc/mark-all-like-this-in-defun "Todos como este (defun)")
