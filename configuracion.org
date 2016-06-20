@@ -1,85 +1,17 @@
-#+TITLE: Mi configuración de GNU Emacs
+#+TITLE: Configuración de GNU Emacs
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Sislock)
 #+EMAIL: elcorreo@deshackra.com
 #+OPTIONS: toc:5 num:nil ^:nil
 #+STARTUP: overview
 
 #+begin_quote
-Latin: Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam
-repleamur.
+Latin: Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam repleamur.
 
-Español: Te encomendamos, Señor, nuestras actividades para que las
-realicemos a mayor gloria tuya.
+Español: Te encomendamos, Señor, nuestras actividades para que las realicemos a mayor gloria tuya.
 #+end_quote
 
 * Configuración de GNU Emacs en un archivo de org-mode
 He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi configuración, sí, sí... ya sé que esto se puede hacer con comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código Python!.
-* Cómo hacer que todo esto funcione: =init.el=
-Pasemos a la materia. Esta configuración se carga de la siguiente manera desde el archivo
-=~/.emacs.d/init.el=:
-
-#+BEGIN_SRC emacs-lisp :tangle init.el :tangle no
-  (if (eq system-type 'gnu/linux)
-      (load-file (expand-file-name "security.el" user-emacs-directory)))
-  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
-  (setf package-enable-at-startup nil)
-  (package-initialize)
-
-  ;; repositorios de paquetes
-  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("org" . "http://orgmode.org/elpa/")
-                           ("gnu" . "https://elpa.gnu.org/packages/")))
-
-  ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
-  ;; lo instalamos
-  (when (not (package-installed-p 'use-package))
-    (progn
-      (unless package-archive-contents
-        (package-refresh-contents))
-      (package-install 'use-package)))
-
-  (when (not (package-installed-p 'org))
-    (progn
-      (unless package-archive-contents
-        (package-refresh-contents))
-      (package-install 'org)))
-
-  ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
-  (when (eq system-type 'darwin)
-    (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
-
-  ;; En caso de que /usr/local/bin no este agregado
-  (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
-                                                      (not (eq system-type 'cygwin))
-                                                      (not (eq system-type 'ms-dos))))
-    (setf exec-path (append exec-path '("/usr/local/bin")))
-    (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
-
-  (put 'downcase-region 'disabled nil)
-  (require 'use-package)
-  (setf use-package-always-ensure t)
-
-  (require 'ob-tangle)
-  ;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
-  ;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
-  ;; ahorrarme unos segundos cuando Emacs se carga.
-  (when (file-newer-than-file-p
-         (expand-file-name "configuracion.org" user-emacs-directory)
-         (expand-file-name "configuracion.el" user-emacs-directory))
-    ;; enreda los bloques de código en un archivo elisp si el archivo ORG es más
-    ;; nuevo que el archivo elisp 
-    (org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))) 
-
-  ;; finalmente, carga la configuración
-  (load-file (expand-file-name "configuracion.el" user-emacs-directory))
-#+END_SRC
-
-activamos algunas opciones para depuración en caso de que Emacs falle en cargar la configuración.
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (toggle-debug-on-error)
-  (toggle-debug-on-quit) ;; Se activa cuando el usuario presiona C-g
-#+END_SRC
 * Seguridad
 Emacs no es muy seguro por defecto, por ejemplo, al descargar paquetes de los [[*Repositorio%20de%20paquetes][Repositorio de paquetes]] no comprobara las credenciales SSL del sitio web. Más aun, los desarrolladores de extensiones no suelen firmar los /commits/ de sus extensiones, lo que permitiría que un atacante cambie algunas lineas de código elisp de un paquete para crear una puerta trasera. Más información aquí [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html#fnref:4][Deciphering Glyph :: Your Text Editor Is Malware]].
 
@@ -573,6 +505,7 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
   (use-package hydra
     :demand t
     :preface
+    (require 'hydra-examples)
     (use-package windmove
       :ensure nil)
     (use-package winner
@@ -584,41 +517,17 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       :config
       (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
     :config
-    (require 'hydra-examples)
     (defhydra hydra-zoom (global-map "<f2>")
       "Acercamiento"
       ("f" text-scale-increase "in")
       ("j" text-scale-decrease "out"))
-
     (defhydra hydra-avy (:color blue :columns 2)
       "avy jump"
       ("z" avy-goto-line "Ir a la linea...")
       ("x" avy-goto-word-1 "Ir a la palabra...")
       ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
       ("v" avy-goto-char "Ir a la palabra (2)..."))
-    (bind-key "C-z" 'hydra-avy/body)
-    (defhydra hydra-mc (:hint nil)
-      "
-       ^Arriba^            ^Abajo^                ^Otros^
-  --------------------------------------------------------------
-  [_p_]   Siguiente    [_n_]   Siguiente    [_l_] Edit lines
-  [_P_]   Saltar       [_N_]   Saltar       [_a_] All like this
-  [_M-p_] Desmarcar    [_M-n_] Desmarcar    [_A_] All like this in defun
-  ^ ^                  ^ ^                  [_r_] Mark by regexp
-                       ^ ^                [_q_] Quit
-  "
-  ("l" mc/edit-lines :exit t)
-  ("a" mc/mark-all-like-this :exit t)
-  ("A" mc/mark-all-like-this-in-defun :exit t)
-  ("n" mc/mark-next-like-this)
-  ("N" mc/skip-to-next-like-this)
-  ("M-n" mc/unmark-next-like-this)
-  ("p" mc/mark-previous-like-this)
-  ("P" mc/skip-to-previous-like-this)
-  ("M-p" mc/unmark-previous-like-this)
-  ("r" mc/mark-all-in-region-regexp :exit t)
-  ("q" nil))
-
+    (bind-key "C-z" 'hydra-avy/body) 
     ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
     ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
     ;; del macro para hydra
@@ -730,7 +639,11 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
       :if (version< emacs-version "24.4")
       :init
       (setf dired-details-propagate-flag t
-            dired-details-initially-hide nil)))
+            dired-details-initially-hide nil))
+    (use-package ranger
+      :init
+      (setf helm-descbinds-window-style 'same-window)
+      (setf ranger-cleanup-eagerly t)))
 #+END_SRC
 *** =keyfreq=
 :LOGBOOK:  
@@ -1406,6 +1319,14 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
 
           org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)
                                  (expand-file-name "fechas.org" org-directory)))
+    (use-package org-projectile
+      :preface (require 'org-projectile)
+      :bind (("C-c p x p" . org-projectile:project-todo-completing-read))
+      :init
+      (setf org-projectile:projects-file (expand-file-name "proyectos.org" org-directory))
+      (setf org-agenda-files (append org-agenda-files (org-projectile:todo-files)))
+      :config
+      (add-to-list 'org-capture-templates (org-projectile:project-todo-entry "P")))
     (setf org-todo-keywords
           '(
             ;; Secuencia para TAREAS
@@ -1910,29 +1831,85 @@ Multiples cursores en Emacs.
   (use-package multiple-cursors
     :defer 4
     :config
-    ;; Si mi hydra esta definida
-    (if (fboundp 'hydra-mc/body)
-        ;; La usamos
-        (bind-key "C-c n" 'hydra-mc/body)
+    ;; Si mi hydra esta en uso...
+    (if (fboundp 'defhydra)
+        ;; creamos hydras y les damos atajos de teclado
+        (progn
+          (defhydra hydra-mc-next (:columns 4 :color amaranth)
+            "Multiple-cursors: Siguiente"
+            ("n"    mc/mark-next-like-this "Como este")
+            ("N"    mc/unmark-next-like-this "Desmarcar")
+            ("M-n"  mc/skip-to-next-like-this "Saltar")
+            ("C-n"  mc/mark-next-lines "Linea")
+            ("SPC" nil "Salir"))
+          (defhydra hydra-mc-previous (:columns 4 :color amaranth)
+            "Multiple-cursors: Anterior"
+            ("p"   mc/mark-previous-like-this "Como este")
+            ("P"   mc/unmark-previous-like-this "Desmarcar")
+            ("M-p" mc/skip-to-previous-like-this "Saltar")
+            ("C-p" mc/mark-previous-lines "Linea")
+            ("SPC" nil "Salir"))
+          (defhydra hydra-mc-other (:columns 5)
+            "Multiple-cursors: Otros/varios"
+            ("a"   mc/mark-all-like-this "Todos como este")
+            ("A"   mc/mark-all-like-this-in-defun "Todos como este (defun)")
+            ("M-a" mc/mark-all-words-like-this "Todos como este (palabra)")
+            ("M-A" mc/mark-all-words-like-this-in-defun "Todos como este (palabra-defun)")
+            ("0"   mc/insert-numbers "Insertar números")
+            ("h"   mc/mark-sgml-tag-pair "Etiquetas XML/HTML")
+            ("s"   mc/sort-regions "Ordenar región")
+            ("S"   mc/reverse-regions "Invertir región")
+            ("m"   set-rectangular-region-anchor "Ancla rectangular")
+            ("l"   mc/edit-beginnings-of-lines "Inicio de lineas (región)")
+            ("M-l" mc/edit-lines "Todas las lineas (región)")
+            ("C-l" mc/edit-ends-of-lines "Final de lineas (región)"))
+          (bind-keys :prefix-map shackra/mc-map
+                     :prefix "C-c n"
+                     ("n"   . hydra-mc-next/mc/mark-next-like-this)
+                     ("N"   . hydra-mc-next/mc/unmark-next-like-this)
+                     ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
+                     ("C-n" . hydra-mc-next/mc/mark-next-lines)
+                     ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
+                     ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
+                     ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
+                     ("C-p" . hydra-mc-previous/mc/mark-previous-lines)
+                     ("o"   . hydra-mc-others/body)
+                     ("a"   . mc/mark-all-like-this)
+                     ("A"   . mc/mark-all-like-this-in-defun)
+                     ("M-a" . mc/mark-all-words-like-this)
+                     ("M-A" . mc/mark-all-words-like-this-in-defun)
+                     ("0"   . mc/insert-numbers)
+                     ("h"   . mc/mark-sgml-tag-pair)
+                     ("s"   . mc/sort-regions)
+                     ("m"   . set-rectangular-region-anchor)
+                     ("S"   . mc/reverse-regions)
+                     ("M-l" . mc/edit-lines)
+                     ("l"   . mc/edit-beginnings-of-lines)
+                     ("C-l" . mc/edit-ends-of-lines)))
+      ;; Si por alguna razón hydra no esta activado, usamos los comandos de
+      ;; multiple-cursors.
       (bind-keys :prefix-map shackra/mc-map
                  :prefix "C-c n"
-                 ("a" . mc/mark-all-symbols-like-this-in-defun)
-                 ("s" . mc/mark-all-symbols-like-this)
-                 ("d" . mc/mark-next-symbol-like-this)
-                 ("f" . mc/mark-previous-symbol-like-this)
-                 ("j" . mc/mark-all-words-like-this)
-                 ("k" . mc/mark-next-word-like-this)
-                 ("l" . mc/mark-previous-like-this)
-                 ("ñ" . mc/mark-sgml-tag-pair)
-
-                 ("v" . mc/insert-numbers)
-                 ("b" . mc/sort-regions)
-                 ("n" . mc/reverse-regions)
-                 ("m" . set-rectangular-region-anchor)
-
-                 ("t" . mc/edit-lines)
-                 ("y" . mc/edit-beginnings-of-lines)
-                 ("u" . mc/edit-ends-of-lines))))
+                 ("n"   . mc/mark-next-like-this)
+                 ("N"   . mc/unmark-next-like-this)
+                 ("M-n" . mc/skip-to-next-like-this)
+                 ("C-n" . mc/mark-next-lines)
+                 ("p"   . mc/mark-previous-like-this)
+                 ("P"   . mc/unmark-previous-like-this)
+                 ("M-p" . mc/skip-to-previous-like-this)
+                 ("C-p" . mc/mark-previous-lines)
+                 ("a"   . mc/mark-all-like-this)
+                 ("A"   . mc/mark-all-like-this-in-defun)
+                 ("M-a" . mc/mark-all-words-like-this)
+                 ("M-A" . mc/mark-all-words-like-this-in-defun)
+                 ("0"   . mc/insert-numbers)
+                 ("h"   . mc/mark-sgml-tag-pair)
+                 ("s"   . mc/sort-regions)
+                 ("m"   . set-rectangular-region-anchor)
+                 ("S"   . mc/reverse-regions)
+                 ("M-l" . mc/edit-lines)
+                 ("l"   . mc/edit-beginnings-of-lines)
+                 ("C-l" . mc/edit-ends-of-lines))))
 #+END_SRC
 *** visual-regexp
 :LOGBOOK:  
@@ -2134,8 +2111,17 @@ Pleguar o desplegar bloques de texto
   (use-package vimish-fold
     :defer 10
     :config
-    (bind-key "C-c f" 'vimish-fold)
-    (bind-key "C-c u" 'vimish-fold-unfold)
+    (bind-keys :prefix-map shackra/vimish-fold-map
+               :prefix "C-c v"
+               ("v" . vimish-fold-toggle)
+               ("V" . vimish-fold-toggle-all)
+               ("f" . vimish-fold)
+               ("u" . vimish-fold-unfold)
+               ("u" . vimish-fold-unfold-all)
+               ("d" . vimish-fold-delete)
+               ("D" . vimish-fold-delete-all)
+               ("n" . vimish-fold-next-fold)
+               ("p" . vimish-fold-previous-fold))
     (add-hook 'prog-mode #'vimish-fold-mode))
 #+END_SRC
 *** =appt=
@@ -2279,4 +2265,20 @@ Lector de RSS feed dentro de Emacs
       (setf rmh-elfeed-org-files (list "~/org/w.org"))
       :config
       (elfeed-org)))
+#+END_SRC
+*** =ws-butler=
+Eliminación de espacios de manera no obstrusiva
+#+BEGIN_SRC emacs-lisp
+  (use-package ws-butler
+    :diminish ws-butler-mode
+    :config
+    (add-hook 'prog-mode-hook 'ws-butler-mode)
+    (add-hook 'text-mode-hook 'ws-butler-mode))
+#+END_SRC
+*** Mingus
+Cliente para MPD
+#+BEGIN_SRC emacs-lisp
+  (use-package mingus
+    :if (executable-find "mpd")
+    :preface (require 'mingus-stays-home))
 #+END_SRC
