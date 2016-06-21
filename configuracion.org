@@ -330,55 +330,6 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
   (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
   (load custom-file)
 #+END_SRC
-* Sane defaults
-configuración sana de ciertas opciones en Emacs
-#+BEGIN_SRC emacs-lisp
-  (use-package better-defaults
-    :config
-    (load-file (expand-file-name "sane.el" user-emacs-directory)))
-#+END_SRC
-** Tipografía
-Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
-#+BEGIN_SRC emacs-lisp
-  (use-package existefuente
-    :ensure nil
-    :preface (provide 'existefuente)
-    :init
-    (defun font-exists-p (font)
-      "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
-      (if (not (find-font (font-spec :name font)))
-          nil
-        t))
-    (defun shackra/arregla-emojis (&optional frame)
-      (if (font-exists-p "Symbola")
-          (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append))))
-
-  (use-package misfuentes
-    :ensure nil
-    :preface (provide 'misfuentes)
-    :init
-    (defun shackra/font-set (&optional frame)
-      (when (framep frame)
-        (select-frame frame)
-        (if (font-exists-p "Monoisome")
-            (progn
-              (set-frame-font "Monoisome 9")
-              (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
-          (if (font-exists-p "Monoid")
-              (progn
-                (set-frame-font "Monoid 9")
-                (add-to-list 'default-frame-alist '(font . "Monoid-9")))
-            (if (font-exists-p "Source Code Pro")
-                (progn
-                  (set-frame-font "Source Code Pro 10")
-                  (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))))))))
-    :config 
-    (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
-    (add-hook 'after-make-frame-functions #'shackra/font-set)
-    (unless (daemonp)
-      (shackra/arregla-emojis)
-      (shackra/font-set)))
-#+END_SRC
 * mapeo de combinaciones de teclas
 Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 #+BEGIN_SRC emacs-lisp
@@ -420,9 +371,9 @@ Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
     :load-path "site-packages/secretaria/")
 #+END_SRC
 *** =helm=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:38]
-:END:      
+:END:
 Completado incremental y estrechamiento de selección de candidatos :)
 #+BEGIN_SRC emacs-lisp
   (use-package helm
@@ -494,10 +445,60 @@ Completado incremental y estrechamiento de selección de candidatos :)
       (add-hook 'after-init-hook '(lambda () (helm-adaptive-mode))) t)
     (helm-autoresize-mode 1))
 #+END_SRC
+*** =better-defaults=
+configuración sana de ciertas opciones en Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package better-defaults
+    :config
+    ;; Se cargan otras modificaciones para mejorar el comportamiento de Emacs
+    (load-file (expand-file-name "sane.el" user-emacs-directory)))
+#+END_SRC
+**** Tipografía
+Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
+#+BEGIN_SRC emacs-lisp
+  (use-package existefuente
+    :ensure nil
+    :preface (provide 'existefuente)
+    :init
+    (defun font-exists-p (font)
+      "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
+      (if (not (find-font (font-spec :name font)))
+          nil
+        t))
+    (defun shackra/arregla-emojis (&optional frame)
+      (if (font-exists-p "Symbola")
+          (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append))))
+
+  (use-package misfuentes
+    :ensure nil
+    :preface (provide 'misfuentes)
+    :init
+    (defun shackra/font-set (&optional frame)
+      (when (framep frame)
+        (select-frame frame)
+        (if (font-exists-p "Monoisome")
+            (progn
+              (set-frame-font "Monoisome 9")
+              (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
+          (if (font-exists-p "Monoid")
+              (progn
+                (set-frame-font "Monoid 9")
+                (add-to-list 'default-frame-alist '(font . "Monoid-9")))
+            (if (font-exists-p "Source Code Pro")
+                (progn
+                  (set-frame-font "Source Code Pro 10")
+                  (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))))))))
+    :config
+    (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
+    (add-hook 'after-make-frame-functions #'shackra/font-set)
+    (unless (daemonp)
+      (shackra/arregla-emojis)
+      (shackra/font-set)))
+#+END_SRC
 *** =hydra=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:45]
-:END:      
+:END:
 "/Cut off one head, Two more shall take its place. Hail HYDRA!/" [[http://marvel-movies.wikia.com/wiki/HYDRA][―miembro HYDRA]].
 
 Permite tratar combinaciones de teclas como grupos... es algo difícil de explicar, puede ver este vídeo [[https://www.youtube.com/watch?v=_qZliI1BKzI][Switching Emacs windows with hydra and ace-window - YouTube]] para entender de qué trata este paquete.
@@ -527,80 +528,39 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       ("x" avy-goto-word-1 "Ir a la palabra...")
       ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
       ("v" avy-goto-char "Ir a la palabra (2)..."))
-    (bind-key "C-z" 'hydra-avy/body) 
+    (bind-key "C-z" 'hydra-avy/body)
     ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
     ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
     ;; del macro para hydra
-    (defhydra hydra-win (:columns 4 :color amaranth)
+    (defhydra hydra-win (:columns 4 :color amaranth :pre (progn (golden-ratio-mode -1) (balance-windows)) :post (progn (golden-ratio-mode 1) (golden-ratio-adjust golden-ratio-adjust-factor)))
       "Manejo de ventanas"
-      ("j" windmove-left "Mover cursor, izquierda")
-      ("k" windmove-down "Mover cursor, abajo")
-      ("i" windmove-up "Mover cursor, arriba")
-      ("l" windmove-right "Mover cursor, derecha")
-      ("a" hydra-move-splitter-left "Cambiar tamaño, izquierda")
-      ("s" hydra-move-splitter-down "Cambiar tamaño, abajo")
-      ("w" hydra-move-splitter-up "Cambiar tamaño, arriba")
-      ("d" hydra-move-splitter-right "Cambiar tamaño, derecha")
-      ("b" helm-mini "Cambiar buffer")
-      ("f" helm-find-files "Abrir/Crear archivo")
-      ("F" follow-mode "Activa follow-mode")
-      ("z" (lambda ()
-             (interactive)
-             (ace-window 1)
-             (add-hook 'ace-window-end-once-hook
-                       'hydra-win/body))
-       "Cambiar a ventana...")
-      ("v" (lambda ()
-             (interactive)
-             (split-window-right)
-             (windmove-right))
-       "Divide ventana, vertical")
-      ("x" (lambda ()
-             (interactive)
-             (split-window-below)
-             (windmove-down))
-       "Divide ventana, horizontal")
-      ("c" (lambda ()
-             (interactive)
-             (ace-window 4)
-             (add-hook 'ace-window-end-once-hook
-                       'hydra-win/body))
-       "Cambiar a ventana...")
-      ("H" save-buffer "Salvar buffer")
-      ("h" delete-window "Borrar ventana")
-      ("B" (lambda ()
-             (interactive)
-             (ace-window 16)
-             (add-hook 'ace-window-end-once-hook
-                       'hydra-win/body))
-       "Borrar ventana...")
-      ("n" delete-other-windows "Borrar, otra ventana")
-      ("m" ace-maximize-window "Maximizar ventana")
-      ("," (progn
-             (winner-undo)
-             (setq this-command 'winner-undo))
-       "Deshacer cambio anterior")
-      ("." winner-redo "Rehacer cambio anterior")
-      ("SPC" nil "salir"))
-    ;; re-implementación de las funciones que habia escrito anteriormente
-    (defun shackra/split-window-vertically ()
-      "Divide la ventana por la mitad verticalmente y mueve el cursor a la ventana nueva. Ejecuta el comando hydra-win"
-      (interactive)
-      (split-window-vertically)
-      (other-window 1)
-      (hydra-win/body))
-
-    (defun shackra/split-window-horizontally ()
-      "Divide la ventana por la mitad horizontalmente y mueve el cursor a la ventana nueva. Ejecuta el comando hydra-win"
-      (interactive)
-      (split-window-horizontally)
-      (other-window 1)
-      (hydra-win/body)))
+      ("<up>" windmove-up "Cursor ↑")
+      ("<left>" windmove-left "Cursor ←")
+      ("<down>" windmove-down "Cursor ↓")
+      ("<right>" windmove-right "Cursor →")
+      ("C-<up>" hydra-move-splitter-up "Astilla ↑")
+      ("C-<left>" hydra-move-splitter-left "Astilla ←")
+      ("C-<down>" hydra-move-splitter-down "Astilla ↓")
+      ("C-<right>" hydra-move-splitter-right "Astilla →")
+      ("b" shackra/switch-buffer "Cambiar buffer")
+      ("f" shackra/find-file "Visitar/Crear archivo")
+      ("z" (lambda () (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Mover cursor a otra ventana")
+      ("2" (lambda () (interactive) (split-window-right) (windmove-right)) "Dividir |")
+      ("3" (lambda () (interactive) (split-window-below) (windmove-down)) "Dividir -")
+      ("c" (lambda () (interactive) (ace-window 4) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Intercambiar buffer de ventana")
+      ("s" save-buffer "Guardar buffer")
+      ("x" delete-window "Borrar ventana")
+      ("X" (lambda () (interactive) (ace-window 16) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Borrar esta/otra ventana")
+      ("1" ace-maximize-window "Maximizar esta ventana")
+      ("," (progn (winner-undo) (setf this-command 'winner-undo)) "Deshacer ultimo cambio")
+      ("." winner-redo "Rehacer ultimo cambio")
+      ("SPC" nil "Salir"))
+    (bind-key "C-x 7" #'hydra-win/body))
 #+END_SRC
 *** dired
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:45]
-:END:      
+:END:
 Manejador de archivos de serie para Emacs.
 
 Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction/][Dired as Default File Manager - Introduction]].
@@ -612,7 +572,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
     :init
     (setq-default dired-omit-mode t)
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
-    (setf dired-dwim-target t) 
+    (setf dired-dwim-target t)
     (defun shackra/dired-no-esconder-detalles ()
       "No esconder los detalles de los archivos en dired, se ven muy bien"
       (dired-hide-details-mode 0))
@@ -620,12 +580,11 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
       "Sort dired listings with directories first."
       (save-excursion
         (let (buffer-read-only)
-          (forward-line 2) ;; beyond dir. header 
+          (forward-line 2) ;; beyond dir. header
           (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
         (set-buffer-modified-p nil)))
     :config
     (add-hook 'dired-mode-hook 'shackra/dired-no-esconder-detalles)
-    (add-hook 'dired-mode-hook '(lambda () (ido-mode 0)))
     (defadvice dired-readin
         (after dired-after-updating-hook first () activate)
       "Sort dired listings with directories first before adding marks."
@@ -646,9 +605,9 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
       (setf ranger-cleanup-eagerly t)))
 #+END_SRC
 *** =keyfreq=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:45]
-:END:      
+:END:
 Registra la frecuencia con la que se usan ciertas teclas en Emacs. Esta información se puede utilizar para saber a qué comandos dar combinaciones de teclas más fáciles de presionar.
 #+BEGIN_SRC emacs-lisp
   (use-package keyfreq
@@ -660,9 +619,9 @@ Registra la frecuencia con la que se usan ciertas teclas en Emacs. Esta informac
 **** ¿Cómo procesar la información estadística obtenida por éste paquete?
 Primero se ejecuta el comando =command-frequency-display= el cual popula un buffer con los datos, el contenido de ese buffer debe ser guardado en un archivo. Luego se usa un [[http://ergoemacs.org/emacs/command-frequency.py][script de Python]] que procesara ese archivo, saneara los datos y creara un archivo HTML el cual contendrá el reporte.
 *** =undo-tree=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:45]
-:END:      
+:END:
 Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los cambios realizados como un árbol con ramificaciones de cambios.
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
@@ -679,9 +638,9 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     (global-undo-tree-mode 1))
 #+END_SRC
 *** =swiper=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:46]
-:END:      
+:END:
 Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje de la serie /Dora la exploradora/.
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
@@ -691,9 +650,9 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
     (bind-key "C-r" 'swiper global-map))
 #+END_SRC
 *** =theme-changer=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:46]
-:END:      
+:END:
 Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione adecuadamente hay que especificar las coordenadas geográficas del lugar donde vivimos, para saber más ver [[*Información personal][Información personal]].
 #+BEGIN_SRC emacs-lisp
   (use-package theme-changer
@@ -707,9 +666,9 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
     )
 #+END_SRC
 *** =hlinum=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:47]
-:END:      
+:END:
 Extiende el modo =linum-mode= y subraya el numero de linea actual.
 #+BEGIN_SRC emacs-lisp
   (use-package hlinum
@@ -718,9 +677,9 @@ Extiende el modo =linum-mode= y subraya el numero de linea actual.
     (add-hook 'prog-mode-hook #'hlinum-activate))
 #+END_SRC
 *** =ycmd=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:49]
-:END:      
+:END:
 /A code-completion & code-comprehension server/
 
 #+BEGIN_SRC emacs-lisp
@@ -730,15 +689,15 @@ Extiende el modo =linum-mode= y subraya el numero de linea actual.
     (use-package company-ycmd))
 #+END_SRC
 *** =company=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:50]
-:END:      
+:END:
 Un mejor motor de autocompletado comparado con [[https://github.com/auto-complete/auto-complete][auto-complete/auto-complete]].
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :demand t
     :diminish company-mode
-    :preface 
+    :preface
     (use-package company-anaconda
       :if (executable-find "python")
       :diminish anaconda-mode
@@ -752,7 +711,7 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
       (defun shackra/anaconda ()
         (unless (member 'company-anaconda 'company-backends)
           (add-to-list 'company-backends 'company-anaconda))
-        (anaconda-mode)) 
+        (anaconda-mode))
       :config
       (add-hook 'python-mode-hook #'shackra/anaconda)
       (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
@@ -770,9 +729,9 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     (add-hook 'after-init-hook #'global-company-mode))
 #+END_SRC
 *** =projectile=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:50]
-:END:      
+:END:
 Manejo de archivos de un proyecto.
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -793,9 +752,9 @@ Manejo de archivos de un proyecto.
     (add-hook 'after-init-hook #'projectile-global-mode))
 #+END_SRC
 *** =recentf=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 Archivos recientes abiertos en Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
@@ -810,9 +769,9 @@ Archivos recientes abiertos en Emacs.
     (add-to-list 'recentf-exclude "INBOX/"))
 #+END_SRC
 *** =expand-region=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 Incrementa la selección por unidades semánticas.
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
@@ -820,9 +779,9 @@ Incrementa la selección por unidades semánticas.
     :bind ("C-c 0" . er/expand-region))
 #+END_SRC
 *** =avy-jump=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ basado en caracteres.
 #+BEGIN_SRC emacs-lisp
   (use-package avy
@@ -836,10 +795,10 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
                ("v" . avy-goto-char)))
 #+END_SRC
 *** =multi-term=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
-Ofrece un excelente emulador de terminal *dentro* de Emacs 
+:END:
+Ofrece un excelente emulador de terminal *dentro* de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package multi-term
     :bind ([f1] . multi-term)
@@ -877,9 +836,9 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
     (add-hook 'term-mode-hook #'shackra/maybe-disable-yasnippet))
 #+END_SRC
 *** =magit=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 Git en Emacs. A decir verdad, amo Mercurial y odio Git.
 #+BEGIN_SRC emacs-lisp
   (use-package magit
@@ -893,14 +852,14 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
       (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
     (use-package git-commit-insert-issue
       :config
-      (add-hook 'git-commit-mode-hook 'git-commit-insert-issue-mode)) 
+      (add-hook 'git-commit-mode-hook 'git-commit-insert-issue-mode))
     (setf magit-last-seen-setup-instructions "1.4.0"
           magit-auto-revert-mode nil))
 #+END_SRC
 *** =monky=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 Mercurial en Emacs. Amo Mercurial ;)
 
 Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emacs/comments/3nzp7a/best_way_to_use_mercurial_with_emacs/][Best way to use Mercurial with Emacs? : emacs]]
@@ -943,7 +902,7 @@ Revierte el contenido de un buffer de manera automática cuando el contenido de 
 *** YASnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
-    :diminish yas-minor-mode 
+    :diminish yas-minor-mode
     :config
     (add-hook 'prog-mode-hook #'yas-minor-mode-on))
 #+END_SRC
@@ -973,7 +932,7 @@ Crea menús a partir de secciones de documentos
       "
       Marcadores
 
-      Cambiar                          Agregar           Editar  
+      Cambiar                          Agregar           Editar
     ╭──────────────────────────────────────────────────────────────────────╯
      [_j_] Anterior (buffer actual)   [_f_] aquí...   [_e_] aquí...
      [_l_] Siguiente (buffer actul)
@@ -998,10 +957,10 @@ Crea menús a partir de secciones de documentos
 #+END_SRC
 ** Comunicación
 *** =mu4e=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:52]
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
@@ -1073,14 +1032,14 @@ Un versátil cliente de correo electrónico para Emacs.
       :ensure nil
       :init
       (setf org-mu4e-link-query-in-headers-mode nil)
-      :config 
+      :config
       (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
       (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map)))
 #+END_SRC
 *** =jabber.el=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:52]
-:END:      
+:END:
 ¡¡Chat de jabber desde Emacs!!
 
 Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-the-Record_Messaging][Off-the-Record]] a través de [[https://github.com/legoscia/emacs-jabber-otr][legoscia/emacs-jabber-otr]], el único requisito es tener el paquete [[https://github.com/python-otr/pure-python-otr][python-otr/pure-python-otr]] instalado en el sistema.
@@ -1121,9 +1080,9 @@ Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-th
   Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
 #+END_EXAMPLE
 *** =tumblesocks-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
-:END:      
+:END:
 Tumblr desde Emacs
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package tumblesocks
@@ -1132,9 +1091,9 @@ Tumblr desde Emacs
     (defalias 'ts 'tumblesocks-view-dashboard))
 #+END_SRC
 *** =twittering-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
-:END:      
+:END:
 Twitter desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package twittering-mode
@@ -1153,24 +1112,24 @@ Twitter desde Emacs
       (my/bypass-confirmation-all #'twittering-favorite))
     (bind-key "C-c f" 'twittering-favorite twittering-mode-map)
     (bind-key "C-c F" 'shackra/tt-fav-rett twittering-mode-map)
-  
+
     (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
     (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
 #+END_SRC
 *** =sx=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
-:END:      
+:END:
 Acceso a Stackoverflow y subsitios desde Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package sx
     :defer 10)
 #+END_SRC
 *** org-webpage
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:57]
 - Refiled on [2015-11-12 jue 16:46]
-:END:      
+:END:
 Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 #+BEGIN_SRC emacs-lisp
   (use-package org-webpage
@@ -1209,10 +1168,10 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
                       'org2html-wrap-blocks-in-code))))
 #+END_SRC
 *** mediawiki
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:58]
 - Refiled on [2015-11-12 jue 16:53]
-:END:      
+:END:
 Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wikemacs.org/wiki/Mediawiki.el][Mediawiki.el - WikEmacs]]
 #+BEGIN_SRC emacs-lisp
   (use-package mediawiki
@@ -1294,6 +1253,12 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
     (setf org-footnote-auto-adjust t
+          ;; sacado de https://www.reddit.com/r/emacs/comments/4366f9/how_do_orgrefiletargets_work/czg008y
+          org-refile-targets '((nil :maxlevel . 9)
+                               (org-agenda-files :maxlevel . 9))
+          org-outline-path-complete-in-steps nil
+          org-refile-use-outline-path t
+          ;; fin de código sacado de Reddit/emacs
           org-html-htmlize-output-type 'css
           org-html-htmlize-font-prefix "org-"
           org-habit-graph-column 55
@@ -1316,7 +1281,6 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
           org-log-into-drawer nil
           org-clock-persist 'history
           org-default-notes-file (expand-file-name "quizas.org" org-directory)
-
           org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)
                                  (expand-file-name "fechas.org" org-directory)))
     (use-package org-projectile
@@ -1396,7 +1360,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :CREATED: %T
   :END:
   %?" :empty-lines 1 :kill-buffer t)
-          
+
             ("g" "Algún día")
 
             ("gp" "Tarea" entry (file+headline "quizas.org" "Cosas por hacer")
@@ -1753,10 +1717,10 @@ Desarrollo de aplicaciones para Android desde GNU Emacs
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:56]
 - Refiled on [2015-11-12 jue 16:50]
-:END:      
+:END:
 Rompe lineas de texto de manera automática en cierta columna
 #+BEGIN_SRC emacs-lisp
   (use-package auto-fill
@@ -1765,10 +1729,10 @@ Rompe lineas de texto de manera automática en cierta columna
     :preface (provide 'auto-fill))
 #+END_SRC
 *** =flyspell-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:56]
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 Revisión ortográfica al vuelo.
 #+BEGIN_SRC emacs-lisp
   (use-package flyspell
@@ -1790,7 +1754,7 @@ Revisión ortográfica al vuelo.
         (if (stringp (getenv "LANG"))
             (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)
           0))) ;; retorna español mientras tanto
-  
+
     (defun shackra/ispell-cycle-dict ()
       "Cambia de un diccionario a otro"
       (interactive)
@@ -1807,10 +1771,10 @@ Revisión ortográfica al vuelo.
       (flyspell-region (line-beginning-position) (line-end-position))))
 #+END_SRC
 *** =flycheck-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:56]
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 Revisión de errores en el código fuente, al vuelo.
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -1822,10 +1786,10 @@ Revisión de errores en el código fuente, al vuelo.
     (add-hook 'prog-mode-hook #'flycheck-mode))
 #+END_SRC
 *** =multiple-cursors=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:56]
 - Refiled on [2015-11-12 jue 16:51]
-:END:      
+:END:
 Multiples cursores en Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
@@ -1912,10 +1876,10 @@ Multiples cursores en Emacs.
                  ("C-l" . mc/edit-ends-of-lines))))
 #+END_SRC
 *** visual-regexp
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:57]
 - Refiled on [2015-11-12 jue 16:49]
-:END:      
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package visual-regexp
     :config
@@ -1930,20 +1894,20 @@ Multiples cursores en Emacs.
     (setq reb-re-syntax 'string))
 #+END_SRC
 *** =visual-fill-column=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:57]
 - Refiled on [2015-11-12 jue 16:49]
-:END:      
+:END:
 /fill-column for visual-line-mode/
 #+BEGIN_SRC emacs-lisp
   (use-package visual-fill-column
     :defer t)
 #+END_SRC
 *** =subword-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:57]
 - Refiled on [2015-11-12 jue 16:50]
-:END:      
+:END:
 Navegación y edición de /SubPalabras/. Siendo "HolaMundoAdios" una nomenclatura, =subword-mode= permite mover el cursor entre cada subpalabra, deteniéndolo en "Adios", "Mundo" y "Hola" si se mueve el cursor de derecha a izquierda presionando la tecla CTRL. Este modo menor es muy útil, especialmente para aquellos desarrolladores en Java que usan variables con JorobasDeCamello.
 #+BEGIN_SRC emacs-lisp
   (use-package subword
@@ -1951,10 +1915,10 @@ Navegación y edición de /SubPalabras/. Siendo "HolaMundoAdios" una nomenclatur
     :diminish subword-mode)
 #+END_SRC
 *** =hungry-delete=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:58]
 - Refiled on [2015-11-12 jue 16:53]
-:END:      
+:END:
 Borra espacios en blanco consecutivos con sólo presionar =backspace= una vez :)
 #+BEGIN_SRC emacs-lisp
   (use-package hungry-delete
@@ -1963,10 +1927,10 @@ Borra espacios en blanco consecutivos con sólo presionar =backspace= una vez :)
     (global-hungry-delete-mode))
 #+END_SRC
 *** =aggressive-indent-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:58]
 - Refiled on [2015-11-12 jue 16:53]
-:END:      
+:END:
 Porque =electric-indent-mode= no es lo suficientemente bueno.
 #+BEGIN_SRC emacs-lisp
   (use-package aggressive-indent
@@ -1981,9 +1945,9 @@ Porque =electric-indent-mode= no es lo suficientemente bueno.
     (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
 #+END_SRC
 *** =text-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 17:00]
-:END:      
+:END:
 Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
 #+BEGIN_SRC emacs-lisp
   (use-package text-mode
@@ -2029,16 +1993,16 @@ Un modo menor para la edición de paréntesis. Para aprender qué hace este modo
 #+BEGIN_SRC emacs-lisp
   (use-package paredit
     :diminish paredit-mode
-    :config 
+    :config
     (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
     (add-hook 'lisp-mode-hook 'enable-paredit-mode)
     (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode))
 #+END_SRC
 ** Otros
 *** =htmlize=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:47]
-:END:      
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package htmlize)
 #+END_SRC
@@ -2047,9 +2011,9 @@ Un modo menor para la edición de paréntesis. Para aprender qué hace este modo
   (use-package mustache-mode)
 #+END_SRC
 *** =fixmee=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:49]
-:END:      
+:END:
 Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
 #+BEGIN_SRC emacs-lisp
   (use-package fixmee
@@ -2059,9 +2023,9 @@ Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
     (add-hook 'prog-mode #'fixmee-mode))
 #+END_SRC
 *** =telephone-line=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:50]
-:END:      
+:END:
 "/Soy como =powerline=, pero mejor/"
 #+BEGIN_SRC emacs-lisp
   (use-package telephone-line
@@ -2082,9 +2046,9 @@ Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
     (telephone-line-mode 1))
 #+END_SRC
 *** =visual-line-mode=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:50]
-:END:      
+:END:
 Envuelve las filas de texto si son muy anchas visualmente en nuevas filas.
 #+BEGIN_SRC emacs-lisp
   (use-package visual-line
@@ -2095,17 +2059,17 @@ Envuelve las filas de texto si son muy anchas visualmente en nuevas filas.
     (setf visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
 #+END_SRC
 *** =notify=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:52]
-:END:      
+:END:
 Permite a emacs enviar notificaciones por DBus o diferentes medios. En este caso usare libnotify (el método definido no es multiplataforma).
 #+BEGIN_SRC emacs-lisp
   (setf notify-method 'notify-via-libnotify)
 #+END_SRC
 *** =vimish-fold=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
-:END:      
+:END:
 Pleguar o desplegar bloques de texto
 #+BEGIN_SRC emacs-lisp
   (use-package vimish-fold
@@ -2125,9 +2089,9 @@ Pleguar o desplegar bloques de texto
     (add-hook 'prog-mode #'vimish-fold-mode))
 #+END_SRC
 *** =appt=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
-:END:      
+:END:
 Appointments me alerta de mis citas o pendientes que tengo por hacer.
 #+BEGIN_SRC emacs-lisp
   ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
@@ -2190,9 +2154,9 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
     (add-hook 'after-save-hook #'shackra/appt-update-when-file-updated))
 #+END_SRC
 *** =uniquify=
-:LOGBOOK:  
+:LOGBOOK:
 - Refiled on [2015-11-12 jue 16:54]
-:END:      
+:END:
 #+BEGIN_SRC emacs-lisp
   (use-package uniquify
     :ensure nil
