@@ -856,6 +856,13 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
     (setf magit-last-seen-setup-instructions "1.4.0"
           magit-auto-revert-mode nil))
 #+END_SRC
+*** git-gutter-fring
+Muestra información de =git diff= en el fringe.
+#+BEGIN_SRC emacs-lisp
+  (use-package git-gutter-fringe
+    :config
+    (global-git-gutter-mode t))
+#+END_SRC
 *** =monky=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
@@ -2245,4 +2252,17 @@ Cliente para MPD
   (use-package mingus
     :if (executable-find "mpd")
     :preface (require 'mingus-stays-home))
+#+END_SRC
+*** tareas de org a Google Calendar
+#+BEGIN_SRC emacs-lisp
+  (use-package org-gcal
+    :disabled t
+    :init
+    (setf org-gcal-client-id "719739047198-857v4t8pb09ptb76f20ag6brvmlnpk3n.apps.googleusercontent.com")
+    (setf org-gcal-file-alist '(("shackrasislock0@gmail.com" . "~/org/cosas por hacer.org")
+                                ("es.cr#holiday@group.v.calendar.google.com" . "~/org/festivos.org")
+                                ("fmuk685cem8pufc6v996omoo6o@group.calendar.google.com" . "~/org/fechas.org")
+                                ("#contacts@group.v.calendar.google.com" . "~/org/cumpleaños.org")))
+    :config
+    (add-hook 'after-init-hook (lambda () (org-gcal-fetch) (org-gcal-sync))))
 #+END_SRC
