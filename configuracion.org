@@ -659,8 +659,11 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
     :init
     (use-package material-theme)
     (use-package base16-theme)
+    :init
+    (custom-set-faces
+     '(org-document-title ((t (:foreground "#8D6E63" :weight bold :height 1.50)))))
     :config
-    (change-theme 'base16-mocha-light 'base16-mocha-dark)
+    (change-theme 'material-light 'base16-mocha-dark)
     (use-package tramp-theme
       :disabled t))
 #+END_SRC
