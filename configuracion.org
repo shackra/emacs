@@ -660,10 +660,9 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
     (use-package material-theme)
     (use-package base16-theme)
     :config
-    (change-theme 'base16-mocha-dark 'material)
+    (change-theme 'base16-mocha-light 'base16-mocha-dark)
     (use-package tramp-theme
-      :disabled t)
-    )
+      :disabled t))
 #+END_SRC
 *** =hlinum=
 :LOGBOOK:
@@ -860,6 +859,7 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
 Muestra información de =git diff= en el fringe.
 #+BEGIN_SRC emacs-lisp
   (use-package git-gutter-fringe
+    :diminish git-gutter-mode
     :config
     (global-git-gutter-mode t))
 #+END_SRC
