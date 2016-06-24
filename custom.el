@@ -145,3 +145,9 @@
      (360 . "#8bc34a"))))
  '(vc-annotate-very-old-color nil)
  '(vr/default-replace-preview t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(org-document-title ((t (:foreground "#8D6E63" :weight bold :height 1.5)))))

@@ -1263,16 +1263,18 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
     (setf org-footnote-auto-adjust t
+          org-directory (expand-file-name "~/org")
           ;; sacado de https://www.reddit.com/r/emacs/comments/4366f9/how_do_orgrefiletargets_work/czg008y
-          org-refile-targets '((nil :maxlevel . 9)
-                               (org-agenda-files :maxlevel . 9))
+          org-refile-targets `((nil :maxlevel . 9)
+                               (org-agenda-files :maxlevel . 9)
+                               (org-default-notes-file :maxlevel . 9)
+                               (,(expand-file-name "notas" org-directory) :maxlevel . 3))
           org-outline-path-complete-in-steps nil
           org-refile-use-outline-path t
           ;; fin de código sacado de Reddit/emacs
           org-html-htmlize-output-type 'css
           org-html-htmlize-font-prefix "org-"
           org-habit-graph-column 55
-          org-directory (expand-file-name "~/org")
           org-archive-location (expand-file-name "~/org-archivos/archivado.org::* Entradas viejas y archivadas")
           org-special-ctrl-k t
           org-ctrl-k-protect-subtree t ;; al usar C-k, evitamos perder todo el subarbol
