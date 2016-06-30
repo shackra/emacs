@@ -1727,6 +1727,15 @@ Desarrollo de aplicaciones para Android desde GNU Emacs
   (use-package android-mode
     :init (custom-set-variables '(android-mode-sdk-dir "~/opt/android")))
 #+END_SRC
+*** SLIME
+SLIME is the Superior Lisp Interaction Mode for Emacs.
+#+BEGIN_SRC emacs-lisp
+  (use-package slime
+    :init
+    ;; Estoy leyendo Land of Lisp, así que necesito usar CLISP
+    (setf inferior-lisp-program "/usr/bin/clisp")
+    (setf slime-contribs '(slime-fancy)))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
 :LOGBOOK:

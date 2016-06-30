@@ -109,7 +109,35 @@
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
  '(safe-local-variable-values
    (quote
-    ((buffer-read-only . 1)
+    ((eval when
+           (and
+            (buffer-file-name)
+            (file-regular-p
+             (buffer-file-name))
+            (string-match-p "^[^.]"
+                            (buffer-file-name)))
+           (unless
+               (featurep
+                (quote package-build))
+             (let
+                 ((load-path
+                   (cons ".." load-path)))
+               (require
+                (quote package-build))))
+           (package-build-minor-mode)
+           (set
+            (make-local-variable
+             (quote package-build-working-dir))
+            (expand-file-name "../working/"))
+           (set
+            (make-local-variable
+             (quote package-build-archive-dir))
+            (expand-file-name "../packages/"))
+           (set
+            (make-local-variable
+             (quote package-build-recipes-dir))
+            default-directory))
+     (buffer-read-only . 1)
      (shackra:var-python-version . 3)
      (pyvenv-workon . kuotaru)
      (shackra:var-python-ver . 2)
