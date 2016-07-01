@@ -1814,87 +1814,87 @@ Revisión de errores en el código fuente, al vuelo.
 Multiples cursores en Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
-    :defer 4
-    :config
-    ;; Si mi hydra esta en uso...
-    (if (fboundp 'defhydra)
-        ;; creamos hydras y les damos atajos de teclado
-        (progn
-          (defhydra hydra-mc-next (:columns 4 :color amaranth)
-            "Multiple-cursors: Siguiente"
-            ("n"    mc/mark-next-like-this "Como este")
-            ("N"    mc/unmark-next-like-this "Desmarcar")
-            ("M-n"  mc/skip-to-next-like-this "Saltar")
-            ("C-n"  mc/mark-next-lines "Linea")
-            ("SPC" nil "Salir"))
-          (defhydra hydra-mc-previous (:columns 4 :color amaranth)
-            "Multiple-cursors: Anterior"
-            ("p"   mc/mark-previous-like-this "Como este")
-            ("P"   mc/unmark-previous-like-this "Desmarcar")
-            ("M-p" mc/skip-to-previous-like-this "Saltar")
-            ("C-p" mc/mark-previous-lines "Linea")
-            ("SPC" nil "Salir"))
-          (defhydra hydra-mc-others (:columns 4)
-            "Multiple-cursors: Otros/varios"
-            ("a"   mc/mark-all-like-this "Todos como este")
-            ("A"   mc/mark-all-like-this-in-defun "Todos como este (defun)")
-            ("M-a" mc/mark-all-words-like-this "Todos como este (palabra)")
-            ("M-A" mc/mark-all-words-like-this-in-defun "Todos como este (palabra-defun)")
-            ("0"   mc/insert-numbers "Insertar números")
-            ("h"   mc/mark-sgml-tag-pair "Etiquetas XML/HTML")
-            ("s"   mc/sort-regions "Ordenar región")
-            ("S"   mc/reverse-regions "Invertir región")
-            ("m"   set-rectangular-region-anchor "Ancla rectangular")
-            ("l"   mc/edit-beginnings-of-lines "Inicio de lineas (región)")
-            ("M-l" mc/edit-lines "Todas las lineas (región)")
-            ("C-l" mc/edit-ends-of-lines "Final de lineas (región)"))
-          (bind-keys :prefix-map shackra/mc-map
-                     :prefix "C-c n"
-                     ("n"   . hydra-mc-next/mc/mark-next-like-this)
-                     ("N"   . hydra-mc-next/mc/unmark-next-like-this)
-                     ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
-                     ("C-n" . hydra-mc-next/mc/mark-next-lines)
-                     ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
-                     ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
-                     ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
-                     ("C-p" . hydra-mc-previous/mc/mark-previous-lines)
-                     ("o"   . hydra-mc-others/body)
-                     ("a"   . mc/mark-all-like-this)
-                     ("A"   . mc/mark-all-like-this-in-defun)
-                     ("M-a" . mc/mark-all-words-like-this)
-                     ("M-A" . mc/mark-all-words-like-this-in-defun)
-                     ("0"   . mc/insert-numbers)
-                     ("h"   . mc/mark-sgml-tag-pair)
-                     ("s"   . mc/sort-regions)
-                     ("m"   . set-rectangular-region-anchor)
-                     ("S"   . mc/reverse-regions)
-                     ("M-l" . mc/edit-lines)
-                     ("l"   . mc/edit-beginnings-of-lines)
-                     ("C-l" . mc/edit-ends-of-lines)))
-      ;; Si por alguna razón hydra no esta activado, usamos los comandos de
-      ;; multiple-cursors.
-      (bind-keys :prefix-map shackra/mc-map
-                 :prefix "C-c n"
-                 ("n"   . mc/mark-next-like-this)
-                 ("N"   . mc/unmark-next-like-this)
-                 ("M-n" . mc/skip-to-next-like-this)
-                 ("C-n" . mc/mark-next-lines)
-                 ("p"   . mc/mark-previous-like-this)
-                 ("P"   . mc/unmark-previous-like-this)
-                 ("M-p" . mc/skip-to-previous-like-this)
-                 ("C-p" . mc/mark-previous-lines)
-                 ("a"   . mc/mark-all-like-this)
-                 ("A"   . mc/mark-all-like-this-in-defun)
-                 ("M-a" . mc/mark-all-words-like-this)
-                 ("M-A" . mc/mark-all-words-like-this-in-defun)
-                 ("0"   . mc/insert-numbers)
-                 ("h"   . mc/mark-sgml-tag-pair)
-                 ("s"   . mc/sort-regions)
-                 ("m"   . set-rectangular-region-anchor)
-                 ("S"   . mc/reverse-regions)
-                 ("M-l" . mc/edit-lines)
-                 ("l"   . mc/edit-beginnings-of-lines)
-                 ("C-l" . mc/edit-ends-of-lines))))
+      :defer 4
+      :config
+      ;; Si mi hydra esta en uso...
+      (if (fboundp 'defhydra)
+          ;; creamos hydras y les damos atajos de teclado
+          (progn
+            (defhydra hydra-mc-next (:columns 4 :color amaranth)
+              "Multiple-cursors: Siguiente"
+              ("n"    mc/mark-next-like-this "Como este")
+              ("N"    mc/unmark-next-like-this "Desmarcar")
+              ("M-n"  mc/skip-to-next-like-this "Saltar")
+              ("C-n"  mc/mark-next-lines "Linea")
+              ("SPC" nil "Salir" :color blue))
+            (defhydra hydra-mc-previous (:columns 4 :color amaranth)
+              "Multiple-cursors: Anterior"
+              ("p"   mc/mark-previous-like-this "Como este")
+              ("P"   mc/unmark-previous-like-this "Desmarcar")
+              ("M-p" mc/skip-to-previous-like-this "Saltar")
+              ("C-p" mc/mark-previous-lines "Linea")
+              ("SPC" nil "Salir" :color blue))
+            (defhydra hydra-mc-others (:columns 4 :color blue)
+              "Multiple-cursors: Otros/varios"
+              ("a"   mc/mark-all-like-this "Todos como este")
+              ("A"   mc/mark-all-like-this-in-defun "Todos como este (defun)")
+              ("M-a" mc/mark-all-words-like-this "Todos como este (palabra)")
+              ("M-A" mc/mark-all-words-like-this-in-defun "Todos como este (palabra-defun)")
+              ("0"   mc/insert-numbers "Insertar números")
+              ("h"   mc/mark-sgml-tag-pair "Etiquetas XML/HTML")
+              ("s"   mc/sort-regions "Ordenar región")
+              ("S"   mc/reverse-regions "Invertir región")
+              ("m"   set-rectangular-region-anchor "Ancla rectangular")
+              ("l"   mc/edit-beginnings-of-lines "Inicio de lineas (región)")
+              ("M-l" mc/edit-lines "Todas las lineas (región)")
+              ("C-l" mc/edit-ends-of-lines "Final de lineas (región)"))
+            (bind-keys :prefix-map shackra/mc-map
+                       :prefix "C-c n"
+                       ("n"   . hydra-mc-next/mc/mark-next-like-this)
+                       ("N"   . hydra-mc-next/mc/unmark-next-like-this)
+                       ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
+                       ("C-n" . hydra-mc-next/mc/mark-next-lines)
+                       ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
+                       ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
+                       ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
+                       ("C-p" . hydra-mc-previous/mc/mark-previous-lines)
+                       ("o"   . hydra-mc-others/body)
+                       ("a"   . mc/mark-all-like-this)
+                       ("A"   . mc/mark-all-like-this-in-defun)
+                       ("M-a" . mc/mark-all-words-like-this)
+                       ("M-A" . mc/mark-all-words-like-this-in-defun)
+                       ("0"   . mc/insert-numbers)
+                       ("h"   . mc/mark-sgml-tag-pair)
+                       ("s"   . mc/sort-regions)
+                       ("m"   . set-rectangular-region-anchor)
+                       ("S"   . mc/reverse-regions)
+                       ("M-l" . mc/edit-lines)
+                       ("l"   . mc/edit-beginnings-of-lines)
+                       ("C-l" . mc/edit-ends-of-lines)))
+        ;; Si por alguna razón hydra no esta activado, usamos los comandos de
+        ;; multiple-cursors.
+        (bind-keys :prefix-map shackra/mc-map
+                   :prefix "C-c n"
+                   ("n"   . mc/mark-next-like-this)
+                   ("N"   . mc/unmark-next-like-this)
+                   ("M-n" . mc/skip-to-next-like-this)
+                   ("C-n" . mc/mark-next-lines)
+                   ("p"   . mc/mark-previous-like-this)
+                   ("P"   . mc/unmark-previous-like-this)
+                   ("M-p" . mc/skip-to-previous-like-this)
+                   ("C-p" . mc/mark-previous-lines)
+                   ("a"   . mc/mark-all-like-this)
+                   ("A"   . mc/mark-all-like-this-in-defun)
+                   ("M-a" . mc/mark-all-words-like-this)
+                   ("M-A" . mc/mark-all-words-like-this-in-defun)
+                   ("0"   . mc/insert-numbers)
+                   ("h"   . mc/mark-sgml-tag-pair)
+                   ("s"   . mc/sort-regions)
+                   ("m"   . set-rectangular-region-anchor)
+                   ("S"   . mc/reverse-regions)
+                   ("M-l" . mc/edit-lines)
+                   ("l"   . mc/edit-beginnings-of-lines)
+                   ("C-l" . mc/edit-ends-of-lines))))
 #+END_SRC
 *** visual-regexp
 :LOGBOOK:
