@@ -8,6 +8,9 @@
 (global-subword-mode 1)
 (global-font-lock-mode 1)
 (delete-selection-mode 1)
+;; borra la selección actual con cualquier cosa que
+;; ingrese datos
+(delete-selection-mode 1)
 
 (setf
  x-underline-at-descent-line t ;; la linea que subraya es puesta en la base de
