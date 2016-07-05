@@ -10,3 +10,6 @@
 [submodule "site-packages/secretaria"]
 	path = site-packages/secretaria
 	url = https://bitbucket.org/shackra/secretaria.el.git
+[submodule "site-packages/font-man"]
+	path = site-packages/font-man
+	url = https://bitbucket.org/shackra/font-man.git

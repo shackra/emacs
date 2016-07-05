@@ -370,6 +370,14 @@ Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
     (use-package f)
     :load-path "site-packages/secretaria/")
 #+END_SRC
+*** =font-man=
+Escala la altura de la tipografía en todos los buffers de manera temporal
+#+BEGIN_SRC emacs-lisp
+  (use-package font-man
+    :preface (use-package switch-buffer-functions)
+    :ensure nil
+    :load-path "site-packages/font-man")
+#+END_SRC
 *** =helm=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:38]
@@ -466,8 +474,12 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
           nil
         t))
     (defun shackra/arregla-emojis (&optional frame)
-      (if (font-exists-p "Symbola")
-          (set-fontset-font "fontset-default" nil (font-spec :size 20 :name "Symbola") frame 'append))))
+      (if (eq system-type 'darwin)
+          ;; Para NS/Cocoa
+          (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+        ;; Para GNU/Linux
+        (if (font-exists-p "Symbola")
+            (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend)))))
 
   (use-package misfuentes
     :ensure nil
@@ -717,8 +729,11 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
       :config
       (add-hook 'python-mode-hook #'shackra/anaconda)
       (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
-    (use-package helm-company)
-    :bind-keymap ("C-ñ" . helm-company)
+    (use-package helm-company
+      :bind (:map company-mode-map
+                  ("C-ñ" . helm-company)))
+    (use-package company-emoji
+      :config (add-to-list 'company-backends 'company-emoji))
     :init
     (setf company-idle-delay 0.3)
     (setf company-tooltip-limit 30)
