@@ -459,7 +459,8 @@ configuración sana de ciertas opciones en Emacs
   (use-package better-defaults
     :config
     ;; Se cargan otras modificaciones para mejorar el comportamiento de Emacs
-    (load-file (expand-file-name "sane.el" user-emacs-directory)))
+    (load-file (expand-file-name "sane.el" user-emacs-directory))
+    (add-hook 'after-init-hook (lambda () (ido-mode nil))))
 #+END_SRC
 **** Tipografía
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
@@ -2302,4 +2303,9 @@ Cliente para MPD
                                 ("#contacts@group.v.calendar.google.com" . "~/org/cumpleaños.org")))
     :config
     (add-hook 'after-init-hook (lambda () (org-gcal-fetch) (org-gcal-sync))))
+#+END_SRC
+*** camcorder
+Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
+#+BEGIN_SRC emacs-lisp
+  (use-package camcorder)
 #+END_SRC
