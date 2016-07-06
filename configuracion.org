@@ -1284,7 +1284,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
           org-refile-targets `((nil :maxlevel . 9)
                                (org-agenda-files :maxlevel . 9)
                                (org-default-notes-file :maxlevel . 9)
-                               (,(expand-file-name "notas" org-directory) :maxlevel . 3))
+                               (,(expand-file-name "notas.org" org-directory) :maxlevel . 3))
           org-outline-path-complete-in-steps nil
           org-refile-use-outline-path t
           ;; fin de código sacado de Reddit/emacs
