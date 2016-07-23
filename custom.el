@@ -81,6 +81,12 @@
  '(holiday-other-holidays
    (quote
     ((holiday-fixed 11 19 "Día Internacional del Hombre"))))
+ '(lui-formatting-list
+   (quote
+    (("\\(?:\\(?:^\\|[	 ]\\)\\*\\([^	 *]\\(?:[	 ]+[^	 *]+\\)*\\)\\*\\(?:$\\|[	 ]\\)\\)" 1
+      (quote lui-strong-face))
+     ("\\(?:\\(?:^\\|[	 ]\\)_\\([^	 *]\\(?:[	 ]+[^	 *]+\\)*\\)_\\(?:$\\|[	 ]\\)\\)" 1
+      (quote lui-emphasis-face)))))
  '(magit-use-overlays nil)
  '(org-agenda-files (quote ("/home/jorge/org/cosas por hacer.org")))
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))

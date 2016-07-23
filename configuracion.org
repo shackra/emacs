@@ -5,9 +5,10 @@
 #+STARTUP: overview
 
 #+begin_quote
-Latin: Actiones nostras tibi comítimus, Dómine, ut ad maiorem gloriam tuam repleamur.
-
-Español: Te encomendamos, Señor, nuestras actividades para que las realicemos a mayor gloria tuya.
+                                                 🕇
+                              Actiones nostras tibi comítimus, Dómine,
+                               ut ad maiorem gloriam tuam repleamur.
+                                                🕇 🕇
 #+end_quote
 
 * Configuración de GNU Emacs en un archivo de org-mode
@@ -73,7 +74,7 @@ Desde la versión 24 Emacs permite la instalación de paquetes de la misma maner
 distribuciones de GNU/Linux.
 
 El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben, aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información. Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
-* Códigos elisp
+* Códigos Elisp
 funciones de Emacs lisp escritas por mi u otras personas (y que yo he recolectado para mi uso personal)
 ** función para insertar etiquetas <kbd>
 Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta desde Emacs.stackexchange]].
@@ -128,27 +129,21 @@ Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visit
 Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=.
 *** =find-file= personalizado
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/find-file ()
-    (interactive)
-    (call-interactively (if (equal current-prefix-arg '(4))
-                            'find-file
-                          ;; si no se llamo a la función con el argumento
-                          ;; universal C-u. El comando se comporta normalmente
-                          (if (projectile-project-p)
-                              'helm-projectile-find-file
-                            'find-file))))
+  (defun shackra/find-file (arg)
+    (interactive "p")
+    (cond
+     ((= arg 4) (message "4") (call-interactively 'find-file))
+     ((= arg 16) (message "16") (call-interactively 'view-file))
+     (t (if (projectile-project-p) (call-interactively 'helm-projectile-find-file) (call-interactively 'find-file)))))
 #+END_SRC
 *** =switch-buffer= personalizado
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/switch-buffer ()
-    (interactive)
-    (call-interactively (if (equal current-prefix-arg '(4))
-                            'helm-mini
-                          ;; si no se llamo a la función con el argumento
-                          ;; universal C-u. El comando se comporta normalmente
-                          (if (projectile-project-p)
-                              'helm-projectile-switch-to-buffer
-                            'helm-mini))))
+  (defun shackra/switch-buffer (arg)
+    (interactive "p")
+    (cond
+     ((= arg 4) (helm-mini))
+     ((= arg 16) (helm-circe-by-server))
+     (t (if (projectile-project-p) (helm-projectile-switch-to-buffer) (helm-mini)))))
 #+END_SRC
 ** abrir archivos que estén en modo de solo lectura como root
 Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]], según éste [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][post en Emacs Redux]].
@@ -388,7 +383,13 @@ Completado incremental y estrechamiento de selección de candidatos :)
     :demand t
     :diminish helm-mode
     :bind (("M-y" . helm-show-kill-ring)
-           ("C-x f" . helm-recentf))
+           ("C-x f" . helm-recentf)
+           ("C-x C-f" . shackra/find-file))
+    :init
+    (setf helm-mode-no-completion-in-region-in-modes
+          '(circe-channel-mode
+            circe-query-mode
+            circe-server-mode))
     :config
     (add-hook 'after-init-hook '(lambda ()(helm-mode 1)) t)
     ;; re-ata combinaciones de teclas a los comandos de helm
@@ -417,7 +418,7 @@ Completado incremental y estrechamiento de selección de candidatos :)
     (use-package helm-buffers
       :ensure nil
       :config
-      (substitute-key-definition 'switch-to-buffer 'helm-mini (current-global-map))
+      (substitute-key-definition 'switch-to-buffer 'shackra/switch-buffer (current-global-map))
       (setf helm-buffers-fuzzy-matching t
             helm-truncate-lines t
             helm-ff-skip-boring-buffers t
@@ -1718,6 +1719,9 @@ modo mayor para editar código PHP
       :if (executable-find "oracle")
       :ensure nil
       :preface (load-file "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el"))
+    (use-package helm-go-package
+      :config (eval-after-load 'go-mode
+                '(substitute-key-definition 'go-import-add 'helm-go-package go-mode-map)))
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook 'shackra/go-update-compile-definition)
     (add-hook 'after-save-hook 'shackra/go-update-compile-definition))
@@ -2308,4 +2312,84 @@ Cliente para MPD
 Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
 #+BEGIN_SRC emacs-lisp
   (use-package camcorder)
+#+END_SRC
+*** Circe
+Cliente Emacs para Irc
+#+BEGIN_SRC emacs-lisp
+  (use-package circe
+    :preface
+    (require 'lui-autopaste)
+    (require 'circe-chanop)
+    :init
+    (if (not circe-network-options)
+        (setf circe-network-options `(("Freenode"
+                                       :nick "shackra"
+                                       :channels ("##Catholic" "#emacs" "#libreboot" "#org-mode" "#bitcoin" "#parabola" :after-auth "#python")
+                                       :nickserv-password ,(secrets-get-secret "Inicio de sesión" "freenode-clave"))
+                                      ("Bitlbee"
+                                       :nick "jorge"
+                                       :nickserv-password ,(secrets-get-secret "Inicio de sesión" "bitlbee-clave"))))
+      (progn (add-to-list 'circe-network-options `("Freenode"
+                                                   :nick "shackra"
+                                                   :channels ("##Catholic" "#emacs" "#libreboot" "#org-mode" "#bitcoin" "#parabola" :after-auth "#python")
+                                                   :nickserv-password ,(secrets-get-secret "Inicio de sesión" "freenode-clave")))
+             (add-to-list 'circe-network-options `("Bitlbee"
+                                                   :nick "jorge"
+                                                   :nickserv-password ,(secrets-get-secret "Inicio de sesión" "bitlbee-clave")))))
+    (setf circe-use-cycle-completion t)
+    (setf circe-reduce-lurker-spam t)
+    (setf circe-format-server-topic "*** Tema cambiado por {userhost}: {topic-diff}")
+    (setf lui-flyspell-p t
+          lui-flyspell-alist '((".*" "en")))
+    (setf lui-track-bar-behavior 'before-switch-to-buffer)
+    (setf tracking-ignored-buffers '(("#emacs$" circe-highlight-nick-face) ("#python$" circe-highlight-nick-face)))
+    :config
+    (use-package helm-circe
+      :if (fboundp 'helm-mode)
+      :config
+      (global-set-key (kbd "C-c b i") 'helm-circe)
+      ;; Handy to have a binding to helm-circe-new-activity
+      (global-set-key (kbd "C-c b n") 'helm-circe-new-activity))
+    (use-package circe-notifications
+      :config
+      (add-hook 'circe-server-connected-hook 'enable-circe-notifications))
+    (enable-lui-track-bar)
+    (defvar my-circe-bot-list '("fsbot" "rudybot"))
+    (defun my-circe-message-option-bot (nick &rest ignored)
+      (when (member nick my-circe-bot-list)
+        '((text-properties . (face circe-fool-face
+                                   lui-do-not-track t)))))
+    (defun circe-network-connected-p (network)
+      "Return non-nil if there's any Circe server-buffer whose `circe-server-netwok' is NETWORK."
+      (catch 'return
+        (dolist (buffer (circe-server-buffers))
+          (with-current-buffer buffer
+            (if (string= network circe-server-network)
+                (throw 'return t))))))
+    (defun circe-maybe-connect (network)
+      "Connect to NETWORK, but ask user for confirmation if it's already been connected to."
+      (interactive "sNetwork: ")
+      (if (or (not (circe-network-connected-p network))
+             (y-or-n-p (format "Ya conectado a %s, re-conectar?" network)))
+          (circe network)))
+    (defun irc ()
+      "Conectar al IRC"
+      (interactive)
+      (when (daemonp)
+        (circe-maybe-connect "Freenode")
+        ;;(circe-maybe-connect "Bitlbee")
+        (circe-maybe-connect "Irc2p")))
+    (add-hook 'circe-message-option-functions 'my-circe-message-option-bot)
+    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
+#+END_SRC
+*** Shackle
+Como =display-buffer-alist= pero más sencillo
+#+BEGIN_SRC emacs-lisp
+  (use-package shackle
+    :init
+    (setq shackle-rules '(("\\`\\*helm.*?\\*\\'" :regexp t :align t :size 0.3)
+                          ((circe-server-mode circe-channel-mode circe-query-mode) :ignore t)
+                          (compilation-mode :select t :align 'right :size 0.3)))
+    :config
+    (add-hook 'after-init-hook 'shackle-mode))
 #+END_SRC
