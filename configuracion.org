@@ -1688,15 +1688,10 @@ modo mayor para editar código PHP
     (defun shackra/go-update-compile-definition ()
       "Actualiza la definición del comando COMPILE para go-mode"
       (interactive)
-      (when (and (not (string-match "go" compile-command)) (eq major-mode 'go-mode))
-        (set (make-local-variable 'compile-command)
-             ;; FIXME: agregar `.exe' para los ejecutables de Windows
-             (format "go build -v && go test -v && go vet%s"
-                     (if (save-excursion
-                           (goto-char (point-min))
-                           (search-forward "package main" (save-excursion (end-of-line) (point)) t))
-                         (format " && ./%s" (f-base (f-dirname (f-full (buffer-name)))))
-                       "")))))
+      (when (eq major-mode 'go-mode)
+        (if (string-suffix-p "_test.go" (buffer-name))
+            (set (make-local-variable 'compile-command) "go test -bench -v && go vet")
+          (set (make-local-variable 'compile-command) (format "go build && go vet && ./%s" (f-base (f-dirname (f-full (buffer-name)))))))))
     :config
     (use-package company-go
       :if (executable-find "gocode")
@@ -2392,4 +2387,10 @@ Como =display-buffer-alist= pero más sencillo
                           (compilation-mode :select t :align 'right :size 0.3)))
     :config
     (add-hook 'after-init-hook 'shackle-mode))
+#+END_SRC
+*** pdf-tools
+Mejor visor de PDFs para Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package pdf-tools
+    :mode ("\\.pdf\\'" . pdf-view-mode))
 #+END_SRC
