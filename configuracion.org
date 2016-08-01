@@ -681,24 +681,24 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
     (use-package tramp-theme
       :disabled t))
 #+END_SRC
-*** =hlinum=
+*** =hlinum=                                                :deshabilitado:
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:47]
 :END:
 Extiende el modo =linum-mode= y subraya el numero de linea actual.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package hlinum
     :disabled t
     :config
     (add-hook 'prog-mode-hook #'hlinum-activate))
 #+END_SRC
-*** =ycmd=
+*** =ycmd=                                                  :deshabilitado:
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:49]
 :END:
 /A code-completion & code-comprehension server/
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package ycmd
     :disabled t ;; hasta tener instalado ycmd
     :config
@@ -1074,7 +1074,7 @@ Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-th
   sudo pip install python-potr
 #+END_SRC
 
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package jabber
     :disabled t ;; no inicia de manera exitosa por un error
     :if (daemonp)
@@ -1106,7 +1106,7 @@ Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-th
 #+BEGIN_EXAMPLE
   Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
 #+END_EXAMPLE
-*** =tumblesocks-mode=
+*** =tumblesocks-mode=                                      :deshabilitado:
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
 :END:
@@ -2290,8 +2290,8 @@ Cliente para MPD
     :if (executable-find "mpd")
     :preface (require 'mingus-stays-home))
 #+END_SRC
-*** tareas de org a Google Calendar
-#+BEGIN_SRC emacs-lisp
+*** tareas de org a Google Calendar                         :deshabilitado:
+#+BEGIN_SRC emacs-lisp :tangle no
   (use-package org-gcal
     :disabled t
     :init
