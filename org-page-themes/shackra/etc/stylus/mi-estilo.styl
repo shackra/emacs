@@ -1,6 +1,6 @@
-@import url("http://fonts.googleapis.com/css?family=Permanent+Marker|Source+Code+Pro:500|Source+Sans+Pro:400,700,700italic,400italic|Source+Serif+Pro:400,700&subset=latin,latin-ext");
+@import 'https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700,700i|Oswald:700|Permanent+Marker&subset=latin-ext'
+@import "https://fontlibrary.org/face/monoid"
 @import "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"
-@import "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"
 @import "keys.css"
 @import "kimbie.dark.css"
 @import "openwebicons-bootstrap.min.css"
@@ -13,36 +13,37 @@ html
   min-height 100%
 
 body
-  font-family Source Sans Pro, sans-serif
+  font-family 'Crismon Text', serif
+  font-size 16pt // mejora la legibilidad
   // margen al fondo segun la altura del footer
   margin-bottom footer-height-min-screen
   @media (min-width: 1000px)
     margin-bottom footer-height-max-screen
 
 h1,h2,h3,h4,h5,h6
-  font-family Source Serif Pro, serif
-
+  font-family 'Oswald', san-serif
+  
 pre
-  font-family Source Code Pro, monospace
   background none
   border none
   white-space pre
 
+kbd
+  font-family 'MonoidRegular', monospace !important
+  
+code
+  font-family 'MonoidRegular', monospace !important
+  white-space nowrap
+  
 pre code
   white-space pre
-
-code
-  white-space nowrap
 
 article
   padding-bottom 5em
 
 img
-  display block
-  width auto
-  max-width 100%
+  max-width 400px
   height auto
-  margin 2em auto
 
 img .pos-izquierda
   float left
@@ -55,7 +56,23 @@ img .pos-derecha
 video
   width 100% !important
   height auto !important
-  
+
+.navbar
+  border-radius 0px
+
+.navbar-nav
+    @media (min-width: 768px)
+      margin: 0 auto
+      display: table
+      table-layout: fixed
+      float: none
+
+.navbar-nav>li
+  @media (min-width: 768px)
+    display: table-cell
+    float: none
+    text-align: center
+      
 .cabecera-caja
   background #ffa500
   color #ffffff
@@ -68,21 +85,27 @@ video
   text-decoration none
 
 div.cabecera-caja h1
-  font-family Permanent Marker, cursive
+  font-family 'Permanent Marker', cursive
   text-transform uppercase
   font-size 3em
   border 5px solid #ffffff
   padding: 0.5em
-  @media (min-width: 700px)
-    width 500px
+  @media (min-width: 500px)
+    width 450px
     margin-left auto
     margin-right auto
+  @media (max-width: 390px)
+    font-size 2.4em
 
 div.cabecera-caja h3
   font-size 1.2em
-  font-family Source Sans Pro, sans-serif
+  font-family 'Crismon Text', serif
   font-style normal
   margin-bottom 1.2em
+  @media (max-width: 439px)
+    font-size 0.9em
+    @media (max-width: 330px)
+      font-size 0.8em
 
 div.frase-caja
   background #cc8400
@@ -90,10 +113,9 @@ div.frase-caja
 
 div.frase-caja h2
   color #ffffff
+  font-family 'Crismon Text', serif
   font-size 1.2em
-  font-family Source Sans Pro, sans-serif
   font-style italic
-  margin-bottom 1.2em
 
 div.frase-caja h2 b
   font-size 0.9em
@@ -110,6 +132,7 @@ div.frase-caja h2 b
   content " • "
 
 .footer
+  font-size 9pt
   position absolute
   bottom 0
   width 100%
@@ -117,6 +140,7 @@ div.frase-caja h2 b
   height footer-height-min-screen
   background-color #141414
   color #544e4e
+  padding-top 2.5em
   text-align center
   @media (min-width: 1000px)
     height footer-height-max-screen
@@ -143,25 +167,26 @@ div.frase-caja h2 b
   margin-bottom 0
 
 .post-meta
-  background #808080
+  background #cc8400
   padding 1em
 
 .post-info
   color #ffffff
 
+.post-info a:before
+  content "\f02b\0020"
+  
 .post-meta a
   color #ffffff
 
 .figure
-  text-align center
   font-size 0.8em
   color  #544e4e
-  background-color  #f2f2f2
-  margin 2em 0 2em 0
+  margin-top: 3em
+  text-align: center
 
 .figure img
-  margin-bottom 0
-  padding 3em 0 0 0
+  margin: 1.2em
 
 .figure p:last-child
   padding-bottom 1em

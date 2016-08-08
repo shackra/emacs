@@ -1,6 +1,6 @@
-@import url("http://fonts.googleapis.com/css?family=Permanent+Marker|Source+Code+Pro:500|Source+Sans+Pro:400,700,700italic,400italic|Source+Serif+Pro:400,700&subset=latin,latin-ext");
+@import 'https://fonts.googleapis.com/css?family=Crimson+Text:400,400i,700,700i|Oswald:700|Permanent+Marker&subset=latin-ext';
+@import "https://fontlibrary.org/face/monoid";
 @import "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css";
-@import "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css";
 @import "keys.css";
 @import "kimbie.dark.css";
 @import "openwebicons-bootstrap.min.css";
@@ -9,7 +9,8 @@ html {
   min-height: 100%;
 }
 body {
-  font-family: Source Sans Pro, sans-serif;
+  font-family: 'Crismon Text', serif;
+  font-size: 16pt;
   margin-bottom: 400px;
 }
 @media (min-width: 1000px) {
@@ -23,19 +24,22 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: Source Serif Pro, serif;
+  font-family: 'Oswald', san-serif;
 }
 pre {
-  font-family: Source Code Pro, monospace;
   background: none;
   border: none;
   white-space: pre;
 }
-pre code {
-  white-space: pre;
+kbd {
+  font-family: 'MonoidRegular', monospace !important;
 }
 code {
+  font-family: 'MonoidRegular', monospace !important;
   white-space: nowrap;
+}
+pre code {
+  white-space: pre;
 }
 article {
   padding-bottom: 5em;
@@ -59,6 +63,9 @@ video {
   width: 100% !important;
   height: auto !important;
 }
+.navbar {
+  border-radius: 0px;
+}
 .cabecera-caja {
   background: #ffa500;
   color: #fff;
@@ -71,24 +78,39 @@ video {
   text-decoration: none;
 }
 div.cabecera-caja h1 {
-  font-family: Permanent Marker, cursive;
+  font-family: 'Permanent Marker', cursive;
   text-transform: uppercase;
   font-size: 3em;
   border: 5px solid #fff;
   padding: 0.5em;
 }
-@media (min-width: 700px) {
+@media (min-width: 500px) {
   div.cabecera-caja h1 {
-    width: 500px;
+    width: 450px;
     margin-left: auto;
     margin-right: auto;
   }
 }
+@media (max-width: 390px) {
+  div.cabecera-caja h1 {
+    font-size: 2.4em;
+  }
+}
 div.cabecera-caja h3 {
   font-size: 1.2em;
-  font-family: Source Sans Pro, sans-serif;
+  font-family: 'Crismon Text', serif;
   font-style: normal;
   margin-bottom: 1.2em;
+}
+@media (max-width: 439px) {
+  div.cabecera-caja h3 {
+    font-size: 0.9em;
+  }
+}
+@media (max-width: 439px) and (max-width: 330px) {
+  div.cabecera-caja h3 {
+    font-size: 0.8em;
+  }
 }
 div.frase-caja {
   background: #cc8400;
@@ -96,10 +118,9 @@ div.frase-caja {
 }
 div.frase-caja h2 {
   color: #fff;
+  font-family: 'Crismon Text', serif;
   font-size: 1.2em;
-  font-family: Source Sans Pro, sans-serif;
   font-style: italic;
-  margin-bottom: 1.2em;
 }
 div.frase-caja h2 b {
   font-size: 0.9em;
@@ -116,12 +137,14 @@ div.frase-caja h2 b {
   content: " • ";
 }
 .footer {
+  font-size: 9pt;
   position: absolute;
   bottom: 0;
   width: 100%;
   height: 400px;
   background-color: #141414;
   color: #544e4e;
+  padding-top: 2.5em;
   text-align: center;
 }
 @media (min-width: 1000px) {

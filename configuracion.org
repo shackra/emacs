@@ -318,6 +318,43 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
           cmd = emacsclient -c -a \"\" --eval \"(shackra/emerge \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$OUTPUT\\\")\"
           trustExitCode = true
 #+END_EXAMPLE
+** Generar enlaces Magnet usando el hash de Torrents
+#+BEGIN_SRC emacs-lisp
+  (defun shackra/hash2magnet (hashalist)
+    "Enlaces Magnet a HTML."
+    (let* ((nuevalista '())
+           (nuevoelement (ht-create))
+           (uri "")
+           (nombre "")
+           (tipo "")
+           (!torrent)
+           (mustache-partial-paths (list (expand-file-name "" user-emacs-directory))))
+      ;; recreamos la lista en `hashalist' como una lista ht
+      (dolist (e hashalist)
+        (setf nombre (car e))
+        (setf !torrent (car (cddr e)))
+        (if !torrent
+            (progn
+              (setf uri (car e))
+              (setf tipo "directa"))
+          (progn
+            (setf tipo "con BitTorrent")
+            (setf uri (format "magnet:?xt=urn:btih:%s&dn=%s&tr=%s"
+                              (car (cdr e))
+                              (url-hexify-string (car e))
+                              (url-hexify-string (concat "udp://tracker.openbittorrent.com:80"
+                                                         "&tr=udp://opentor.org:2710"
+                                                         "&tr=udp://tracker.ccc.de:80"
+                                                         "&tr=udp://tracker.blackunicorn.xyz:6969"
+                                                         "&tr=udp://tracker.coppersurfer.tk:6969"
+                                                         "&tr=udp://tracker.leechers-paradise.org:6969"))))))
+        (ht-set! nuevoelement "nombre" nombre)
+        (ht-set! nuevoelement "uri" uri)
+        (ht-set! nuevoelement "es-torrent" (not !torrent))
+        (ht-set! nuevoelement "tipo" tipo)
+        (add-to-list 'nuevalista (ht-copy nuevoelement)))
+      (mustache-render "{{> descargas}}" (ht ("hash-alist" nuevalista)))))
+#+END_SRC
 * Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que se haga a través de =customize= ira al archivo especificado.
 
@@ -1183,7 +1220,7 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
                               :confound-email t
                               :default-category "blog"
                               :about ("Sobre mi" "/about")
-                              :rss ("RSS feed" "/rss.xml")
+                              :rss ("RSS" "/rss.xml")
                               :summary (("etiquetas" :tags))
                               :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
                               :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
@@ -1417,7 +1454,7 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
   :CREATED: %T
   :END:
   %\\1%?" :kill-buffer t)
-            ("gx" "Idea de proyecto" (file+headline "quizas.org" "Ideas para posibles proyectos")
+            ("gx" "Idea de proyecto" entry (file+headline "quizas.org" "Ideas para posibles proyectos")
              "* %^{Titulo o breve descripción} ^%g
   :PROPERTIES:
   :CREATED: %T
@@ -1758,6 +1795,12 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
     ;; Estoy leyendo Land of Lisp, así que necesito usar CLISP
     (setf inferior-lisp-program "/usr/bin/clisp")
     (setf slime-contribs '(slime-fancy)))
+#+END_SRC
+*** Stylus
+#+BEGIN_SRC emacs-lisp
+  (use-package stylus-mode
+    :init
+    (add-hook 'stylus-mode-hook 'rainbow-mode))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=

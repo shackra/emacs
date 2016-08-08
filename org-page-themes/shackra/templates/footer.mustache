@@ -1,18 +1,21 @@
 <!-- Pie de la pagina -->
 {{#show-meta}}
 <div class="post-meta"> <!-- metadatos -->
-    <div class="container">
-        <div>
-            <span title="Autor" class="post-info"><span class="ion-person"></span> {{author}}</span>
-        </div>
-        <div>
-            <span title="Fecha de publicación" class="post-info"><span class="ion-calendar"></span> {{{date}}}</span> / 
-            <span title="Fecha de última modificación" class="post-info">{{mod-date}}</span> 
-        </div>
-        <div>
-            <span title="Etiquetas" class="post-info"><span class="ion-pricetags"></span> {{{tag-links}}}</span>
-        </div>
+  <div class="container">
+    <div class="alert alert-warning" role="alert"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    Los puntos de vista y opiniones aquí expresados son estrictamente personales y soy el único responsable de ellos.
     </div>
+    <div>
+      <span title="Autor" class="post-info"><i class="fa fa-male" aria-hidden="true"></i> {{author}}</span>
+    </div>
+    <div>
+      <span title="Fecha de publicación" class="post-info"><i class="fa fa-calendar" aria-hidden="true"></i> {{{date}}}</span> / 
+      <span title="Fecha de última modificación" class="post-info"><i class="fa fa-calendar-check-o" aria-hidden="true"></i> {{mod-date}}</span> 
+    </div>
+    <div>
+      <span title="Etiquetas" class="post-info">{{{tag-links}}}</span>
+    </div> 
+  </div>
 </div>
 {{/show-meta}}
 <footer class="footer">
@@ -50,3 +53,16 @@
 <script src="/media/js/videos-aspect-ratio.js"></script>
 <!-- cambia la frase mostrada en el blog -->
 <script src="/media/js/citas.js"></script>
+<!-- font-awesome -->
+<script src="https://use.fontawesome.com/6d299eb449.js"></script>
+<!-- Google Analytics -->
+<!-- No sé quienes visitan mi blog, ni cuantas personas lo hacen la visita -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-41094505-3', 'auto');
+  ga('send', 'pageview');
+</script>

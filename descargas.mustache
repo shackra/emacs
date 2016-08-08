@@ -1,0 +1,21 @@
+<div class="container-fluid">
+  {{#hash-alist}}
+    <div class="col-md-4 ">
+      {{#es-torrent}}
+        <div class="panel panel-success">
+      {{/es-torrent}}
+      {{^es-torrent}}
+        <div class="panel panel-info">
+      {{/es-torrent}}
+      <div class="panel-heading">
+        <h4>{{nombre}}</h4> 
+      </div>
+      <div class="panel-body">
+        <div style="text-align: center">
+          <a title="Descarga {{tipo}} de {{nombre}}" class="btn {{#es-torrent}}btn-success{{/es-torrent}}{{^es-torrent}}btn-info{{/es-torrent}}" role="button" href="{{uri}}" target="_blank"><i class="fa {{#es-torrent}}fa-magnet{{/es-torrent}}{{^es-torrent}}fa-download{{/es-torrent}}" aria-hidden="true"></i> Descargar archivos</a>
+        </div> 
+      </div>
+        </div>
+        </div>
+  {{/hash-alist}}
+    </div>

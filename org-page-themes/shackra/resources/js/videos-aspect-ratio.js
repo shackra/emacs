@@ -18,8 +18,6 @@ $allVideos.each(function() {
 
 // When the window is resized
 $(window).resize(function() {
-    console.log("la ventana cambio de tamaño!");
-
     var newWidth = $fluidEl.width();
     
     // Resize all videos according to their own aspect ratio
