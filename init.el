@@ -57,6 +57,10 @@
 (require 'use-package)
 (setf use-package-always-ensure t)
 
+(defun shackra/org-confirm-babel-evaluate (lang body)
+  (not (or (string= lang "emacs-lisp"))))
+(setf org-confirm-babel-evaluate #'shackra/org-confirm-babel-evaluate)
+
 (require 'ob-tangle)
 ;; cuando el archivo org es más reciente que el archivo elisp, el archivo elisp
 ;; se recrea a partir de los bloques de código en el archivo org. Esto deberia
