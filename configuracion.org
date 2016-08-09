@@ -335,7 +335,7 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
         (setf !torrent (car (cddr e)))
         (if !torrent
             (progn
-              (setf uri (car e))
+              (setf uri (car (cdr e)))
               (setf tipo "directa"))
           (progn
             (setf tipo "con BitTorrent")
@@ -1210,7 +1210,7 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
     (owp/add-project-config '("El blog de Shackra"
                               :repository-directory "~/Documentos/elblog.deshackra.com/"
                               :ignore-file-name-regexp "README"
-                              :publishing-directory "~/Documentos/deshackra.com/elblog.deshackra.com"
+                              :remote (rclone "rscf" "elblog.deshackra.com")
                               :site-domain "http://elblog.deshackra.com"
                               :site-main-title "El blog de Shackra"
                               :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"

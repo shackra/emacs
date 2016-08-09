@@ -45,11 +45,8 @@ article {
   padding-bottom: 5em;
 }
 img {
-  display: block;
-  width: auto;
-  max-width: 100%;
+  max-width: 400px;
   height: auto;
-  margin: 2em auto;
 }
 img .pos-izquierda {
   float: left;
@@ -65,6 +62,21 @@ video {
 }
 .navbar {
   border-radius: 0px;
+}
+@media (min-width: 768px) {
+  .navbar-nav {
+    margin: 0 auto;
+    display: table;
+    table-layout: fixed;
+    float: none;
+  }
+}
+@media (min-width: 768px) {
+  .navbar-nav>li {
+    display: table-cell;
+    float: none;
+    text-align: center;
+  }
 }
 .cabecera-caja {
   background: #ffa500;
@@ -177,25 +189,26 @@ div.frase-caja h2 b {
   margin-bottom: 0;
 }
 .post-meta {
-  background: #808080;
+  background: #cc8400;
   padding: 1em;
 }
 .post-info {
   color: #fff;
 }
+.post-info a:before {
+  content: "\f02b\0020";
+}
 .post-meta a {
   color: #fff;
 }
 .figure {
-  text-align: center;
   font-size: 0.8em;
   color: #544e4e;
-  background-color: #f2f2f2;
-  margin: 2em 0 2em 0;
+  margin-top: 3em;
+  text-align: center;
 }
 .figure img {
-  margin-bottom: 0;
-  padding: 3em 0 0 0;
+  margin: 1.2em;
 }
 .figure p:last-child {
   padding-bottom: 1em;
