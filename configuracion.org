@@ -750,38 +750,21 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
   (use-package company
     :demand t
     :diminish company-mode
-    :preface
-    (use-package company-anaconda
-      :if (executable-find "python")
-      :diminish anaconda-mode
-      :preface
-      (if (executable-find "python")
-          (when (>= (call-process "python" nil nil nil "-m" "jedi") 1)
-            (message (format "Modulo jedi no instalado para interprete Python: %s" "python"))
-            (message "Auto-completado para Python no funcionara sin ese modulo"))
-        (message "LOL! El interprete Python ni siquiera esta instalado en el sistema"))
-      :init
-      (defun shackra/anaconda ()
-        (unless (member 'company-anaconda 'company-backends)
-          (add-to-list 'company-backends 'company-anaconda))
-        (anaconda-mode))
-      :config
-      (add-hook 'python-mode-hook #'shackra/anaconda)
-      (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
-    (use-package helm-company
-      :bind (:map company-mode-map
-                  ("C-ñ" . helm-company)))
-    (use-package company-emoji
-      :config (add-to-list 'company-backends 'company-emoji))
     :init
+    (setf company-backends '((company-files
+                              company-keywords
+                              company-capf
+                              company-yasnippet)
+                             (company-abbrev company-dabbrev)))
     (setf company-idle-delay 0.3)
     (setf company-tooltip-limit 30)
     (setf company-minimum-prefix-length 1)
     (setf company-echo-delay 0)
     (setf company-auto-complete nil)
     :config
-    (add-to-list 'company-backends 'company-dabbrev t)
-    (add-to-list 'company-backends 'company-files t)
+    (use-package helm-company
+      :bind (:map company-mode-map
+                  ("C-ñ" . helm-company)))
     (add-hook 'after-init-hook #'global-company-mode))
 #+END_SRC
 *** =projectile=
@@ -1100,7 +1083,7 @@ Un versátil cliente de correo electrónico para Emacs.
       (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
       (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map)))
 #+END_SRC
-*** =jabber.el=
+*** =jabber.el=                                             :deshabilitado:
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:52]
 :END:
@@ -1150,6 +1133,7 @@ Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-th
 Tumblr desde Emacs
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package tumblesocks
+    :disabled t
     :config
     (setf tumblesocks-blog "shackra.tumblr.com")
     (defalias 'ts 'tumblesocks-view-dashboard))
@@ -1505,6 +1489,18 @@ Modo mayor para programar en Python
                  (message "¡autopep8 no esta instalado!")
                  (message "Use pip install autopep8 para resolver el problema")))
     :config
+    (use-package company-anaconda
+      :if (executable-find "python")
+      :diminish anaconda-mode
+      :preface
+      (if (executable-find "python")
+          (when (>= (call-process "python" nil nil nil "-m" "jedi") 1)
+            (message (format "Modulo jedi no instalado para interprete Python: %s" "python"))
+            (message "Auto-completado para Python no funcionara sin ese modulo"))
+        (message "LOL! El interprete Python ni siquiera esta instalado en el sistema"))
+      :config
+      (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) 'company-anaconda)))
+      (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
     (if (fboundp 'defhydra)
         (prog1 (defhydra hydra-py (:columns 2)
                  "Python (re) sangrado de bloques"
@@ -1685,7 +1681,8 @@ Un modo mayor para editar paginas web
       (add-hook 'web-mode-hook 'emmet-mode))
     (use-package company-web
       :config
-      (add-to-list 'company-backends 'company-web-html)
+      (add-hook 'web-mode-hook (lambda ()
+                                 (add-to-list (make-local-variable 'company-backends) 'company-web-html)))
       (use-package ac-html-bootstrap))
     (use-package web-beautify
       :config
@@ -1732,12 +1729,9 @@ modo mayor para editar código PHP
     :config
     (use-package company-go
       :if (executable-find "gocode")
-      :init
-      (defun shackra/company-go-backend ()
-        (when (eq major-mode 'go-mode)
-          (set (make-local-variable 'company-backends) '(company-go company-files))))
       :config
-      (add-hook 'go-mode-hook 'shackra/company-go-backend))
+      (add-hook 'go-mode-hook (lambda ()
+                                (add-to-list (make-local-variable 'company-backends) 'company-go))))
     (use-package go-eldoc
       :config
       (add-hook 'go-mode-hook 'go-eldoc-setup))
@@ -1763,10 +1757,21 @@ modo mayor para editar JavaScript
 #+BEGIN_SRC emacs-lisp
   (use-package js2-mode
     :config
+    (use-package company-tern
+      :if (executable-find "tern")
+      :init
+      (setf company-tern-property-marker " <p>")
+      (setf company-tern-meta-as-single-line t)
+      :config
+      (dolist (hook '(js2-mode-hook
+                      inferior-js-mode-hook))
+        (add-hook hook (lambda ()
+                         (add-to-list (make-local-variable 'company-backends) 'company-tern)))))
     (use-package js2-refactor
       :config
       (add-hook 'js2-mode-hook #'js2-refactor-mode))
     (use-package skewer-mode
+      :disabled t
       :config
       (add-hook 'js2-mode-hook 'skewer-mode)
       (add-hook 'css-mode-hook 'skewer-css-mode)
@@ -2289,7 +2294,7 @@ Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de e
 *** RSS feed
 Lector de RSS feed dentro de Emacs
 #+BEGIN_SRC emacs-lisp
-  (use-package elfeed
+(use-package elfeed
     :init
     (setf url-queue-timeout 30)
     (defun elfeed-search-format-date (date)
@@ -2351,10 +2356,11 @@ Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
 #+BEGIN_SRC emacs-lisp
   (use-package camcorder)
 #+END_SRC
-*** Circe
+*** Circe                                                   :deshabilitado:
 Cliente Emacs para Irc
 #+BEGIN_SRC emacs-lisp
   (use-package circe
+    :disabled t
     :preface
     (require 'lui-autopaste)
     (require 'circe-chanop)
@@ -2436,4 +2442,17 @@ Mejor visor de PDFs para Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
     :mode ("\\.pdf\\'" . pdf-view-mode))
+#+END_SRC
+*** Emojify
+Muestra imágenes de emojis en lugar de los caracteres utf-8
+#+BEGIN_SRC emacs-lisp
+  (use-package emojify
+    :if (and (>= emacs-major-version 24) (>= emacs-minor-version 3))
+    :config
+    (use-package company-emoji
+      :config (add-hook 'text-mode-hook
+                        (lambda ()
+                          (add-to-list
+                           (make-local-variable 'company-backends) 'company-emoji))))
+    (add-hook 'after-init-hook #'global-emojify-mode))
 #+END_SRC
