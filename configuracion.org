@@ -318,9 +318,9 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
           cmd = emacsclient -c -a \"\" --eval \"(shackra/emerge \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$OUTPUT\\\")\"
           trustExitCode = true
 #+END_EXAMPLE
-** Generar enlaces Magnet usando el hash de Torrents
+** Generar enlaces de descargas para descargas directas y BitTorrent
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/hash2magnet (hashalist)
+  (defun shackra/owp-descargas (title hashalist)
     "Enlaces Magnet a HTML."
     (let* ((nuevalista '())
            (nuevoelement (ht-create))
@@ -353,7 +353,7 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
         (ht-set! nuevoelement "es-torrent" (not !torrent))
         (ht-set! nuevoelement "tipo" tipo)
         (add-to-list 'nuevalista (ht-copy nuevoelement)))
-      (mustache-render "{{> descargas}}" (ht ("hash-alist" nuevalista)))))
+      (mustache-render "{{> descargas}}" (ht ("hash-alist" nuevalista) ("titulo" title)))))
 #+END_SRC
 * Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que se haga a través de =customize= ira al archivo especificado.
