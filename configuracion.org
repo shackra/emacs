@@ -700,23 +700,26 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
     (bind-key "C-s" 'swiper global-map)
     (bind-key "C-r" 'swiper global-map))
 #+END_SRC
-*** =theme-changer=
+*** =theme-changer=                                         :deshabilitado:
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:46]
 :END:
 Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione adecuadamente hay que especificar las coordenadas geográficas del lugar donde vivimos, para saber más ver [[*Información personal][Información personal]].
 #+BEGIN_SRC emacs-lisp
   (use-package theme-changer
+    :disabled t
     :init
-    (use-package material-theme)
-    (use-package base16-theme)
-    :init
-    (custom-set-faces
-     '(org-document-title ((t (:foreground "#8D6E63" :weight bold :height 1.50)))))
+    (use-package zenburn-theme)
     :config
     (change-theme 'material-light 'base16-mocha-dark)
     (use-package tramp-theme
       :disabled t))
+#+END_SRC
+*** zenburn
+#+BEGIN_SRC emacs-lisp
+  (use-package zenburn-theme
+    :config
+    (load-theme 'zenburn t))
 #+END_SRC
 *** =hlinum=                                                :deshabilitado:
 :LOGBOOK:
