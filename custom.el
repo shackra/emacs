@@ -36,7 +36,7 @@
       (quote lui-strong-face))
      ("\\(?:\\(?:^\\|[	 ]\\)_\\([^	 *]\\(?:[	 ]+[^	 *]+\\)*\\)_\\(?:$\\|[	 ]\\)\\)" 1
       (quote lui-emphasis-face)))))
- '(magit-commit-arguments (quote ("--gpg-sign=BDAD9605F06AA3BB")))
+ '(magit-commit-arguments nil)
  '(magit-use-overlays nil)
  '(org-agenda-files (quote ("/home/jorge/org/cosas por hacer.org")))
  '(org-babel-load-languages (quote ((ledger . t) (python . t) (emacs-lisp . t))))
@@ -129,3 +129,9 @@
      (360 . "#8bc34a"))))
  '(vc-annotate-very-old-color nil)
  '(vr/default-replace-preview t))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )

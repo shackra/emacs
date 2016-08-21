@@ -8,7 +8,7 @@
                                                  🕇
                               Actiones nostras tibi comítimus, Dómine,
                                ut ad maiorem gloriam tuam repleamur.
-                                                🕇 🕇
+                                               🕇   🕇
 #+end_quote
 
 * Configuración de GNU Emacs en un archivo de org-mode
@@ -937,7 +937,9 @@ Muestra en el =área de eco= la firma de la función actual.
 #+BEGIN_SRC emacs-lisp
   (use-package eldoc
     :ensure nil
-    :diminish eldoc-mode)
+    :diminish eldoc-mode
+    :init
+    (setf eldoc-idle-delay 0.3))
 #+END_SRC
 *** =auto-revert-mode=
 Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
@@ -1727,7 +1729,7 @@ modo mayor para editar código PHP
       (interactive)
       (when (eq major-mode 'go-mode)
         (if (string-suffix-p "_test.go" (buffer-name))
-            (set (make-local-variable 'compile-command) "go test -bench -v && go vet")
+            (set (make-local-variable 'compile-command) "go test -bench=. -v && go vet")
           (set (make-local-variable 'compile-command) (format "go build && go vet && ./%s" (f-base (f-dirname (f-full (buffer-name)))))))))
     :config
     (use-package company-go
@@ -1742,12 +1744,24 @@ modo mayor para editar código PHP
       :if (fboundp 'projectile-mode))
     (use-package go-rename)
     (use-package go-snippets)
-    (use-package oracle
-      ;; TODO: alimentar `go-oracle-set-scope' automáticamente cada vez que un
-      ;; archivo Golang es abierto.
-      :if (executable-find "oracle")
-      :ensure nil
-      :preface (load-file "$GOPATH/src/golang.org/x/tools/cmd/oracle/oracle.el"))
+    (use-package go-guru
+      :bind (:map go-mode-map
+                  ("M-." . go-guru-definition)
+                  ("C-M-g c s" . go-guru-callees)
+                  ("C-M-g c r" . go-guru-callers)
+                  ("C-M-g c k" . go-guru-callstack)
+                  ("C-M-g d f" . go-guru-definition)
+                  ("C-M-g d b" . go-guru-describe)
+                  ("C-M-g f v" . go-guru-freevars)
+                  ("C-M-g f r" . go-guru-referrers)
+                  ("C-M-g p e" . go-guru-peers)
+                  ("C-M-g p p" . go-guru-pointsto)
+                  ("C-M-g i"   . go-guru-implements)
+                  ("C-M-g w e" . go-guru-whicherrs))
+      :if (executable-find "guru")
+      :config
+      (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+      (add-hook 'go-mode-hook (lambda () (when projectile-project-p (set (make-local-variable 'go-guru-scope) (concat (projectile-project-root) "..."))))))
     (use-package helm-go-package
       :config (eval-after-load 'go-mode
                 '(substitute-key-definition 'go-import-add 'helm-go-package go-mode-map)))
@@ -1877,6 +1891,7 @@ Revisión de errores en el código fuente, al vuelo.
     :init
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)) ;; deshabilita el majadero revisor de documentación
     (setf flycheck-indication-mode 'left-fringe)
+    (setf flycheck-display-errors-delay 5.0)
     :config
     (add-hook 'prog-mode-hook #'flycheck-mode))
 #+END_SRC
@@ -2458,4 +2473,11 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
                           (add-to-list
                            (make-local-variable 'company-backends) 'company-emoji))))
     (add-hook 'after-init-hook #'global-emojify-mode))
+#+END_SRC
+*** free-keys
+Muestra cuales combinaciones de teclas están libres para asignar
+#+BEGIN_SRC emacs-lisp
+  (use-package free-keys
+    :bind (:map help-map
+                ("C-k" . free-keys)))
 #+END_SRC
