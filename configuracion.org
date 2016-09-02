@@ -1504,7 +1504,7 @@ Modo mayor para programar en Python
             (message "Auto-completado para Python no funcionara sin ese modulo"))
         (message "LOL! El interprete Python ni siquiera esta instalado en el sistema"))
       :config
-      (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) 'company-anaconda)))
+      (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet))))
       (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
     (if (fboundp 'defhydra)
         (prog1 (defhydra hydra-py (:columns 2)
@@ -1592,7 +1592,7 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
       (use-package company-racer
         :config
         (add-hook 'rust-mode-hook '(lambda ()
-                                     (add-to-list (make-local-variable 'company-backends) 'company-racer)))))
+                                     (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet))))))
     (use-package flycheck-rust
       :config
       (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
@@ -1687,7 +1687,7 @@ Un modo mayor para editar paginas web
     (use-package company-web
       :config
       (add-hook 'web-mode-hook (lambda ()
-                                 (add-to-list (make-local-variable 'company-backends) 'company-web-html)))
+                                 (add-to-list (make-local-variable 'company-backends) '(company-web-html :with company-yasnippet))))
       (use-package ac-html-bootstrap))
     (use-package web-beautify
       :config
@@ -1736,7 +1736,7 @@ modo mayor para editar código PHP
       :if (executable-find "gocode")
       :config
       (add-hook 'go-mode-hook (lambda ()
-                                (add-to-list (make-local-variable 'company-backends) 'company-go))))
+                                (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
     (use-package go-eldoc
       :config
       (add-hook 'go-mode-hook 'go-eldoc-setup))
@@ -1761,7 +1761,7 @@ modo mayor para editar código PHP
       :if (executable-find "guru")
       :config
       (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-      (add-hook 'go-mode-hook (lambda () (when projectile-project-p (set (make-local-variable 'go-guru-scope) (concat (projectile-project-root) "..."))))))
+      (add-hook 'go-mode-hook (lambda () (when (projectile-project-p) (set (make-local-variable 'go-guru-scope) (concat (projectile-project-root) "..."))))))
     (use-package helm-go-package
       :config (eval-after-load 'go-mode
                 '(substitute-key-definition 'go-import-add 'helm-go-package go-mode-map)))
@@ -1783,7 +1783,7 @@ modo mayor para editar JavaScript
       (dolist (hook '(js2-mode-hook
                       inferior-js-mode-hook))
         (add-hook hook (lambda ()
-                         (add-to-list (make-local-variable 'company-backends) 'company-tern)))))
+                         (add-to-list (make-local-variable 'company-backends) '(company-tern :with company-yasnippet))))))
     (use-package js2-refactor
       :config
       (add-hook 'js2-mode-hook #'js2-refactor-mode))
@@ -2471,7 +2471,7 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
       :config (add-hook 'text-mode-hook
                         (lambda ()
                           (add-to-list
-                           (make-local-variable 'company-backends) 'company-emoji))))
+                           (make-local-variable 'company-backends) '(company-emoji :with company-yasnippet)))))
     (add-hook 'after-init-hook #'global-emojify-mode))
 #+END_SRC
 *** free-keys
@@ -2480,4 +2480,25 @@ Muestra cuales combinaciones de teclas están libres para asignar
   (use-package free-keys
     :bind (:map help-map
                 ("C-k" . free-keys)))
+#+END_SRC
+*** Pocket
+#+BEGIN_SRC emacs-lisp
+  (use-package el-pocket
+    :init
+    :config (el-pocket-load-auth))
+#+END_SRC
+** Yasnippet en todos los backends de Company                     :especial:
+Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer que muestre candidatos de auto-completado y candidatos yasnippet es agrupando los backends
+#+BEGIN_SRC emacs-lisp
+  ;; http://emacs.stackexchange.com/questions/10431/get-company-to-show-suggestions-for-yasnippet-names
+  ;; Add yasnippet support for all company backends
+  ;; https://github.com/syl20bnr/spacemacs/pull/179
+
+  (defun company-mode/backend-with-yas (backend)
+    (if (or (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  (setf company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 #+END_SRC
