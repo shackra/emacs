@@ -2484,7 +2484,15 @@ Muestra cuales combinaciones de teclas están libres para asignar
 *** Pocket
 #+BEGIN_SRC emacs-lisp
   (use-package el-pocket
-    :init
+    :preface (require 'thingatpt)
+    :bind (:map mu4e-view-mode-map ("l" . el-pocket-add-url-at-point))
+    :init (defun el-pocket-add-url-at-point ()
+            "Add URL at point to Pocket"
+            (interactive)
+            (let* ((url-shr (get-text-property (point) 'shr-url))
+                   (url-at-point (thing-at-point 'url))
+                   (url (or url-shr url-at-point)))
+              (el-pocket-add-url url)))
     :config (el-pocket-load-auth))
 #+END_SRC
 ** Yasnippet en todos los backends de Company                     :especial:
