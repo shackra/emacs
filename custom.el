@@ -6,7 +6,7 @@
  ;; If there is more than one, they won't work right.
  '(android-mode-sdk-dir "~/opt/android")
  '(auth-source-save-behavior nil)
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "/home/jorge/.emacs.d/bookmarks")
  '(byte-compile-warnings nil)
  '(calendar-christian-all-holidays-flag t)
  '(calendar-date-style (quote european))

@@ -134,16 +134,17 @@ Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=
     (cond
      ((= arg 4) (message "4") (call-interactively 'find-file))
      ((= arg 16) (message "16") (call-interactively 'view-file))
-     (t (if (projectile-project-p) (call-interactively 'helm-projectile-find-file) (call-interactively 'find-file)))))
+     (t (if (projectile-project-p)
+            (call-interactively (or (when (fboundp 'counsel-projectile-find-file) 'counsel-projectile-find-file)) (when (fboundp 'helm-projectile) 'helm-projectile-find-file))
+          (call-interactively 'find-file)))))
 #+END_SRC
 *** =switch-buffer= personalizado
 #+BEGIN_SRC emacs-lisp
   (defun shackra/switch-buffer (arg)
     (interactive "p")
     (cond
-     ((= arg 4) (helm-mini))
-     ((= arg 16) (helm-circe-by-server))
-     (t (if (projectile-project-p) (helm-projectile-switch-to-buffer) (helm-mini)))))
+     ((= arg 4) (or (when (fboundp 'ivy-mode) (ivy-switch-buffer)) (when (fboundp 'helm) (helm-mini))))
+     (t (if (projectile-project-p) (or (when (fboundp 'counsel-projectile) 'counsel-projectile-switch-to-buffer) (when (fboundp 'helm-projectile) 'helm-projectile-switch-to-buffer)) (or (when (fboundp 'ivy-mode) (ivy-switch-buffer)) (when (fboundp 'helm) (helm-mini)))))))
 #+END_SRC
 ** abrir archivos que estén en modo de solo lectura como root
 Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]], según éste [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][post en Emacs Redux]].
@@ -410,14 +411,47 @@ Escala la altura de la tipografía en todos los buffers de manera temporal
     :ensure nil
     :load-path "site-packages/font-man")
 #+END_SRC
-*** =helm=
+*** =swiper=
+:LOGBOOK:
+- Refiled on [2015-11-12 jue 16:46]
+:END:
+Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje de la serie /Dora la exploradora/.
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+    :bind (:map global-map
+                ("C-s" . swiper)
+                ("C-r" . swiper)
+                ("C-c C-r" . ivy-resume)
+                :map ivy-mode-map ("TAB" . ivy-alt-done)) ;; mantengamos la sanidad
+    :init
+    (use-package counsel
+      :init (use-package counsel-projectile)
+      :bind (:map global-map
+                  ("M-x" . counsel-M-x)
+                  :map help-map
+                  ("f" . counsel-describe-function)
+                  ("v" . counsel-describe-variable)
+                  ("b" . counsel-descbinds)
+                  :map ctl-x-map
+                  ("8 RET" . counsel-unicode-char)
+                  ("l" . counsel-locate)
+                  ("f" . counsel-recentf)
+                  ("C-f" . shackra/find-file)
+                  ("b" . shackra/switch-buffer)))
+    (use-package ivy-hydra)
+    (setf ivy-use-virtual-buffers t)
+    (setf ivy-count-format "(%d/%d) ")
+    (setf ivy-height 15)
+    :config (ivy-mode 1))
+#+END_SRC
+*** =helm=                                                  :deshabilitado:
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:38]
 :END:
 Completado incremental y estrechamiento de selección de candidatos :)
 #+BEGIN_SRC emacs-lisp
   (use-package helm
-    :demand t
+    :disabled (fboundp 'ivy-mode)
     :diminish helm-mode
     :bind (("M-y" . helm-show-kill-ring)
            ("C-x f" . helm-recentf)
@@ -555,7 +589,6 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
 Permite tratar combinaciones de teclas como grupos... es algo difícil de explicar, puede ver este vídeo [[https://www.youtube.com/watch?v=_qZliI1BKzI][Switching Emacs windows with hydra and ace-window - YouTube]] para entender de qué trata este paquete.
 #+BEGIN_SRC emacs-lisp
   (use-package hydra
-    :demand t
     :preface
     (require 'hydra-examples)
     (use-package windmove
@@ -652,7 +685,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
             dired-details-initially-hide nil))
     (use-package ranger
       :init
-      (setf helm-descbinds-window-style 'same-window)
+      (when (fboundp 'helm) (setf helm-descbinds-window-style 'same-window))
       (setf ranger-cleanup-eagerly t)))
 #+END_SRC
 *** =keyfreq=
@@ -687,18 +720,6 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     :config
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
-#+END_SRC
-*** =swiper=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:46]
-:END:
-Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje de la serie /Dora la exploradora/.
-#+BEGIN_SRC emacs-lisp
-  (use-package swiper
-    :ensure t
-    :config
-    (bind-key "C-s" 'swiper global-map)
-    (bind-key "C-r" 'swiper global-map))
 #+END_SRC
 *** =theme-changer=                                         :deshabilitado:
 :LOGBOOK:
@@ -751,7 +772,6 @@ Extiende el modo =linum-mode= y subraya el numero de linea actual.
 Un mejor motor de autocompletado comparado con [[https://github.com/auto-complete/auto-complete][auto-complete/auto-complete]].
 #+BEGIN_SRC emacs-lisp
   (use-package company
-    :demand t
     :diminish company-mode
     :init
     (setf company-backends '((company-files
@@ -764,11 +784,13 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     (setf company-minimum-prefix-length 1)
     (setf company-echo-delay 0)
     (setf company-auto-complete nil)
-    :config
     (use-package helm-company
+      :disabled (not (fboundp 'helm))
       :bind (:map company-mode-map
                   ("C-ñ" . helm-company)))
-    (add-hook 'after-init-hook #'global-company-mode))
+    (add-hook 'after-init-hook #'global-company-mode)
+    (use-package company-quickhelp
+      :config (company-quickhelp-mode 1)))
 #+END_SRC
 *** =projectile=
 :LOGBOOK:
@@ -780,11 +802,11 @@ Manejo de archivos de un proyecto.
     :diminish projectile-mode
     :init
     (use-package helm-projectile
-      :init
-      (setf projectile-completion-system 'helm
-            projectile-switch-project-action  'helm-projectile-find-file)
+      :disabled (not (fboundp 'helm))
       :config
       (helm-projectile-on))
+    (setf projectile-completion-system (or (when (fboundp 'ivy-mode) 'ivy) (when (fboundp 'helm) 'helm))
+          projectile-switch-project-action  (or (when (fboundp 'counsel-projectile) 'counsel-projectile-find-file) (when (fboundp 'helm-projectile) 'helm-projectile-find-file)))
     (setf
      projectile-file-exists-remote-cache-expire (* 10 60)
      projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
@@ -893,10 +915,12 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
       :config
       (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
     (use-package git-commit-insert-issue
+      :disabled (not (fboundp 'helm))
       :config
       (add-hook 'git-commit-mode-hook 'git-commit-insert-issue-mode))
     (setf magit-last-seen-setup-instructions "1.4.0"
-          magit-auto-revert-mode nil))
+          magit-auto-revert-mode nil
+          magit-completing-read-function 'ivy-completing-read))
 #+END_SRC
 *** git-gutter-fring
 Muestra información de =git diff= en el fringe.
@@ -958,19 +982,17 @@ Revierte el contenido de un buffer de manera automática cuando el contenido de 
     :config
     (add-hook 'prog-mode-hook #'yas-minor-mode-on))
 #+END_SRC
-*** imenu
+*** imenu-anywhere
 Crea menús a partir de secciones de documentos
 #+BEGIN_SRC emacs-lisp
-  (use-package imenu
-    :ensure nil
+  (use-package imenu-anywhere
     :config
-    (if (fboundp 'helm)
-        (bind-key "C-c i" 'helm-semantic-or-imenu)
-      (bind-key "C-c i" 'imenu))
+    (bind-key "C-c i" (or (when (fboundp 'ivy-mode) 'ivy-imenu-anywhere) (when (fboundp 'helm) 'helm-imenu-anywhere)))
     (use-package imenu+
       :disabled t ;; ver razón en https://redd.it/3ahj2d
       :init
       (setf imenup-ignore-comments-flag t)))
+
 #+END_SRC
 *** Bookmark+
 #+BEGIN_SRC emacs-lisp
@@ -1019,7 +1041,6 @@ Un versátil cliente de correo electrónico para Emacs.
     :ensure nil
     :init
     (setf mu4e-get-mail-command "getmail.sh")
-    (setf mu4e-update-interval 150)
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text)
     ;; hace mu4e el programa por defecto para escribir correo
@@ -1072,9 +1093,7 @@ Un versátil cliente de correo electrónico para Emacs.
       (start-process "pushmail" nil "pushmail.sh")
       (jump-to-register :mu4e-fullscreen))
     :config
-    ;; inicia mu4e luego de arrancar Emacs
-    (add-hook 'after-init-hook '(lambda () (mu4e t)) t)
-    (defalias 'm 'mu4e)
+    (defalias 'correo 'mu4e)
     (add-to-list 'mu4e-view-actions
                  '("navegador web" . mu4e-msgv-action-view-in-browser) t)
     (use-package mu4e-contrib
@@ -1732,6 +1751,7 @@ modo mayor para editar código PHP
             (set (make-local-variable 'compile-command) "go test -bench=. -v && go vet")
           (set (make-local-variable 'compile-command) (format "go build && go vet && ./%s" (f-base (f-dirname (f-full (buffer-name)))))))))
     :config
+    (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (use-package company-go
       :if (executable-find "gocode")
       :config
@@ -1763,6 +1783,7 @@ modo mayor para editar código PHP
       (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
       (add-hook 'go-mode-hook (lambda () (when (projectile-project-p) (set (make-local-variable 'go-guru-scope) (concat (projectile-project-root) "..."))))))
     (use-package helm-go-package
+      :disabled (not (fboundp 'helm))
       :config (eval-after-load 'go-mode
                 '(substitute-key-definition 'go-import-add 'helm-go-package go-mode-map)))
     (add-hook 'before-save-hook 'gofmt-before-save)
@@ -1846,7 +1867,14 @@ Revisión ortográfica al vuelo.
 #+BEGIN_SRC emacs-lisp
   (use-package flyspell
     :diminish flyspell-mode
-    :ensure nil)
+    :ensure nil
+    :init
+    (use-package flyspell-correct-ivy
+      :bind (:map flyspell-mode-map ("C-." . flyspell-correct-previous-word-generic))
+      :init
+      (setf flyspell-correct-auto-delay 2.0)
+      ;;(add-hook 'flyspell-mode-hook #'flyspell-correct-auto-mode)
+      ))
 
   (use-package shackra/ispell-dict-switch
     :bind (("<f8>" . shackra/ispell-cycle-dict))
@@ -1877,7 +1905,7 @@ Revisión ortográfica al vuelo.
       ;; Nuevo diccionario, nada de palabras subrayadas
       (flyspell-delete-all-overlays)
       ;; Mandamos a revisar la ortografía del párrafo en que estamos
-      (flyspell-region (line-beginning-position) (line-end-position))))
+      (flyspell-region (line-beginning-position) (line-end-postín))))
 #+END_SRC
 *** =flycheck-mode=
 :LOGBOOK:
@@ -2407,7 +2435,7 @@ Cliente Emacs para Irc
     (setf tracking-ignored-buffers '(("#emacs$" circe-highlight-nick-face) ("#python$" circe-highlight-nick-face)))
     :config
     (use-package helm-circe
-      :if (fboundp 'helm-mode)
+      :disabled (not (fboundp 'helm))
       :config
       (global-set-key (kbd "C-c b i") 'helm-circe)
       ;; Handy to have a binding to helm-circe-new-activity
@@ -2484,7 +2512,7 @@ Muestra cuales combinaciones de teclas están libres para asignar
 *** Pocket
 #+BEGIN_SRC emacs-lisp
   (use-package el-pocket
-    :preface (require 'thingatpt)
+    :preface (require 'thingatpt) (require 'el-pocket)
     :bind (:map mu4e-view-mode-map ("l" . el-pocket-add-url-at-point))
     :init (defun el-pocket-add-url-at-point ()
             "Add URL at point to Pocket"
@@ -2495,6 +2523,21 @@ Muestra cuales combinaciones de teclas están libres para asignar
               (el-pocket-add-url url)))
     :config (el-pocket-load-auth))
 #+END_SRC
+*** package-safe-delete
+Borrado seguro de paquetes
+#+BEGIN_SRC emacs-lisp
+  (use-package package-safe-delete)
+#+END_SRC
+*** highlight-indent-guides
+Modo menor que subraya los niveles de identación en el buffer usando font-lock. Los anchos de identación son descubiertos de manera dinámica.
+#+BEGIN_SRC emacs-lisp
+  (use-package highlight-indent-guides
+    :init
+    (setf highlight-indent-guides-method 'character)
+    (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+#+END_SRC
+**** Limitaciones
+Este modo menor no funciona bien con otros modos menores que hacen uso de la propiedad =display= de los textos en el buffer o que modifican como se muestran los espacios en blanco como hace whitespace-mode. Más info: [[https://github.com/DarthFennec/highlight-indent-guides#limitations][Limitations]].
 ** Yasnippet en todos los backends de Company                     :especial:
 Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer que muestre candidatos de auto-completado y candidatos yasnippet es agrupando los backends
 #+BEGIN_SRC emacs-lisp
