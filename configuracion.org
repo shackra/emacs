@@ -144,7 +144,7 @@ Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=
     (interactive "p")
     (cond
      ((= arg 4) (or (when (fboundp 'ivy-mode) (ivy-switch-buffer)) (when (fboundp 'helm) (helm-mini))))
-     (t (if (projectile-project-p) (or (when (fboundp 'counsel-projectile) 'counsel-projectile-switch-to-buffer) (when (fboundp 'helm-projectile) 'helm-projectile-switch-to-buffer)) (or (when (fboundp 'ivy-mode) (ivy-switch-buffer)) (when (fboundp 'helm) (helm-mini)))))))
+     (t (if (projectile-project-p) (call-interactively (or (when (fboundp 'counsel-projectile) 'counsel-projectile-switch-to-buffer) (when (fboundp 'helm-projectile) 'helm-projectile-switch-to-buffer))) (or (when (fboundp 'ivy-mode) (ivy-switch-buffer)) (when (fboundp 'helm) (helm-mini)))))))
 #+END_SRC
 ** abrir archivos que estén en modo de solo lectura como root
 Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]], según éste [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][post en Emacs Redux]].
@@ -421,8 +421,7 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
     :bind (:map global-map
                 ("C-s" . swiper)
                 ("C-r" . swiper)
-                ("C-c C-r" . ivy-resume)
-                :map ivy-mode-map ("TAB" . ivy-alt-done)) ;; mantengamos la sanidad
+                ("C-c C-r" . ivy-resume))
     :init
     (use-package counsel
       :init (use-package counsel-projectile)
