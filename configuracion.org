@@ -2166,21 +2166,28 @@ Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
 "/Soy como =powerline=, pero mejor/"
 #+BEGIN_SRC emacs-lisp
   (use-package telephone-line
+    :init
+    (setf telephone-line-height 30)
+    (custom-set-faces
+     '(mode-line ((t (:box nil))))
+     '(mode-line-inactive ((t (:box nil))))
+     '(mode-line-highlight ((t (:box nil)))))
     :config
     (telephone-line-defsegment* shackra-buffer-vc-modified-segment
-                                (list (if (buffer-modified-p)
-                                          (propertize "↓" 'face 'error)
-                                        " ")
-                                      " " (shackra/vc-info)))
+      (list (if (buffer-modified-p)
+                (propertize "↓" 'face 'error)
+              " ")
+            " " (shackra/vc-info)))
 
     (telephone-line-defsegment* shackra-line-buffer-segment
-                                `(""
-                                  ,(telephone-line-raw mode-line-buffer-identification t)))
+      `(""
+        ,(telephone-line-raw mode-line-buffer-identification t)))
     (setf telephone-line-lhs
           '((accent . (shackra-line-buffer-segment))
             (nil . (shackra-buffer-vc-modified-segment
-                    telephone-line-minor-mode-segment))))
-    (telephone-line-mode 1))
+                  telephone-line-minor-mode-segment))))
+    (telephone-line-mode 1)
+    )
 #+END_SRC
 *** =visual-line-mode=
 :LOGBOOK:
