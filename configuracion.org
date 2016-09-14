@@ -427,7 +427,6 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
       :init (use-package counsel-projectile)
       :bind (:map global-map
                   ("M-x" . counsel-M-x)
-                  ("M-y" . counsel-yank-pop)
                   :map help-map
                   ("f" . counsel-describe-function)
                   ("v" . counsel-describe-variable)
@@ -2167,26 +2166,20 @@ Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
 "/Soy como =powerline=, pero mejor/"
 #+BEGIN_SRC emacs-lisp
   (use-package telephone-line
-    :init
-    (custom-set-faces
-     '(mode-line ((t (:box (:line-width 10 :color "#2B2B2B" :style nil)
-                           :foreground "#8FB28F" :background "#2B2B2B"))))
-     '(mode-line-inactive ((t (:box (:line-width 10 :color "#383838" :style nil)
-                                    :foreground "#5F7F5F" :background "#383838")))))
     :config
-    (telephone-line-defsegment* shackra-line-buffer-segment
-      `(""
-        ,(telephone-line-raw mode-line-buffer-identification t)
-        ,(list "  " (if (buffer-modified-p)
-                        (propertize "↓" 'face 'error)
-                      " ")
-               " " (shackra/vc-info))))
+    (telephone-line-defsegment* shackra-buffer-vc-modified-segment
+                                (list (if (buffer-modified-p)
+                                          (propertize "↓" 'face 'error)
+                                        " ")
+                                      " " (shackra/vc-info)))
 
+    (telephone-line-defsegment* shackra-line-buffer-segment
+                                `(""
+                                  ,(telephone-line-raw mode-line-buffer-identification t)))
     (setf telephone-line-lhs
-          '((nil . (shackra-line-buffer-segment))
-            (nil . (telephone-line-minor-mode-segment))))
-    (setf telephone-line-rhs '((nil . (telephone-line-misc-info-segment telephone-line-major-mode-segment))
-                               (nil . (telephone-line-position-segment))))
+          '((accent . (shackra-line-buffer-segment))
+            (nil . (shackra-buffer-vc-modified-segment
+                    telephone-line-minor-mode-segment))))
     (telephone-line-mode 1))
 #+END_SRC
 *** =visual-line-mode=
