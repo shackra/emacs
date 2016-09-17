@@ -2227,9 +2227,9 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
                      (`finished (if flycheck-current-errors
                                     (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
                                                    (+ (or .warning 0) (or .error 0)))))
-                                      (propertize (format " ✖ %s problema%s" count (unless (eq 1 count) "s"))) 'face `(:foreground "orange"))
+                                      (propertize (format " ✖ %s problema%s" count (unless (eq 1 count) "s")) 'face `(:foreground "orange")))
                                   (propertize " ✔ Sin problemas" 'face `(:foreground "dark grey"))))
-                     (`running     (propertize " ⟲ En ejecución") 'face `(:foreground "deep sky blue"))
+                     (`running     (propertize " ⟲ En ejecución" 'face `(:foreground "deep sky blue")))
                      (`no-checker  (propertize " ⚠ No existe revisor" 'face `(:foreground "dim grey")))
                      (`not-checked (propertize " ✖ Sin revisar" 'face `(:foreground "dim grey")))
                      (`errored     (propertize " ⚠ Error" 'face `(:foreground "tomato")))
