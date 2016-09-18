@@ -438,7 +438,6 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
                   ("C-f" . shackra/find-file)
                   ("b" . shackra/switch-buffer)))
     (use-package ivy-hydra)
-    (setf ivy-use-virtual-buffers t)
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
     :config (ivy-mode 1))
