@@ -456,11 +456,6 @@ Completado incremental y estrechamiento de selección de candidatos :)
     :bind (("M-y" . helm-show-kill-ring)
            ("C-x f" . helm-recentf)
            ("C-x C-f" . shackra/find-file))
-    :init
-    (setf helm-mode-no-completion-in-region-in-modes
-          '(circe-channel-mode
-            circe-query-mode
-            circe-server-mode))
     :config
     (add-hook 'after-init-hook '(lambda ()(helm-mode 1)) t)
     ;; re-ata combinaciones de teclas a los comandos de helm
@@ -907,7 +902,7 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
   (use-package magit
     :defer t
     :bind ([f12] . magit-status)
-    :conifg
+    :config
     (use-package gitignore-mode)
     (use-package gitconfig-mode)
     (use-package magit-gh-pulls
@@ -2471,76 +2466,6 @@ Cliente para MPD
 Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
 #+BEGIN_SRC emacs-lisp
   (use-package camcorder)
-#+END_SRC
-*** Circe                                                   :deshabilitado:
-Cliente Emacs para Irc
-#+BEGIN_SRC emacs-lisp
-  (use-package circe
-    :disabled t
-    :preface
-    (require 'lui-autopaste)
-    (require 'circe-chanop)
-    :init
-    (if (not circe-network-options)
-        (setf circe-network-options `(("Freenode"
-                                       :nick "shackra"
-                                       :channels ("##Catholic" "#emacs" "#libreboot" "#org-mode" "#bitcoin" "#parabola" :after-auth "#python")
-                                       :nickserv-password ,(secrets-get-secret "Inicio de sesión" "freenode-clave"))
-                                      ("Bitlbee"
-                                       :nick "jorge"
-                                       :nickserv-password ,(secrets-get-secret "Inicio de sesión" "bitlbee-clave"))))
-      (progn (add-to-list 'circe-network-options `("Freenode"
-                                                   :nick "shackra"
-                                                   :channels ("##Catholic" "#emacs" "#libreboot" "#org-mode" "#bitcoin" "#parabola" :after-auth "#python")
-                                                   :nickserv-password ,(secrets-get-secret "Inicio de sesión" "freenode-clave")))
-             (add-to-list 'circe-network-options `("Bitlbee"
-                                                   :nick "jorge"
-                                                   :nickserv-password ,(secrets-get-secret "Inicio de sesión" "bitlbee-clave")))))
-    (setf circe-use-cycle-completion t)
-    (setf circe-reduce-lurker-spam t)
-    (setf circe-format-server-topic "*** Tema cambiado por {userhost}: {topic-diff}")
-    (setf lui-flyspell-p t
-          lui-flyspell-alist '((".*" "en")))
-    (setf lui-track-bar-behavior 'before-switch-to-buffer)
-    (setf tracking-ignored-buffers '(("#emacs$" circe-highlight-nick-face) ("#python$" circe-highlight-nick-face)))
-    :config
-    (use-package helm-circe
-      :disabled (not (fboundp 'helm))
-      :config
-      (global-set-key (kbd "C-c b i") 'helm-circe)
-      ;; Handy to have a binding to helm-circe-new-activity
-      (global-set-key (kbd "C-c b n") 'helm-circe-new-activity))
-    (use-package circe-notifications
-      :config
-      (add-hook 'circe-server-connected-hook 'enable-circe-notifications))
-    (enable-lui-track-bar)
-    (defvar my-circe-bot-list '("fsbot" "rudybot"))
-    (defun my-circe-message-option-bot (nick &rest ignored)
-      (when (member nick my-circe-bot-list)
-        '((text-properties . (face circe-fool-face
-                                   lui-do-not-track t)))))
-    (defun circe-network-connected-p (network)
-      "Return non-nil if there's any Circe server-buffer whose `circe-server-netwok' is NETWORK."
-      (catch 'return
-        (dolist (buffer (circe-server-buffers))
-          (with-current-buffer buffer
-            (if (string= network circe-server-network)
-                (throw 'return t))))))
-    (defun circe-maybe-connect (network)
-      "Connect to NETWORK, but ask user for confirmation if it's already been connected to."
-      (interactive "sNetwork: ")
-      (if (or (not (circe-network-connected-p network))
-             (y-or-n-p (format "Ya conectado a %s, re-conectar?" network)))
-          (circe network)))
-    (defun irc ()
-      "Conectar al IRC"
-      (interactive)
-      (when (daemonp)
-        (circe-maybe-connect "Freenode")
-        ;;(circe-maybe-connect "Bitlbee")
-        (circe-maybe-connect "Irc2p")))
-    (add-hook 'circe-message-option-functions 'my-circe-message-option-bot)
-    (add-hook 'circe-channel-mode-hook 'enable-lui-autopaste))
 #+END_SRC
 *** Shackle
 Como =display-buffer-alist= pero más sencillo
