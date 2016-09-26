@@ -1843,6 +1843,11 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
     :init
     (add-hook 'stylus-mode-hook 'rainbow-mode))
 #+END_SRC
+*** SCSS
+#+BEGIN_SRC emacs-lisp
+  (use-package scss-mode
+    :init (setf scss-compile-at-save nil))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
 :LOGBOOK:
@@ -2311,7 +2316,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
         ;; `min-to-app' puede ser una lista, o no.
         (if (atom min-to-app)
             (alert
-             (if (<= (string-to-int min-to-app) 1)
+             (if (<= (string-to-number min-to-app) 1)
                  (format "<b>Cita en %s minuto</b>" min-to-app)
                (format "<b>Cita en %s minutos</b>" min-to-app))
              :title msg
@@ -2322,7 +2327,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
           ;; cosas por hacer.
           (dolist (i (number-sequence 0 (1- (length min-to-app))))
             (alert
-             (if (<= (string-to-int (nth i min-to-app)) 1)
+             (if (<= (string-to-number (nth i min-to-app)) 1)
                  (format "<b>Cita en %s minuto</b>" (nth i min-to-app))
                (format "<b>Cita en %s minutos</b>" (nth i min-to-app)))
              :title (nth i msg)
