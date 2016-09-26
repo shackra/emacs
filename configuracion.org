@@ -419,28 +419,30 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
     :bind (:map global-map
-                ("C-s" . swiper)
-                ("C-r" . swiper)
-                ("C-c C-r" . ivy-resume))
+                 ("C-s" . swiper)
+                 ("C-r" . swiper)
+                 ("C-c C-r" . ivy-resume))
     :init
-    (use-package counsel
-      :init (use-package counsel-projectile)
-      :bind (:map global-map
-                  ("M-x" . counsel-M-x)
-                  :map help-map
-                  ("f" . counsel-describe-function)
-                  ("v" . counsel-describe-variable)
-                  ("b" . counsel-descbinds)
-                  :map ctl-x-map
-                  ("8 RET" . counsel-unicode-char)
-                  ("l" . counsel-locate)
-                  ("f" . counsel-recentf)
-                  ("C-f" . shackra/find-file)
-                  ("b" . shackra/switch-buffer)))
-    (use-package ivy-hydra)
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
-    :config (ivy-mode 1))
+    :config
+    (use-package counsel
+      :config (use-package counsel-projectile)
+      :bind (:map global-map
+                   ("M-x" . counsel-M-x)
+                   ("M-y" . counsel-yank-pop)
+                   :map help-map
+                   ("f" . counsel-describe-function)
+                   ("v" . counsel-describe-variable)
+                   ("b" . counsel-descbinds)
+                   :map ctl-x-map
+                   ("8 RET" . counsel-unicode-char)
+                   ("l" . counsel-locate)
+                   ("f" . counsel-recentf)
+                   ("C-f" . shackra/find-file)
+                   ("b" . shackra/switch-buffer)))
+    (use-package ivy-hydra)
+    (ivy-mode 1))
 #+END_SRC
 *** =helm=                                                  :deshabilitado:
 :LOGBOOK:
@@ -727,9 +729,8 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
 #+BEGIN_SRC emacs-lisp
   (use-package theme-changer
     :disabled t
-    :init
-    (use-package zenburn-theme)
     :config
+    (use-package zenburn-theme)
     (change-theme 'material-light 'base16-mocha-dark)
     (use-package tramp-theme
       :disabled t))
@@ -799,10 +800,6 @@ Manejo de archivos de un proyecto.
   (use-package projectile
     :diminish projectile-mode
     :init
-    (use-package helm-projectile
-      :disabled (not (fboundp 'helm))
-      :config
-      (helm-projectile-on))
     (setf projectile-completion-system (or (when (fboundp 'ivy-mode) 'ivy) (when (fboundp 'helm) 'helm))
           projectile-switch-project-action  (or (when (fboundp 'counsel-projectile) 'counsel-projectile-find-file) (when (fboundp 'helm-projectile) 'helm-projectile-find-file)))
     (setf
@@ -811,6 +808,10 @@ Manejo de archivos de un proyecto.
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
     :config
+    (use-package helm-projectile
+      :disabled (not (fboundp 'helm))
+      :config
+      (helm-projectile-on))
     (add-hook 'after-init-hook #'projectile-global-mode))
 #+END_SRC
 *** =recentf=
@@ -906,7 +907,7 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
   (use-package magit
     :defer t
     :bind ([f12] . magit-status)
-    :init
+    :conifg
     (use-package gitignore-mode)
     (use-package gitconfig-mode)
     (use-package magit-gh-pulls
@@ -916,6 +917,7 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
       :disabled (not (fboundp 'helm))
       :config
       (add-hook 'git-commit-mode-hook 'git-commit-insert-issue-mode))
+    :init
     (setf magit-last-seen-setup-instructions "1.4.0"
           magit-auto-revert-mode nil
           magit-completing-read-function 'ivy-completing-read))
@@ -1593,7 +1595,7 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
 #+BEGIN_SRC emacs-lisp
   (use-package rust-mode
     :if (executable-find "rustc")
-    :init
+    :config
     (use-package rustfmt
       :config
       (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
@@ -1618,7 +1620,7 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
 Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
 #+BEGIN_SRC emacs-lisp
   (use-package traad
-    :init
+    :config
     (use-package traad-projectile
       :if (fboundp 'projectile-project-p)
       :preface
@@ -1631,7 +1633,6 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
         (if (projectile-project-p)
             (traad-open (projectile-project-root))
           (message "No estas en ningún proyecto!"))))
-    :config
     ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
     ;; de manera automática
     (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad") user-emacs-directory)))
@@ -1871,7 +1872,7 @@ Revisión ortográfica al vuelo.
   (use-package flyspell
     :diminish flyspell-mode
     :ensure nil
-    :init
+    :config
     (use-package flyspell-correct-ivy
       :bind (:map flyspell-mode-map ("C-." . flyspell-correct-previous-word-generic))
       :init
