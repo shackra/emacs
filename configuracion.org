@@ -604,8 +604,17 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
         "cambia la ventana en que el cursor esta"
         (interactive)
         (if (or (> (count-windows) 2) (> (--count-frames) 1))
-            (ace-window 1)
-          (ace-window 0)))
+            (let ((golden-ratio-state golden-ratio-mode))
+              (when golden-ratio-state
+                (golden-ratio-mode -1)
+                (balance-windows))
+              (ace-window 1)
+              (when golden-ratio-state
+                (golden-ratio-mode 1)
+                (golden-ratio)))
+          (progn
+            (ace-window 0)
+            (golden-ratio))))
       :config
       (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
     :config
@@ -1045,6 +1054,9 @@ Crea menús a partir de secciones de documentos
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
+    :if (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
+    :preface
+    (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
     :ensure nil
     :init
     (setf mu4e-get-mail-command "getmail.sh")
@@ -1108,11 +1120,12 @@ Un versátil cliente de correo electrónico para Emacs.
     (use-package org-mu4e
       ;; http://www.djcbsoftware.nl/code/mu/mu4e/Org_002dmode-links.html#Org_002dmode-links
       :ensure nil
+      :bind (:map mu4e-headers-mode-map
+                  ("C-c c" . org-mu4e-store-and-capture)
+                  :map mu4e-view-mode-map
+                  ("C-c c" . org-m4e-store-and-capture))
       :init
-      (setf org-mu4e-link-query-in-headers-mode nil)
-      :config
-      (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
-      (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map)))
+      (setf org-mu4e-link-query-in-headers-mode nil)))
 #+END_SRC
 *** =jabber.el=                                             :deshabilitado:
 :LOGBOOK:
@@ -2239,7 +2252,7 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
                      (`finished (if flycheck-current-errors
                                     (let ((count (let-alist (flycheck-count-errors flycheck-current-errors)
                                                    (+ (or .warning 0) (or .error 0)))))
-                                      (propertize (format " ✖ %s problema%s" count (unless (eq 1 count) "s")) 'face `(:foreground "orange")))
+                                      (propertize (format " ✖ %s problema%s" count (if (> count 1) "s" "")) 'face `(:foreground "orange")))
                                   (propertize " ✔ Sin problemas" 'face `(:foreground "dark grey"))))
                      (`running     (propertize " ⟲ En ejecución" 'face `(:foreground "deep sky blue")))
                      (`no-checker  (propertize " ⚠ No existe revisor" 'face `(:foreground "dim grey")))
