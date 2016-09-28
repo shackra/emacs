@@ -890,6 +890,7 @@ Manejo de archivos de un proyecto.
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
     :config
+    (use-package ag)
     (use-package helm-projectile
       :disabled (not (fboundp 'helm))
       :config
@@ -988,7 +989,6 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git.
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :defer t
-    :bind ([f12] . magit-status)
     :config
     (use-package gitignore-mode)
     (use-package gitconfig-mode)
