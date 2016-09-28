@@ -250,20 +250,6 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
                   " " mode-line-modes
                   mode-line-misc-info))
 #+END_SRC
-** =split-window-right= y =split-window-horizontally=
-#+BEGIN_SRC emacs-lisp
-  (defun shackra/split-window-vertically ()
-    "Divide la ventana por la mitad verticalmente y mueve el cursor a la ventana nueva"
-    (interactive)
-    (split-window-vertically)
-    (other-window 1))
-
-  (defun shackra/split-window-horizontally ()
-    "Divide la ventana por la mitad horizontalmente y mueve el cursor a la ventana nueva"
-    (interactive)
-    (split-window-horizontally)
-    (other-window 1))
-#+END_SRC
 ** =defadvice= temporal
 #+BEGIN_SRC emacs-lisp
   (defmacro my/with-advice (adlist &rest body)
@@ -367,13 +353,24 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
 Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 #+BEGIN_SRC emacs-lisp
   (use-package mdct ;; siglas para Mapeo de Combinaciones de Teclas
-   :ensure nil
-   :preface (provide 'mdct)
-   :bind ("M-o" . other-window)
-   :config
-   (bind-keys :map ctl-x-map
-              ("2" . shackra/split-window-vertically)
-              ("3" . shackra/split-window-horizontally)))
+    :ensure nil
+    :preface (provide 'mdct)
+    :init
+    (defun shackra/split-window-vertically ()
+      "Divide la ventana por la mitad verticalmente y mueve el cursor a la ventana nueva"
+      (interactive)
+      (split-window-vertically)
+      (other-window 1))
+
+    (defun shackra/split-window-horizontally ()
+      "Divide la ventana por la mitad horizontalmente y mueve el cursor a la ventana nueva"
+      (interactive)
+      (split-window-horizontally)
+      (other-window 1))
+    :config
+    (bind-keys :map ctl-x-map
+               ("2" . shackra/split-window-vertically)
+               ("3" . shackra/split-window-horizontally)))
 #+END_SRC
 * Aliases
 Nombres más cortos para comandos usados frecuentemente
@@ -594,6 +591,21 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       (winner-mode 1))
     (use-package windresize)
     (use-package ace-window
+      :bind ("M-o" . shackra/other-window)
+      :init
+      (custom-set-faces
+       '(aw-leading-char-face
+         ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+      (defun --count-frames ()
+        "Retorna el numero de frames visibles"
+        (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
+          (length frames)))
+      (defun shackra/other-window ()
+        "cambia la ventana en que el cursor esta"
+        (interactive)
+        (if (or (> (count-windows) 2) (> (--count-frames) 1))
+            (ace-window 1)
+          (ace-window 0)))
       :config
       (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
     :config
@@ -2369,7 +2381,8 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
 *** =systemd=
 Modo mayor para editar archivos de servicio systemd.
 #+BEGIN_SRC emacs-lisp
-  (use-package systemd)
+  (use-package systemd
+    :disabled t)
 #+END_SRC
 *** =pretty-mode=
 #+BEGIN_SRC emacs-lisp
