@@ -13,6 +13,71 @@
 
 * Configuración de GNU Emacs en un archivo de org-mode
 He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi configuración, sí, sí... ya sé que esto se puede hacer con comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código Python!.
+
+Acá he movido parte de mi init.el ya que otro codigo que he colocado ahí hace el trabajo de desenredar los bloques de código a un archivo elisp.
+#+BEGIN_SRC emacs-lisp
+  (if (eq system-type 'gnu/linux)
+      (load-file (expand-file-name "security.el" user-emacs-directory)))
+  (package-initialize)
+
+  (defun shackra/update-one-package (package)
+    "Actualiza un paquete PACKAGE"
+    (when (package-installed-p package)
+      (let* ((newest-pkg (car-safe (cdr (assq package package-archive-contents))))
+             (new-ver (and newest-pkg (package-desc-version newest-pkg)))
+             (builtin-pkg (cdr (assq package package--builtins)))
+             (installed-pkg (car-safe (cdr (assq package package-alist))))
+             (old-dir (and installed-pkg (package-desc-dir installed-pkg)))
+             (old-ver (or (and installed-pkg (package-desc-version installed-pkg))
+                         (and builtin-pkg (package--bi-desc-version builtin-pkg)))))
+        (when (and new-ver (version-list-< old-ver new-ver))
+          ;; Instalamos la nueva versión de org-mode
+          (condition-case nil
+              ;; en caso de algún error tratando de bajar algún paquete, captura
+              ;; el error para que no interfiera con la inicialización de Emacs
+              (progn (package-install newest-pkg)
+                     (message (format "Paquete «%s» actualizado de la versión %s a la versión %s"
+                                      (package-desc-name newest-pkg) old-ver new-ver))))
+          (unless old-dir
+            (delete-directory old-dir t))))))
+
+  ;; repositorios de paquetes
+  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
+                           ("gnu" . "https://elpa.gnu.org/packages/")))
+
+  (unless package-archive-contents
+    (package-refresh-contents))
+
+  ;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
+  ;; lo instalamos
+  (when (not (package-installed-p 'use-package))
+    (package-install 'use-package))
+
+  (if (not (package-installed-p 'org))
+      (package-install 'org)
+    ;; El paquete esta instalado. Actualiza el paquete org-mode.
+    (shackra/update-one-package 'org))
+
+  ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
+  (when (eq system-type 'darwin)
+    (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
+
+  ;; En caso de que /usr/local/bin no este agregado
+  (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
+                                                      (not (eq system-type 'cygwin))
+                                                      (not (eq system-type 'ms-dos))))
+    (setf exec-path (append exec-path '("/usr/local/bin")))
+    (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
+
+  (put 'downcase-region 'disabled nil)
+  (require 'use-package)
+  (setf use-package-always-ensure t)
+
+  (defun shackra/org-confirm-babel-evaluate (lang body)
+    (not (or (string= lang "emacs-lisp"))))
+  (setf org-confirm-babel-evaluate #'shackra/org-confirm-babel-evaluate)
+
+#+END_SRC
 * Seguridad
 Emacs no es muy seguro por defecto, por ejemplo, al descargar paquetes de los [[*Repositorio%20de%20paquetes][Repositorio de paquetes]] no comprobara las credenciales SSL del sitio web. Más aun, los desarrolladores de extensiones no suelen firmar los /commits/ de sus extensiones, lo que permitiría que un atacante cambie algunas lineas de código elisp de un paquete para crear una puerta trasera. Más información aquí [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html#fnref:4][Deciphering Glyph :: Your Text Editor Is Malware]].
 
@@ -381,6 +446,61 @@ Nombres más cortos para comandos usados frecuentemente
 #+END_SRC
 * Paquetes de extensiones
 ** Utilidades
+*** =better-defaults=
+configuración sana de ciertas opciones en Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package better-defaults
+    :config
+    ;; Se cargan otras modificaciones para mejorar el comportamiento de Emacs
+    (load-file (expand-file-name "sane.el" user-emacs-directory))
+    (ido-mode nil))
+#+END_SRC
+**** Tipografía
+Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
+#+BEGIN_SRC emacs-lisp
+  (use-package existefuente
+    :ensure nil
+    :preface (provide 'existefuente)
+    :init
+    (defun font-exists-p (font)
+      "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
+      (if (not (find-font (font-spec :name font)))
+          nil
+        t))
+    (defun shackra/arregla-emojis (&optional frame)
+      (if (eq system-type 'darwin)
+          ;; Para NS/Cocoa
+          (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+        ;; Para GNU/Linux
+        (if (font-exists-p "Symbola")
+            (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend)))))
+
+  (use-package misfuentes
+    :ensure nil
+    :preface (provide 'misfuentes)
+    :init
+    (defun shackra/font-set (&optional frame)
+      (when (framep frame)
+        (select-frame frame)
+        (if (font-exists-p "Monoisome")
+            (progn
+              (set-frame-font "Monoisome 9")
+              (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
+          (if (font-exists-p "Monoid")
+              (progn
+                (set-frame-font "Monoid 9")
+                (add-to-list 'default-frame-alist '(font . "Monoid-9")))
+            (if (font-exists-p "Source Code Pro")
+                (progn
+                  (set-frame-font "Source Code Pro 10")
+                  (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))))))))
+    :config
+    (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
+    (add-hook 'after-make-frame-functions #'shackra/font-set)
+    (unless (daemonp)
+      (shackra/arregla-emojis)
+      (shackra/font-set)))
+#+END_SRC
 *** secreto
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
 #+BEGIN_SRC emacs-lisp
@@ -416,28 +536,29 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
     :bind (:map global-map
-                 ("C-s" . swiper)
-                 ("C-r" . swiper)
-                 ("C-c C-r" . ivy-resume))
+                ("C-s" . swiper)
+                ("C-r" . swiper)
+                ("C-c C-r" . ivy-resume))
     :init
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
     :config
     (use-package counsel
+      :demand t
       :config (use-package counsel-projectile)
       :bind (:map global-map
-                   ("M-x" . counsel-M-x)
-                   ("M-y" . counsel-yank-pop)
-                   :map help-map
-                   ("f" . counsel-describe-function)
-                   ("v" . counsel-describe-variable)
-                   ("b" . counsel-descbinds)
-                   :map ctl-x-map
-                   ("8 RET" . counsel-unicode-char)
-                   ("l" . counsel-locate)
-                   ("f" . counsel-recentf)
-                   ("C-f" . shackra/find-file)
-                   ("b" . shackra/switch-buffer)))
+                  ("M-x" . counsel-M-x)
+                  ("M-y" . counsel-yank-pop)
+                  :map help-map
+                  ("f" . counsel-describe-function)
+                  ("v" . counsel-describe-variable)
+                  ("b" . counsel-descbinds)
+                  :map ctl-x-map
+                  ("8 RET" . counsel-unicode-char)
+                  ("l" . counsel-locate)
+                  ("f" . counsel-recentf)
+                  ("C-f" . shackra/find-file)
+                  ("b" . shackra/switch-buffer)))
     (use-package ivy-hydra)
     (ivy-mode 1))
 #+END_SRC
@@ -516,61 +637,6 @@ Completado incremental y estrechamiento de selección de candidatos :)
       :config
       (add-hook 'after-init-hook '(lambda () (helm-adaptive-mode))) t)
     (helm-autoresize-mode 1))
-#+END_SRC
-*** =better-defaults=
-configuración sana de ciertas opciones en Emacs
-#+BEGIN_SRC emacs-lisp
-  (use-package better-defaults
-    :config
-    ;; Se cargan otras modificaciones para mejorar el comportamiento de Emacs
-    (load-file (expand-file-name "sane.el" user-emacs-directory))
-    (add-hook 'after-init-hook (lambda () (ido-mode nil))))
-#+END_SRC
-**** Tipografía
-Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
-#+BEGIN_SRC emacs-lisp
-  (use-package existefuente
-    :ensure nil
-    :preface (provide 'existefuente)
-    :init
-    (defun font-exists-p (font)
-      "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
-      (if (not (find-font (font-spec :name font)))
-          nil
-        t))
-    (defun shackra/arregla-emojis (&optional frame)
-      (if (eq system-type 'darwin)
-          ;; Para NS/Cocoa
-          (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
-        ;; Para GNU/Linux
-        (if (font-exists-p "Symbola")
-            (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend)))))
-
-  (use-package misfuentes
-    :ensure nil
-    :preface (provide 'misfuentes)
-    :init
-    (defun shackra/font-set (&optional frame)
-      (when (framep frame)
-        (select-frame frame)
-        (if (font-exists-p "Monoisome")
-            (progn
-              (set-frame-font "Monoisome 9")
-              (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
-          (if (font-exists-p "Monoid")
-              (progn
-                (set-frame-font "Monoid 9")
-                (add-to-list 'default-frame-alist '(font . "Monoid-9")))
-            (if (font-exists-p "Source Code Pro")
-                (progn
-                  (set-frame-font "Source Code Pro 10")
-                  (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))))))))
-    :config
-    (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
-    (add-hook 'after-make-frame-functions #'shackra/font-set)
-    (unless (daemonp)
-      (shackra/arregla-emojis)
-      (shackra/font-set)))
 #+END_SRC
 *** =hydra=
 :LOGBOOK:

@@ -1,67 +1,74 @@
-(if (eq system-type 'gnu/linux)
-    (load-file (expand-file-name "security.el" user-emacs-directory)))
-;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
+;; extraido de https://bitbucket.org/holgerschurig/emacsconf/src/
+(defvar my-start-time (current-time)
+  "Tiempo en que Emacs arrancó")
+
+(setq load-prefer-newer t)
+;; This sets up the load path so that we can override it
 (setf package-enable-at-startup nil)
+;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
 (package-initialize)
 
-(defun shackra/update-one-package (package)
-  "Actualiza un paquete PACKAGE"
-  (when (package-installed-p package)
-    (let* ((newest-pkg (car-safe (cdr (assq package package-archive-contents))))
-           (new-ver (and newest-pkg (package-desc-version newest-pkg)))
-           (builtin-pkg (cdr (assq package package--builtins)))
-           (installed-pkg (car-safe (cdr (assq package package-alist))))
-           (old-dir (and installed-pkg (package-desc-dir installed-pkg)))
-           (old-ver (or (and installed-pkg (package-desc-version installed-pkg))
-                       (and builtin-pkg (package--bi-desc-version builtin-pkg)))))
-      (when (and new-ver (version-list-< old-ver new-ver)) 
-        ;; Instalamos la nueva versión de org-mode
-        (condition-case nil
-            ;; en caso de algún error tratando de bajar algún paquete, captura
-            ;; el error para que no interfiera con la inicialización de Emacs
-            (progn (package-install newest-pkg)
-                   (message (format "Paquete «%s» actualizado de la versión %s a la versión %s"
-                                    (package-desc-name newest-pkg) old-ver new-ver))))
-        (unless old-dir
-	  (delete-directory old-dir t))))))
+(setq inhibit-startup-screen t)
 
-;; repositorios de paquetes
-(setf package-archives '(("melpa" . "https://melpa.org/packages/")
-                         ("gnu" . "https://elpa.gnu.org/packages/")))
+(defun my-tangle-section-canceled ()
+  "Checks if the previous section header was CANC"
+  (save-excursion
+    (if (re-search-backward "^\\*+\\s-+\\(.*?\\)?\\s-*$" nil t)
+        (progn
+          (message "FOUND '%s'" (match-string 1))
+          (string-prefix-p "CANC" (match-string 1)))
+      nil)))
 
-(unless package-archive-contents
-  (package-refresh-contents))
+(defun my-tangle-config-org (orgfile elfile)
+  "This function will write all source blocks from =config.org= into
+=config.el= that are ...
 
-;; revisamos si no tenemos use-package instalado, porque de ser verdadero esto,
-;; lo instalamos
-(when (not (package-installed-p 'use-package))
-  (package-install 'use-package))
+- not marked as :tangle no
+- have a source-code of =emacs-lisp=
+- doesn't have the todo-marker CANC"
+  (let* ((body-list ())
+         (gc-cons-threshold most-positive-fixnum)
+         (org-babel-src-block-regexp   (concat
+                                        ;; (1) indentation                 (2) lang
+                                        "^\\([ \t]*\\)#\\+begin_src[ \t]+\\([^ \f\t\n\r\v]+\\)[ \t]*"
+                                        ;; (3) switches
+                                        "\\([^\":\n]*\"[^\"\n*]*\"[^\":\n]*\\|[^\":\n]*\\)"
+                                        ;; (4) header arguments
+                                        "\\([^\n]*\\)\n"
+                                        ;; (5) body
+                                        "\\([^\000]*?\n\\)??[ \t]*#\\+end_src")))
+    (with-temp-buffer
+      (insert-file-contents orgfile)
+      (goto-char (point-min))
+      (while (re-search-forward org-babel-src-block-regexp nil t)
+        (let ((lang (match-string 2))
+              (args (match-string 4))
+              (body (match-string 5))
+              (canc (my-tangle-section-canceled)))
+          (when (and (string= lang "emacs-lisp")
+                   (not (string-match-p ":tangle\\s-+no" args))
+                   (not canc))
+            (add-to-list 'body-list body)))))
+    (with-temp-file elfile
+      (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
+      ;; (insert (apply 'concat (reverse body-list)))
+      (apply 'insert (reverse body-list)))
+    (message "Wrote %s ..." elfile)))
 
-(if (not (package-installed-p 'org))
-    (package-install 'org)
-  ;; El paquete esta instalado. Actualiza el paquete org-mode.
-  (shackra/update-one-package 'org))
+(let ((orgfile (concat user-emacs-directory "configuracion.org"))
+      (elfile (concat user-emacs-directory "configuracion.el"))
+      (gc-cons-threshold most-positive-fixnum))
+  (when (or (not (file-exists-p elfile))
+           (file-newer-than-file-p orgfile elfile))
+    (my-tangle-config-org orgfile elfile))
+  (load-file elfile))
 
-;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
-(when (eq system-type 'darwin)
-  (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
+(defun my-tangle-config-org-hook-func ()
+  (when (string= "configuracion.org" (buffer-name))
+    (let ((orgfile (concat user-emacs-directory "configuracion.org"))
+          (elfile (concat user-emacs-directory "configuracion.el")))
+      (my-tangle-config-org orgfile elfile))))
 
-;; En caso de que /usr/local/bin no este agregado
-(when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
-                                                    (not (eq system-type 'cygwin))
-                                                    (not (eq system-type 'ms-dos))))
-  (setf exec-path (append exec-path '("/usr/local/bin")))
-  (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
+(add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
 
-(put 'downcase-region 'disabled nil)
-(require 'use-package)
-(setf use-package-always-ensure t)
-
-(defun shackra/org-confirm-babel-evaluate (lang body)
-  (not (or (string= lang "emacs-lisp"))))
-(setf org-confirm-babel-evaluate #'shackra/org-confirm-babel-evaluate)
-
-(require 'ob-tangle)
-(org-babel-load-file (expand-file-name "configuracion.org" user-emacs-directory))
-
-(load-file (expand-file-name "configuracion.el" user-emacs-directory))
+(message "Start up time %.2fs" (float-time (time-subtract (current-time) my-start-time)))
