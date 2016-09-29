@@ -16,8 +16,9 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
 
 Acá he movido parte de mi init.el ya que otro codigo que he colocado ahí hace el trabajo de desenredar los bloques de código a un archivo elisp.
 #+BEGIN_SRC emacs-lisp
-  (if (eq system-type 'gnu/linux)
-      (load-file (expand-file-name "security.el" user-emacs-directory)))
+  ;; sombrero de aluminio
+  (setq network-security-level 'paranoid)
+
   (package-initialize)
 
   (defun shackra/update-one-package (package)
@@ -535,6 +536,7 @@ Escala la altura de la tipografía en todos los buffers de manera temporal
 Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje de la serie /Dora la exploradora/.
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
+    :demand t
     :bind (:map global-map
                 ("C-s" . swiper)
                 ("C-r" . swiper)
@@ -562,7 +564,9 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
     (use-package ivy-hydra)
     (ivy-mode 1))
 #+END_SRC
-*** =helm=                                                  :deshabilitado:
+*** CANCELADO =helm=                                        :deshabilitado:
+- State "CANCELADO"  from              [2016-09-28 mié 19:04] \\
+  deshabilitado
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:38]
 :END:
@@ -803,7 +807,9 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
 #+END_SRC
-*** =theme-changer=                                         :deshabilitado:
+*** CANCELADO =theme-changer=                               :deshabilitado:
+- State "CANCELADO"  from              [2016-09-28 mié 19:05] \\
+  deshabilitado
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:46]
 :END:
@@ -823,7 +829,9 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
     :config
     (load-theme 'zenburn t))
 #+END_SRC
-*** =hlinum=                                                :deshabilitado:
+*** CANCELADO =hlinum=                                      :deshabilitado:
+- State "CANCELADO"  from              [2016-09-28 mié 19:05] \\
+  deshabilitado
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:47]
 :END:
@@ -834,7 +842,9 @@ Extiende el modo =linum-mode= y subraya el numero de linea actual.
     :config
     (add-hook 'prog-mode-hook #'hlinum-activate))
 #+END_SRC
-*** =ycmd=                                                  :deshabilitado:
+*** CANCELADO =ycmd=                                        :deshabilitado:
+- State "CANCELADO"  from              [2016-09-28 mié 19:05] \\
+  deshabilitado
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:49]
 :END:
@@ -1193,7 +1203,9 @@ Un versátil cliente de correo electrónico para Emacs.
       :init
       (setf org-mu4e-link-query-in-headers-mode nil)))
 #+END_SRC
-*** =jabber.el=                                             :deshabilitado:
+*** CANCELADO =jabber.el=                                   :deshabilitado:
+- State "CANCELADO"  from              [2016-09-28 mié 19:06] \\
+  el paquete no funciona correctamente
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:52]
 :END:
@@ -1236,7 +1248,9 @@ Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-th
 #+BEGIN_EXAMPLE
   Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
 #+END_EXAMPLE
-*** =tumblesocks-mode=                                      :deshabilitado:
+*** CANCELADO =tumblesocks-mode=                            :deshabilitado:
+- State "CANCELADO"  from              [2016-09-28 mié 19:06] \\
+  No funciona correctamente
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
 :END:
@@ -2460,8 +2474,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
 *** =systemd=
 Modo mayor para editar archivos de servicio systemd.
 #+BEGIN_SRC emacs-lisp
-  (use-package systemd
-    :disabled t)
+  (use-package systemd)
 #+END_SRC
 *** =pretty-mode=
 #+BEGIN_SRC emacs-lisp
@@ -2541,7 +2554,9 @@ Cliente para MPD
     :if (executable-find "mpd")
     :preface (require 'mingus-stays-home))
 #+END_SRC
-*** tareas de org a Google Calendar                         :deshabilitado:
+*** CANCELADO tareas de org a Google Calendar               :deshabilitado:
+- State "CANCELADO"  from              [2016-09-28 mié 19:06] \\
+  el paquete borra todos el contenido de todos mis archivos org-mode!
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package org-gcal
     :disabled t
