@@ -838,9 +838,32 @@ Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione 
 Extiende el modo =linum-mode= y subraya el numero de linea actual.
 #+BEGIN_SRC emacs-lisp :tangle no
   (use-package hlinum
-    :disabled t
     :config
     (add-hook 'prog-mode-hook #'hlinum-activate))
+#+END_SRC
+*** nlinum
+Muestra el numero de lineas al margen del buffer
+#+BEGIN_SRC emacs-lisp
+  (use-package nlinum
+    :pin gnu
+    :init
+    (defun ancho-nlinum-mode-hook ()
+      "Calcula el ancho de los números para evitar feos saltos al desplazarse"
+      (when nlinum-mode
+        (setq-local nlinum-format (concat "%" (number-to-string
+                                               (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
+                                          "d"))))
+    (defun initialize-nlinum (&optional frame)
+      "Flanque de error en nlinum al usar Emacs como demonio"
+      (require 'nlinum)
+      (add-hook 'prog-mode-hook 'nlinum-mode))
+    (add-hook 'nlinum-mode-hook #'ancho-nlinum-mode-hook)
+    (if (daemonp)
+        (progn
+          (add-hook 'window-setup-hook #'initialize-nlinum)
+          (defadvice make-frame (around toggle-nlinum-mode compile activate)
+            (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
+      (add-hook 'prog-mode-hook #'nlinum-mode)))
 #+END_SRC
 *** CANCELADO =ycmd=                                        :deshabilitado:
 - State "CANCELADO"  from              [2016-09-28 mié 19:05] \\
