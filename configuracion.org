@@ -803,6 +803,7 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     (defadvice undo-tree-make-history-save-file-name
         (after undo-tree activate)
       (setq ad-return-value (concat ad-return-value ".7z")))
+    (setf undo-tree-visualizer-timestamps t)
     :config
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
@@ -2674,6 +2675,12 @@ Modo menor que subraya los niveles de identación en el buffer usando font-lock.
 #+END_SRC
 **** Limitaciones
 Este modo menor no funciona bien con otros modos menores que hacen uso de la propiedad =display= de los textos en el buffer o que modifican como se muestran los espacios en blanco como hace whitespace-mode. Más info: [[https://github.com/DarthFennec/highlight-indent-guides#limitations][Limitations]].
+*** Manejador de procesos para el sistema
+#+BEGIN_SRC emacs-lisp
+  (use-package proced
+    :ensure nil
+    :if (or (string-equal system-type "gnu/linux") (string-equal system-type "gnu/kfreebsd")))
+#+END_SRC
 ** Yasnippet en todos los backends de Company                     :especial:
 Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer que muestre candidatos de auto-completado y candidatos yasnippet es agrupando los backends
 #+BEGIN_SRC emacs-lisp
