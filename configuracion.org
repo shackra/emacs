@@ -1171,6 +1171,7 @@ Un versátil cliente de correo electrónico para Emacs.
     (setq mail-user-agent 'mu4e-user-agent)
     (setf mu4e-confirm-quit nil)
     (setf mu4e-context-policy 'pick-first)
+    (setf mu4e-change-filenames-when-moving t)
     (setf mu4e-headers-date-format "%d/%m/%Y %H:%M")
     (setf message-citation-line-format "\nEl %A %d de %B del %Y a las %H%M horas, %N escribió:\n")
     (setf message-citation-line-function 'message-insert-formatted-citation-line)
