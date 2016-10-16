@@ -515,11 +515,12 @@ Saca cualquier rastro de tus archivos y datos privados de tu configuración de E
 Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
 #+BEGIN_SRC emacs-lisp
   (use-package secretaria
+    :load-path "site-packages/secretaria/"
     :ensure nil
-    :preface
-    (use-package alert)
-    (use-package f)
-    :load-path "site-packages/secretaria/")
+    :init
+    (setf secretaria-clocked-task-save-file "~/.secretaria-tarea")
+    :config
+    (secretaria-today-unknown-time-appt-always-remind-me))
 #+END_SRC
 *** =font-man=
 Escala la altura de la tipografía en todos los buffers de manera temporal
@@ -742,6 +743,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
     :init
     (setq-default dired-omit-mode t)
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
+    (setq-default dired-omit-verbose nil)
     (setf dired-dwim-target t)
     (defun shackra/dired-no-esconder-detalles ()
       "No esconder los detalles de los archivos en dired, se ven muy bien"
@@ -1488,13 +1490,13 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
           org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)
                                  (expand-file-name "fechas.org" org-directory)))
     (use-package org-projectile
-      :preface (require 'org-projectile)
+      :demand t
       :bind (("C-c p x p" . org-projectile:project-todo-completing-read))
       :init
-      (setf org-projectile:projects-file (expand-file-name "proyectos.org" org-directory))
-      (setf org-agenda-files (append org-agenda-files (org-projectile:todo-files)))
+      (setf org-projectile:per-repo-filename "proyecto.org")
       :config
-      (add-to-list 'org-capture-templates (org-projectile:project-todo-entry "P")))
+      (add-to-list 'org-capture-templates (org-projectile:project-todo-entry "P"))
+      (setf org-agenda-files (append org-agenda-files (org-projectile:todo-files))))
     (setf org-todo-keywords
           '(
             ;; Secuencia para TAREAS
@@ -1533,86 +1535,32 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ("katanime" . "https://kat.cr/usearch/\"%s\" category:english-translated seeds:5 is_safe:1/")))
     (setf org-capture-templates
           '(("p" "Añadir tarea por hacer" entry (file "cosas por hacer.org")
-             "* POR-HACER %^{breve descripcion} %^g
-  :PROPERTIES:
-  :CREATED:%U
-  :END:
-  %?" :kill-buffer t)
+             "* POR-HACER %^{breve descripcion} %^g\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t)
             ("l" "Añadir tarea por hacer (enlazado a algo)" entry (file "cosas por hacer.org")
-             "* POR-HACER %^{breve descripcion} %^g
-  :PROPERTIES:
-  :CREATED:%U
-  :END:
-  %a %?" :kill-buffer t)
+             "* POR-HACER %^{breve descripcion} %^g\n:PROPERTIES:\n:CREATED:%U\n:END:\n%a %?" :kill-buffer t)
             ("f" "Fechas o eventos" entry (file "fechas.org")
-             "* POR-HACER %^{Nombre del evento} %^g
-  SCHEDULED: %^T%?
-  :PROPERTIES:
-  :CREATED: %U
-  :END:" :kill-buffer t)
+             "* POR-HACER %^{Nombre del evento} %^g\nSCHEDULED: %^T%?\n:PROPERTIES:%(if (yes-or-no-p \"¿Es esto un cumpleaños?\") (format \"\n:NACIMIENTO: %s\" (with-temp-buffer (org-time-stamp nil t) (buffer-string))) \"\")\n:CREATED: %U\n:END:" :kill-buffer t)
             ("r" "Recado" entry (file "~/recados.org")
-             "* ENTREGAR recado de %^{Nombre de persona}
-  :PROPERTIES:
-  :DE: %\\1
-  :CONTACTO: %^{contacto}
-  :CREATED: %T
-  :END:
-  %?" :kill-buffer t)
+             "* ENTREGAR recado de %^{Nombre de persona}\n:PROPERTIES:\n:DE: %\\1\n:CONTACTO: %^{contacto}\n:CREATED: %T\n:END:\n%?" :kill-buffer t)
             ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
-             "* %^{Querido diario...}
-  :PROPERTIES:
-  :CREATED: %T
-  :END:
-  %?" :empty-lines 1 :kill-buffer t)
+             "* %^{Querido diario...}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :empty-lines 1 :kill-buffer t)
 
             ("g" "Algún día")
 
             ("gp" "Tarea" entry (file+headline "quizas.org" "Cosas por hacer")
-             "* %^{breve descripcion}
-  :PROPERTIES:
-  :CREATED: %U
-  :END:
-  %?" :kill-buffer t)
+             "* %^{breve descripcion}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :kill-buffer t)
             ("gt" "Aprender" entry (file+headline "quizas.org" "Cosas por hacer")
-             "* Aprender sobre %^{cosa}
-  :PROPERTIES:
-  :CREATED: %T
-  :END:
-  %?" :kill-buffer t)
+             "* Aprender sobre %^{cosa}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :kill-buffer t)
             ("gl" "Libro" entry (file+headline "quizas.org" "Libros")
-             "* Leer /%^{Titulo}/ por %^{Autor}
-  :PROPERTIES:
-  :CREATED: %T
-  :AUTOR: %\\2
-  :END:
-  %?" :kill-buffer t)
+             "* Leer /%^{Titulo}/ por %^{Autor}\n:PROPERTIES:\n:CREATED: %T\n:AUTOR: %\\2\n:END:\n%?" :kill-buffer t)
             ("gb" "Blog" entry (file+headline "quizas.org" "Blogs")
-             "* Leer entrada de blog /%^{copy as org}/
-  :PROPERTIES:
-  :CREATED: %T
-  :END:
-  %\\1%?" :kill-buffer t)
+             "* Leer entrada de blog /%^{copy as org}/\n:PROPERTIES:\n:CREATED: %T\n:END:\n%\\1%?" :kill-buffer t)
             ("gx" "Idea de proyecto" entry (file+headline "quizas.org" "Ideas para posibles proyectos")
-             "* %^{Titulo o breve descripción} ^%g
-  :PROPERTIES:
-  :CREATED: %T
-  :END:
-  %?" :kill-buffer t)
+             "* %^{Titulo o breve descripción} ^%g\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :kill-buffer t)
             ("gm" "Películas" entry (file+headline "quizas.org" "Películas")
-             "* Ver /%^{Titulo}/
-  :PROPERTIES:
-  :CREATED: %T
-  :END:
-  [[katpelicula:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
+             "* Ver /%^{Titulo}/\n:PROPERTIES:\n:CREATED: %T\n:END:\n[[katpelicula:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
             ("ga" "Anime" entry (file+headline "quizas.org" "Anime")
-             "* Ver /%^{Anime}/
-  :PROPERTIES:
-  :CREATED: %T
-  :CATEGORY: anime
-  :EPISODIO: 1
-  :EPISODIOS: %^{numero de episodios}
-  :END:
-  [[katanime:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
+             "* Ver /%^{Anime}/\n:PROPERTIES:\n:CREATED: %T\n:CATEGORY: anime\n:EPISODIO: 1\n:EPISODIOS: %^{numero de episodios}\n:END:\n[[katanime:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
     (use-package org-bullets
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
@@ -1751,6 +1699,7 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
 #+BEGIN_SRC emacs-lisp
   (use-package traad
     :config
+    (use-package python-environment)
     (use-package traad-projectile
       :if (fboundp 'projectile-project-p)
       :preface
@@ -2039,7 +1988,7 @@ Revisión ortográfica al vuelo.
       ;; Nuevo diccionario, nada de palabras subrayadas
       (flyspell-delete-all-overlays)
       ;; Mandamos a revisar la ortografía del párrafo en que estamos
-      (flyspell-region (line-beginning-position) (line-end-postín))))
+      (flyspell-region (line-beginning-position) (line-end-position))))
 #+END_SRC
 *** =flycheck-mode=
 :LOGBOOK:
@@ -2055,6 +2004,7 @@ Revisión de errores en el código fuente, al vuelo.
     (setf flycheck-indication-mode 'left-fringe)
     (setf flycheck-display-errors-delay 5.0)
     :config
+    (use-package flycheck-package)
     (add-hook 'prog-mode-hook #'flycheck-mode))
 #+END_SRC
 *** =multiple-cursors=
@@ -2546,7 +2496,7 @@ Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de e
 *** RSS feed
 Lector de RSS feed dentro de Emacs
 #+BEGIN_SRC emacs-lisp
-(use-package elfeed
+  (use-package elfeed
     :init
     (setf url-queue-timeout 30)
     (defun elfeed-search-format-date (date)
@@ -2554,6 +2504,12 @@ Lector de RSS feed dentro de Emacs
     ;; fuentes RSS feed
     (setf elfeed-feeds '("http://stackoverflow.com/jobs/feed?allowsremote=True&type=Contract"
                          "https://weworkremotely.com/categories/2-programming/jobs.rss"
+                         ("https://www.aciprensa.com/rss/noticias.xml" Iglesia noticias)
+                         ("http://feeds.feedburner.com/santodeldia" Iglesia santoral)
+                         ("http://www.ivoox.com/podcast-podcast-charlas-padre-fortea_fg_f167459_filtro_1.xml" Iglesia sermones Fortea)
+                         ("http://localhost:9077/feed/diarioextra-nacionales/atom" noticias nacionales)
+                         ("http://localhost:9077/feed/diarioextra-sucesos/atom" noticias nacionales sucesos)
+                         ("http://localhost:9077/feed/rt-espanol/atom" noticias internacionales)
                          ("https://www.reddit.com/r/forhire/.rss" reddit)
                          ("https://costarica.craigslist.org/search/sof?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=298&nearbyArea=586&searchNearby=2" craigslist)
                          ("https://toronto.craigslist.ca/search/web?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=235&nearbyArea=252&nearbyArea=27&nearbyArea=275&nearbyArea=337&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=40&nearbyArea=452&nearbyArea=453&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=486&nearbyArea=487&nearbyArea=555&nearbyArea=626&nearbyArea=627&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist Canada)
@@ -2566,13 +2522,9 @@ Lector de RSS feed dentro de Emacs
                                   :entry-title '(not "Hiring")
                                   :add 'nointeres
                                   :remove 'unread))
-    :preface
-    (use-package elfeed-org
-      :disabled t
-      :init
-      (setf rmh-elfeed-org-files (list "~/org/w.org"))
-      :config
-      (elfeed-org)))
+    (add-hook 'elfeed-new-entry-hook
+              (elfeed-make-tagger :before "2 weeks ago"
+                                  :remove 'unread)))
 #+END_SRC
 *** =ws-butler=
 Eliminación de espacios de manera no obstrusiva

@@ -62,13 +62,41 @@
     ((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))))
  '(package-selected-packages
    (quote
-    (flycheck-rust racer company-racer cargo rustfmt nlinum company-statistics move-text ag zenburn-theme yaml-mode ws-butler windresize web-server web-mode web-beautify visual-regexp-steroids visual-fill-column vimish-fold use-package undo-tree twittering-mode traad toml-mode theme-changer telephone-line systemd sx switch-buffer-functions stylus-mode slime skewer-mode shackle scss-mode rust-mode ranger rainbow-mode pyvenv py-autopep8 pretty-mode pony-mode php-refactor-mode php-mode pdf-tools paredit package-safe-delete ox-reveal org-webpage org-projectile org-bullets mustache-mode multi-term moz-controller monky mingus mediawiki material-theme magit-gh-pulls kill-or-bury-alive keyfreq js2-refactor ivy-hydra imenu-anywhere hungry-delete highlight-numbers highlight-indent-guides highlight-escape-sequences hgignore-mode golden-ratio go-snippets go-projectile gitignore-mode gitconfig-mode git-gutter-fringe free-keys flyspell-correct-ivy flycheck fixmee expand-region emojify emmet-mode elfeed el-pocket dired-details+ dired+ counsel-projectile company-web company-tern company-quickhelp company-go company-emoji company-auctex company-anaconda circe-notifications camcorder bookmark+ better-defaults base16-theme aurel android-mode all-the-icons aggressive-indent ace-window ac-html-bootstrap)))
+    (org-projectile python-environment flycheck-package flycheck-rust racer company-racer cargo rustfmt nlinum company-statistics move-text ag zenburn-theme yaml-mode ws-butler windresize web-server web-mode web-beautify visual-regexp-steroids visual-fill-column vimish-fold use-package undo-tree twittering-mode traad toml-mode theme-changer telephone-line systemd sx switch-buffer-functions stylus-mode slime skewer-mode shackle scss-mode rust-mode ranger rainbow-mode pyvenv py-autopep8 pretty-mode pony-mode php-refactor-mode php-mode pdf-tools paredit package-safe-delete ox-reveal org-webpage org-bullets mustache-mode multi-term moz-controller monky mingus mediawiki material-theme magit-gh-pulls kill-or-bury-alive keyfreq js2-refactor ivy-hydra imenu-anywhere hungry-delete highlight-numbers highlight-indent-guides highlight-escape-sequences hgignore-mode golden-ratio go-snippets gitignore-mode gitconfig-mode git-gutter-fringe free-keys flyspell-correct-ivy flycheck fixmee expand-region emojify emmet-mode elfeed el-pocket dired-details+ dired+ company-web company-tern company-quickhelp company-go company-emoji company-auctex company-anaconda circe-notifications camcorder bookmark+ better-defaults base16-theme aurel android-mode all-the-icons aggressive-indent ace-window ac-html-bootstrap)))
  '(py-autopep8-options nil)
  '(python-shell-interpreter "python3")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
  '(safe-local-variable-values
    (quote
     ((eval when
+           (and
+            (buffer-file-name)
+            (file-regular-p
+             (buffer-file-name))
+            (string-match-p "^[^.]"
+                            (buffer-file-name)))
+           (unless
+               (featurep
+                (quote package-build))
+             (let
+                 ((load-path
+                   (cons "../package-build" load-path)))
+               (require
+                (quote package-build))))
+           (package-build-minor-mode)
+           (set
+            (make-local-variable
+             (quote package-build-working-dir))
+            (expand-file-name "../working/"))
+           (set
+            (make-local-variable
+             (quote package-build-archive-dir))
+            (expand-file-name "../packages/"))
+           (set
+            (make-local-variable
+             (quote package-build-recipes-dir))
+            default-directory))
+     (eval when
            (and
             (buffer-file-name)
             (file-regular-p
