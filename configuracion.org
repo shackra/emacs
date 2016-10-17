@@ -2500,8 +2500,18 @@ Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de e
 Lector de RSS feed dentro de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package elfeed
+    :bind (:map elfeed-show-mode-map (("." . elfeed-open-url)))
     :init
     (setf url-queue-timeout 30)
+    (defun elfeed-open-url ()
+      "Open an URL with eww"
+      (interactive)
+      (let* ((url-to-visit))
+        (save-excursion
+          (goto-char (point-min))
+          (search-forward "Link: " nil t)
+          (setf url-to-visit (thing-at-point 'url t)))
+        (eww url-to-visit)))
     (defun elfeed-search-format-date (date)
       (format-time-string "%d-%m-%Y %H:%M" (seconds-to-time date)))
     ;; fuentes RSS feed
@@ -2510,8 +2520,7 @@ Lector de RSS feed dentro de Emacs
                          ("https://www.aciprensa.com/rss/noticias.xml" Iglesia noticias)
                          ("http://feeds.feedburner.com/santodeldia" Iglesia santoral)
                          ("http://www.ivoox.com/podcast-podcast-charlas-padre-fortea_fg_f167459_filtro_1.xml" Iglesia sermones Fortea)
-                         ("http://localhost:9077/feed/diarioextra-nacionales/atom" noticias nacionales)
-                         ("http://localhost:9077/feed/diarioextra-sucesos/atom" noticias nacionales sucesos)
+                         ("http://localhost:9077/feed/crhoy/atom" noticias nacionales)
                          ("http://localhost:9077/feed/rt-espanol/atom" noticias internacionales)
                          ("https://www.reddit.com/r/forhire/.rss" reddit)
                          ("https://costarica.craigslist.org/search/sof?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=298&nearbyArea=586&searchNearby=2" craigslist)
@@ -2527,6 +2536,10 @@ Lector de RSS feed dentro de Emacs
                                   :remove 'unread))
     (add-hook 'elfeed-new-entry-hook
               (elfeed-make-tagger :before "2 weeks ago"
+                                  :remove 'unread))
+    (add-hook 'elfeed-new-entry-hook
+              (elfeed-make-tagger :feed-url "\\.crhoy\\.com"
+                                  :entry-title "Video"
                                   :remove 'unread)))
 #+END_SRC
 *** =ws-butler=
