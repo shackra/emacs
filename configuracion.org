@@ -1390,6 +1390,16 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
                                       (turn-off-auto-fill)
                                       (visual-line-mode 1))))
 #+END_SRC
+*** Weechat
+Conexión a Weechat desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package weechat
+    :init
+    (add-to-list 'weechat-modules 'weechat-spelling)
+    :config
+    (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
+                                       (weechat-connect weechat-host-default weechat-port-default nil 'plain)))))
+#+END_SRC
 ** Desarrollo de software
 *** org-babel
 #+BEGIN_SRC emacs-lisp
@@ -1717,6 +1727,7 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
     (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad") user-emacs-directory)))
         (traad-install-server))
     (use-package hydra-traad
+      :preface (provide 'hydra-traad)
       :ensure nil
       :if (fboundp 'defhydra)
       :bind (:map python-mode-map ("C-c t" .  hydra-traad/body))
@@ -2467,14 +2478,6 @@ Modo mayor para editar archivos de servicio systemd.
   (use-package pretty-mode
     :config
     (add-hook 'prog-mode-hook 'turn-on-pretty-mode))
-#+END_SRC
-*** Editor de subtítulos
-Un modo mayor que permite agregar subtítulos a vídeos. Requiere MPlayer.
-#+BEGIN_SRC emacs-lisp
-  (use-package sese
-    :ensure nil
-    :load-path "site-packages/sese/"
-    :mode "\\.sese$")
 #+END_SRC
 *** interfaz para AUR
 #+BEGIN_SRC emacs-lisp
