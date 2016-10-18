@@ -16,8 +16,8 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
 
 Acá he movido parte de mi init.el ya que otro codigo que he colocado ahí hace el trabajo de desenredar los bloques de código a un archivo elisp.
 #+BEGIN_SRC emacs-lisp
-  ;; sombrero de aluminio
-  (setq network-security-level 'paranoid)
+  ;; sombrero de aluminio, le bajamos una rayita
+  (setq network-security-level 'high)
 
   (package-initialize)
 
@@ -469,12 +469,12 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
           nil
         t))
     (defun shackra/arregla-emojis (&optional frame)
-      (if (eq system-type 'darwin)
-          ;; Para NS/Cocoa
-          (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
-        ;; Para GNU/Linux
-        (if (font-exists-p "Symbola")
-            (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend)))))
+      ;; Para NS/Cocoa
+      (when (eq system-type 'darwin)
+        (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
+      ;; Para GNU/Linux
+      (when (and (font-exists-p "Symbola") (eq system-type 'gnu/linux))
+        (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend))))
 
   (use-package misfuentes
     :ensure nil
@@ -482,19 +482,12 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
     :init
     (defun shackra/font-set (&optional frame)
       (when (framep frame)
-        (select-frame frame)
-        (if (font-exists-p "Monoisome")
-            (progn
-              (set-frame-font "Monoisome 9")
-              (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
-          (if (font-exists-p "Monoid")
-              (progn
-                (set-frame-font "Monoid 9")
-                (add-to-list 'default-frame-alist '(font . "Monoid-9")))
-            (if (font-exists-p "Source Code Pro")
-                (progn
-                  (set-frame-font "Source Code Pro 10")
-                  (add-to-list 'default-frame-alist '(font . "Source Code Pro-10"))))))))
+        (select-frame frame))
+      (cond
+       ((font-exists-p "Fira Code") (set-frame-font "Fira Code 10") (add-to-list 'default-frame-alist '(font . "Fira Code-10")))
+       ((font-exists-p "Monoisome") (set-frame-font "Monoisome 9") (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
+       ((font-exists-p "Monoid") (set-frame-font "Monoid 9") (add-to-list 'default-frame-alist '(font . "Monoid-9")))
+       ((font-exists-p "Source Code Pro") (set-frame-font "Source Code Pro 10") (add-to-list 'default-frame-alist '(font . "Source Code Pro-10")))))
     :config
     (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
     (add-hook 'after-make-frame-functions #'shackra/font-set)
@@ -530,7 +523,7 @@ Escala la altura de la tipografía en todos los buffers de manera temporal
     :ensure nil
     :load-path "site-packages/font-man")
 #+END_SRC
-*** =swiper=
+*** =swiper= & =ivy=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:46]
 :END:
@@ -546,6 +539,7 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
     :config
+    (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*")))
     (use-package counsel
       :demand t
       :config (use-package counsel-projectile)
@@ -1086,7 +1080,7 @@ Muestra en el =área de eco= la firma de la función actual.
     :ensure nil
     :diminish eldoc-mode
     :init
-    (setf eldoc-idle-delay 0.3))
+    (setf eldoc-idle-delay 1.0))
 #+END_SRC
 *** =auto-revert-mode=
 Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
@@ -1123,7 +1117,7 @@ Crea menús a partir de secciones de documentos
     :init
     (setf bmkp-auto-light-when-set 'all-in-buffer)
     (setf bookmark-save-flag 1)
-    :bind (("C-c o" . hydra-bm/body))
+    :bind (("M-p" . hydra-bm/body))
     :config
     (defhydra hydra-bm (:color amaranth :hint nil)
       "
@@ -1394,11 +1388,10 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
 Conexión a Weechat desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package weechat
-    :init
-    (add-to-list 'weechat-modules 'weechat-spelling)
     :config
+    (add-to-list 'weechat-modules 'weechat-spelling)
     (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
-                                       (weechat-connect weechat-host-default weechat-port-default nil 'plain)))))
+                                       (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain)))))
 #+END_SRC
 ** Desarrollo de software
 *** org-babel
@@ -1595,12 +1588,13 @@ Modo mayor para programar en Python
     :if (or (executable-find "python") (executable-find "python3"))
     :interpreter ("python3" . python-mode)
     :preface
+    (require 'python)
+    :config
     (use-package pyvenv :defer t)
     (use-package py-autopep8 :defer t
       :preface (unless (executable-find "autopep8")
                  (message "¡autopep8 no esta instalado!")
                  (message "Use pip install autopep8 para resolver el problema")))
-    :config
     (use-package company-anaconda
       :if (executable-find "python")
       :diminish anaconda-mode
@@ -1730,7 +1724,6 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
       :preface (provide 'hydra-traad)
       :ensure nil
       :if (fboundp 'defhydra)
-      :bind (:map python-mode-map ("C-c t" .  hydra-traad/body))
       :init
       (defhydra hydra-traad-history (:columns 2 :color blue)
         "Historial de cambios de rope"
@@ -1767,7 +1760,7 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
         ("S" traad-imports-super-smackdown "Smackdown!")
         ("b" hydra-traad/body "volver")
         ("q" nil "salir"))
-      (defhydra hydra-traad (:columns 2 :columns 2)
+      (defhydra hydra-traad (python-mode-map "C-c t" :columns 2 :columns 2)
         "Refactorización en Python con rope"
         ("h" hydra-traad-history/body "Historial" :exit t)
         ("r" hydra-traad-rename/body "Renombrar" :exit t)
@@ -2664,4 +2657,18 @@ Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer q
               '(:with company-yasnippet))))
 
   (setf company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+#+END_SRC
+*** =org-trello=
+Sincroniza archivos org-mode y tableros en Trello
+#+BEGIN_SRC emacs-lisp
+  (use-package org-trello
+    :init
+    (custom-set-variables '(org-trello-files '("/home/jorge/go/src/bitbucket.org/capslockdev/betsy/proyecto.org")))
+    (defun shackra/org-trello-sync-after-save ()
+      "Sincroniza el contenido del archivo org después de salvar"
+      (interactive)
+      (when (and (eq major-mode 'org-mode)
+               (member buffer-file-name org-trello-files))
+        (org-trello-sync-buffer)))
+    (add-hook 'after-save-hook #'shackra/org-trello-sync-after-save))
 #+END_SRC
