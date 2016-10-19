@@ -539,7 +539,7 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
     :config
-    (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*")))
+    (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*" "\\*Help\\*" "\\*Compile-Log\\*")))
     (use-package counsel
       :demand t
       :config (use-package counsel-projectile)
@@ -1158,6 +1158,13 @@ Un versátil cliente de correo electrónico para Emacs.
     :if (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
     :preface
     (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+    ;; http://www.djcbsoftware.nl/code/mu/mu4e/Org_002dmode-links.html#Org_002dmode-links
+    (require 'org-mu4e)
+    (require 'mu4e-contrib)
+    :bind (:map mu4e-headers-mode-map
+                ("C-c c" . org-mu4e-store-and-capture)
+                :map mu4e-view-mode-map
+                ("C-c c" . org-m4e-store-and-capture))
     :ensure nil
     :init
     (setf mu4e-get-mail-command "getmail.sh")
@@ -1216,18 +1223,7 @@ Un versátil cliente de correo electrónico para Emacs.
     :config
     (defalias 'correo 'mu4e)
     (add-to-list 'mu4e-view-actions
-                 '("navegador web" . mu4e-msgv-action-view-in-browser) t)
-    (use-package mu4e-contrib
-      :ensure nil)
-    (use-package org-mu4e
-      ;; http://www.djcbsoftware.nl/code/mu/mu4e/Org_002dmode-links.html#Org_002dmode-links
-      :ensure nil
-      :bind (:map mu4e-headers-mode-map
-                  ("C-c c" . org-mu4e-store-and-capture)
-                  :map mu4e-view-mode-map
-                  ("C-c c" . org-m4e-store-and-capture))
-      :init
-      (setf org-mu4e-link-query-in-headers-mode nil)))
+                 '("navegador web" . mu4e-msgv-action-view-in-browser) t))
 #+END_SRC
 *** CANCELADO =jabber.el=                                   :deshabilitado:
 - State "CANCELADO"  from              [2016-09-28 mié 19:06] \\
