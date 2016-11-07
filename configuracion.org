@@ -732,8 +732,9 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
 #+BEGIN_SRC emacs-lisp
   (use-package dired
     :ensure nil
-    :bind-keymap (("<f1>" . multi-term)
-                  ("C-o" . dired-omit-mode))
+    :bind (:map dired-mode-map
+                ("[" . multi-term)
+                ("," . dired-omit-mode))
     :init
     (setq-default dired-omit-mode t)
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
@@ -1155,6 +1156,7 @@ Crea menús a partir de secciones de documentos
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
+    :commands (mu4e mu4e-compose-new mu4e-compose-reply)
     :if (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
     :preface
     (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
@@ -1270,20 +1272,6 @@ Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-th
 #+BEGIN_EXAMPLE
   Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
 #+END_EXAMPLE
-*** CANCELADO =tumblesocks-mode=                            :deshabilitado:
-- State "CANCELADO"  from              [2016-09-28 mié 19:06] \\
-  No funciona correctamente
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:53]
-:END:
-Tumblr desde Emacs
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package tumblesocks
-    :disabled t
-    :config
-    (setf tumblesocks-blog "shackra.tumblr.com")
-    (defalias 'ts 'tumblesocks-view-dashboard))
-#+END_SRC
 *** =twittering-mode=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
@@ -1564,6 +1552,22 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
 #+END_SRC
+*** =org-trello=
+Sincroniza archivos org-mode y tableros en Trello
+#+BEGIN_SRC emacs-lisp
+  (use-package org-trello
+    :init
+    (custom-set-variables '(org-trello-files '("/home/jorge/go/src/bitbucket.org/capslockdev/betsy/proyecto.org"
+                                               "/home/jorge/Kartelo/clientes/Design Soft/Selore POS/proyecto.org"
+                                               "/home/jorge/go/src/bitbucket.org/shackra/4hoa/proyecto.org")))
+    (defun shackra/org-trello-sync-after-save ()
+      "Sincroniza el contenido del archivo org después de salvar"
+      (interactive)
+      (when (and (eq major-mode 'org-mode)
+               (member buffer-file-name org-trello-files))
+        (org-trello-sync-buffer)))
+    (add-hook 'after-save-hook #'shackra/org-trello-sync-after-save))
+#+END_SRC
 *** =pkgbuild-mode=
 Un modo mayor de Emacs para la edición de archivos =PKGBUILD=
 #+BEGIN_SRC emacs-lisp
@@ -1833,33 +1837,47 @@ modo mayor para editar código PHP
     (use-package company-go
       :if (executable-find "gocode")
       :config
-      (add-hook 'go-mode-hook (lambda ()
-                                (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
+      (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
     (use-package go-eldoc
       :config
       (add-hook 'go-mode-hook 'go-eldoc-setup))
-    (use-package go-projectile
-      :if (fboundp 'projectile-mode))
-    (use-package go-rename)
     (use-package go-snippets)
+    (use-package godoctor
+      :if (executable-find "godoctor")
+      :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
+      :config
+      (defhydra hydra-godoctor (:color blue :columns 2)
+        "Motor de refactorización para Go"
+        ("a" godoctor-rename "Renombra identificador, punto actual")
+        ("s" godoctor-extract "Refactorizacion en una función, marca actual")
+        ("d" godoctor-toggle "Cambia declaración de variable")
+        ("f" godoctor-godoc "Crea esqueleto de documentación")))
     (use-package go-guru
+      :if (executable-find "guru")
+      :demand t
+      :init
+      (defun shackra/go-mode-set-scope ()
+        (when (eq major-mode 'go-mode)
+          (set (make-local-variable 'go-guru-scope)
+               (concat (projectile-project-root) "..."))))
       :bind (:map go-mode-map
                   ("M-." . go-guru-definition)
-                  ("C-M-g c s" . go-guru-callees)
-                  ("C-M-g c r" . go-guru-callers)
-                  ("C-M-g c k" . go-guru-callstack)
-                  ("C-M-g d f" . go-guru-definition)
-                  ("C-M-g d b" . go-guru-describe)
-                  ("C-M-g f v" . go-guru-freevars)
-                  ("C-M-g f r" . go-guru-referrers)
-                  ("C-M-g p e" . go-guru-peers)
-                  ("C-M-g p p" . go-guru-pointsto)
-                  ("C-M-g i"   . go-guru-implements)
-                  ("C-M-g w e" . go-guru-whicherrs))
-      :if (executable-find "guru")
+                  ("C-M-g" . hydra-go-guru/body))
       :config
+      (defhydra hydra-go-guru (:color blue :columns 2)
+        "Contesta preguntas sobre código fuente escrito en Go"
+        ("a" go-guru-callees "Receptores de llamada, función bajo punto actual")
+        ("s" go-guru-callers "Llamadores, función bajo punto actual")
+        ("d" go-guru-callstack "Muestra grafo de llamadas desde una raíz, función bajo punto actual")
+        ("f" go-guru-describe "Describe la sintaxis seleccionada, su tipo y métodos")
+        ("g" go-guru-freevars "Enumera las variables libres, marca actual")
+        ("h" go-guru-referrers "Enumera referencias al objeto, identificador marcado")
+        ("j" go-guru-peers "Enumera un set de remitentes/destinatarios para las operaciones enviar/recibir de este canal")
+        ("k" go-guru-pointsto "Muestra lo que apunta, expresión marcada")
+        ("l" go-guru-implements "Describe la relación de implementación para tipos en un paquete conteniendo el cursor")
+        ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
       (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-      (add-hook 'go-mode-hook (lambda () (when (projectile-project-p) (set (make-local-variable 'go-guru-scope) (concat (projectile-project-root) "..."))))))
+      (add-hook 'projectile-mode-hook #'shackra/go-mode-set-scope))
     (use-package helm-go-package
       :disabled (not (fboundp 'helm))
       :config (eval-after-load 'go-mode
@@ -2504,25 +2522,13 @@ Lector de RSS feed dentro de Emacs
     (defun elfeed-search-format-date (date)
       (format-time-string "%d-%m-%Y %H:%M" (seconds-to-time date)))
     ;; fuentes RSS feed
-    (setf elfeed-feeds '("http://stackoverflow.com/jobs/feed?allowsremote=True&type=Contract"
-                         "https://weworkremotely.com/categories/2-programming/jobs.rss"
-                         ("https://www.aciprensa.com/rss/noticias.xml" Iglesia noticias)
+    (setf elfeed-feeds '(("https://www.aciprensa.com/rss/noticias.xml" Iglesia noticias)
                          ("http://feeds.feedburner.com/santodeldia" Iglesia santoral)
-                         ("http://www.ivoox.com/podcast-podcast-charlas-padre-fortea_fg_f167459_filtro_1.xml" Iglesia sermones Fortea)
+                         ("http://www.asianews.it/es.xml" Iglesia asía)
                          ("http://localhost:9077/feed/crhoy/atom" noticias nacionales)
                          ("http://localhost:9077/feed/rt-espanol/atom" noticias internacionales)
-                         ("https://www.reddit.com/r/forhire/.rss" reddit)
-                         ("https://costarica.craigslist.org/search/sof?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=298&nearbyArea=586&searchNearby=2" craigslist)
-                         ("https://toronto.craigslist.ca/search/web?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=235&nearbyArea=252&nearbyArea=27&nearbyArea=275&nearbyArea=337&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=40&nearbyArea=452&nearbyArea=453&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=486&nearbyArea=487&nearbyArea=555&nearbyArea=626&nearbyArea=627&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist Canada)
-                         ("https://toronto.craigslist.ca/search/sof?employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=235&nearbyArea=252&nearbyArea=27&nearbyArea=275&nearbyArea=337&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=40&nearbyArea=452&nearbyArea=453&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=486&nearbyArea=487&nearbyArea=555&nearbyArea=626&nearbyArea=627&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist Canada)
-                         ("https://buffalo.craigslist.org/search/web?lang=es&cc=mx&employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=248&nearbyArea=25&nearbyArea=252&nearbyArea=275&nearbyArea=277&nearbyArea=337&nearbyArea=355&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=452&nearbyArea=453&nearbyArea=463&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=487&nearbyArea=626&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist USA)
-                         ("https://buffalo.craigslist.org/search/sof?lang=es&cc=mx&employment_type=3&format=rss&is_telecommuting=1&nearbyArea=126&nearbyArea=130&nearbyArea=201&nearbyArea=213&nearbyArea=214&nearbyArea=234&nearbyArea=248&nearbyArea=25&nearbyArea=252&nearbyArea=275&nearbyArea=277&nearbyArea=337&nearbyArea=355&nearbyArea=385&nearbyArea=386&nearbyArea=388&nearbyArea=389&nearbyArea=452&nearbyArea=453&nearbyArea=463&nearbyArea=482&nearbyArea=483&nearbyArea=484&nearbyArea=487&nearbyArea=626&nearbyArea=685&nearbyArea=700&nearbyArea=704&nearbyArea=706&searchNearby=2" craigslist USA)))
+                         ("https://godotengine.org/rss.xml" godot gamedev)))
     :config
-    (add-hook 'elfeed-new-entry-hook
-              (elfeed-make-tagger :feed-url "www\\.reddit\\.com/r/forhire/\\.rss"
-                                  :entry-title '(not "Hiring")
-                                  :add 'nointeres
-                                  :remove 'unread))
     (add-hook 'elfeed-new-entry-hook
               (elfeed-make-tagger :before "2 weeks ago"
                                   :remove 'unread))
@@ -2639,7 +2645,19 @@ Este modo menor no funciona bien con otros modos menores que hacen uso de la pro
     :ensure nil
     :if (or (string-equal system-type "gnu/linux") (string-equal system-type "gnu/kfreebsd")))
 #+END_SRC
-** Yasnippet en todos los backends de Company                     :especial:
+*** schrute-mode
+Recuerda al usuario que hay una manera más eficiente de hacer algo
+#+BEGIN_SRC emacs-lisp
+  (use-package schrute
+    :ensure nil
+    :load-path "site-packages/dwight"
+    :init
+    (setf schrute-lighter " 🐻 ")
+    (setf schrute-shortcut-commands '((avy-goto-line . (next-line previous-line))
+                                      (avy-goto-word-0 . (left-char right-char forward-word backward-word))))
+    (add-hook 'after-init-hook #'schrute-mode))
+#+END_SRC
+* Yasnippet en todos los backends de Company                       :especial:
 Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer que muestre candidatos de auto-completado y candidatos yasnippet es agrupando los backends
 #+BEGIN_SRC emacs-lisp
   ;; http://emacs.stackexchange.com/questions/10431/get-company-to-show-suggestions-for-yasnippet-names
@@ -2653,18 +2671,4 @@ Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer q
               '(:with company-yasnippet))))
 
   (setf company-backends (mapcar #'company-mode/backend-with-yas company-backends))
-#+END_SRC
-*** =org-trello=
-Sincroniza archivos org-mode y tableros en Trello
-#+BEGIN_SRC emacs-lisp
-  (use-package org-trello
-    :init
-    (custom-set-variables '(org-trello-files '("/home/jorge/go/src/bitbucket.org/capslockdev/betsy/proyecto.org")))
-    (defun shackra/org-trello-sync-after-save ()
-      "Sincroniza el contenido del archivo org después de salvar"
-      (interactive)
-      (when (and (eq major-mode 'org-mode)
-               (member buffer-file-name org-trello-files))
-        (org-trello-sync-buffer)))
-    (add-hook 'after-save-hook #'shackra/org-trello-sync-after-save))
 #+END_SRC
