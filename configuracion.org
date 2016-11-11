@@ -1156,19 +1156,37 @@ Crea menús a partir de secciones de documentos
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e
-    :commands (mu4e mu4e-compose-new mu4e-compose-reply)
-    :if (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
-    :preface
-    (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
-    ;; http://www.djcbsoftware.nl/code/mu/mu4e/Org_002dmode-links.html#Org_002dmode-links
-    (require 'org-mu4e)
-    (require 'mu4e-contrib)
-    :bind (:map mu4e-headers-mode-map
-                ("C-c c" . org-mu4e-store-and-capture)
-                :map mu4e-view-mode-map
-                ("C-c c" . org-m4e-store-and-capture))
+    :commands (mu4e correo)
     :ensure nil
+    :load-path "/usr/share/emacs/site-lisp/mu4e"
+    :preface
+    (require 'org-mu4e)
+    ;;; message view action
+    (defun mu4e-msgv-action-view-in-browser (msg)
+      "Ver el cuerpo del mensaje HTML en el navegador web"
+      (interactive)
+      (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
+            (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
+        (unless html (error "No hay partes en HTML para este mensaje"))
+        (with-temp-file tmpfile
+          (insert
+           "<html>"
+           "<head><meta http-equiv=\"content-type\""
+           "content=\"text/html;charset=UTF-8\">"
+           html))
+        (browse-url (concat "file://" tmpfile))))
+
+    (defadvice mu4e (before mu4e-start activate)
+      "Antes de ejecutar `mu4e' borramos todas las ventanas"
+      (window-configuration-to-register :mu4e-fullscreen)
+      (delete-other-windows))
+
+    (defadvice mu4e-quit (after mu4e-close-and-push activate)
+      "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
+      (start-process "pushmail" nil "pushmail.sh")
+      (jump-to-register :mu4e-fullscreen))
     :init
+    (setq org-mu4e-link-query-in-headers-mode nil)
     (setf mu4e-get-mail-command "getmail.sh")
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text)
@@ -1197,35 +1215,13 @@ Un versátil cliente de correo electrónico para Emacs.
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados como importantes" ?m)
             ("maildir:/personal/Drafts OR maildir:/personal/Borradores OR maildir:/gmx/Drafts OR maildir:/gmx/Borradores" "Borradores" ?b)))
-    :preface
-    ;;; message view action
-    (defun mu4e-msgv-action-view-in-browser (msg)
-      "Ver el cuerpo del mensaje HTML en el navegador web"
-      (interactive)
-      (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
-            (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
-        (unless html (error "No hay partes en HTML para este mensaje"))
-        (with-temp-file tmpfile
-          (insert
-           "<html>"
-           "<head><meta http-equiv=\"content-type\""
-           "content=\"text/html;charset=UTF-8\">"
-           html))
-        (browse-url (concat "file://" tmpfile))))
-
-    (defadvice mu4e (before mu4e-start activate)
-      "Antes de ejecutar `mu4e' borramos todas las ventanas"
-      (window-configuration-to-register :mu4e-fullscreen)
-      (delete-other-windows))
-
-    (defadvice mu4e-quit (after mu4e-close-and-push activate)
-      "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
-      (start-process "pushmail" nil "pushmail.sh")
-      (jump-to-register :mu4e-fullscreen))
     :config
+    (require 'mu4e-contrib)
     (defalias 'correo 'mu4e)
     (add-to-list 'mu4e-view-actions
-                 '("navegador web" . mu4e-msgv-action-view-in-browser) t))
+                 '("navegador web" . mu4e-msgv-action-view-in-browser) t)
+    (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
+    (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map))
 #+END_SRC
 *** CANCELADO =jabber.el=                                   :deshabilitado:
 - State "CANCELADO"  from              [2016-09-28 mié 19:06] \\
@@ -1518,13 +1514,15 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ("OLVIDALO"    . (:background "#ffaeb9" :foreground "#ff3030" :weight bold))))
     ;; según http://orgmode.org/manual/Link-abbreviations.html#Link-abbreviations
     (setf org-link-abbrev-alist
-          '(("katpelicula" . "https://kat.cr/usearch/\"%s\" category:movies seeds:5 lang_id:2")
-            ("katanime" . "https://kat.cr/usearch/\"%s\" category:english-translated seeds:5 is_safe:1/")))
+          '(("rarbg" . "https://rarbg.to/torrents.php?search=%s&category%5B%5D=17&category%5B%5D=18")
+            ("nyaa" . "https://www.nyaa.se/?page=search&cats=1_0&filter=0&term=%s")
+            ("bakabt" . "https://bakabt.me/browse.php?only=0&incomplete=1&bonus=1&c1=1&c2=1&reorder=1&q=%s")
+            ("tokyotosho" . "https://www.tokyotosho.info/search.php?terms=%s&type=1&size_min=&size_max=&username=")))
     (setf org-capture-templates
           '(("p" "Añadir tarea por hacer" entry (file "cosas por hacer.org")
              "* POR-HACER %^{breve descripcion} %^g\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t)
-            ("l" "Añadir tarea por hacer (enlazado a algo)" entry (file "cosas por hacer.org")
-             "* POR-HACER %^{breve descripcion} %^g\n:PROPERTIES:\n:CREATED:%U\n:END:\n%a %?" :kill-buffer t)
+            ("l" "Tarea enlazada a algo" entry (file "cosas por hacer.org")
+             "* POR-HACER %^{breve descripcion} %a %^g\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t)
             ("f" "Fechas o eventos" entry (file "fechas.org")
              "* POR-HACER %^{Nombre del evento} %^g\nSCHEDULED: %^T%?\n:PROPERTIES:%(if (yes-or-no-p \"¿Es esto un cumpleaños?\") (format \"\n:NACIMIENTO: %s\" (with-temp-buffer (org-time-stamp nil t) (buffer-string))) \"\")\n:CREATED: %U\n:END:" :kill-buffer t)
             ("r" "Recado" entry (file "~/recados.org")
@@ -1545,9 +1543,9 @@ Su uso encaja con distintas necesidades, como la creación de notas de cosas por
             ("gx" "Idea de proyecto" entry (file+headline "quizas.org" "Ideas para posibles proyectos")
              "* %^{Titulo o breve descripción} ^%g\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :kill-buffer t)
             ("gm" "Películas" entry (file+headline "quizas.org" "Películas")
-             "* Ver /%^{Titulo}/\n:PROPERTIES:\n:CREATED: %T\n:END:\n[[katpelicula:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)
+             "* Ver [[rarbg:%^{Titulo}][%\\1]]\n:PROPERTIES:\n:CREATED: %T\n:END:" :kill-buffer t)
             ("ga" "Anime" entry (file+headline "quizas.org" "Anime")
-             "* Ver /%^{Anime}/\n:PROPERTIES:\n:CREATED: %T\n:CATEGORY: anime\n:EPISODIO: 1\n:EPISODIOS: %^{numero de episodios}\n:END:\n[[katanime:%\\1][Buscar %\\1 en Kickass Torrents]]%?" :kill-buffer t)))
+             "* Ver /%^{Anime}/\n:PROPERTIES:\n:CREATED: %T\n:CATEGORY: anime\n:EPISODIO: 1\n:EPISODIOS: %^{numero de episodios}\n:END:\n- [[nyaa:%\\1][Buscar %\\1 en Nyaa Torrents]]\n- [[bakabt:%\\1][Buscar %\\1 en BakaBT]]\n- [[tokyotosho:%\\1][Buscar %\\1 en Tokyo Toshokan]]" :kill-buffer t)))
     (use-package org-bullets
       :config
       (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))))
@@ -2653,8 +2651,8 @@ Recuerda al usuario que hay una manera más eficiente de hacer algo
     :load-path "site-packages/dwight"
     :init
     (setf schrute-lighter " 🐻 ")
-    (setf schrute-shortcut-commands '((avy-goto-line . (next-line previous-line))
-                                      (avy-goto-word-0 . (left-char right-char forward-word backward-word))))
+    (setf schrute-shortcuts-commands '((avy-goto-line . (next-line previous-line))
+                                       (avy-goto-word-0 . (left-char right-char forward-word backward-word))))
     (add-hook 'after-init-hook #'schrute-mode))
 #+END_SRC
 * Yasnippet en todos los backends de Company                       :especial:
