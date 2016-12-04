@@ -71,3 +71,5 @@
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
 
 (message "Start up time %.2fs" (float-time (time-subtract (current-time) my-start-time)))
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
