@@ -1770,7 +1770,16 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
 Un modo mayor para editar paginas web
 #+BEGIN_SRC emacs-lisp
   (use-package web-mode
+    :preface
+    (defun shackra/webdev-refresh-page-on-save ()
+      "Actualiza una pagina web en el navegador al guardar un buffer"
+      (interactive)
+      (when (derived-mode-p 'sgml-mode 'css-mode 'web-mode 'js2-mode)
+        (let* ((currentfiledir (file-name-directory (buffer-file-name))))
+          (when (string-suffix-p httpd-root currentfiledir)
+            (moz-controller-page-refresh)))))
     :config
+    (add-hook 'after-save-hook #'shackra/webdev-refresh-page-on-save)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
