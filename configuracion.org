@@ -408,6 +408,17 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
         (add-to-list 'nuevalista (ht-copy nuevoelement)))
       (mustache-render "{{> descargas}}" (ht ("hash-alist" nuevalista) ("titulo" title)))))
 #+END_SRC
+** Probar si un puerto esta abierto
+#+BEGIN_SRC emacs-lisp
+  (defun shackra/port-open-p (server port)
+    (let* ((conn nil))
+      (condition-case err
+          (progn
+            (setf conn (open-network-stream "test-port-open" nil server port))
+            (stop-process conn)
+            t)
+        (file-error nil))))
+#+END_SRC
 * Custom.el
  El archivo customize sera éste. Cualquier modificación de Emacs que se haga a través de =customize= ira al archivo especificado.
 
@@ -1774,10 +1785,10 @@ Un modo mayor para editar paginas web
     (defun shackra/webdev-refresh-page-on-save ()
       "Actualiza una pagina web en el navegador al guardar un buffer"
       (interactive)
-      (when (derived-mode-p 'sgml-mode 'css-mode 'web-mode 'js2-mode)
-        (let* ((currentfiledir (file-name-directory (buffer-file-name))))
-          (when (string-suffix-p httpd-root currentfiledir)
-            (moz-controller-page-refresh)))))
+      (let* ((currentfiledir (file-name-directory (buffer-file-name)))
+             (isrootfile (string-suffix-p httpd-root currentfiledir)))
+        (when (and (derived-mode-p 'sgml-mode 'css-mode 'web-mode 'js2-mode) isrootfile (shackra/port-open-p moz-repl-host moz-repl-port))
+          (moz-controller-page-refresh))))
     :config
     (add-hook 'after-save-hook #'shackra/webdev-refresh-page-on-save)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
