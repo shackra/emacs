@@ -1158,6 +1158,24 @@ Crea menús a partir de secciones de documentos
 #+BEGIN_SRC emacs-lisp
   (use-package moz-controller)
 #+END_SRC
+*** Chrome desde Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package kite-mini
+    :init
+    (defun shackra/webdev-refresh-page-on-save-chrome ()
+      "Refresca la pagina en Chrome para ver los cambios realizados"
+      (interactive)
+      (let* ((currentfiledir (file-name-directory (buffer-file-name)))
+             (inrootdir (string-suffix-p httpd-root currentfiledir)))
+        (when (and (derived-mode-p 'sgml-mode 'css-mode 'web-mode) inrootdir)
+          (kite-mini-reload))
+        (when (and (derived-mode-p 'js-mode 'js2-mode) inrootdir)
+          (kite-mini-update))))
+    (add-hook 'js2-mode-hook (lambda () (kite-mini-mode t)))
+    (add-hook 'css-mode-hook (lambda () (kite-mini-mode t)))
+    (add-hook 'sgml-mode-hook (lambda () (kite-mini-mode t)))
+    (add-hook 'after-save-hook #'shackra/webdev-refresh-page-on-save-chrome))
+#+END_SRC
 ** Comunicación
 *** =mu4e=
 :LOGBOOK:
