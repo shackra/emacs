@@ -679,18 +679,9 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       (defun shackra/other-window ()
         "cambia la ventana en que el cursor esta"
         (interactive)
-        (if (or (> (count-windows) 2) (> (--count-frames) 1))
-            (let ((golden-ratio-state golden-ratio-mode))
-              (when golden-ratio-state
-                (golden-ratio-mode -1)
-                (balance-windows))
-              (ace-window 1)
-              (when golden-ratio-state
-                (golden-ratio-mode 1)
-                (golden-ratio)))
-          (progn
-            (ace-window 0)
-            (golden-ratio))))
+        (ace-window 0)
+        (when golden-ratio-mode
+          (golden-ratio)))
       :config
       (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
     :config
