@@ -1982,6 +1982,23 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
   (use-package scss-mode
     :init (setf scss-compile-at-save nil))
 #+END_SRC
+*** typescript
+#+BEGIN_SRC emacs-lisp
+  (use-package tide
+    :init
+    (defun setup-tide-mode ()
+      (interactive)
+      (tide-setup)
+      (tide-hl-identifier-mode +1))
+    (setf tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+    (setf tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
+    (add-hook 'before-save-hook 'tide-format-before-save)
+    (add-hook 'typescript-mode-hook #'setup-tide-mode)
+    (add-hook 'js2-mode-hook #'setup-tide-mode)
+    (add-hook 'web-mode-hook (lambda ()
+                               (when (string-equal "jsx" (file-name-extension buffer-file-name))
+                                 (setup-tide-mode)))))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =auto-fill-mode=
 :LOGBOOK:
