@@ -176,9 +176,14 @@ Estos comandos funcionan usando Hydra.
 Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-settings-with-big.html][Programming: Seven specialty Emacs settings with big payoffs]]
 
 #+BEGIN_SRC emacs-lisp
-  (defun guardar-todo ()
-    (interactive)
-    (save-some-buffers t))
+  (use-package shackra-guardar-todo
+    :ensure nil
+    :preface (provide 'shackra-guardar-todo)
+    :init
+    (defun guardar-todo ()
+      (interactive)
+      (save-some-buffers t))
+    (add-hook 'focus-out-hook #'guardar-todo))
 #+END_SRC
 ** No molestes, Shia LaBeouf!
 #+BEGIN_SRC emacs-lisp
