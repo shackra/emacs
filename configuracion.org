@@ -12,9 +12,8 @@
 #+end_quote
 
 * Configuración de GNU Emacs en un archivo de org-mode
-He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi configuración, sí, sí... ya sé que esto se puede hacer con comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código Python!.
+He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi configuración. Sí, sí... ya sé que esto se puede hacer con comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código Python!.
 
-Acá he movido parte de mi init.el ya que otro codigo que he colocado ahí hace el trabajo de desenredar los bloques de código a un archivo elisp.
 #+BEGIN_SRC emacs-lisp
   ;; sombrero de aluminio, le bajamos una rayita
   (setq network-security-level 'high)
@@ -125,84 +124,42 @@ estas son funciones que uso muy a menudo durante la edición de texto, tenerlos 
     (interactive "r")
     (vr/replace " +" " " start end))
 #+END_SRC
-** reemplazo para comment-dwim
-Idea original de [[http://www.opensubscriber.com/message/emacs-devel@gnu.org/10971693.html][Re: comment-dwim has no behavior to comment out the current line without a region]]
-#+BEGIN_SRC emacs-lisp
-  (defun comment-dwim-line (&optional arg)
-    "Replacement for the comment-dwim command.
-          If no region is selected and current line is not blank
-          and we are not at the end of the line, then comment
-          current line.  Replaces default behaviour of
-          comment-dwim, when it inserts comment at the end of the
-          line."
-    (interactive "*P")
-    (comment-normalize-vars)
-    (if (and (not (region-active-p)) (not (looking-at "[ \t]*$")))
-        (comment-or-uncomment-region (line-beginning-position) (line-end-position))
-      (comment-dwim arg)))
-#+END_SRC
 ** =find-file= y =switch-buffer= personalizados
-Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visitar archivos y buffers relacionados con el proyecto en el cual estoy trabajando. Projectile-helm es de mucha ayuda, sin embargo la combinación de teclas es muy extensa y la mayoría de veces no las uso.
+Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visitar archivos y buffers relacionados con el proyecto en el cual estoy trabajando.
 
 Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=.
-*** =find-file= personalizado
-#+BEGIN_SRC emacs-lisp
-  (defun shackra/find-file (arg)
-    (interactive "p")
-    (cond
-     ((= arg 4) (message "4") (call-interactively 'find-file))
-     ((= arg 16) (message "16") (call-interactively 'view-file))
-     (t (if (projectile-project-p)
-            (call-interactively (or (when (fboundp 'counsel-projectile-find-file) 'counsel-projectile-find-file)) (when (fboundp 'helm-projectile) 'helm-projectile-find-file))
-          (call-interactively 'find-file)))))
-#+END_SRC
-*** =switch-buffer= personalizado
-#+BEGIN_SRC emacs-lisp
-  (defun shackra/switch-buffer (arg)
-    (interactive "p")
-    (cond
-     ((= arg 4) (or (when (fboundp 'ivy-mode) (ivy-switch-buffer)) (when (fboundp 'helm) (helm-mini))))
-     (t (if (projectile-project-p) (call-interactively (or (when (fboundp 'counsel-projectile) 'counsel-projectile-switch-to-buffer) (when (fboundp 'helm-projectile) 'helm-projectile-switch-to-buffer))) (or (when (fboundp 'ivy-mode) (ivy-switch-buffer)) (when (fboundp 'helm) (helm-mini)))))))
-#+END_SRC
-** abrir archivos que estén en modo de solo lectura como root
-Código sacado de [[https://gist.github.com/robru/8c62d4891eb889107e9f][aquí]], según éste [[http://emacsredux.com/blog/2013/04/21/edit-files-as-root/][post en Emacs Redux]].
 
+Estos comandos funcionan usando Hydra.
+- Cuando @@html:<kbd>C-x C-f</kbd>@@ es presionado y se esta dentro de un proyecto, se ofrecen opciones al usuario, @@html:<kbd>SPC</kbd>@@ para visitar un archivo del proyecto, @@html:<kbd>f</kbd>@@ para visitar un archivo de cualquier parte o @@html:<kbd>j</kbd>@@ para visitar un archivo de otro proyecto.
+- Cuando @@html:<kbd>C-x b</kbd>@@ es presionado y se esta dentro de un proyecto, se ofrece opciones al usuario, @@html:<kbd>SPC</kbd>@@ para cambiar el buffer a otro relacionado al proyecto, @@html:<kbd>f</kbd>@@ para cambiar a cualquier otro buffer.
 #+BEGIN_SRC emacs-lisp
-  (defun find-file-sudo ()
-    "reabre el archivo actual, si existe, usando sudo"
-    (when (and buffer-file-name
-             (not (file-writable-p buffer-file-name))
-             (file-exists-p buffer-file-name))
-      (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-#+END_SRC
-** Recrea el blog para probar el diseño
-Llamamos al comando =op/do-publication= con algunos parámetros para ahorrarnos el procedimiento manual de publicar el blog a una carpeta
-
-#+BEGIN_SRC emacs-lisp
-  (defun shackra/ppp ()
-    "Llama op/do-publication con una serie de parámetros predeterminados. Útil cuando se esta diseñando un tema"
-    (interactive)
-    (op/do-publication t t "/tmp/blog" nil))
-#+END_SRC
-** Generación del blog y sincronización con RacketSpace
-#+BEGIN_SRC emacs-lisp
-  (defun shackra/syncblog ()
-    "Sincroniza el blog generado con el contenedor en Racketspace"
-    (interactive)
-    ;; usa rclone para hacer la re-sincronización
-    (start-process "sync rclone" (get-buffer-create "*rclone*") "rclone"
-                   "sync"
-                   (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com")
-                   "rscf:elblog.deshackra.com"))
-
-  (defun shackra/genblog ()
-    "Genera y sincroniza el blog"
-    (interactive)
-    ;; borra el directorio con los datos antiguos y vuelve a generar el blog
-    ;;(delete-directory (expand-file-name "~/Documentos/deshackra.com/elblog.deshackra.com") t nil)
-    (op/do-publication nil "HEAD^1" "~/Documentos/deshackra.com/elblog.deshackra.com/" nil)
-    ;; sincroniza
-    (shackra/syncblog))
+  (use-package shackra-find-file-switch-buffer
+    :ensure nil
+    :preface (provide 'shackra-find-file-switch-buffer)
+    :after (hydra projectile ivy counsel)
+    :bind (:map ctl-x-map
+                ("C-f" . mi/find-file)
+                ("b" . mi/switch-buffer))
+    :init
+    (defhydra hydra-find-file ()
+      "Visitar archivo"
+      ("f" counsel-find-file "Visitar archivo" :exit t)
+      ("SPC" counsel-projectile-find-file "Visitar archivo de proyecto" :exit t)
+      ("j" counsel-projectile-switch-project "Visitar archivo de otro proyecto" :exit t))
+    (defhydra hydra-switch-buffer ()
+      "Cambiar de buffer"
+      ("f" ivy-switch-buffer "Cambiar buffer" :exit t)
+      ("SPC" counsel-projectile-switch-to-buffer "Cambiar a buffer de proyecto" :exit t))
+    (defun mi/find-file ()
+      (interactive)
+      (if (projectile-project-p)
+          (hydra-find-file/body)
+        (hydra-find-file/counsel-find-file-and-exit)))
+    (defun mi/switch-buffer ()
+      (interactive)
+      (if (projectile-project-p)
+          (hydra-switch-buffer/body)
+        (hydra-switch-buffer/ivy-switch-buffer-and-exit))))
 #+END_SRC
 ** función para =delete-frame-functions=
 #+BEGIN_SRC emacs-lisp
