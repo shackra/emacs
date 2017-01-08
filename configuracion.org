@@ -79,67 +79,19 @@ Acá he movido parte de mi init.el ya que otro codigo que he colocado ahí hace 
   (setf org-confirm-babel-evaluate #'shackra/org-confirm-babel-evaluate)
 
 #+END_SRC
-* Seguridad
-Emacs no es muy seguro por defecto, por ejemplo, al descargar paquetes de los [[*Repositorio%20de%20paquetes][Repositorio de paquetes]] no comprobara las credenciales SSL del sitio web. Más aun, los desarrolladores de extensiones no suelen firmar los /commits/ de sus extensiones, lo que permitiría que un atacante cambie algunas lineas de código elisp de un paquete para crear una puerta trasera. Más información aquí [[https://glyph.twistedmatrix.com/2015/11/editor-malware.html#fnref:4][Deciphering Glyph :: Your Text Editor Is Malware]].
-
-Esta configuración mitigara un poco el problema con la confianza ciega que tiene Emacs con las credenciales SSL.
-** Instalación de certificados que Emacs pueda leer
-Para esto seria necesario tener Python 2.7.x instalado en el sistema.
-
-#+BEGIN_SRC sh :results silent
-  pip3 install -U --user certifi
-#+END_SRC
-
-Probamos que el modulo a sido instalado correctamente
-
-#+BEGIN_SRC sh :results output :exports both
-  python3 -m certifi
-#+END_SRC
-
-#+RESULTS:
-: /home/jorge/.local/lib/python3.5/site-packages/certifi/cacert.pem
-
-** Configuración de verificación de TLS
-#+BEGIN_SRC emacs-lisp :tangle security.el :tangle no
-  (if (fboundp 'gnutls-available-p)
-      (fmakunbound 'gnutls-available-p))
-
-  (let ((trustfile
-         (replace-regexp-in-string
-          "\\\\" "/"
-          (replace-regexp-in-string
-           "\n" ""
-           (shell-command-to-string "python3 -m certifi")))))
-    (setf tls-program
-          (list
-           (format "gnutls-cli%s --x509cafile %s -p %%p %%h"
-                   (if (eq window-system 'w32) ".exe" "") trustfile)))
-    (setf tls-checktrust t)
-    (setf gnutls-verify-error t)
-    (setf gnutls-log-level 0)
-    (setf gnutls-trustfiles (list trustfile)))
-#+END_SRC
-
-** Verificación de que todo este funcionando de manera correcta
-Por alguna extraña razón, sólo la primer linea de código dispara un error. Sin embargo las otras dos lineas no disparan ninguno.
-#+BEGIN_SRC emacs-lisp :tangle no :results silent :exports both
-  (url-retrieve "https://wrong.host.badssl.com/" (lambda (retrieved) t))
-  (url-retrieve "https://self-signed.badssl.com/" (lambda (retrieved) t))
-  (url-retrieve "https://badssl.com/" (lambda (retrieved) t))
-#+END_SRC
 * Información personal
+La ubicación geográfica usada es la de San José, Costa Rica siendo tan pequeño hace innecesario especificar nuestra ubicación geográfica exacta.
 #+BEGIN_SRC emacs-lisp
-  (setf user-full-name "Jorge Araya Navarro"
+  (setf user-full-name "Jorge Javier Araya Navarro"
         user-mail-address "elcorreo@deshackra.com"
-        calendar-location-name "Siquirres, CR"
-        calendar-latitude 10.083333
-        calendar-longitude -83.5)
+        calendar-location-name "Heredia, CR"
+        calendar-latitude 9.935607
+        calendar-longitude -84.1833856)
 #+END_SRC
 * Repositorio de paquetes
-Desde la versión 24 Emacs permite la instalación de paquetes de la misma manera como se realiza en
-distribuciones de GNU/Linux.
+Desde la versión 24 Emacs permite la instalación de paquetes de la misma manera como se realiza en distribuciones de GNU/Linux.
 
-El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben, aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información. Para ver que paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-pactares=
+El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información. Para ver qué paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-packages=
 * Códigos Elisp
 funciones de Emacs lisp escritas por mi u otras personas (y que yo he recolectado para mi uso personal)
 ** función para insertar etiquetas <kbd>
