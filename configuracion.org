@@ -453,6 +453,19 @@ Escala la altura de la tipografía en todos los buffers de manera temporal
 - Refiled on [2015-11-12 jue 16:46]
 :END:
 Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje de la serie /Dora la exploradora/.
+
+Teclas
+- @@html:<kbd>C-s</kbd>@@  :: Buscar en buffer, reemplazando a =isearch-forward=
+- @@html:<kbd>C-r</kbd>@@ :: Buscar en buffer, reemplazando a =isearch-backward=
+- @@html:<kbd>C-c C-r</kbd>@@ :: Continua la ultima sesión de completado
+- @@html:<kbd>M-x</kbd>@@ :: Fragmentos de texto /matados/ para pegar
+- @@html:<kbd>C-h f</kbd>@@ :: Describe funciones
+- @@html:<kbd>C-h v</kbd>@@ :: Describe variables
+- @@html:<kbd>C-h b</kbd>@@ :: Describe atajos de teclado disponibles
+- @@html:<kbd>C-x 8 RET</kbd>@@ :: Lista e inserta caracteres Unicode
+- @@html:<kbd>C-x f</kbd>@@ :: Lista archivos visitados recientemente
+- @@html:<kbd>C-x C-f</kbd>@@ :: Visita un archivo
+- @@html:<kbd>C-x b</kbd>@@ :: Cambia de buffer
 #+BEGIN_SRC emacs-lisp
   (use-package swiper
     :demand t
@@ -464,7 +477,7 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
     :config
-    (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*" "\\*Help\\*" "\\*Compile-Log\\*")))
+    (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*" "\\*Help\\*" "\\*Compile-Log\\*" "\\*anaconda-mode\\*")))
     (use-package counsel
       :demand t
       :config (use-package counsel-projectile)
@@ -478,89 +491,9 @@ Reemplazo para =I-search=, Swiper es el nombre en inglés de Zorro, un personaje
                   :map ctl-x-map
                   ("8 RET" . counsel-unicode-char)
                   ("l" . counsel-locate)
-                  ("f" . counsel-recentf)
-                  ("C-f" . shackra/find-file)
-                  ("b" . shackra/switch-buffer)))
+                  ("f" . counsel-recentf)))
     (use-package ivy-hydra)
     (ivy-mode 1))
-#+END_SRC
-*** CANCELADO =helm=                                        :deshabilitado:
-- State "CANCELADO"  from              [2016-09-28 mié 19:04] \\
-  deshabilitado
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:38]
-:END:
-Completado incremental y estrechamiento de selección de candidatos :)
-#+BEGIN_SRC emacs-lisp
-  (use-package helm
-    :disabled (fboundp 'ivy-mode)
-    :diminish helm-mode
-    :bind (("M-y" . helm-show-kill-ring)
-           ("C-x f" . helm-recentf)
-           ("C-x C-f" . shackra/find-file))
-    :config
-    (add-hook 'after-init-hook '(lambda ()(helm-mode 1)) t)
-    ;; re-ata combinaciones de teclas a los comandos de helm
-    (substitute-key-definition 'execute-extended-command 'helm-M-x (current-global-map))
-    ;; revierte cambios recientes en Helm, según http://emacs.stackexchange.com/a/20276/690
-    (require 'helm-config)
-    (use-package helm-grep
-      :ensure nil
-      :config
-      ;; Instalar ack o ack-grep
-      (when (executable-find "ack")
-        (setf helm-grep-default-command "ack -Hn --no-group --no-color %e %p %f"
-              helm-grep-default-recurse-command "ack -H --no-group --no-color %e %p %f"))
-      ;; en caso de que ack-grep sea el programa disponible
-      (when (executable-find "ack-grep")
-        (setf helm-grep-default-command "ack-grep -Hn --no-group --no-color %e %p %f"
-              helm-grep-default-recurse-command "ack-grep -H --no-group --no-color %e %p %f")))
-    (use-package helm-files
-      :ensure nil
-      :config
-      (setf helm-boring-file-regexp-list '("\\.git$" "\\.hg$" "\\.svn$" "\\.CVS$"
-                                           "\\._darcs$" "\\.la$" "\\.o$" "~$"
-                                           "\\.pyc$" "\\.elc$" "TAGS" "\#*\#"
-                                           "\\.exe$" "\\.jar$" "\\.img$" "\\.iso$"
-                                           "\\.xlsx$" "\\.epub$" "\\.docx$")))
-    (use-package helm-buffers
-      :ensure nil
-      :config
-      (substitute-key-definition 'switch-to-buffer 'shackra/switch-buffer (current-global-map))
-      (setf helm-buffers-fuzzy-matching t
-            helm-truncate-lines t
-            helm-ff-skip-boring-buffers t
-            helm-boring-buffer-regexp-list '("\\` " "\\*helm" "\\*helm-mode"
-                                             "\\*Echo Area" "\\*Minibuf" "\\*monky-cmd-process\\*"
-                                             "\\*epc con" "\\*Compile-Log\\*" "\\*monky-process\\*"
-                                             "\\*CEDET CScope\\*" "\\*Messages\\*" "\\*Flycheck error"
-                                             "\\*.+(.+)" "elpa/.+" "tramp/.+"
-                                             "\\*Gofmt Errors\\*" "\\*autopep8"
-                                             "\\*magit-process:" "\\*magit-diff:" "\\*anaconda-mode\\*")))
-    (setf helm-autoresize-max-height 40
-          helm-autoresize-min-height 20
-          helm-split-window-in-side-p t
-          helm-move-to-line-cycle-in-source t
-          helm-ff-search-library-in-sexp t
-          helm-scroll-amount 8
-          helm-ff-file-name-history-use-recentf t
-          helm-locate-command "locate %s -e -A --regex %s"
-          helm-locate-fuzzy-match t
-          helm-M-x-fuzzy-match t
-          helm-recentf-fuzzy-match    t
-          helm-projectile-sources-list '(helm-source-projectile-files-list)
-          helm-semantic-fuzzy-match t
-          helm-imenu-fuzzy-match t)
-    (use-package helm-descbinds
-      :config
-      (bind-keys :map help-map
-                 ("b" . helm-descbinds)))
-    (use-package helm-adaptive
-      :disabled nil ;; por el momento no es buena idea usar esto, ver https://github.com/emacs-helm/helm/issues/751
-      :ensure nil
-      :config
-      (add-hook 'after-init-hook '(lambda () (helm-adaptive-mode))) t)
-    (helm-autoresize-mode 1))
 #+END_SRC
 *** =hydra=
 :LOGBOOK:
@@ -705,55 +638,37 @@ Primero se ejecuta el comando =command-frequency-display= el cual popula un buff
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:45]
 :END:
-Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los cambios realizados como un árbol con ramificaciones de cambios.
+Comando asociado a @@html:<kbd>C-x u</kbd>@@.
+
+Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los cambios realizados como un árbol con ramificaciones.
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
-    :preface (require 'undo-tree)
+    ;; Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata
+    ;; los cambios realizados como un árbol con ramificaciones de cambios.
+    ;; para revertir un cambio use `C-x u'. Más información en:
+    ;;   http://melpa.milkbox.net/#/undo-tree
     :diminish undo-tree-mode
-    :bind (("C-ç" . undo)
-           ("M-ç" . redo))
     :init
     (defadvice undo-tree-make-history-save-file-name
         (after undo-tree activate)
       (setq ad-return-value (concat ad-return-value ".7z")))
+    (defadvice undo-tree-visualize (around undo-tree-split-side-by-side activate)
+      "Divide la ventana de lado a lado al visualizar undo-tree-visualize"
+      (let ((split-height-threshold nil)
+            (split-width-threshold 0))
+        ad-do-it))
     (setf undo-tree-visualizer-timestamps t)
+    (setf undo-tree-visualizer-diff t)
+    (setf undo-tree-auto-save-history t)
     :config
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
-#+END_SRC
-*** CANCELADO =theme-changer=                               :deshabilitado:
-- State "CANCELADO"  from              [2016-09-28 mié 19:05] \\
-  deshabilitado
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:46]
-:END:
-Cambia el tema de Emacs dependiendo de la hora del día. Para que esto funcione adecuadamente hay que especificar las coordenadas geográficas del lugar donde vivimos, para saber más ver [[*Información personal][Información personal]].
-#+BEGIN_SRC emacs-lisp
-  (use-package theme-changer
-    :disabled t
-    :config
-    (use-package zenburn-theme)
-    (change-theme 'material-light 'base16-mocha-dark)
-    (use-package tramp-theme
-      :disabled t))
 #+END_SRC
 *** zenburn
 #+BEGIN_SRC emacs-lisp
   (use-package zenburn-theme
     :config
     (load-theme 'zenburn t))
-#+END_SRC
-*** CANCELADO =hlinum=                                      :deshabilitado:
-- State "CANCELADO"  from              [2016-09-28 mié 19:05] \\
-  deshabilitado
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:47]
-:END:
-Extiende el modo =linum-mode= y subraya el numero de linea actual.
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package hlinum
-    :config
-    (add-hook 'prog-mode-hook #'hlinum-activate))
 #+END_SRC
 *** nlinum
 Muestra el numero de lineas al margen del buffer
@@ -778,20 +693,6 @@ Muestra el numero de lineas al margen del buffer
           (defadvice make-frame (around toggle-nlinum-mode compile activate)
             (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
       (add-hook 'prog-mode-hook #'nlinum-mode)))
-#+END_SRC
-*** CANCELADO =ycmd=                                        :deshabilitado:
-- State "CANCELADO"  from              [2016-09-28 mié 19:05] \\
-  deshabilitado
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:49]
-:END:
-/A code-completion & code-comprehension server/
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package ycmd
-    :disabled t ;; hasta tener instalado ycmd
-    :config
-    (use-package company-ycmd))
 #+END_SRC
 *** =company=
 :LOGBOOK:
@@ -870,7 +771,7 @@ Archivos recientes abiertos en Emacs.
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
 :END:
-Incrementa la selección por unidades semánticas.
+Incrementa la selección por unidades semánticas. Asociado a @@html:<kbd>C-c 0</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
     :defer 3
@@ -880,7 +781,7 @@ Incrementa la selección por unidades semánticas.
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
 :END:
-El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ basado en caracteres.
+El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ basado en caracteres. Asociado a @@html:<kbd>C-c z</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package avy
     :defer 3
@@ -896,7 +797,7 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
 :END:
-Ofrece un excelente emulador de terminal *dentro* de Emacs
+Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<kbd><f1></kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package multi-term
     :bind ([f1] . multi-term)
@@ -937,7 +838,7 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
 :END:
-Git en Emacs. A decir verdad, amo Mercurial y odio Git.
+Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v</kbd>@@ de =projectile= para invocarlo.
 #+BEGIN_SRC emacs-lisp
   (use-package magit
     :defer t
@@ -968,7 +869,7 @@ Muestra información de =git diff= en el fringe.
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
 :END:
-Mercurial en Emacs. Amo Mercurial ;)
+Mercurial en Emacs. Amo Mercurial ;). Asociado a @@html:<kbd><C-f12></kbd>@@
 
 Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emacs/comments/3nzp7a/best_way_to_use_mercurial_with_emacs/][Best way to use Mercurial with Emacs? : emacs]]
 #+BEGIN_SRC emacs-lisp
@@ -981,7 +882,7 @@ Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emac
   (use-package hgignore-mode)
 #+END_SRC
 *** =kill-or-bury-alive=
-Permite designar qué buffers queremos matar o enterrar (/bury/).
+Permite designar qué buffers queremos matar o enterrar (/bury/). Asociado a @@html:<kbd>C-x k</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package kill-or-bury-alive
     :bind (("C-x k" . kill-or-bury-alive))
@@ -1017,7 +918,7 @@ Revierte el contenido de un buffer de manera automática cuando el contenido de 
     (add-hook 'prog-mode-hook #'yas-minor-mode-on))
 #+END_SRC
 *** imenu-anywhere
-Crea menús a partir de secciones de documentos
+Crea menús a partir de secciones de documentos. Asociado a @@html:<kbd>C-c i</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package imenu-anywhere
     :config
@@ -1029,6 +930,7 @@ Crea menús a partir de secciones de documentos
 
 #+END_SRC
 *** Bookmark+
+Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark+
     :init
@@ -1157,51 +1059,6 @@ Un versátil cliente de correo electrónico para Emacs.
     (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
     (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map))
 #+END_SRC
-*** CANCELADO =jabber.el=                                   :deshabilitado:
-- State "CANCELADO"  from              [2016-09-28 mié 19:06] \\
-  el paquete no funciona correctamente
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:52]
-:END:
-¡¡Chat de jabber desde Emacs!!
-
-Jabber puede usar el protocolo de cifrado [[https://en.wikipedia.org/wiki/Off-the-Record_Messaging][Off-the-Record]] a través de [[https://github.com/legoscia/emacs-jabber-otr][legoscia/emacs-jabber-otr]], el único requisito es tener el paquete [[https://github.com/python-otr/pure-python-otr][python-otr/pure-python-otr]] instalado en el sistema.
-#+BEGIN_SRC sh :tangle no
-  sudo pip install python-potr
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package jabber
-    :disabled t ;; no inicia de manera exitosa por un error
-    :if (daemonp)
-    :defer 10
-    :init
-    (setf fsm-debug nil)
-    ;; ver http://www.gnu.org/software/emacs/manual/html_node/elisp/Backquote.html
-    (setf jabber-account-list `(("jorgedice@blah.im/emacs"
-                                 (:password . ,(secrets-get-secret "Login" "contraseña usual"))
-                                 (:network-server . "jabber.blah.im")
-                                 (:port . 5222)
-                                 (:nickname . "Shackra Sislock")
-                                 (:connection-type . starttls))))
-    :config
-    (use-package jabber-otr
-      :disabled t)
-    (setf jabber-history-enabled t
-          jabber-use-global-history nil
-          jabber-backlog-number 40
-          jabber-backlog-days 30
-          jabber-alert-presence-message-function (lambda (who oldstatus newstatus statusnext) nil)
-          jabber-default-status "«Faith is always at a disadvantage; it is a perpetually defeated thing which survives all of its conquerors» ~G. K. Chesterton.")
-    (add-hook 'jabber-chat-mode-hook #'turn-off-auto-fill)
-    (add-hook 'jabber-chat-mode-hook #'turn-on-visual-line-mode)
-    (add-hook 'jabber-chat-mode-hook #'flyspell-mode)
-    (jabber-connect-all))
-#+END_SRC
-**** *Nota:* Deshabilitado por extraño mensaje de error
-#+BEGIN_EXAMPLE
-  Error (use-package): jabber :config: Wrong type argument: symbolp, (:fsm jabber-connection :state nil :state-data nil :sleep #[(secs) "\301\302\"\207" [secs accept-process-output nil] 3] :deferred nil)
-#+END_EXAMPLE
 *** =twittering-mode=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
@@ -1350,6 +1207,11 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
 El modo Org (Org-mode) es un modo de edición del editor de texto Emacs mediante el cual se editan documentos jerárquicos en texto plano.
 
 Su uso encaja con distintas necesidades, como la creación de notas de cosas por hacer, la planificación de proyectos y hasta la escritura de páginas web. Por ejemplo, los elementos to-do (cosas por hacer) pueden disponer de prioridades y fechas de vencimiento, pueden estar subdivididos en subtareas o en listas de verificación, y pueden etiquetarse o dársele propiedades. También puede generarse automáticamente una agenda de las entradas de cosas por hacer. ~[[https://es.wikipedia.org/wiki/Org-mode][org-mode - Wikipedia, la enciclopedia libre]]
+
+Teclas
+- @@html:<kbd>C-c l</kbd>@@ :: Guardar enlace a cosa
+- @@html:<kbd>C-c a</kbd>@@ :: Abre la agenda
+- @@html:<kbd>C-c c</kbd>@@ :: Capturar algo
 #+BEGIN_SRC emacs-lisp
   (use-package org
     :bind (("C-c l" . org-store-link)
@@ -1753,6 +1615,16 @@ modo mayor para editar código PHP
       (add-hook 'php-mode-hook 'php-refactor-mode)))
 #+END_SRC
 *** golang
+Modo mayor para editar archivos Golang.
+
+Teclas
+- @@html:<kbd>M-.</kbd>@@ :: Salta a definición / Go Guru: salto a definicion
+- @@html:<kbd>C-c C-a</kbd>@@ :: Agrega importación
+- @@html:<kbd>C-c C-r</kbd>@@ :: Quita importaciones sin usar
+- @@html:<kbd>C-c C-i</kbd>@@ :: Ir a sección donde están las importaciones
+- @@html:<kbd>C-c C-c</kbd>@@ :: Compilar proyecto
+- @@html:<kbd>C-M-m</kbd>@@ :: Inicia Go Doctor
+- @@html:<kbd>C-M-g</kbd>@@ :: Inicia Go Guru
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
     :if (executable-find "go")
@@ -1922,7 +1794,7 @@ Rompe lineas de texto de manera automática en cierta columna
 - Refiled on [2015-11-12 jue 16:56]
 - Refiled on [2015-11-12 jue 16:51]
 :END:
-Revisión ortográfica al vuelo.
+Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd><f8></kbd>@@ cambia el idioma de Español a Inglés y viceversa.
 #+BEGIN_SRC emacs-lisp
   (use-package flyspell
     :diminish flyspell-mode
@@ -1988,7 +1860,7 @@ Revisión de errores en el código fuente, al vuelo.
 - Refiled on [2015-11-12 jue 16:56]
 - Refiled on [2015-11-12 jue 16:51]
 :END:
-Multiples cursores en Emacs.
+Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package multiple-cursors
     :defer 4
@@ -2074,6 +1946,7 @@ Multiples cursores en Emacs.
                  ("C-l" . mc/edit-ends-of-lines))))
 #+END_SRC
 *** visual-regexp
+Expresiones regulares de Python, cambios visibles antes de aplicarlos. Asociado a @@html:<kbd>C-c r</kbd>@@ y @@html:<kbd>C-c q</kbd>@@.
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:57]
 - Refiled on [2015-11-12 jue 16:49]
@@ -2340,7 +2213,7 @@ Permite a emacs enviar notificaciones por DBus o diferentes medios. En este caso
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
 :END:
-Pleguar o desplegar bloques de texto
+Pleguar o desplegar bloques de texto. Asociado a @@html:<kbd>C-c v</kbd>@@.
 #+BEGIN_SRC emacs-lisp
   (use-package vimish-fold
     :defer 10
@@ -2511,21 +2384,6 @@ Cliente para MPD
     :if (executable-find "mpd")
     :preface (require 'mingus-stays-home))
 #+END_SRC
-*** CANCELADO tareas de org a Google Calendar               :deshabilitado:
-- State "CANCELADO"  from              [2016-09-28 mié 19:06] \\
-  el paquete borra todos el contenido de todos mis archivos org-mode!
-#+BEGIN_SRC emacs-lisp :tangle no
-  (use-package org-gcal
-    :disabled t
-    :init
-    (setf org-gcal-client-id "719739047198-857v4t8pb09ptb76f20ag6brvmlnpk3n.apps.googleusercontent.com")
-    (setf org-gcal-file-alist '(("shackrasislock0@gmail.com" . "~/org/cosas por hacer.org")
-                                ("es.cr#holiday@group.v.calendar.google.com" . "~/org/festivos.org")
-                                ("fmuk685cem8pufc6v996omoo6o@group.calendar.google.com" . "~/org/fechas.org")
-                                ("#contacts@group.v.calendar.google.com" . "~/org/cumpleaños.org")))
-    :config
-    (add-hook 'after-init-hook (lambda () (org-gcal-fetch) (org-gcal-sync))))
-#+END_SRC
 *** camcorder
 Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
 #+BEGIN_SRC emacs-lisp
@@ -2562,7 +2420,7 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
     (add-hook 'after-init-hook #'global-emojify-mode))
 #+END_SRC
 *** free-keys
-Muestra cuales combinaciones de teclas están libres para asignar
+Muestra cuales combinaciones de teclas están libres para asignar. Asociado @@html:<kbd>C-h C-k</kbd>@@.
 #+BEGIN_SRC emacs-lisp
   (use-package free-keys
     :bind (:map help-map
@@ -2581,11 +2439,6 @@ Muestra cuales combinaciones de teclas están libres para asignar
                    (url (or url-shr url-at-point)))
               (el-pocket-add-url url)))
     :config (el-pocket-load-auth))
-#+END_SRC
-*** package-safe-delete
-Borrado seguro de paquetes
-#+BEGIN_SRC emacs-lisp
-  (use-package package-safe-delete)
 #+END_SRC
 *** highlight-indent-guides
 Modo menor que subraya los niveles de identación en el buffer usando font-lock. Los anchos de identación son descubiertos de manera dinámica.
