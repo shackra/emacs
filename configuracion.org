@@ -4,12 +4,12 @@
 #+OPTIONS: toc:5 num:nil ^:nil
 #+STARTUP: overview
 
-#+begin_quote
+#+begin_example
                                                  🕇
                               Actiones nostras tibi comítimus, Dómine,
                                ut ad maiorem gloriam tuam repleamur.
                                                🕇   🕇
-#+end_quote
+#+end_example
 
 * Configuración de GNU Emacs en un archivo de org-mode
 He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi configuración. Sí, sí... ya sé que esto se puede hacer con comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código Python!.
@@ -1618,13 +1618,19 @@ modo mayor para editar código PHP
 Modo mayor para editar archivos Golang.
 
 Teclas
-- @@html:<kbd>M-.</kbd>@@ :: Salta a definición / Go Guru: salto a definicion
+- @@html:<kbd>M-.</kbd>@@ :: Salta a definición / Go Guru: salto a definición
 - @@html:<kbd>C-c C-a</kbd>@@ :: Agrega importación
 - @@html:<kbd>C-c C-r</kbd>@@ :: Quita importaciones sin usar
 - @@html:<kbd>C-c C-i</kbd>@@ :: Ir a sección donde están las importaciones
 - @@html:<kbd>C-c C-c</kbd>@@ :: Compilar proyecto
 - @@html:<kbd>C-M-m</kbd>@@ :: Inicia Go Doctor
 - @@html:<kbd>C-M-g</kbd>@@ :: Inicia Go Guru
+
+Es necesario instalar [[https://github.com/alecthomas/gometalinter][=gometalinter=]] para localizar varios tipos de errores en el código fuente
+#+BEGIN_EXAMPLE
+go get -u gopkg.in/alecthomas/gometalinter.v1
+#+END_EXAMPLE
+
 #+BEGIN_SRC emacs-lisp
   (use-package go-mode
     :if (executable-find "go")
