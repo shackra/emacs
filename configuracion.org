@@ -1650,61 +1650,75 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
       (interactive)
       (when (eq major-mode 'go-mode)
         (if (string-suffix-p "_test.go" (buffer-name))
-            (set (make-local-variable 'compile-command) "go test -bench=. -v && go vet")
-          (set (make-local-variable 'compile-command) (format "go build && go vet && ./%s" (f-base (f-dirname (f-full (buffer-name)))))))))
+            (set (make-local-variable 'compile-command) "go test -bench=. -v")
+          (set (make-local-variable 'compile-command) (format "go build && ./%s" (f-base (f-dirname (f-full (buffer-name)))))))))
     :config
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
-    (use-package company-go
-      :if (executable-find "gocode")
-      :config
-      (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
-    (use-package go-eldoc
-      :config
-      (add-hook 'go-mode-hook 'go-eldoc-setup))
-    (use-package go-snippets)
-    (use-package godoctor
-      :if (executable-find "godoctor")
-      :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
-      :config
-      (defhydra hydra-godoctor (:color blue :columns 2)
-        "Motor de refactorización para Go"
-        ("a" godoctor-rename "Renombra identificador, punto actual")
-        ("s" godoctor-extract "Refactorizacion en una función, marca actual")
-        ("d" godoctor-toggle "Cambia declaración de variable")
-        ("f" godoctor-godoc "Crea esqueleto de documentación")))
-    (use-package go-guru
-      :if (executable-find "guru")
-      :demand t
-      :init
-      (defun shackra/go-mode-set-scope ()
-        (when (eq major-mode 'go-mode)
-          (set (make-local-variable 'go-guru-scope)
-               (concat (projectile-project-root) "..."))))
-      :bind (:map go-mode-map
-                  ("M-." . go-guru-definition)
-                  ("C-M-g" . hydra-go-guru/body))
-      :config
-      (defhydra hydra-go-guru (:color blue :columns 2)
-        "Contesta preguntas sobre código fuente escrito en Go"
-        ("a" go-guru-callees "Receptores de llamada, función bajo punto actual")
-        ("s" go-guru-callers "Llamadores, función bajo punto actual")
-        ("d" go-guru-callstack "Muestra grafo de llamadas desde una raíz, función bajo punto actual")
-        ("f" go-guru-describe "Describe la sintaxis seleccionada, su tipo y métodos")
-        ("g" go-guru-freevars "Enumera las variables libres, marca actual")
-        ("h" go-guru-referrers "Enumera referencias al objeto, identificador marcado")
-        ("j" go-guru-peers "Enumera un set de remitentes/destinatarios para las operaciones enviar/recibir de este canal")
-        ("k" go-guru-pointsto "Muestra lo que apunta, expresión marcada")
-        ("l" go-guru-implements "Describe la relación de implementación para tipos en un paquete conteniendo el cursor")
-        ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
-      (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-      (add-hook 'projectile-mode-hook #'shackra/go-mode-set-scope))
-    (use-package helm-go-package
-      :disabled (not (fboundp 'helm))
-      :config (eval-after-load 'go-mode
-                '(substitute-key-definition 'go-import-add 'helm-go-package go-mode-map)))
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook 'shackra/go-update-compile-definition)
     (add-hook 'after-save-hook 'shackra/go-update-compile-definition))
+  (use-package company-go
+    :after (go-mode hydra)
+    :if (executable-find "gocode")
+    :config
+    (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
+  (use-package go-eldoc
+    :after (go-mode hydra)
+    :config
+    (add-hook 'go-mode-hook 'go-eldoc-setup))
+  (use-package go-snippets
+    :after (go-mode hydra))
+  (use-package godoctor
+    :after (go-mode hydra)
+    :if (executable-find "godoctor")
+    :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
+    :config
+    (defhydra hydra-godoctor (:color blue :columns 2)
+      "Motor de refactorización para Go"
+      ("a" godoctor-rename "Renombra identificador, punto actual")
+      ("s" godoctor-extract "Refactorizacion en una función, marca actual")
+      ("d" godoctor-toggle "Cambia declaración de variable")
+      ("f" godoctor-godoc "Crea esqueleto de documentación")))
+  (use-package go-guru
+    :after (go-mode hydra)
+    :if (executable-find "guru")
+    :demand t
+    :init
+    (defun shackra/go-mode-set-scope ()
+      (when (eq major-mode 'go-mode)
+        (set (make-local-variable 'go-guru-scope)
+             (concat (projectile-project-root) "..."))))
+    :bind (:map go-mode-map
+                ("M-." . go-guru-definition)
+                ("C-M-g" . hydra-go-guru/body))
+    :config
+    (defhydra hydra-go-guru (:color blue :columns 2)
+      "Contesta preguntas sobre código fuente escrito en Go"
+      ("a" go-guru-callees "Receptores de llamada, función bajo punto actual")
+      ("s" go-guru-callers "Llamadores, función bajo punto actual")
+      ("d" go-guru-callstack "Muestra grafo de llamadas desde una raíz, función bajo punto actual")
+      ("f" go-guru-describe "Describe la sintaxis seleccionada, su tipo y métodos")
+      ("g" go-guru-freevars "Enumera las variables libres, marca actual")
+      ("h" go-guru-referrers "Enumera referencias al objeto, identificador marcado")
+      ("j" go-guru-peers "Enumera un set de remitentes/destinatarios para las operaciones enviar/recibir de este canal")
+      ("k" go-guru-pointsto "Muestra lo que apunta, expresión marcada")
+      ("l" go-guru-implements "Describe la relación de implementación para tipos en un paquete conteniendo el cursor")
+      ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
+    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+    (add-hook 'projectile-mode-hook #'shackra/go-mode-set-scope))
+  (use-package flycheck-gometalinter
+    :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
+    :after (go-mode)
+    :init
+    (if (executable-find "gometalinter.v1")
+        (setf flycheck-gometalinter-executable "gometalinter.v1")
+      (setf flycheck-gometalinter-executable "gometalinter"))
+    (setf flycheck-gometalinter-vendor t)
+    (setf flycheck-gometalinter-test t)
+    (setf flycheck-gometalinter-enable-linters '("unused"))
+    :config
+    (progn
+      (flycheck-gometalinter-setup)))
 #+END_SRC
 *** javascript
 modo mayor para editar JavaScript
