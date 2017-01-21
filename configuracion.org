@@ -2484,6 +2484,7 @@ Recuerda al usuario que hay una manera más eficiente de hacer algo
     :ensure nil
     :load-path "site-packages/dwight"
     :init
+    (setf schrute-command-repetitions 2)
     (setf schrute-lighter " 🐻 ")
     (setf schrute-shortcuts-commands '((avy-goto-line . (next-line previous-line))
                                        (avy-goto-word-0 . (left-char right-char forward-word backward-word))))
