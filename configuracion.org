@@ -177,6 +177,7 @@ Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-sett
 
 #+BEGIN_SRC emacs-lisp
   (use-package shackra-guardar-todo
+    :disabled t
     :ensure nil
     :preface (provide 'shackra-guardar-todo)
     :init
@@ -659,7 +660,7 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
         ad-do-it))
     (setf undo-tree-visualizer-timestamps t)
     (setf undo-tree-visualizer-diff t)
-    (setf undo-tree-auto-save-history t)
+    (setf undo-tree-auto-save-history nil) ;; no salva el historial de cambios
     :config
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
