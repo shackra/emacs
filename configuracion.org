@@ -2550,13 +2550,13 @@ Recuerda al usuario que hay una manera más eficiente de hacer algo
     :ensure nil
     :load-path "site-packages/dwight"
     :init
-    (setf schrute-command-repetitions 2)
+    (setf schrute-command-repetitions 1)
     (setf schrute-lighter " 🐻 ")
     (setf schrute-shortcuts-commands '((avy-goto-line . (next-line previous-line))
                                        (avy-goto-word-0 . (left-char right-char forward-word backward-word))))
     (add-hook 'after-init-hook #'schrute-mode))
 #+END_SRC
-* Yasnippet en todos los backends de Company                       :especial:
+*** Yasnippet en todos los backends de Company                   :especial:
 Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer que muestre candidatos de auto-completado y candidatos yasnippet es agrupando los backends
 #+BEGIN_SRC emacs-lisp
   ;; http://emacs.stackexchange.com/questions/10431/get-company-to-show-suggestions-for-yasnippet-names
