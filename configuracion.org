@@ -983,6 +983,22 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     (add-hook 'sgml-mode-hook (lambda () (kite-mini-mode t)))
     (add-hook 'after-save-hook #'shackra/webdev-refresh-page-on-save-chrome))
 #+END_SRC
+*** iedit
+Edita varias ocurrencias de un texto en el buffer.
+
+Teclas:
+- M-H :: iedit-restrict-function
+- M-I :: iedit-restrict-current-line
+- M-{ :: iedit-expand-up-a-line
+- M-} :: iedit-expand-down-a-line
+- M-p :: iedit-expand-up-to-occurrence
+- M-n :: iedit-expand-down-to-occurrence
+- M-G :: iedit-apply-global-modification
+- M-C :: iedit-toggle-case-sensitive
+#+BEGIN_SRC emacs-lisp
+  (use-package iedit
+    :bind (("C-'" . iedit-mode)))
+#+END_SRC
 ** Comunicación
 *** =mu4e=
 :LOGBOOK:
