@@ -1192,16 +1192,16 @@ Conexión a Weechat desde Emacs
 *** =prog-mode=
 Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
 #+BEGIN_SRC emacs-lisp
+  (use-package highlight-numbers)
+  (use-package highlight-escape-sequences
+    :config
+    (put 'hes-escape-backslash-face 'face-alias 'font-lock-builtin-face)
+    (put 'hes-escape-sequence-face 'face-alias 'font-lock-builtin-face))
+  (use-package rainbow-mode)
   (use-package prog-mode
     :ensure nil
     :preface
     (provide 'prog-mode)
-    (use-package rainbow-mode)
-    (use-package highlight-escape-sequences
-      :config
-      (put 'hes-escape-backslash-face 'face-alias 'font-lock-builtin-face)
-      (put 'hes-escape-sequence-face 'face-alias 'font-lock-builtin-face))
-    (use-package highlight-numbers)
     :init
     (defun shackra/prog-mode ()
       (set (make-local-variable 'fill-column) 79)
@@ -1214,8 +1214,7 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
       (electric-pair-mode)
       (rainbow-turn-on)
       (flyspell-prog-mode))
-    :config
-    (bind-key "RET" 'newline-and-indent)
+    (bind-key "RET" 'newline-and-indent prog-mode-map)
     (bind-key* "C-M-," 'comment-dwim)
     (add-hook 'prog-mode-hook #'shackra/prog-mode))
 #+END_SRC
