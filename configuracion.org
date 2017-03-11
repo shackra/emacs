@@ -922,11 +922,11 @@ Crea menús a partir de secciones de documentos. Asociado a @@html:<kbd>C-c i</k
 #+BEGIN_SRC emacs-lisp
   (use-package imenu-anywhere
     :config
-    (bind-key "C-c i" (or (when (fboundp 'ivy-mode) 'ivy-imenu-anywhere) (when (fboundp 'helm) 'helm-imenu-anywhere)))
-    (use-package imenu+
-      :disabled t ;; ver razón en https://redd.it/3ahj2d
-      :init
-      (setf imenup-ignore-comments-flag t)))
+    (bind-key "C-c i" 'ivy-imenu-anywhere))
+  (use-package imenu+
+    :disabled t ;; ver razón en https://redd.it/3ahj2d
+    :init
+    (setf imenup-ignore-comments-flag t))
 
 #+END_SRC
 *** Bookmark+
