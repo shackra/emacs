@@ -835,24 +835,23 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
 
     (add-hook 'term-mode-hook #'shackra/maybe-disable-yasnippet))
 #+END_SRC
+*** =git=
+#+BEGIN_SRC emacs-lisp
+  (use-package gitignore-mode)
+  (use-package gitconfig-mode)
+#+END_SRC
 *** =magit=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
 :END:
 Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v</kbd>@@ de =projectile= para invocarlo.
 #+BEGIN_SRC emacs-lisp
+  (use-package magit-gh-pulls
+    :after (magit)
+    :config
+    (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
   (use-package magit
     :defer t
-    :config
-    (use-package gitignore-mode)
-    (use-package gitconfig-mode)
-    (use-package magit-gh-pulls
-      :config
-      (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
-    (use-package git-commit-insert-issue
-      :disabled (not (fboundp 'helm))
-      :config
-      (add-hook 'git-commit-mode-hook 'git-commit-insert-issue-mode))
     :init
     (setf magit-last-seen-setup-instructions "1.4.0"
           magit-auto-revert-mode nil
