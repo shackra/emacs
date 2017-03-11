@@ -2154,6 +2154,14 @@ Mover texto a voluntad
     :config (move-text-default-bindings))
 #+END_SRC
 ** Otros
+*** golden-ratio-scroll-screen
+Subraya la linea anterior y la siguiente luego de hacer saltar de linea el cursor del mouse
+#+BEGIN_SRC emacs-lisp
+  (use-package golden-ratio-scroll-screen
+    :config
+    (global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down)
+    (global-set-key [remap scroll-up-command] 'golden-ratio-scroll-screen-up))
+#+END_SRC
 *** =htmlize=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:47]
