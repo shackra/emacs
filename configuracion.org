@@ -702,23 +702,34 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
                               company-capf
                               company-yasnippet)
                              (company-abbrev company-dabbrev)))
-    (setf company-idle-delay 0.3)
-    (setf company-tooltip-limit 30)
+    (setf company-idle-delay 0.5)
+    (setf company-tooltip-limit 10)
     (setf company-minimum-prefix-length 1)
     (setf company-echo-delay 0)
     (setf company-auto-complete nil)
+    (add-hook 'after-init-hook #'global-company-mode))
+#+END_SRC
+=company-statistics= ofrece mejores predicciones en sus resultados de acuerdo a datos estadísticos.
+#+BEGIN_SRC emacs-lisp
+  (use-package company-statistics
+    :after (company)
+    :init
+    (setf company-statistics-file "~/.company-statistics-cache.el")
+    (add-hook 'after-init-hook 'company-statistics-mode))
+#+END_SRC
+=company-quickhelp= genera mejores popups que Emacs para visualizar documentación de funciones/variables.
+#+BEGIN_SRC emacs-lisp
+  (use-package company-quickhelp
+    :after (company)
+    :config (company-quickhelp-mode 1))
+#+END_SRC
+*** company-auctex
+backend para [[*=company=][Company]] que provee auto completado para AUCTeX
+#+BEGIN_SRC emacs-lisp
+  (use-package company-auctex
+    :after (auctex company)
     :config
-    (add-hook 'after-init-hook #'global-company-mode)
-    (use-package helm-company
-      :disabled (not (fboundp 'helm))
-      :bind (:map company-mode-map
-                  ("C-ñ" . helm-company)))
-    (use-package company-quickhelp
-      :config (company-quickhelp-mode 1))
-    (use-package company-statistics
-      :init
-      (setf company-statistics-file "~/.company-statistics-cache.el")
-      (add-hook 'after-init-hook 'company-statistics-mode)))
+    (company-auctex-init))
 #+END_SRC
 *** =projectile=
 :LOGBOOK:
