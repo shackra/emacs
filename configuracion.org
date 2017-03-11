@@ -2569,5 +2569,5 @@ Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer q
       (append (if (consp backend) backend (list backend))
               '(:with company-yasnippet))))
 
-  (setf company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+  (add-hook 'after-init-hook (lambda () (setf company-backends (mapcar #'company-mode/backend-with-yas company-backends))) t)
 #+END_SRC
