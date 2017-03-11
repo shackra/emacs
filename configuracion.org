@@ -2530,9 +2530,10 @@ Muestra cuales combinaciones de teclas están libres para asignar. Asociado @@ht
 Modo menor que subraya los niveles de identación en el buffer usando font-lock. Los anchos de identación son descubiertos de manera dinámica.
 #+BEGIN_SRC emacs-lisp
   (use-package highlight-indent-guides
+    :after (python-mode)
     :init
-    (setf highlight-indent-guides-method 'character)
-    (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
+    (setf highlight-indent-guides-method 'fill)
+    (add-hook 'python-mode 'highlight-indent-guides-mode))
 #+END_SRC
 **** Limitaciones
 Este modo menor no funciona bien con otros modos menores que hacen uso de la propiedad =display= de los textos en el buffer o que modifican como se muestran los espacios en blanco como hace whitespace-mode. Más info: [[https://github.com/DarthFennec/highlight-indent-guides#limitations][Limitations]].
