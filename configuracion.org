@@ -1779,7 +1779,10 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
       (setf flycheck-gometalinter-executable "gometalinter"))
     (setf flycheck-gometalinter-vendor t)
     (setf flycheck-gometalinter-test t)
+    (setf flycheck-gometalinter-fast t)
     (setf flycheck-gometalinter-enable-linters '("unused"))
+    (setf flycheck-gometalinter-disable-linters '("gotype"))
+    (setq flycheck-gometalinter-deadline "5s")
     :config
     (progn
       (flycheck-gometalinter-setup)))
