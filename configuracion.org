@@ -740,20 +740,16 @@ Manejo de archivos de un proyecto.
   (use-package projectile
     :diminish projectile-mode
     :init
-    (setf projectile-completion-system (or (when (fboundp 'ivy-mode) 'ivy) (when (fboundp 'helm) 'helm))
-          projectile-switch-project-action  (or (when (fboundp 'counsel-projectile) 'counsel-projectile-find-file) (when (fboundp 'helm-projectile) 'helm-projectile-find-file)))
+    (setf projectile-completion-system 'ivy
+          projectile-switch-project-action 'counsel-projectile-find-file)
     (setf
      projectile-file-exists-remote-cache-expire (* 10 60)
      projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
     :config
-    (use-package ag)
-    (use-package helm-projectile
-      :disabled (not (fboundp 'helm))
-      :config
-      (helm-projectile-on))
     (add-hook 'after-init-hook #'projectile-global-mode))
+  (use-package ag)
 #+END_SRC
 *** =recentf=
 :LOGBOOK:
