@@ -129,37 +129,30 @@ Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visit
 
 Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=.
 
-Estos comandos funcionan usando Hydra.
-- Cuando @@html:<kbd>C-x C-f</kbd>@@ es presionado y se esta dentro de un proyecto, se ofrecen opciones al usuario, @@html:<kbd>SPC</kbd>@@ para visitar un archivo del proyecto, @@html:<kbd>f</kbd>@@ para visitar un archivo de cualquier parte o @@html:<kbd>j</kbd>@@ para visitar un archivo de otro proyecto.
-- Cuando @@html:<kbd>C-x b</kbd>@@ es presionado y se esta dentro de un proyecto, se ofrece opciones al usuario, @@html:<kbd>SPC</kbd>@@ para cambiar el buffer a otro relacionado al proyecto, @@html:<kbd>f</kbd>@@ para cambiar a cualquier otro buffer.
+Teclas
+- @@html:<kbd>C-x C-f</kbd>@@ :: Visitar archivo. *Dentro de un proyecto*: Visita archivo de proyecto, prefijo @@html:<kbd>C-u</kbd>@@ Visitar archivo, prefijo @@html:<kbd>C-u</kbd>@@ @@html:<kbd>C-u</kbd>@@ =ag= para buscar una cadena de texto entre miles de archivos.
+- @@html:<kbd>C-x b</kbd>@@ :: Cambiar buffer. *Dentro de un proyecto*: Cambiar buffer de archivo relacionado a proyecto, prefijo @@html:<kbd>C-u</kbd>@@ Cambiar buffer, prefijo @@html:<kbd>C-u</kbd>@@ @@html:<kbd>C-u</kbd>@@ Inicia menú Hydra para Windmove.
 #+BEGIN_SRC emacs-lisp
   (use-package shackra-find-file-switch-buffer
     :ensure nil
     :preface (provide 'shackra-find-file-switch-buffer)
-    :after (hydra projectile ivy counsel)
+    :after (projectile ivy counsel)
     :bind (:map ctl-x-map
                 ("C-f" . mi/find-file)
                 ("b" . mi/switch-buffer))
     :init
-    (defhydra hydra-find-file ()
-      "Visitar archivo"
-      ("f" counsel-find-file "Visitar archivo" :exit t)
-      ("SPC" counsel-projectile-find-file "Visitar archivo de proyecto" :exit t)
-      ("j" counsel-projectile-switch-project "Visitar archivo de otro proyecto" :exit t))
-    (defhydra hydra-switch-buffer ()
-      "Cambiar de buffer"
-      ("f" ivy-switch-buffer "Cambiar buffer" :exit t)
-      ("SPC" counsel-projectile-switch-to-buffer "Cambiar a buffer de proyecto" :exit t))
-    (defun mi/find-file ()
-      (interactive)
-      (if (projectile-project-p)
-          (hydra-find-file/body)
-        (hydra-find-file/counsel-find-file-and-exit)))
-    (defun mi/switch-buffer ()
-      (interactive)
-      (if (projectile-project-p)
-          (hydra-switch-buffer/body)
-        (hydra-switch-buffer/ivy-switch-buffer-and-exit))))
+    (defun mi/find-file (arg)
+      (interactive "p")
+      (cond
+       ((eq arg 4) (counsel-find-file))
+       ((eq arg 16) (counsel-ag))
+       ((eq arg 1) (if (projectile-project-p) (projectile-find-file-dwim) (counsel-find-file)))))
+    (defun mi/switch-buffer (arg)
+      (interactive "p")
+      (cond
+       ((eq arg 4) (switch-to-buffer))
+       ((eq arg 16) (hydra-win/body))
+       ((eq arg 1) (if (projectile-project-p) (projectile-switch-to-buffer) (ivy-switch-buffer))))))
 #+END_SRC
 ** función para =delete-frame-functions=
 #+BEGIN_SRC emacs-lisp
