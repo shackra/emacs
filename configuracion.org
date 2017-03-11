@@ -2106,8 +2106,9 @@ Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configur
     (defun shackra/text-mode ()
       (flyspell-mode)
       (set (make-local-variable 'fill-column) 100)
+      (turn-off-auto-fill)
       (turn-on-visual-line-mode))
-    :config
+    (remove-hook 'text-mode-hook #'turn-on-auto-fill)
     (add-hook 'text-mode-hook #'shackra/text-mode))
 #+END_SRC
 **** Mover el cursos de manera inteligente al inicio de la linea
