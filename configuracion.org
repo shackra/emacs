@@ -1494,17 +1494,19 @@ Paquete extensivo para escribir y formatear documentos TeX
     :config
     (setf TeX-auto-save t
           TeX-parse-self t
+          TeX-save-query nil
           TeX-newline-function 'newline-and-indent
           LaTeX-item-indent 0)
     (setq-default TeX-master nil)
     (setq-default TeX-engine 'xetex)
     (setq-default TeX-PDF-mode t)
-    (use-package company-auctex
-      :config
-      (company-auctex-init))
     (if (fboundp 'shackra/yas)
         (add-hook 'latex-mode-hook 'shackra/yas)
       (add-hook 'latex-mode-hook 'yas-minor-mode-on)))
+  (use-package reftex
+    :init
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
+    (add-hook 'latex-mode-hook 'turn-on-reftex))   ; with Emacs latex mode
 #+END_SRC
 *** =toml=
 /El lenguaje minimalista y obvio de Tom/
@@ -1522,102 +1524,121 @@ Paquete extensivo para escribir y formatear documentos TeX
 *** =rust=
 Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de programación de sistemas que corre realmente rapido, previene fallos de segmentación (segfaults), y garantiza seguridad en programas multi-hilo.
 #+BEGIN_SRC emacs-lisp
-  (use-package rust-mode
-    :if (executable-find "rustc")
+  (use-package rustfmt
+    :after (rust-mode)
     :config
-    (use-package rustfmt
-      :config
-      (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
-    (use-package cargo
-      :if (executable-find "cargo"))
-    (use-package racer
-      :init
-      (setf racer-rust-src-path (getenv "RUST_SRC_PATH"))
-      (setf racer-cmd (expand-file-name "~/.cargo/bin/racer"))
-      :config
-      (add-hook 'rust-mode-hook #'racer-mode)
-      (add-hook 'racer-mode-hook #'eldoc-mode)
-      (use-package company-racer
-        :config
-        (add-hook 'rust-mode-hook '(lambda ()
-                                     (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet))))))
-    (use-package flycheck-rust
-      :config
-      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
+    (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
+  (use-package cargo
+    :after (rust-mode)
+    :if (executable-find "cargo"))
+  (use-package racer
+    :after (rust-mode)
+    :init
+    (setf racer-rust-src-path (getenv "RUST_SRC_PATH"))
+    (setf racer-cmd (expand-file-name "~/.cargo/bin/racer"))
+    :config
+    (add-hook 'rust-mode-hook #'racer-mode)
+    (add-hook 'racer-mode-hook #'eldoc-mode))
+  (use-package company-racer
+    :after (company racer)
+    :config
+    (add-hook 'rust-mode-hook '(lambda ()
+                                 (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet)))))
+  (use-package rust-mode
+    :if (executable-find "rustc"))
+  (use-package flycheck-rust
+    :after (flycheck rust-mode)
+    :config
+    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 #+END_SRC
 *** emacs-traad
 Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
 #+BEGIN_SRC emacs-lisp
+  (use-package traad-projectile
+    :after (traad projectile)
+    :preface
+    (provide 'traad-projectile)
+    :ensure nil
+    :init
+    (defun shackra/traad-open ()
+      "Inicia un servidor traad usando la ubicación del proyecto actual"
+      (interactive)
+      (if (projectile-project-p)
+          (traad-open (projectile-project-root))
+        (message "No estas en ningún proyecto!"))))
+  (use-package python-environment)
   (use-package traad
+    :after (python-environment)
     :config
-    (use-package python-environment)
-    (use-package traad-projectile
-      :if (fboundp 'projectile-project-p)
-      :preface
-      (provide 'traad-projectile)
-      :ensure nil
-      :init
-      (defun shackra/traad-open ()
-        "Inicia un servidor traad usando la ubicación del proyecto actual"
-        (interactive)
-        (if (projectile-project-p)
-            (traad-open (projectile-project-root))
-          (message "No estas en ningún proyecto!"))))
     ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
     ;; de manera automática
     (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad") user-emacs-directory)))
-        (traad-install-server))
-    (use-package hydra-traad
-      :preface (provide 'hydra-traad)
-      :ensure nil
-      :if (fboundp 'defhydra)
-      :init
-      (defhydra hydra-traad-history (:columns 2 :color blue)
-        "Historial de cambios de rope"
-        ("u" traad-undo "deshacer")
-        ("r" traad-redo "re-hacer")
-        ("h" traad-display-history "mostrar historial de cambios")
-        ("b" hydra-traad/body "volver")
-        ("q" nil "salir"))
-      (defhydra hydra-traad-rename (:columns 2 :color blue)
-        "Renombrar con rope"
-        ("f" traad-rename-current-file "archivo/modulo actual")
-        ("r" traad-rename "objeto en locación actual")
-        ("b" hydra-traad/body "volver")
-        ("q" nil "salir"))
-      (defhydra hydra-traad-signature (:columns 2 :color blue)
-        "Cambiar firma con rope"
-        ("n" traad-normalize-arguments "normalizar argumentos")
-        ("r" traad-remove-argument "remover argumentos")
-        ("b" hydra-traad/body "volver")
-        ("q" nil "salir"))
-      (defhydra hydra-traad-extraction (:columns 2 :color blue)
-        "Extracción con rope"
-        ("m" traad-extract-method "método")
-        ("v" traad-extract-variable "variable")
-        ("b" hydra-traad/body "volver")
-        ("q" nil "salir"))
-      (defhydra hydra-traad-imports (:columns 3 :color blue)
-        "Importaciones con rope"
-        ("o" traad-organize-imports "organizar")
-        ("s" traad-expand-star-imports "expandir *")
-        ("f" traad-froms-to-imports "convertir 'from' a normales")
-        ("r" traad-relatives-to-absolutes "convertir relativos a absolutos")
-        ("l" traad-handle-long-imports "manejar importaciones largas")
-        ("S" traad-imports-super-smackdown "Smackdown!")
-        ("b" hydra-traad/body "volver")
-        ("q" nil "salir"))
-      (defhydra hydra-traad (python-mode-map "C-c t" :columns 2 :columns 2)
-        "Refactorización en Python con rope"
-        ("h" hydra-traad-history/body "Historial" :exit t)
-        ("r" hydra-traad-rename/body "Renombrar" :exit t)
-        ("s" hydra-traad-signature/body "Firma" :exit t)
-        ("e" hydra-traad-extraction/body "Extracción" :exit t)
-        ("i" hydra-traad-imports/body "Importaciones" :exit t))))
+        (traad-install-server)))
+  (use-package hydra-traad
+    :after (hydra traad)
+    :preface (provide 'hydra-traad)
+    :ensure nil
+    :init
+    (defhydra hydra-traad-history (:columns 2 :color blue)
+      "Historial de cambios de rope"
+      ("u" traad-undo "deshacer")
+      ("r" traad-redo "re-hacer")
+      ("h" traad-display-history "mostrar historial de cambios")
+      ("b" hydra-traad/body "volver")
+      ("q" nil "salir"))
+    (defhydra hydra-traad-rename (:columns 2 :color blue)
+      "Renombrar con rope"
+      ("f" traad-rename-current-file "archivo/modulo actual")
+      ("r" traad-rename "objeto en locación actual")
+      ("b" hydra-traad/body "volver")
+      ("q" nil "salir"))
+    (defhydra hydra-traad-signature (:columns 2 :color blue)
+      "Cambiar firma con rope"
+      ("n" traad-normalize-arguments "normalizar argumentos")
+      ("r" traad-remove-argument "remover argumentos")
+      ("b" hydra-traad/body "volver")
+      ("q" nil "salir"))
+    (defhydra hydra-traad-extraction (:columns 2 :color blue)
+      "Extracción con rope"
+      ("m" traad-extract-method "método")
+      ("v" traad-extract-variable "variable")
+      ("b" hydra-traad/body "volver")
+      ("q" nil "salir"))
+    (defhydra hydra-traad-imports (:columns 3 :color blue)
+      "Importaciones con rope"
+      ("o" traad-organize-imports "organizar")
+      ("s" traad-expand-star-imports "expandir *")
+      ("f" traad-froms-to-imports "convertir 'from' a normales")
+      ("r" traad-relatives-to-absolutes "convertir relativos a absolutos")
+      ("l" traad-handle-long-imports "manejar importaciones largas")
+      ("S" traad-imports-super-smackdown "Smackdown!")
+      ("b" hydra-traad/body "volver")
+      ("q" nil "salir"))
+    (defhydra hydra-traad (python-mode-map "C-c t" :columns 2 :columns 2)
+      "Refactorización en Python con rope"
+      ("h" hydra-traad-history/body "Historial" :exit t)
+      ("r" hydra-traad-rename/body "Renombrar" :exit t)
+      ("s" hydra-traad-signature/body "Firma" :exit t)
+      ("e" hydra-traad-extraction/body "Extracción" :exit t)
+      ("i" hydra-traad-imports/body "Importaciones" :exit t)))
 #+END_SRC
 *** web-mode
 Un modo mayor para editar paginas web
 #+BEGIN_SRC emacs-lisp
+  (use-package emmet-mode
+    :config
+    (add-hook 'sgml-mode-hook 'emmet-mode)
+    (add-hook 'web-mode-hook 'emmet-mode))
+  (use-package company-web
+    :after (web-mode)
+    :config
+    (add-hook 'web-mode-hook (lambda ()
+                               (add-to-list (make-local-variable 'company-backends) '(company-web-html :with company-yasnippet)))))
+  (use-package ac-html-bootstrap
+    :after (company-web)
+    :init
+    (add-hook 'web-mode-hook 'company-web-bootstrap+)
+    (add-hook 'web-mode-hook 'company-web-fa+))
   (use-package web-mode
     :preface
     (defun shackra/webdev-refresh-page-on-save ()
@@ -1637,15 +1658,6 @@ Un modo mayor para editar paginas web
     (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-    (use-package emmet-mode
-      :config
-      (add-hook 'sgml-mode-hook 'emmet-mode)
-      (add-hook 'web-mode-hook 'emmet-mode))
-    (use-package company-web
-      :config
-      (add-hook 'web-mode-hook (lambda ()
-                                 (add-to-list (make-local-variable 'company-backends) '(company-web-html :with company-yasnippet))))
-      (use-package ac-html-bootstrap))
     (use-package web-beautify
       :config
       (add-hook 'json-mode-hook
@@ -1661,11 +1673,11 @@ Un modo mayor para editar paginas web
 *** PHP
 modo mayor para editar código PHP
 #+BEGIN_SRC emacs-lisp
-  (use-package php-mode
+  (use-package php-refactor-mode
+    :after (php-mode)
     :config
-    (use-package php-refactor-mode
-      :config
-      (add-hook 'php-mode-hook 'php-refactor-mode)))
+    (add-hook 'php-mode-hook 'php-refactor-mode))
+  (use-package php-mode)
 #+END_SRC
 *** golang
 Modo mayor para editar archivos Golang.
