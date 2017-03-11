@@ -1790,29 +1790,30 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
 *** javascript
 modo mayor para editar JavaScript
 #+BEGIN_SRC emacs-lisp
-  (use-package js2-mode
+  (use-package company-tern
+    :after (company)
+    :if (executable-find "tern")
+    :init
+    (setf company-tern-property-marker " <p>")
+    (setf company-tern-meta-as-single-line t)
     :config
-    (use-package company-tern
-      :if (executable-find "tern")
-      :init
-      (setf company-tern-property-marker " <p>")
-      (setf company-tern-meta-as-single-line t)
-      :config
-      (dolist (hook '(js2-mode-hook
-                      inferior-js-mode-hook))
-        (add-hook hook (lambda ()
-                         (add-to-list (make-local-variable 'company-backends) '(company-tern :with company-yasnippet))))))
-    (use-package js2-refactor
-      :config
-      (add-hook 'js2-mode-hook #'js2-refactor-mode))
-    (use-package skewer-mode
-      :disabled t
-      :config
-      (add-hook 'js2-mode-hook 'skewer-mode)
-      (add-hook 'css-mode-hook 'skewer-css-mode)
-      (add-hook 'html-mode-hook 'skewer-html-mode)
-      (when (fboundp 'web-mode)
-        (add-hook 'web-mode-hook 'skewer-html-mode))))
+    (dolist (hook '(js2-mode-hook
+                    inferior-js-mode-hook))
+      (add-hook hook (lambda ()
+                       (add-to-list (make-local-variable 'company-backends) '(company-tern :with company-yasnippet))))))
+  (use-package js2-refactor
+    :after (js2-mode)
+    :config
+    (add-hook 'js2-mode-hook #'js2-refactor-mode))
+  (use-package js2-mode)
+  (use-package skewer-mode
+    :disabled t
+    :config
+    (add-hook 'js2-mode-hook 'skewer-mode)
+    (add-hook 'css-mode-hook 'skewer-css-mode)
+    (add-hook 'html-mode-hook 'skewer-html-mode)
+    (when (fboundp 'web-mode)
+      (add-hook 'web-mode-hook 'skewer-html-mode)))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
@@ -1839,6 +1840,7 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 *** Stylus
 #+BEGIN_SRC emacs-lisp
   (use-package stylus-mode
+    :after (rainbow-mode)
     :init
     (add-hook 'stylus-mode-hook 'rainbow-mode))
 #+END_SRC
