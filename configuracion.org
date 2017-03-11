@@ -1867,18 +1867,6 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
                                  (setup-tide-mode)))))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
-*** =auto-fill-mode=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:56]
-- Refiled on [2015-11-12 jue 16:50]
-:END:
-Rompe lineas de texto de manera automática en cierta columna
-#+BEGIN_SRC emacs-lisp
-  (use-package auto-fill
-    :ensure nil
-    :diminish auto-fill-function
-    :preface (provide 'auto-fill))
-#+END_SRC
 *** =flyspell-mode=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:56]
