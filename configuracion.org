@@ -573,16 +573,22 @@ Manejador de archivos de serie para Emacs.
 
 Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction/][Dired as Default File Manager - Introduction]].
 #+BEGIN_SRC emacs-lisp
+  ;; -*- lexical-binding: t -*-
   (use-package dired
     :ensure nil
     :bind (:map dired-mode-map
                 ("[" . multi-term)
-                ("," . dired-omit-mode))
+                ("," . dired-omit-mode)
+                ("e" . ora-ediff-files)
+                ("c" . dired-do-compress-to) ;; Necesita Emacs 25.x
+                )
     :init
     (setq-default dired-omit-mode t)
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
     (setq-default dired-omit-verbose nil)
     (setf dired-dwim-target t)
+    ;; registra 7zip para compresión de archivos.
+    (add-to-list 'dired-compress-files-alist '("\\tar\\.7z\\'" . "tar cf - %i | 7z a -si -m0=lzma2 -mx=3 %o.tar.7z"))
     (defun shackra/dired-no-esconder-detalles ()
       "No esconder los detalles de los archivos en dired, se ven muy bien"
       (dired-hide-details-mode 0))
@@ -593,6 +599,26 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
           (forward-line 2) ;; beyond dir. header
           (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
         (set-buffer-modified-p nil)))
+    ;; extraído de https://oremacs.com/2017/03/18/dired-ediff/
+    (defun ora-ediff-files ()
+      (interactive)
+      (let ((files (dired-get-marked-files))
+            (wnd (current-window-configuration)))
+        (if (<= (length files) 2)
+            (let ((file1 (car files))
+                  (file2 (if (cdr files)
+                             (cadr files)
+                           (read-file-name
+                            "Archivo: "
+                            (dired-dwim-target-directory)))))
+              (if (file-newer-than-file-p file1 file2)
+                  (ediff-files file2 file1)
+                (ediff-files file1 file2))
+              (add-hook 'ediff-after-quit-hook-internal
+                        (lambda ()
+                          (setq ediff-after-quit-hook-internal nil)
+                          (set-window-configuration wnd))))
+          (error "Más de 2 archivos no deberían ser marcados"))))
     :config
     (add-hook 'dired-mode-hook 'shackra/dired-no-esconder-detalles)
     (defadvice dired-readin
