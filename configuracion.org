@@ -617,10 +617,11 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
                           (setq ediff-after-quit-hook-internal nil)
                           (set-window-configuration wnd))))
           (error "Más de 2 archivos no deberían ser marcados"))))
+    (with-eval-after-load 'dired-aux
+      ;; registra 7zip para compresión de archivos.
+      (add-to-list 'dired-compress-files-alist '("\\tar\\.7z\\'" . "tar cf - %i | 7z a -si -m0=lzma2 -mx=3 %o.tar.7z")))
     :config
     (add-hook 'dired-mode-hook 'shackra/dired-no-esconder-detalles)
-    ;; registra 7zip para compresión de archivos.
-    (add-to-list 'dired-compress-files-alist '("\\tar\\.7z\\'" . "tar cf - %i | 7z a -si -m0=lzma2 -mx=3 %o.tar.7z"))
     (defadvice dired-readin
         (after dired-after-updating-hook first () activate)
       "Sort dired listings with directories first before adding marks."
