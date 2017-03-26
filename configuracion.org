@@ -668,6 +668,7 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     ;; para revertir un cambio use `C-x u'. Más información en:
     ;;   http://melpa.milkbox.net/#/undo-tree
     :diminish undo-tree-mode
+    :bind (:map undo-tree-visualizer-mode-map ("RET" . undo-tree-visualizer-quit))
     :init
     (defadvice undo-tree-make-history-save-file-name
         (after undo-tree activate)
@@ -2507,18 +2508,21 @@ Mejor visor de PDFs para Emacs
   (use-package pdf-tools
     :mode ("\\.pdf\\'" . pdf-view-mode))
 #+END_SRC
-*** Emojify
+*** Emojify 😏
 Muestra imágenes de emojis en lugar de los caracteres utf-8
 #+BEGIN_SRC emacs-lisp
   (use-package emojify
-    :if (and (>= emacs-major-version 24) (>= emacs-minor-version 3))
-    :config
-    (use-package company-emoji
-      :config (add-hook 'text-mode-hook
-                        (lambda ()
-                          (add-to-list
-                           (make-local-variable 'company-backends) '(company-emoji :with company-yasnippet)))))
+    ;; Este paquete sólo funciona si la versión de Emacs es mayor o igual a 24.3
+    ;; y Emacs fue compilado con soporte para PNG
+    :if (and (version<= "24.3" emacs-version) (image-type-available-p 'png))
+    :init
     (add-hook 'after-init-hook #'global-emojify-mode))
+  (use-package company-emoji
+    :after (emojify)
+    :config (add-hook 'text-mode-hook
+                      (lambda ()
+                        (add-to-list
+                         (make-local-variable 'company-backends) '(company-emoji :with company-yasnippet)))))
 #+END_SRC
 *** free-keys
 Muestra cuales combinaciones de teclas están libres para asignar. Asociado @@html:<kbd>C-h C-k</kbd>@@.
