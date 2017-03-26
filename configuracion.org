@@ -150,7 +150,7 @@ Teclas
     (defun mi/switch-buffer (arg)
       (interactive "p")
       (cond
-       ((eq arg 4) (switch-to-buffer))
+       ((eq arg 4) (ivy-switch-buffer))
        ((eq arg 16) (hydra-win/body))
        ((eq arg 1) (if (projectile-project-p) (projectile-switch-to-buffer) (ivy-switch-buffer))))))
 #+END_SRC
