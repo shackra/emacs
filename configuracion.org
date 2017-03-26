@@ -2586,3 +2586,10 @@ Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer q
 
   (add-hook 'after-init-hook (lambda () (setf company-backends (mapcar #'company-mode/backend-with-yas company-backends))) t)
 #+END_SRC
+*** =webpaste=
+Pega regiones o buffers completos en servicios como pastebin
+#+BEGIN_SRC emacs-lisp
+  (use-package webpaste
+    :bind (("C-c C-p C-b" . webpaste-paste-buffer)
+           ("C-c C-p C-r" . webpaste-paste-region)))
+#+END_SRC
