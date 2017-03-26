@@ -2048,24 +2048,13 @@ Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
                  ("l"   . mc/edit-beginnings-of-lines)
                  ("C-l" . mc/edit-ends-of-lines))))
 #+END_SRC
-*** visual-regexp
-Expresiones regulares de Python, cambios visibles antes de aplicarlos. Asociado a @@html:<kbd>C-c r</kbd>@@ y @@html:<kbd>C-c q</kbd>@@.
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:57]
-- Refiled on [2015-11-12 jue 16:49]
-:END:
-#+BEGIN_SRC emacs-lisp
-  (use-package visual-regexp
-    :config
-    (use-package visual-regexp-steroids
-      :init
-      (require 'visual-regexp-steroids)
-      :bind (("C-c r" . vr/replace)
-             ("C-c q" . vr/query-replace))))
+*** =pcre2el=
+Convierte entre sintaxis de expresiones regulares PCRE, Emacs y RX.
 
-  (use-package re-builder
-    :init
-    (setq reb-re-syntax 'string))
+#+BEGIN_SRC emacs-lisp
+  (use-package pcre2el
+    :diminish pcre-mode
+    :config (pcre-mode t))
 #+END_SRC
 *** =visual-fill-column=
 :LOGBOOK:
