@@ -2214,7 +2214,7 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
                    (vc-state (buffer-file-name (current-buffer)))
                  nil))
     :init
-    (setf telephone-line-height 30)
+    (setf telephone-line-height 40)
     (custom-set-faces
      '(mode-line ((t (:box nil))))
      '(mode-line-inactive ((t (:box nil))))
