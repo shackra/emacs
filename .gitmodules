@@ -16,3 +16,6 @@
 [submodule "snippets/amzn-mode"]
 	path = snippets/amzn-mode
 	url = git@bitbucket.org:shackra/amzn-mode-snippets.git
+[submodule "site-packages/dwight"]
+	path = site-packages/dwight
+	url = git@bitbucket.org:shackra/dwight-k.-schrute.git
