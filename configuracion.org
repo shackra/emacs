@@ -427,6 +427,7 @@ Saca cualquier rastro de tus archivos y datos privados de tu configuración de E
 Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
 #+BEGIN_SRC emacs-lisp
   (use-package secretaria
+    :after (f alert)
     :load-path "site-packages/secretaria/"
     :ensure nil
     :init
@@ -669,7 +670,10 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     ;; para revertir un cambio use `C-x u'. Más información en:
     ;;   http://melpa.milkbox.net/#/undo-tree
     :diminish undo-tree-mode
-    :bind (:map undo-tree-visualizer-mode-map ("RET" . undo-tree-visualizer-quit))
+    :bind (:map
+           undo-tree-visualizer-mode-map ("RET" . undo-tree-visualizer-quit)
+           :map
+           global-map ("C-x u" . undo-tree-visualizer))
     :init
     (defadvice undo-tree-make-history-save-file-name
         (after undo-tree activate)
@@ -996,6 +1000,8 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
 *** Chrome desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package kite-mini
+    :disabled t
+    :after (simple-httpd)
     :init
     (defun shackra/webdev-refresh-page-on-save-chrome ()
       "Refresca la pagina en Chrome para ver los cambios realizados"
@@ -1188,6 +1194,7 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wikemacs.org/wiki/Mediawiki.el][Mediawiki.el - WikEmacs]]
 #+BEGIN_SRC emacs-lisp
   (use-package mediawiki
+    :disabled t
     :init
     (setf mediawiki-site-alist '(("Wikipedia en español" "https://es.wikipedia.org/w/" "" "" "Portal:Iglesia_católica")
                                  ("Wikipedia en Inglés" "https://en.wikipedia.org/w/" "" "" "Portal:Catholicism")
@@ -1215,7 +1222,7 @@ Conexión a Weechat desde Emacs
      'org-babel-load-languages
      '((emacs-lisp . t)
        (python . t)
-       (sh . t)))
+       (shell . t)))
 #+END_SRC
 *** =prog-mode=
 Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
@@ -1552,6 +1559,7 @@ Paquete extensivo para escribir y formatear documentos TeX
 Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de programación de sistemas que corre realmente rapido, previene fallos de segmentación (segfaults), y garantiza seguridad en programas multi-hilo.
 #+BEGIN_SRC emacs-lisp
   (use-package rustfmt
+    :disabled t ;; no existe en Melpa (20/05/2017)
     :after (rust-mode)
     :config
     (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
@@ -2451,8 +2459,7 @@ Eliminación de espacios de manera no obstrusiva
 Cliente para MPD
 #+BEGIN_SRC emacs-lisp
   (use-package mingus
-    :if (executable-find "mpd")
-    :preface (require 'mingus-stays-home))
+    :if (executable-find "mpd"))
 #+END_SRC
 *** camcorder
 Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
@@ -2502,7 +2509,7 @@ Muestra cuales combinaciones de teclas están libres para asignar. Asociado @@ht
 *** Pocket
 #+BEGIN_SRC emacs-lisp
   (use-package el-pocket
-    :preface (require 'thingatpt) (require 'el-pocket)
+    :preface (require 'thingatpt)
     :bind (:map mu4e-view-mode-map ("l" . el-pocket-add-url-at-point))
     :init (defun el-pocket-add-url-at-point ()
             "Add URL at point to Pocket"

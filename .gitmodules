@@ -13,3 +13,6 @@
 [submodule "site-packages/font-man"]
 	path = site-packages/font-man
 	url = https://bitbucket.org/shackra/font-man.git
+[submodule "snippets/amzn-mode"]
+	path = snippets/amzn-mode
+	url = git@bitbucket.org:shackra/amzn-mode-snippets.git
