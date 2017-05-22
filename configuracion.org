@@ -1464,30 +1464,28 @@ Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquet
 *** =python=
 Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
+  (use-package pyvenv :after (python))
+  (use-package py-autopep8 :after (python)
+    :preface (unless (executable-find "autopep8")
+               (message "¡autopep8 no esta instalado! Use `pip install autopep8'")))
+  (use-package company-anaconda
+    :after (company python)
+    :diminish anaconda-mode
+    :preface
+    (when (>= (call-process "python" nil nil nil "-m" "jedi") 1)
+      (message (format "Modulo jedi no instalado para interprete Python: %s. Auto-completado para Python no funcionara sin ese modulo" "python")))
+    :config
+    (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet))))
+    (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
+
   (use-package python
+    :after (pyvenv)
     :ensure nil
     :if (or (executable-find "python") (executable-find "python3"))
     :interpreter ("python3" . python-mode)
     :preface
     (require 'python)
     :config
-    (use-package pyvenv :defer t)
-    (use-package py-autopep8 :defer t
-      :preface (unless (executable-find "autopep8")
-                 (message "¡autopep8 no esta instalado!")
-                 (message "Use pip install autopep8 para resolver el problema")))
-    (use-package company-anaconda
-      :if (executable-find "python")
-      :diminish anaconda-mode
-      :preface
-      (if (executable-find "python")
-          (when (>= (call-process "python" nil nil nil "-m" "jedi") 1)
-            (message (format "Modulo jedi no instalado para interprete Python: %s" "python"))
-            (message "Auto-completado para Python no funcionara sin ese modulo"))
-        (message "LOL! El interprete Python ni siquiera esta instalado en el sistema"))
-      :config
-      (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet))))
-      (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
     (if (fboundp 'defhydra)
         (prog1 (defhydra hydra-py (:columns 2)
                  "Python (re) sangrado de bloques"
@@ -1953,6 +1951,7 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
 :END:
 Revisión de errores en el código fuente, al vuelo.
 #+BEGIN_SRC emacs-lisp
+  (use-package flycheck-package :after (flycheck))
   (use-package flycheck
     :diminish flycheck-mode
     :init
@@ -1960,7 +1959,6 @@ Revisión de errores en el código fuente, al vuelo.
     (setf flycheck-indication-mode 'left-fringe)
     (setf flycheck-display-errors-delay 5.0)
     :config
-    (use-package flycheck-package)
     (add-hook 'prog-mode-hook #'flycheck-mode))
 #+END_SRC
 *** =multiple-cursors=
