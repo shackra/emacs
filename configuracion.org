@@ -1051,7 +1051,10 @@ Teclas:
 - M-C :: iedit-toggle-case-sensitive
 #+BEGIN_SRC emacs-lisp
   (use-package iedit
-    :bind (("C-'" . iedit-mode)))
+    :bind (:map
+           iedit-mode-keymap ("RET" . iedit-quit)
+           :map
+           global-map ("C-'" . iedit-mode)))
 #+END_SRC
 ** Comunicación
 *** =mu4e=
