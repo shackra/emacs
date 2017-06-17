@@ -1487,11 +1487,24 @@ Modo mayor para programar en Python
   (use-package pyvenv :after (python)
     :init
     (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
+
   (use-package py-autopep8 :after (python)
     :preface (unless (executable-find "autopep8")
                (message "¡autopep8 no esta instalado! Use `pip install autopep8'")))
+
+  (use-package sphinx-doc
+    :after (python)
+    :init (add-hook 'python-mode-hook #'sphinx-doc-mode))
+
+  (use-package pydoc-info)
+
   (use-package company-anaconda
-    :after (company python)
+    :after (python company)
+    :bind (:map python-mode-map
+                ("M-." . anaconda-mode-find-definitions)
+                ("M-," . anaconda-mode-find-assignments)
+                ("M-r" . anaconda-mode-find-references)
+                ("M-*" . anaconda-mode-go-back))
     :diminish anaconda-mode
     :preface
     (when (>= (call-process "python" nil nil nil "-m" "jedi") 1)
@@ -1501,7 +1514,6 @@ Modo mayor para programar en Python
     (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
 
   (use-package python
-    :after (pyvenv)
     :ensure nil
     :if (executable-find "python")
     :interpreter ("python" . python-mode)
@@ -1509,14 +1521,14 @@ Modo mayor para programar en Python
     (require 'python)
     :config
     (if (fboundp 'defhydra)
-        (prog1 (defhydra hydra-py (:columns 2)
-                 "Python (re) sangrado de bloques"
+        (prog1 (defhydra hydra-py (:columns 2 :color amaranth)
+                 "Python: sangrado de bloques"
                  ("<" python-indent-shift-left "Decrementa el sangrado")
                  (">" python-indent-shift-right "Incrementa el sangrado")
-                 ("SPC" indent-region "sangra la región" :color blue))
+                 ("SPC" nil "Salir"))
           ;; atamos la funcion hydra-py
-          (bind-key "C-c <" 'hydra-py/body python-mode-map)
-          (bind-key "C-c >" 'hydra-py/body python-mode-map))
+          (bind-key "C-c <" 'hydra-py/python-indent-shift-left python-mode-map)
+          (bind-key "C-c >" 'hydra-py/python-indent-shift-right python-mode-map))
       ;; Hydra no esta disponible, no podemos definir nuestra hydra entonces
       ;; atamos los atajos del teclado como si nada hubiera sucedido
       (bind-key "C-c <" 'python-indent-shift-left python-mode-map)
@@ -1535,9 +1547,13 @@ Modo mayor para programar en Python
     (defun shackra/python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
       (electric-indent-local-mode -1)
+      (aggressive-indent-mode -1)
       (pyvenv-mode)
       (py-autopep8-enable-on-save))
     (add-hook 'python-mode-hook #'shackra/python-mode))
+
+  (use-package traad
+    :after (python))
 #+END_SRC
 *** =auctex-mode=
 Paquete extensivo para escribir y formatear documentos TeX
