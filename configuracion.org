@@ -807,7 +807,6 @@ Archivos recientes abiertos en Emacs.
 Incrementa la selección por unidades semánticas. Asociado a @@html:<kbd>C-c 0</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package expand-region
-    :defer 3
     :bind ("C-c 0" . er/expand-region))
 #+END_SRC
 *** =avy-jump=
