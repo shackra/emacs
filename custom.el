@@ -66,7 +66,7 @@
     ("/home/jorge/go/src/bitbucket.org/capslockdev/betsy/proyecto.org" "/home/jorge/Kartelo/clientes/Design Soft/Selore POS/proyecto.org" "/home/jorge/go/src/bitbucket.org/shackra/4hoa/proyecto.org")) nil (org-trello))
  '(package-selected-packages
    (quote
-    (webpaste highlight-indent-guides el-pocket twittering-mode better-defaults use-package org)))
+    (pydoc-info sphinx-doc tide expand-region font-lock-studio gherkin-mode webpaste highlight-indent-guides el-pocket twittering-mode better-defaults use-package org)))
  '(py-autopep8-options nil)
  '(python-shell-interpreter "python3")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
