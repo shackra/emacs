@@ -1932,6 +1932,11 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
                                (when (string-equal "jsx" (file-name-extension buffer-file-name))
                                  (setup-tide-mode)))))
 #+END_SRC
+*** Gherkin
+#+BEGIN_SRC emacs-lisp
+  (use-package gherkin-mode
+    :mode ("\\.feature$" . gherkin-mode))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
