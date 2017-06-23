@@ -1374,6 +1374,8 @@ Teclas
     (setq org-refile-allow-creating-parent-nodes 'confirm)
 
     (setf org-directory "~/org/")
+    ;; evita dividir una linea con M-RET
+    (setf org-M-RET-may-split-line '((default . nil)))
     (setf org-default-notes-file (expand-file-name "quizas.org" org-directory)
           org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)
                                  (expand-file-name "fechas.org" org-directory)))
