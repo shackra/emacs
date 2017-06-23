@@ -472,7 +472,7 @@ Teclas
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
     :config
-    (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*" "\\*Help\\*" "\\*Compile-Log\\*" "\\*anaconda-mode\\*")))
+    (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*" "\\*Help\\*" "\\*Compile-Log\\*" "\\*anaconda-mode\\*" "\\*prodigy-\\*")))
     (use-package counsel
       :demand t
       :config (use-package counsel-projectile)
@@ -1056,6 +1056,23 @@ Teclas:
            global-map ("C-'" . iedit-mode)))
 #+END_SRC
 ** Comunicación
+*** prodigy
+Corre procesos externos a Emacs de manera automática
+#+BEGIN_SRC emacs-lisp
+  (use-package prodigy
+    :if (daemonp)
+    :init
+    (prodigy-define-tag
+      :name 'email
+      :ready-message "Checking Email using IMAP IDLE. Ctrl-C to shutdown.")
+    (prodigy-define-service
+      :name "pyimapnotify"
+      :command "pyimapnotify"
+      :args (list "-v" "-c" (expand-file-name ".config/imapnotify/jorge.conf.private" (getenv "HOME")))
+      :tags '(email)
+      :kill-signal 'sigkill)
+    (prodigy-start-service (car prodigy-services)))
+#+END_SRC
 *** =mu4e=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:52]
@@ -1091,9 +1108,31 @@ Un versátil cliente de correo electrónico para Emacs.
 
     (defadvice mu4e-quit (after mu4e-close-and-push activate)
       "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
-      (start-process "pushmail" nil "pushmail.sh")
+      ;;(start-process "pushmail" nil "pushmail.sh")
       (jump-to-register :mu4e-fullscreen))
     :init
+    ;; Codigo extraido de https://martinralbrecht.wordpress.com/2016/05/30/handling-email-with-emacs/
+    (defun malb/canonicalise-contact-name (name)
+      (let ((case-fold-search nil))
+        (setq name (or name ""))
+        (if (string-match-p "^[^ ]+@[^ ]+\.[^ ]" name)
+            ""
+          (progn
+            ;; drop email address
+            (setq name (replace-regexp-in-string "^\\(.*\\) [^ ]+@[^ ]+\.[^ ]" "\\1" name))
+            ;; strip quotes
+            (setq name (replace-regexp-in-string "^\"\\(.*\\)\"" "\\1" name))
+            ;; deal with YELL’d last names
+            (setq name (replace-regexp-in-string "^\\(\\<[[:upper:]]+\\>\\) \\(.*\\)" "\\2 \\1" name))
+            ;; Foo, Bar becomes Bar Foo
+            (setq name (replace-regexp-in-string "^\\(.*\\), \\([^ ]+\\).*" "\\2 \\1" name))))))
+
+    (defun malb/mu4e-contact-rewrite-function (contact)
+      (let* ((name (or (plist-get contact :name) ""))
+             (mail (plist-get contact :mail))
+             (case-fold-search nil))
+        (plist-put contact :name (malb/canonicalise-contact-name name))
+        contact))
     (setq org-mu4e-link-query-in-headers-mode nil)
     (setf mu4e-get-mail-command "getmail.sh")
     ;; html2text es un paquete que debe estar instalado en tu sistema
@@ -1119,6 +1158,7 @@ Un versátil cliente de correo electrónico para Emacs.
     (setf smtpmail-stream-type  'ssl)
     (setf smtpmail-smtp-service 465)
     (setf message-send-mail-function 'smtpmail-send-it)
+    (setq mu4e-contact-rewrite-function #'malb/mu4e-contact-rewrite-function)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados como importantes" ?m)
