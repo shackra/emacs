@@ -1111,28 +1111,6 @@ Un versátil cliente de correo electrónico para Emacs.
       ;;(start-process "pushmail" nil "pushmail.sh")
       (jump-to-register :mu4e-fullscreen))
     :init
-    ;; Codigo extraido de https://martinralbrecht.wordpress.com/2016/05/30/handling-email-with-emacs/
-    (defun malb/canonicalise-contact-name (name)
-      (let ((case-fold-search nil))
-        (setq name (or name ""))
-        (if (string-match-p "^[^ ]+@[^ ]+\.[^ ]" name)
-            ""
-          (progn
-            ;; drop email address
-            (setq name (replace-regexp-in-string "^\\(.*\\) [^ ]+@[^ ]+\.[^ ]" "\\1" name))
-            ;; strip quotes
-            (setq name (replace-regexp-in-string "^\"\\(.*\\)\"" "\\1" name))
-            ;; deal with YELL’d last names
-            (setq name (replace-regexp-in-string "^\\(\\<[[:upper:]]+\\>\\) \\(.*\\)" "\\2 \\1" name))
-            ;; Foo, Bar becomes Bar Foo
-            (setq name (replace-regexp-in-string "^\\(.*\\), \\([^ ]+\\).*" "\\2 \\1" name))))))
-
-    (defun malb/mu4e-contact-rewrite-function (contact)
-      (let* ((name (or (plist-get contact :name) ""))
-             (mail (plist-get contact :mail))
-             (case-fold-search nil))
-        (plist-put contact :name (malb/canonicalise-contact-name name))
-        contact))
     (setq org-mu4e-link-query-in-headers-mode nil)
     (setf mu4e-get-mail-command "getmail.sh")
     ;; html2text es un paquete que debe estar instalado en tu sistema
@@ -1158,7 +1136,6 @@ Un versátil cliente de correo electrónico para Emacs.
     (setf smtpmail-stream-type  'ssl)
     (setf smtpmail-smtp-service 465)
     (setf message-send-mail-function 'smtpmail-send-it)
-    (setq mu4e-contact-rewrite-function #'malb/mu4e-contact-rewrite-function)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados como importantes" ?m)
