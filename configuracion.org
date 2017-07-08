@@ -1355,11 +1355,10 @@ Teclas
     (setf org-directory "~/org/")
     ;; evita dividir una linea con M-RET
     (setf org-M-RET-may-split-line '((default . nil)))
-    (setf org-default-notes-file (expand-file-name "quizas.org" org-directory)
-          org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)
-                                 (expand-file-name "fechas.org" org-directory)))
+    (setf org-default-notes-file (expand-file-name "diario.org" org-directory)
+          org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)))
     (setf org-todo-keywords
-          '((sequence "POR-HACER(h)" "SIGNT(s)" "|" "TERMINADO(t)")
+          '((sequence "POR-HACER(p)" "SIGNT(s)" "|" "TERMINADO(t)")
             (sequence "ESPERA(e@/!)" "RETENER(r@/!)" "|" "CANCELADO(c@/!)")))
     (setf org-todo-keyword-faces
           '(("POR-HACER" :foreground "red" :weight bold)
@@ -1385,14 +1384,14 @@ Teclas
             ("bakabt" . "https://bakabt.me/browse.php?only=0&incomplete=1&bonus=1&c1=1&c2=1&reorder=1&q=%s")
             ("tokyotosho" . "https://www.tokyotosho.info/search.php?terms=%s&type=1&size_min=&size_max=&username=")))
     (setf org-capture-templates
-          '(("p" "Añadir tarea por hacer" entry (file "cosas por hacer.org")
+          '(("p" "Tarea por hacer" entry (file "cosas por hacer.org")
              "* POR-HACER %^{breve descripcion} %^g\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("l" "Tarea enlazada a algo" entry (file "cosas por hacer.org")
+            ("l" "Tarea enlazada" entry (file "cosas por hacer.org")
              "* POR-HACER %^{breve descripcion} %a %^g\nDEADLINE: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("f" "Fechas o eventos" entry (file "fechas.org")
+            ("f" "Fechas o eventos" entry (file+headline "cosas por hacer.org" "Fechas")
              "* POR-HACER %^{Nombre del evento} %^g\nSCHEDULED: %^T%?\n:PROPERTIES:%(if (yes-or-no-p \"¿Es esto un cumpleaños?\") (format \"\n:NACIMIENTO: %s\" (with-temp-buffer (org-time-stamp nil t) (buffer-string))) \"\")\n:CREATED: %U\n:END:" :kill-buffer t :clock-in t :clock-resume t)
-            ("d" "Escribir una nota en el diario" plain (file org-default-notes-file)
-             "* %^{Querido diario...}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :empty-lines 1 :kill-buffer t :clock-in t :clock-resume t)
+            ("d" "Escribir una nota en el diario" entry (file+datetree org-default-notes-file)
+             "* %^{Querido diario...}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :empty-lines 1 :kill-buffer t)
 
             ("g" "Algún día")
 
@@ -1425,18 +1424,24 @@ Teclas
                      (org-agenda-overriding-header "Tareas de alta prioridad por terminar:")))
               (agenda ""
                       ((org-agenda-span 'day)
-                       (tags-todo "-cumpleaños|-aniversario|-santoral")
-                       (org-agenda-overriding-header "Para hoy:")))
+                       (org-agenda-overriding-header "Hoy:")
+                       (org-agenda-show-all-dates nil)))
               (agenda ""
                       ((org-agenda-span 'week)
-                       (tags-todo "-cita|-evento")
-                       (org-agenda-files '("~/org/fechas.org"))
-                       (org-agenda-overriding-header "Cumpleaños, aniversarios y santoral:")))
+                       (org-agenda-start-day "+1d") ;; A partir de mañana
+                       (org-agenda-overriding-header "Semana:")
+                       (org-agenda-show-all-dates nil)))
+              (agenda ""
+                      ((org-agenda-span 'month)
+                       ;; A partir de la siguiente semana
+                       (org-agenda-start-day "+1w")
+                       (org-agenda-overriding-header "Mes:")
+                       (org-agenda-show-all-dates nil)))
               (alltodo ""
                        ((org-agenda-skip-function
                          '(or (air-org-skip-subtree-if-habit)
-                              (air-org-skip-subtree-if-priority ?A)
-                              (org-agenda-skip-if nil '(scheduled deadline))))
+                             (air-org-skip-subtree-if-priority ?A)
+                             (org-agenda-skip-if nil '(scheduled deadline))))
                         (org-agenda-overriding-header "Todas las tareas de prioridad normal:")))))))
     (setf org-archive-location (expand-file-name "~/org-archivos/archivado.org::* Entradas viejas y archivadas"))
     (setf org-footnote-auto-adjust t)
@@ -1459,8 +1464,7 @@ Teclas
     (setf org-log-into-drawer nil)
     (setf org-clock-persist 'history)
     :config
-    (org-clock-persistence-insinuate)
-    )
+    (org-clock-persistence-insinuate))
   (use-package org-indent
     :after (org)
     :ensure nil
