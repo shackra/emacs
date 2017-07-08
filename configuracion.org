@@ -1110,7 +1110,7 @@ Un versátil cliente de correo electrónico para Emacs.
 
     (defadvice mu4e-quit (after mu4e-close-and-push activate)
       "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
-      ;;(start-process "pushmail" nil "pushmail.sh")
+      (start-process "pushmail" nil "pushmail.sh")
       (jump-to-register :mu4e-fullscreen))
     :init
     (setq org-mu4e-link-query-in-headers-mode nil)
@@ -1870,7 +1870,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     (add-hook 'projectile-mode-hook #'shackra/go-mode-set-scope))
   (use-package flycheck-gometalinter
     :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
-    :after (go-mode)
+    :after (go-mode flycheck-mode)
     :init
     (if (executable-find "gometalinter.v1")
         (setf flycheck-gometalinter-executable "gometalinter.v1")
@@ -1961,8 +1961,8 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 #+END_SRC
 *** Gherkin
 #+BEGIN_SRC emacs-lisp
-  (use-package gherkin-mode
-    :mode ("\\.feature$" . gherkin-mode))
+  (use-package feature-mode
+    :mode ("\\.feature$" . feature-mode))
 #+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
