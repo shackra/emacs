@@ -1,6 +1,6 @@
 #+TITLE: Configuración de GNU Emacs
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Sislock)
-#+EMAIL: elcorreo@deshackra.com
+#+EMAIL: jorge@esavara.cr
 #+OPTIONS: toc:5 num:nil ^:nil
 #+STARTUP: overview
 
@@ -38,7 +38,7 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
               (progn (package-install newest-pkg)
                      (message (format "Paquete «%s» actualizado de la versión %s a la versión %s"
                                       (package-desc-name newest-pkg) old-ver new-ver))))
-          (unless old-dir
+          (when old-dir
             (delete-directory old-dir t))))))
 
   ;; repositorios de paquetes
@@ -82,7 +82,7 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
 La ubicación geográfica usada es la de San José, Costa Rica siendo tan pequeño hace innecesario especificar nuestra ubicación geográfica exacta.
 #+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Javier Araya Navarro"
-        user-mail-address "elcorreo@deshackra.com"
+        user-mail-address "jorge@esavara.cr"
         calendar-location-name "Heredia, CR"
         calendar-latitude 9.935607
         calendar-longitude -84.1833856)
@@ -134,12 +134,13 @@ Teclas
 - @@html:<kbd>C-x b</kbd>@@ :: Cambiar buffer. *Dentro de un proyecto*: Cambiar buffer de archivo relacionado a proyecto, prefijo @@html:<kbd>C-u</kbd>@@ Cambiar buffer, prefijo @@html:<kbd>C-u</kbd>@@ @@html:<kbd>C-u</kbd>@@ Inicia menú Hydra para Windmove.
 #+BEGIN_SRC emacs-lisp
   (use-package shackra-find-file-switch-buffer
+    :no-require t
     :ensure nil
     :preface (provide 'shackra-find-file-switch-buffer)
     :after (projectile ivy counsel)
     :bind (:map ctl-x-map
-                ("C-f" . mi/find-file)
-                ("b" . mi/switch-buffer))
+		("C-f" . mi/find-file)
+		("b" . mi/switch-buffer))
     :init
     (defun mi/find-file (arg)
       (interactive "p")
@@ -338,6 +339,7 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
 Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 #+BEGIN_SRC emacs-lisp
   (use-package mdct ;; siglas para Mapeo de Combinaciones de Teclas
+    :no-require t
     :ensure nil
     :preface (provide 'mdct)
     :init
@@ -354,8 +356,8 @@ Combinaciones de teclas que no pertenecen a ningún paquete en particular.
       (other-window 1))
     :config
     (bind-keys :map ctl-x-map
-               ("2" . shackra/split-window-vertically)
-               ("3" . shackra/split-window-horizontally)))
+	       ("2" . shackra/split-window-vertically)
+	       ("3" . shackra/split-window-horizontally)))
 #+END_SRC
 * Aliases
 Nombres más cortos para comandos usados frecuentemente
@@ -379,29 +381,31 @@ configuración sana de ciertas opciones en Emacs
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
 #+BEGIN_SRC emacs-lisp
   (use-package existefuente
+    :no-require t
     :ensure nil
     :preface (provide 'existefuente)
     :init
     (defun font-exists-p (font)
       "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
       (if (not (find-font (font-spec :name font)))
-          nil
-        t))
+	  nil
+	t))
     (defun shackra/arregla-emojis (&optional frame)
       ;; Para NS/Cocoa
       (when (eq system-type 'darwin)
-        (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
+	(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
       ;; Para GNU/Linux
       (when (and (font-exists-p "Symbola") (eq system-type 'gnu/linux))
-        (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend))))
+	(set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend))))
 
   (use-package misfuentes
+    :no-require t
     :ensure nil
     :preface (provide 'misfuentes)
     :init
     (defun shackra/font-set (&optional frame)
       (when (framep frame)
-        (select-frame frame))
+	(select-frame frame))
       (cond
        ((font-exists-p "Fira Code") (set-frame-font "Fira Code 10") (add-to-list 'default-frame-alist '(font . "Fira Code-10")))
        ((font-exists-p "Monoisome") (set-frame-font "Monoisome 9") (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
@@ -696,10 +700,11 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     :config
     (load-theme 'zenburn t))
 #+END_SRC
-*** nlinum
-Muestra el numero de lineas al margen del buffer
+*** numero de lineas
+Muestra el numero de lineas al margen del buffer, sea con native-linum (emacs 26+) o con nlinum.
 #+BEGIN_SRC emacs-lisp
   (use-package nlinum
+    :if (version< emacs-version "26")
     :pin gnu
     :init
     (defun ancho-nlinum-mode-hook ()
@@ -719,6 +724,13 @@ Muestra el numero de lineas al margen del buffer
           (defadvice make-frame (around toggle-nlinum-mode compile activate)
             (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
       (add-hook 'prog-mode-hook #'nlinum-mode)))
+
+  (use-package native-linum
+    :ensure nil
+    :no-require t
+    :if (version= emacs-version "26")
+    ;; TODO: ver como se activa native-linum
+    )
 #+END_SRC
 *** =company=
 :LOGBOOK:
@@ -1251,6 +1263,7 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
 Conexión a Weechat desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package weechat
+    :if (executable-find "weechat")
     :config
     (add-to-list 'weechat-modules 'weechat-spelling)
     (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
@@ -1483,6 +1496,7 @@ Teclas
 Sincroniza archivos org-mode y tableros en Trello
 #+BEGIN_SRC emacs-lisp
   (use-package org-trello
+    :disabled t
     :after (org)
     :init
     (custom-set-variables '(org-trello-files '("/home/jorge/go/src/bitbucket.org/capslockdev/betsy/proyecto.org"
@@ -1580,7 +1594,8 @@ Modo mayor para programar en Python
     (add-hook 'python-mode-hook #'shackra/python-mode))
 
   (use-package traad
-    :after (python))
+    :after (python)
+    :init (setf venv-location (or (getenv "WORKON_HOME") "/home/jorge/ENTORNOSVIRTUALES")))
 #+END_SRC
 *** =auctex-mode=
 Paquete extensivo para escribir y formatear documentos TeX
@@ -1664,13 +1679,15 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
       (if (projectile-project-p)
           (traad-open (projectile-project-root))
         (message "No estas en ningún proyecto!"))))
-  (use-package python-environment)
+  (use-package python-environment
+    :init
+    (setf python-environment-directory (or (getenv "WORKON_HOME") "/home/jorge/ENTORNOSVIRTUALES")))
   (use-package traad
     :after (python-environment)
     :config
     ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
     ;; de manera automática
-    (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad") user-emacs-directory)))
+    (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad"))))
         (traad-install-server)))
   (use-package hydra-traad
     :after (hydra traad)
@@ -1975,22 +1992,90 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
   (use-package flyspell
     :diminish flyspell-mode
     :ensure nil
+    :init
+    ;; sacado de http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
+    ;; if (aspell installed) { use aspell}
+    ;; else if (hunspell installed) { use hunspell }
+    ;; whatever spell checker I use, I always use English dictionary
+    ;; I prefer use aspell because:
+    ;; 1. aspell is older
+    ;; 2. looks Kevin Atkinson still get some road map for aspell:
+    ;; @see http://lists.gnu.org/archive/html/aspell-announce/2011-09/msg00000.html
+    (defun flyspell-detect-ispell-args (&optional run-together)
+      "if RUN-TOGETHER is true, spell check the CamelCase words."
+      (let (args)
+        (cond
+         ((string-match  "aspell$" ispell-program-name)
+          ;; Force the Spanish dictionary for aspell
+          ;; Support Camel Case spelling check (tested with aspell 0.6)
+          (setq args (list "--sug-mode=ultra" "--lang=es_ES"))
+          (if run-together
+              (setq args (append args '("--run-together" "--run-together-limit=5" "--run-together-min=2")))))
+         ((string-match "hunspell$" ispell-program-name)
+          ;; Force the Spanish dictionary for hunspell
+          (setq args "-d es_ES")))
+        args))
+
+    (cond
+     ((executable-find "aspell")
+      ;; you may also need `ispell-extra-args'
+      (setq ispell-program-name "aspell"))
+     ((executable-find "hunspell")
+      (setq ispell-program-name "hunspell")
+
+      ;; Please note that `ispell-local-dictionary` itself will be passed to hunspell cli with "-d"
+      ;; it's also used as the key to lookup ispell-local-dictionary-alist
+      ;; if we use different dictionary
+      (setq ispell-local-dictionary "es_ES")
+      (setq ispell-local-dictionary-alist
+            '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "en_US") nil utf-8)
+              ("es_ES" "[[:alpha:]]" "[^[:alpha:]]" "[ñ]" nil ("-d" "es_ES") nil utf-8))))
+     (t (setq ispell-program-name nil)))
+
+    ;; ispell-cmd-args is useless, it's the list of *extra* arguments we will append to the ispell process when "ispell-word" is called.
+    ;; ispell-extra-args is the command arguments which will *always* be used when start ispell process
+    ;; Please note when you use hunspell, ispell-extra-args will NOT be used.
+    ;; Hack ispell-local-dictionary-alist instead.
+    (setq-default ispell-extra-args (flyspell-detect-ispell-args t))
+    ;; (setq ispell-cmd-args (flyspell-detect-ispell-args))
+    (defadvice ispell-word (around my-ispell-word activate)
+      (let ((old-ispell-extra-args ispell-extra-args))
+        (ispell-kill-ispell t)
+        (setq ispell-extra-args (flyspell-detect-ispell-args))
+        ad-do-it
+        (setq ispell-extra-args old-ispell-extra-args)
+        (ispell-kill-ispell t)))
+
+    (defadvice flyspell-auto-correct-word (around my-flyspell-auto-correct-word activate)
+      (let ((old-ispell-extra-args ispell-extra-args))
+        (ispell-kill-ispell t)
+        ;; use emacs original arguments
+        (setq ispell-extra-args (flyspell-detect-ispell-args))
+        ad-do-it
+        ;; restore our own ispell arguments
+        (setq ispell-extra-args old-ispell-extra-args)
+        (ispell-kill-ispell t)))
+
+    (defun text-mode-hook-setup ()
+      ;; Turn off RUN-TOGETHER option when spell check text-mode
+      (setq-local ispell-extra-args (flyspell-detect-ispell-args)))
     :config
+    (add-hook 'text-mode #'text-mode-hook-setup)
     (use-package flyspell-correct-ivy
       :bind (:map flyspell-mode-map ("C-." . flyspell-correct-previous-word-generic))
       :init
-      (setf flyspell-correct-auto-delay 2.0)
-      ;;(add-hook 'flyspell-mode-hook #'flyspell-correct-auto-mode)
-      ))
+      (setf flyspell-correct-auto-delay 2.0)))
 
   (use-package shackra/ispell-dict-switch
     :bind (("<f8>" . shackra/ispell-cycle-dict))
+    :no-require t
     :ensure nil
     :preface (provide 'shackra/ispell-dict-switch)
     :config
     (setf shackra/ispell-dict-list (list "es" "en"))
     :init
     (defvar shackra/ispell-dict-list (list) "Lista de diccionarios para cambiar")
+
     (defun shackra--ispell-current-dict ()
       "Obtiene el diccionario actual o retorna el establecido por defecto"
       (if ispell-current-dictionary
@@ -2039,6 +2124,7 @@ Revisión de errores en el código fuente, al vuelo.
 Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package hydra-mc
+    :no-require t
     :ensure nil
     :preface (provide 'hydra-mc)
     :after (multiple-cursors hydra)
@@ -2058,40 +2144,40 @@ Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
       ("C-p" mc/mark-previous-lines "Linea")
       ("SPC" nil "Salir" :color blue))
     (bind-keys :prefix-map shackra/mc-map
-               :prefix "C-c n"
-               ("n"   . hydra-mc-next/mc/mark-next-like-this)
-               ("N"   . hydra-mc-next/mc/unmark-next-like-this)
-               ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
-               ("C-n" . hydra-mc-next/mc/mark-next-lines)
-               ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
-               ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
-               ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
-               ("C-p" . hydra-mc-previous/mc/mark-previous-lines)))
+	       :prefix "C-c n"
+	       ("n"   . hydra-mc-next/mc/mark-next-like-this)
+	       ("N"   . hydra-mc-next/mc/unmark-next-like-this)
+	       ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
+	       ("C-n" . hydra-mc-next/mc/mark-next-lines)
+	       ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
+	       ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
+	       ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
+	       ("C-p" . hydra-mc-previous/mc/mark-previous-lines)))
 
   (use-package multiple-cursors
     :config
     (bind-keys :prefix-map shackra/mc-map
-               :prefix "C-c n"
-               ("n"   . mc/mark-next-like-this)
-               ("N"   . mc/unmark-next-like-this)
-               ("M-n" . mc/skip-to-next-like-this)
-               ("C-n" . mc/mark-next-lines)
-               ("p"   . mc/mark-previous-like-this)
-               ("P"   . mc/unmark-previous-like-this)
-               ("M-p" . mc/skip-to-previous-like-this)
-               ("C-p" . mc/mark-previous-lines)
-               ("a"   . mc/mark-all-dwim)
-               ("A"   . mc/mark-all-like-this-dwim)
-               ("M-a" . mc/mark-all-like-this-in-defun)
-               ("M-A" . mc/mark-all-words-like-this-in-defun)
-               ("0"   . mc/insert-numbers)
-               ("h"   . mc/mark-sgml-tag-pair)
-               ("s"   . mc/sort-regions)
-               ("m"   . set-rectangular-region-anchor)
-               ("r"   . mc/reverse-regions)
-               ("M-l" . mc/edit-lines)
-               ("l"   . mc/edit-beginnings-of-lines)
-               ("C-l" . mc/edit-ends-of-lines)))
+	       :prefix "C-c n"
+	       ("n"   . mc/mark-next-like-this)
+	       ("N"   . mc/unmark-next-like-this)
+	       ("M-n" . mc/skip-to-next-like-this)
+	       ("C-n" . mc/mark-next-lines)
+	       ("p"   . mc/mark-previous-like-this)
+	       ("P"   . mc/unmark-previous-like-this)
+	       ("M-p" . mc/skip-to-previous-like-this)
+	       ("C-p" . mc/mark-previous-lines)
+	       ("a"   . mc/mark-all-dwim)
+	       ("A"   . mc/mark-all-like-this-dwim)
+	       ("M-a" . mc/mark-all-like-this-in-defun)
+	       ("M-A" . mc/mark-all-words-like-this-in-defun)
+	       ("0"   . mc/insert-numbers)
+	       ("h"   . mc/mark-sgml-tag-pair)
+	       ("s"   . mc/sort-regions)
+	       ("m"   . set-rectangular-region-anchor)
+	       ("r"   . mc/reverse-regions)
+	       ("M-l" . mc/edit-lines)
+	       ("l"   . mc/edit-beginnings-of-lines)
+	       ("C-l" . mc/edit-ends-of-lines)))
 #+END_SRC
 *** =pcre2el=
 Convierte entre sintaxis de expresiones regulares PCRE, Emacs y RX.
@@ -2174,10 +2260,11 @@ Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configur
 He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0 en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
 #+BEGIN_SRC emacs-lisp
   (use-package sbol
+    :no-require t
     :ensure nil
     :preface (provide 'sbol)
     :bind (([home] . smart-beginning-of-line)
-           ("C-a" . smart-beginning-of-line))
+	   ("C-a" . smart-beginning-of-line))
     :init
     (defun smart-beginning-of-line ()
       "Move point to first non-whitespace character or beginning-of-line.
@@ -2188,7 +2275,7 @@ He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a
     (let ((oldpos (point)))
       (back-to-indentation)
       (and (= oldpos (point))
-           (beginning-of-line)))))
+	   (beginning-of-line)))))
 #+END_SRC
 *** transcription-mode
 Modo mayor para editar transcripciones
