@@ -1207,6 +1207,7 @@ Acceso a Stackoverflow y subsitios desde Emacs.
 Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 #+BEGIN_SRC emacs-lisp
   (use-package org-webpage
+    :after (el2org ox-gfm)
     :config
     ;; Le pedimos a org-mode que no meta las patas cuando exporta archivos a
     ;; HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
@@ -1240,6 +1241,8 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
       '(progn
          (add-to-list 'org-export-filter-src-block-functions
                       'org2html-wrap-blocks-in-code))))
+  (use-package el2org)
+  (use-package ox-gfm)
 #+END_SRC
 *** mediawiki
 :LOGBOOK:
@@ -1486,13 +1489,15 @@ Teclas
     :diminish org-indent-mode)
   (use-package org-projectile
     :after (org projectile)
-    :demand t
-    :bind (("C-c p x p" . org-projectile:project-todo-completing-read))
+    :bind (("C-c p o p" . org-projectile-project-todo-completing-read))
     :init
-    (setf org-projectile:per-repo-filename "proyecto.org")
+    (setq org-confirm-elisp-link-function nil)
     :config
-    (add-to-list 'org-capture-templates (org-projectile:project-todo-entry "P"))
-    (setf org-agenda-files (append org-agenda-files (org-projectile:todo-files))))
+    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+    (push (org-projectile-project-todo-entry) org-capture-templates)
+    (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
+                                         :capture-character "P"))
+    (setf org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
 #+END_SRC
 *** =org-trello=
 Sincroniza archivos org-mode y tableros en Trello
