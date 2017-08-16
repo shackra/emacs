@@ -2765,3 +2765,10 @@ Pega regiones o buffers completos en servicios como pastebin
     :bind (("C-c C-p C-b" . webpaste-paste-buffer)
            ("C-c C-p C-r" . webpaste-paste-region)))
 #+END_SRC
+*** Chronos
+Multiples temporizadores simultaneos
+#+BEGIN_SRC emacs-lisp
+  (use-package chronos
+    :init
+    (setf chronos-expiry-functions '(chronos-desktop-notifications-notify)))
+#+END_SRC
