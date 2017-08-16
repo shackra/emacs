@@ -675,6 +675,7 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     ;; los cambios realizados como un árbol con ramificaciones de cambios.
     ;; para revertir un cambio use `C-x u'. Más información en:
     ;;   http://melpa.milkbox.net/#/undo-tree
+    :demand t
     :diminish undo-tree-mode
     :bind (:map
            undo-tree-visualizer-mode-map ("RET" . undo-tree-visualizer-quit)
@@ -2712,6 +2713,7 @@ Este modo menor no funciona bien con otros modos menores que hacen uso de la pro
 Recuerda al usuario que hay una manera más eficiente de hacer algo
 #+BEGIN_SRC emacs-lisp
   (use-package schrute
+    :disabled t
     :ensure nil
     :load-path "site-packages/dwight"
     :init
