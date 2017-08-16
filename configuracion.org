@@ -1533,13 +1533,18 @@ Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquet
 *** =python=
 Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
-  (use-package pyvenv :after (python)
+  (use-package pyvenv
+    :after (python)
     :init
+    (add-hook 'python-mode-hook #'pyvenv-mode)
     (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
 
-  (use-package py-autopep8 :after (python)
+  (use-package py-autopep8
+    :after (python)
     :preface (unless (executable-find "autopep8")
-               (message "¡autopep8 no esta instalado! Use `pip install autopep8'")))
+               (message "¡autopep8 no esta instalado! Use `pip install autopep8'"))
+    :init
+    (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
 
   (use-package sphinx-doc
     :after (python)
@@ -1596,9 +1601,8 @@ Modo mayor para programar en Python
     (defun shackra/python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
       (electric-indent-local-mode -1)
-      (aggressive-indent-mode -1)
-      (pyvenv-mode)
-      (py-autopep8-enable-on-save))
+      (aggressive-indent-mode -1))
+
     (add-hook 'python-mode-hook #'shackra/python-mode))
 
   (use-package traad
