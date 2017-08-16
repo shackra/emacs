@@ -6,7 +6,7 @@
 ;; This sets up the load path so that we can override it
 (setf package-enable-at-startup nil)
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
-(package-initialize)
+(package-initialize nil)
 
 (setq inhibit-startup-screen t)
 
@@ -71,5 +71,3 @@
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
 
 (message "Start up time %.2fs" (float-time (time-subtract (current-time) my-start-time)))
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
