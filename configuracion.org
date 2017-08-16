@@ -1564,8 +1564,9 @@ Modo mayor para programar en Python
     (when (>= (call-process "python" nil nil nil "-m" "jedi") 1)
       (message (format "Modulo jedi no instalado para interprete Python: %s. Auto-completado para Python no funcionara sin ese modulo" "python")))
     :config
-    (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet))))
-    (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
+    (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet company-capf))))
+    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+    (add-hook 'python-mode-hook 'anaconda-mode))
 
   (use-package python
     :ensure nil
