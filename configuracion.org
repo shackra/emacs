@@ -1092,9 +1092,9 @@ Corre procesos externos a Emacs de manera automática
       :name 'email
       :ready-message "Checking Email using IMAP IDLE. Ctrl-C to shutdown.")
     (prodigy-define-service
-      :name "pyimapnotify"
-      :command "pyimapnotify"
-      :args (list "-v" "-c" (expand-file-name ".config/imapnotify/jorge.conf.private" (getenv "HOME")))
+      :name "goimapnotify"
+      :command "goimapnotify"
+      :args (list "-conf" (expand-file-name ".config/imapnotify/jorge.conf.private" (getenv "HOME")))
       :tags '(email)
       :kill-signal 'sigkill)
     (prodigy-start-service (car prodigy-services)))
