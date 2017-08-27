@@ -449,8 +449,9 @@ Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
 *** =font-man=
 Escala la altura de la tipografía en todos los buffers de manera temporal
 #+BEGIN_SRC emacs-lisp
+  (use-package switch-buffer-functions)
   (use-package font-man
-    :preface (use-package switch-buffer-functions)
+    :after (switch-buffer-functions)
     :ensure nil
     :load-path "site-packages/font-man")
 #+END_SRC
@@ -473,6 +474,24 @@ Teclas
 - @@html:<kbd>C-x C-f</kbd>@@ :: Visita un archivo
 - @@html:<kbd>C-x b</kbd>@@ :: Cambia de buffer
 #+BEGIN_SRC emacs-lisp
+  (use-package counsel-projectile
+    :after (counsel))
+  (use-package counsel
+    :after (swiper)
+    :demand t
+    :bind (:map global-map
+                ("M-x" . counsel-M-x)
+                ("M-y" . counsel-yank-pop)
+                :map help-map
+                ("f" . counsel-describe-function)
+                ("v" . counsel-describe-variable)
+                ("b" . counsel-descbinds)
+                :map ctl-x-map
+                ("8 RET" . counsel-unicode-char)
+                ("l" . counsel-locate)
+                ("f" . counsel-recentf)))
+  (use-package ivy-hydra
+    :after (counsel-projectile))
   (use-package swiper
     :demand t
     :bind (:map global-map
@@ -484,21 +503,6 @@ Teclas
     (setf ivy-height 15)
     :config
     (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*" "\\*Help\\*" "\\*Compile-Log\\*" "\\*anaconda-mode\\*" "\\*prodigy-\\*")))
-    (use-package counsel
-      :demand t
-      :config (use-package counsel-projectile)
-      :bind (:map global-map
-                  ("M-x" . counsel-M-x)
-                  ("M-y" . counsel-yank-pop)
-                  :map help-map
-                  ("f" . counsel-describe-function)
-                  ("v" . counsel-describe-variable)
-                  ("b" . counsel-descbinds)
-                  :map ctl-x-map
-                  ("8 RET" . counsel-unicode-char)
-                  ("l" . counsel-locate)
-                  ("f" . counsel-recentf)))
-    (use-package ivy-hydra)
     (ivy-mode 1))
 #+END_SRC
 *** =hydra=
@@ -509,34 +513,35 @@ Teclas
 
 Permite tratar combinaciones de teclas como grupos... es algo difícil de explicar, puede ver este vídeo [[https://www.youtube.com/watch?v=_qZliI1BKzI][Switching Emacs windows with hydra and ace-window - YouTube]] para entender de qué trata este paquete.
 #+BEGIN_SRC emacs-lisp
+  (use-package ace-window
+    :bind ("M-o" . shackra/other-window)
+    :init
+    (custom-set-faces
+     '(aw-leading-char-face
+       ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+    (defun --count-frames ()
+      "Retorna el numero de frames visibles"
+      (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
+        (length frames)))
+    (defun shackra/other-window ()
+      "cambia la ventana en que el cursor esta"
+      (interactive)
+      (ace-window 0)
+      (when golden-ratio-mode
+        (golden-ratio)))
+    :config
+    (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+  (use-package windmove
+    :ensure nil)
+  (use-package winner
+    :ensure nil
+    :config
+    (winner-mode 1))
+  (use-package windresize)
   (use-package hydra
+    :after (windmove winner windresize ace-window)
     :preface
     (require 'hydra-examples)
-    (use-package windmove
-      :ensure nil)
-    (use-package winner
-      :ensure nil
-      :config
-      (winner-mode 1))
-    (use-package windresize)
-    (use-package ace-window
-      :bind ("M-o" . shackra/other-window)
-      :init
-      (custom-set-faces
-       '(aw-leading-char-face
-         ((t (:inherit ace-jump-face-foreground :height 3.0)))))
-      (defun --count-frames ()
-        "Retorna el numero de frames visibles"
-        (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
-          (length frames)))
-      (defun shackra/other-window ()
-        "cambia la ventana en que el cursor esta"
-        (interactive)
-        (ace-window 0)
-        (when golden-ratio-mode
-          (golden-ratio)))
-      :config
-      (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
     :config
     (defhydra hydra-zoom (global-map "<f2>")
       "Acercamiento"
@@ -585,6 +590,19 @@ Manejador de archivos de serie para Emacs.
 
 Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction/][Dired as Default File Manager - Introduction]].
 #+BEGIN_SRC emacs-lisp
+  (use-package ranger
+    :init
+    (setf ranger-cleanup-eagerly t))
+  (use-package dired+
+    :init
+    (diredp-toggle-find-file-reuse-dir 1))
+  (use-package dired-details+
+    ;; Sólo activa este paquete en caso de que la versión de Emacs no sea mayor
+    ;; a 24.4.
+    :if (version< emacs-version "24.4")
+    :init
+    (setf dired-details-propagate-flag t
+          dired-details-initially-hide nil))
   ;; -*- lexical-binding: t -*-
   (use-package dired
     :ensure nil
@@ -637,21 +655,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
     (defadvice dired-readin
         (after dired-after-updating-hook first () activate)
       "Sort dired listings with directories first before adding marks."
-      (dired-sort-group-dirs))
-    (use-package dired+
-      :init
-      (diredp-toggle-find-file-reuse-dir 1))
-    (use-package dired-details+
-      ;; Sólo activa este paquete en caso de que la versión de Emacs no sea mayor
-      ;; a 24.4.
-      :if (version< emacs-version "24.4")
-      :init
-      (setf dired-details-propagate-flag t
-            dired-details-initially-hide nil))
-    (use-package ranger
-      :init
-      (when (fboundp 'helm) (setf helm-descbinds-window-style 'same-window))
-      (setf ranger-cleanup-eagerly t)))
+      (dired-sort-group-dirs)))
 #+END_SRC
 *** =keyfreq=
 :LOGBOOK:
@@ -1538,6 +1542,17 @@ Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquet
 *** =python=
 Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
+  (use-package pony-mode
+    :after (python)
+    :init
+    (defun shackra/pony-remove-beautify-html ()
+      "Quita el gancho para embellecer el HTML"
+      (remove-hook 'before-save-hook 'web-beautify-html-buffer t))
+    :config
+    ;; quitamos el gancho que embellece el HTML cuando es guardado para que no
+    ;; estropeé las plantillas de DJango
+    (add-hook 'pony-tpl-minor-mode-hook #'shackra/pony-remove-beautify-html))
+
   (use-package pyvenv
     :after (python)
     :init
@@ -1593,16 +1608,6 @@ Modo mayor para programar en Python
       ;; atamos los atajos del teclado como si nada hubiera sucedido
       (bind-key "C-c <" 'python-indent-shift-left python-mode-map)
       (bind-key "C-c >" 'python-indent-shift-right python-mode-map))
-
-    (use-package pony-mode
-      :init
-      (defun shackra/pony-remove-beautify-html ()
-        "Quita el gancho para embellecer el HTML"
-        (remove-hook 'before-save-hook 'web-beautify-html-buffer t))
-      :config
-      ;; quitamos el gancho que embellece el HTML cuando es guardado para que no
-      ;; estropeé las plantillas de DJango
-      (add-hook 'pony-tpl-minor-mode-hook #'shackra/pony-remove-beautify-html))
 
     (defun shackra/python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
@@ -1758,6 +1763,18 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
 *** web-mode
 Un modo mayor para editar paginas web
 #+BEGIN_SRC emacs-lisp
+  (use-package web-beautify
+    :after (web-mode)
+    :config
+    (add-hook 'json-mode-hook
+              (lambda ()
+                (add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
+    (add-hook 'html-mode-hook
+              (lambda ()
+                (add-hook 'before-save-hook 'web-beautify-html-buffer t t)))
+    (add-hook 'css-mode-hook
+              (lambda ()
+                (add-hook 'before-save-hook 'web-beautify-css-buffer t t))))
   (use-package emmet-mode
     :config
     (add-hook 'sgml-mode-hook 'emmet-mode)
@@ -1790,18 +1807,7 @@ Un modo mayor para editar paginas web
     (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-    (use-package web-beautify
-      :config
-      (add-hook 'json-mode-hook
-                (lambda ()
-                  (add-hook 'before-save-hook 'web-beautify-js-buffer t t)))
-      (add-hook 'html-mode-hook
-                (lambda ()
-                  (add-hook 'before-save-hook 'web-beautify-html-buffer t t)))
-      (add-hook 'css-mode-hook
-                (lambda ()
-                  (add-hook 'before-save-hook 'web-beautify-css-buffer t t)))))
+    (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 #+END_SRC
 *** PHP
 modo mayor para editar código PHP
@@ -1830,7 +1836,9 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
 #+END_EXAMPLE
 
 #+BEGIN_SRC emacs-lisp
+  (use-package f) ;; requerido para `shackra/go-update-compile-definition'
   (use-package go-mode
+    :after (f)
     :if (executable-find "go")
     :bind (:map go-mode-map
                 ("M-." . godef-jump)
@@ -1839,7 +1847,6 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
                 ("C-c C-i" . go-goto-imports)
                 ("C-c C-c" . compile))
     :init
-    (use-package f) ;; requerido para `shackra/go-update-compile-definition'
     (setf gofmt-show-errors nil) ;; para mostrar los errores es que existe Flycheck
     (setf gofmt-command "goimports")
     (defun shackra/go-update-compile-definition ()
@@ -2007,6 +2014,11 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 :END:
 Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd><f8></kbd>@@ cambia el idioma de Español a Inglés y viceversa.
 #+BEGIN_SRC emacs-lisp
+  (use-package flyspell-correct-ivy
+    :after (flyspell ivy-mode)
+    :bind (:map flyspell-mode-map ("C-." . flyspell-correct-previous-word-generic))
+    :init
+    (setf flyspell-correct-auto-delay 2.0))
   (use-package flyspell
     :diminish flyspell-mode
     :ensure nil
@@ -2088,11 +2100,7 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
       ;; Turn off RUN-TOGETHER option when spell check text-mode
       (setq-local ispell-extra-args (flyspell-detect-ispell-args)))
     :config
-    (add-hook 'text-mode #'text-mode-hook-setup)
-    (use-package flyspell-correct-ivy
-      :bind (:map flyspell-mode-map ("C-." . flyspell-correct-previous-word-generic))
-      :init
-      (setf flyspell-correct-auto-delay 2.0)))
+    (add-hook 'text-mode #'text-mode-hook-setup))
 
   (use-package shackra/ispell-dict-switch
     :bind (("<f8>" . shackra/ispell-cycle-dict))
@@ -2497,39 +2505,40 @@ Pleguar o desplegar bloques de texto. Asociado a @@html:<kbd>C-c v</kbd>@@.
 :END:
 Appointments me alerta de mis citas o pendientes que tengo por hacer.
 #+BEGIN_SRC emacs-lisp
+  (use-package alert
+    :init
+    (setf alert-default-style 'libnotify)
+    :config
+    (defun shackra/appt-muestra-notificacion (min-to-app new-time msg)
+      "Envia notificaciones usando libnotify. Esto no funcionara si DBus no esta instalado y corriendo"
+      ;; `min-to-app' puede ser una lista, o no.
+      (if (atom min-to-app)
+          (alert
+           (if (<= (string-to-number min-to-app) 1)
+               (format "<b>Cita en %s minuto</b>" min-to-app)
+             (format "<b>Cita en %s minutos</b>" min-to-app))
+           :title msg
+           :mode 'Emacs-Org
+           :severity 'high
+           :persistent t)
+        ;; no entiendo este trozo de código, pero asumo que itera una lista de
+        ;; cosas por hacer.
+        (dolist (i (number-sequence 0 (1- (length min-to-app))))
+          (alert
+           (if (<= (string-to-number (nth i min-to-app)) 1)
+               (format "<b>Cita en %s minuto</b>" (nth i min-to-app))
+             (format "<b>Cita en %s minutos</b>" (nth i min-to-app)))
+           :title (nth i msg)
+           :mode 'Emacs-Org
+           :severity 'high
+           :persistent t)))))
   ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
   ;; a http://redd.it/35kbf6
   (use-package appt
+    :after (alert)
     :if (not (eq system-type 'darwin))
     :ensure nil
     :init
-    (use-package alert
-      :init
-      (setf alert-default-style 'libnotify)
-      :config
-      (defun shackra/appt-muestra-notificacion (min-to-app new-time msg)
-        "Envia notificaciones usando libnotify. Esto no funcionara si DBus no esta instalado y corriendo"
-        ;; `min-to-app' puede ser una lista, o no.
-        (if (atom min-to-app)
-            (alert
-             (if (<= (string-to-number min-to-app) 1)
-                 (format "<b>Cita en %s minuto</b>" min-to-app)
-               (format "<b>Cita en %s minutos</b>" min-to-app))
-             :title msg
-             :mode 'Emacs-Org
-             :severity 'high
-             :persistent t)
-          ;; no entiendo este trozo de código, pero asumo que itera una lista de
-          ;; cosas por hacer.
-          (dolist (i (number-sequence 0 (1- (length min-to-app))))
-            (alert
-             (if (<= (string-to-number (nth i min-to-app)) 1)
-                 (format "<b>Cita en %s minuto</b>" (nth i min-to-app))
-               (format "<b>Cita en %s minutos</b>" (nth i min-to-app)))
-             :title (nth i msg)
-             :mode 'Emacs-Org
-             :severity 'high
-             :persistent t)))))
     (setf appt-message-warning-time 10
           appt-display-interval (1+ appt-message-warning-time)
           appt-display-mode-line nil)
