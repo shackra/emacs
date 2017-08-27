@@ -2006,6 +2006,17 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
   (use-package feature-mode
     :mode ("\\.feature$" . feature-mode))
 #+END_SRC
+*** kotlin
+#+BEGIN_SRC emacs-lisp
+  (use-package kotlin-mode
+    :if (executable-find "kotlin"))
+
+  (use-package flycheck-kotlin
+    :after (kotlin-mode))
+
+  (use-package gradle-mode
+    :after (kotlin-mode))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
