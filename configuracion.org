@@ -1106,10 +1106,18 @@ Corre procesos externos a Emacs de manera automática
 :END:
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
+  (use-package mu4e-alert
+    :after (mu4e)
+    :init
+    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+    (setq mu4e-alert-email-notification-types '(count subjects))
+    :config
+    (mu4e-alert-set-default-style 'libnotify))
+
   (use-package mu4e
     :commands (mu4e correo)
     :ensure nil
-    :load-path "/usr/share/emacs/site-lisp/mu4e"
     :preface
     (require 'org-mu4e)
     ;;; message view action

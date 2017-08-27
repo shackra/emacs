@@ -2,6 +2,29 @@ Changelog
 =========
 
 
+2.4.1 (2017-08-27)
+------------------
+
+New
+~~~
+- Agrega mu4e-alert. [Jorge Araya Navarro]
+
+  Notificación de nuevo email, gracias a goimapnotify
+- Añade kotlin-mode. [Jorge Araya Navarro]
+- Cambia python-imapnotify por goimapnotify. [Jorge Araya Navarro]
+
+  https://gitlab.com/shackra/goimapnotify
+  https://github.com/a-sk/python-imapnotify/
+- Añade macro de teclado que desenreda sentencias use-package. [Jorge
+  Araya Navarro]
+
+Changes
+~~~~~~~
+- Desenreda sentencias use-package. [Jorge Araya Navarro]
+
+  La configuración es más fácil de leer pues no hay sentencias use-package anidadas
+
+
 2.4.0 (2017-08-16)
 ------------------
 
