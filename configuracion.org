@@ -1998,11 +1998,67 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
       (flycheck-gometalinter-setup)))
 #+END_SRC
 *** javascript
-Paquetes para editar JavaScript
+**** JSON
+- @@html:<kbd>C-c C-f</kbd>@@: format the region/buffer with [[https://github.com/gongo/json-reformat][=json-reformat=]]
+- @@html:<kbd>C-c C-p</kbd>@@: display a path to the object at point with [[https://github.com/Sterlingg/json-snatcher][=json-snatcher=]]
+- @@html:<kbd>C-c P</kbd>@@: copy a path to the object at point to the kill ring with =json-snatcher=
+- @@html:<kbd>C-c C-t</kbd>@@: Toggle between =true= and =false= at point
+- @@html:<kbd>C-c C-k</kbd>@@: Replace the sexp at point with =null=
+- @@html:<kbd>C-c C-i</kbd>@@: Increment the number at point
+- @@html:<kbd>C-c C-d</kbd>@@: Decrement the number at point
+#+BEGIN_SRC emacs-lisp
+  (use-package json-mode)
+#+END_SRC
+**** Dependencias externas
+Instalar estos componentes en el sistema operativo
+#+BEGIN_SRC sh :dir /sudo:: :results silent
+  npm install -g babel-cli babel-preset-react eslint@3.x babel-eslint@7 eslint-plugin-react --save-dev
+#+END_SRC
+***** configuracion eslint
+#+BEGIN_SRC json :tangle ~/.eslintrc
+  {
+    "parser": "babel-eslint",
+    "plugins": [ "react" ],
+    "env": {
+      "browser": true,
+      "es6": true,
+      "node": true
+    },
+    "ecmaFeatures": {
+      "arrowFunctions": true,
+      "blockBindings": true,
+      "classes": true,
+      "defaultParams": true,
+      "destructuring": true,
+      "forOf": true,
+      "generators": true,
+      "modules": true,
+      "spread": true,
+      "templateStrings": true,
+      "jsx": true
+    },
+    "rules": {
+      "consistent-return": [0],
+      "key-spacing": [0],
+      "quotes": [0],
+      "new-cap": [0],
+      "no-multi-spaces": [0],
+      "no-shadow": [0],
+      "no-unused-vars": [1],
+      "no-use-before-define": [2, "nofunc"],
+      "react/jsx-no-undef": 1,
+      "react/jsx-uses-react": 1,
+      "react/jsx-uses-vars": 1
+    }
+  }
+#+END_SRC
+**** Paquetes para editar JavaScript
 #+BEGIN_SRC emacs-lisp
   (use-package company-tern
     :after (company)
     :if (executable-find "tern")
+    :bind-keymap (("M-." . nil)
+                  ("M-," . nil))
     :init
     (setf company-tern-property-marker " <p>")
     (setf company-tern-meta-as-single-line t)
@@ -2013,9 +2069,24 @@ Paquetes para editar JavaScript
                        (add-to-list (make-local-variable 'company-backends) '(company-tern :with company-yasnippet))))))
   (use-package js2-refactor
     :after (js2-mode)
+    :bind (:js2-mode-map
+           ("C-k" . js2r-kill)
+           :js-mode-map
+           ("M-.". nil))
+    :init
+    (add-hook 'js2-mode-hook #'js2-refactor-mode)
     :config
-    (add-hook 'js2-mode-hook #'js2-refactor-mode))
-  (use-package js2-mode)
+    (js2r-add-keybindings-with-prefix "C-c C-r"))
+
+  (use-package xref-js2
+    :after (js2-mode)
+    :init
+    (add-hook 'js2-mode-hook (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
+
+  (use-package js2-mode
+    :mode "\\.js\\'"
+    :init
+    (add-hook 'js2-mode-hook #'js2-imenu-extras-mode))
   (use-package indium ;; https://indium.readthedocs.io/en/latest/setup.html
     :config
     (add-hook 'js-mode-hook #'indium-interaction-mode))
@@ -2227,7 +2298,7 @@ Revisión de errores en el código fuente, al vuelo.
   (use-package flycheck
     :diminish flycheck-mode
     :init
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)) ;; deshabilita el majadero revisor de documentación
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc javascript-jshint))
     (setf flycheck-indication-mode 'left-fringe)
     (setf flycheck-display-errors-delay 5.0)
     :config
