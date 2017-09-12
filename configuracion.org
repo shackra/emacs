@@ -95,6 +95,36 @@ Desde la versión 24 Emacs permite la instalación de paquetes de la misma maner
 El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información. Para ver qué paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-packages=
 * Códigos Elisp
 funciones de Emacs lisp escritas por mi u otras personas (y que yo he recolectado para mi uso personal)
+** Inspector de entradas org-mode
+Convierte un elemento org-mode bajo el puntero en su equivalente elisp para inspección
+#+BEGIN_SRC emacs-lisp
+  (defun org-inspect-element-at-point ()
+    "Inspecciona el elemento org-mode en su forma elisp"
+    (interactive)
+    (let ((body (org-element-context)))
+      (switch-to-buffer (get-buffer-create "*org-inspect-element-at-point*"))
+      (erase-buffer)
+      (insert (format "'%s" body))
+      (pp-buffer)))
+
+  (defun org-inspect-element-buffer ()
+    "Inspecciona todo el documento org-mode en su forma elisp"
+    (interactive)
+    (let ((body (org-element-parse-buffer)))
+      (switch-to-buffer (get-buffer-create "*org-inspect-element-buffer*"))
+      (erase-buffer)
+      (insert (format "'%s" body))
+      (pp-buffer)))
+
+  (defun org-inspect-buffer-clocktable ()
+    "Inspecciona el documento org-mode en su forma elisp como una tabla org-clock"
+    (interactive)
+    (let ((body (org-clock-get-table-data (buffer-name) nil)))
+      (switch-to-buffer (get-buffer-create "*org-inspect-buffer-clocktable*"))
+      (erase-buffer)
+      (insert (format "'%s" body))
+      (pp-buffer)))
+#+END_SRC
 ** función para insertar etiquetas <kbd>
 Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta desde Emacs.stackexchange]].
 #+BEGIN_SRC emacs-lisp
@@ -1373,12 +1403,44 @@ Teclas
         (if (string= (org-entry-get nil "STYLE") "habit")
             subtree-end
           nil)))
+    (defun shackra-org-clocktable-formatter (ipos tables params)
+      "Extrae el titulo de enlaces y elimina TODO keywords"
+      (cl-loop for tbl in tables
+               for entries = (nth 2 tbl)
+               do (cl-loop for entry in entries
+                           for headline = (nth 1 entry)
+                           do (setq headline (replace-regexp-in-string (shackra--org-clocktable-regexp) "" headline))
+                           do (when (string-match-p "\\[\\[.*\\]\\[\\(.*\\)\\]\\]" headline) (setf headline (replace-regexp-in-string "\\[\\[.*\\]\\[\\(.*\\)\\]\\]" "\\1" headline)))
+                           do (setcar (nthcdr 1 entry) headline)))
+      (org-clocktable-write-default ipos tables params))
+
+    (defun shackra--org-clocktable-regexp ()
+      "Genera una expresion regular a partir de la variable `org-todo-keywords'"
+      (let ((regexp)
+            (flat (shackra--flatten org-todo-keywords)))
+        (dolist (e flat)
+          (when (and (stringp e) (not (string-match-p "|" e)) (not (string-empty-p e)))
+            (append regexp (replace-regexp-in-string "(.*)" " " e))))
+        (string-join regexp "\\|")))
+
+    (defun shackra--flatten (mylist)
+      "Flat an array
+
+  Taken from https://rosettacode.org/wiki/Flatten_a_list#Emacs_Lisp"
+      (cond
+       ((null mylist) nil)
+       ((atom mylist) (list mylist))
+       (t
+        (append (flatten (car mylist)) (flatten (cdr mylist))))))
+
+    (setf org-clock-clocktable-formatter 'shackra-org-clocktable-formatter)
     ;; Targets include this file and any file contributing to the agenda - up to
     ;; 9 levels deep
     (setf org-refile-targets `((nil :maxlevel . 9)
                                (org-agenda-files :maxlevel . 9)
                                (org-default-notes-file :maxlevel . 9)
-                               (,(expand-file-name "notas.org" org-directory) :maxlevel . 3)))
+                               (,(expand-file-name "notas.org" org-directory) :maxlevel . 3)
+                               (,(expand-file-name "quizas.org" org-directory) :maxlevel . 3)))
     (setf org-clock-modeline-total 'today)
     ;; Use full outline paths for refile targets
     (setq org-refile-use-outline-path t)
