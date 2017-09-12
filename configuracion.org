@@ -2125,8 +2125,11 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
   (use-package scss-mode
     :init (setf scss-compile-at-save nil))
 #+END_SRC
-*** typescript
+*** AngularJS
 #+BEGIN_SRC emacs-lisp
+  (use-package ng2-mode
+    :after (tide))
+
   (use-package tide
     :init
     (defun setup-tide-mode ()
