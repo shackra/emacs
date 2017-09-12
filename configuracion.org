@@ -1116,6 +1116,7 @@ Teclas:
 Corre procesos externos a Emacs de manera automática
 #+BEGIN_SRC emacs-lisp
   (use-package prodigy
+    :disabled t
     :if (daemonp)
     :init
     (prodigy-define-tag
