@@ -1575,7 +1575,6 @@ Teclas
     (setq org-confirm-elisp-link-function nil)
     :config
     (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-    (push (org-projectile-project-todo-entry) org-capture-templates)
     (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
                                          :capture-character "P"))
     (setf org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
