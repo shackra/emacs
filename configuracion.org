@@ -629,7 +629,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
   (use-package dired-details+
     ;; Sólo activa este paquete en caso de que la versión de Emacs no sea mayor
     ;; a 24.4.
-    :if (version< emacs-version "24.4")
+    :disabled (not (version< emacs-version "24.4"))
     :init
     (setf dired-details-propagate-flag t
           dired-details-initially-hide nil))
@@ -694,7 +694,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
 Registra la frecuencia con la que se usan ciertas teclas en Emacs. Esta información se puede utilizar para saber a qué comandos dar combinaciones de teclas más fáciles de presionar.
 #+BEGIN_SRC emacs-lisp
   (use-package keyfreq
-    :if (daemonp)
+    :disabled (not (daemonp))
     :config
     (keyfreq-mode 1)
     (keyfreq-autosave-mode 1))
@@ -746,7 +746,7 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
 Muestra el numero de lineas al margen del buffer, sea con native-linum (emacs 26+) o con nlinum.
 #+BEGIN_SRC emacs-lisp
   (use-package nlinum
-    :if (version< emacs-version "26")
+    :disabled (not (version< emacs-version "26"))
     :pin gnu
     :init
     (defun ancho-nlinum-mode-hook ()
@@ -770,7 +770,7 @@ Muestra el numero de lineas al margen del buffer, sea con native-linum (emacs 26
   (use-package native-linum
     :ensure nil
     :no-require t
-    :if (version= emacs-version "26")
+    :disabled (not (version= emacs-version "26"))
     ;; TODO: ver como se activa native-linum
     )
 #+END_SRC
@@ -1117,7 +1117,7 @@ Corre procesos externos a Emacs de manera automática
 #+BEGIN_SRC emacs-lisp
   (use-package prodigy
     :disabled t
-    :if (daemonp)
+    :disabled (not (daemonp))
     :init
     (prodigy-define-tag
       :name 'email
@@ -1138,6 +1138,7 @@ Corre procesos externos a Emacs de manera automática
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e-alert
+    :disabled (not (executable-find "mu"))
     :after (mu4e)
     :init
     (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
@@ -1146,11 +1147,16 @@ Un versátil cliente de correo electrónico para Emacs.
     :config
     (mu4e-alert-set-default-style 'libnotify))
 
+  (use-package org-mu4e
+    :after (mu4e org)
+    :ensure nil
+    :init
+    (setq org-mu4e-link-query-in-headers-mode nil))
+
   (use-package mu4e
     :commands (mu4e correo)
     :ensure nil
     :preface
-    (require 'org-mu4e)
     ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
       "Ver el cuerpo del mensaje HTML en el navegador web"
@@ -1176,7 +1182,6 @@ Un versátil cliente de correo electrónico para Emacs.
       (start-process "pushmail" nil "pushmail.sh")
       (jump-to-register :mu4e-fullscreen))
     :init
-    (setq org-mu4e-link-query-in-headers-mode nil)
     (setf mu4e-get-mail-command "getmail.sh")
     ;; html2text es un paquete que debe estar instalado en tu sistema
     (setf mu4e-html2text-command 'mu4e-shr2text)
@@ -1248,14 +1253,14 @@ Acceso a Stackoverflow y subsitios desde Emacs.
   (use-package sx
     :defer 10)
 #+END_SRC
-*** org-webpage
+*** org2web
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:57]
 - Refiled on [2015-11-12 jue 16:46]
 :END:
 Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 #+BEGIN_SRC emacs-lisp
-  (use-package org-webpage
+  (use-package org2web
     :after (el2org ox-gfm)
     :config
     ;; Le pedimos a org-mode que no meta las patas cuando exporta archivos a
@@ -1267,24 +1272,24 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
     ;; [2]: http://emacs.stackexchange.com/a/9839/690
     ;; [3]: https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el
     (load-file (expand-file-name "srcprecode.el" user-emacs-directory))
-    (owp/add-project-config '("El blog de Shackra"
-                              :repository-directory "~/Documentos/elblog.deshackra.com/"
-                              :ignore-file-name-regexp "README"
-                              :remote (rclone "rscf" "elblog.deshackra.com")
-                              :site-domain "http://elblog.deshackra.com"
-                              :site-main-title "El blog de Shackra"
-                              :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
-                              :theme-root-directory (:eval (list (expand-file-name "org-page-themes" user-emacs-directory)))
-                              :theme (shackra)
-                              :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog")
-                              :confound-email t
-                              :default-category "blog"
-                              :about ("Sobre mi" "/about")
-                              :rss ("RSS" "/rss.xml")
-                              :summary (("etiquetas" :tags))
-                              :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
-                              :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
-                              :web-server-port 5777))
+    (org2web-add-project '("El blog de Shackra"
+                           :repository-directory "~/Documentos/elblog.deshackra.com/"
+                           :ignore-file-name-regexp "README"
+                           :remote (rclone "rscf" "elblog.deshackra.com")
+                           :site-domain "http://elblog.deshackra.com"
+                           :site-main-title "El blog de Shackra"
+                           :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
+                           :theme-root-directory (:eval (list (expand-file-name "org-page-themes" user-emacs-directory)))
+                           :theme (shackra)
+                           :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog")
+                           :confound-email t
+                           :default-category "blog"
+                           :about ("Sobre mi" "/about")
+                           :rss ("RSS" "/rss.xml")
+                           :summary (("etiquetas" :tags))
+                           :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
+                           :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
+                           :web-server-port 5777))
 
     (eval-after-load 'ox
       '(progn
@@ -1317,7 +1322,7 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
 Conexión a Weechat desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package weechat
-    :if (executable-find "weechat")
+    :disabled (not (executable-find "weechat"))
     :config
     (add-to-list 'weechat-modules 'weechat-spelling)
     (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
@@ -1356,7 +1361,8 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
       (hes-mode)
       (electric-pair-mode)
       (rainbow-turn-on)
-      (flyspell-prog-mode))
+      (when (or (executable-find "ispell") (executable-find "hunspell"))
+      (flyspell-prog-mode)))
     (bind-key "RET" 'newline-and-indent prog-mode-map)
     (bind-key* "C-M-," 'comment-dwim)
     (add-hook 'prog-mode-hook #'shackra/prog-mode))
@@ -1643,6 +1649,7 @@ Modo mayor para programar en Python
   (use-package pydoc-info)
 
   (use-package company-anaconda
+    :disabled (not (executable-find "python"))
     :after (python company)
     :bind (:map python-mode-map
                 ("M-." . anaconda-mode-find-definitions)
@@ -1660,7 +1667,7 @@ Modo mayor para programar en Python
 
   (use-package python
     :ensure nil
-    :if (executable-find "python")
+    :disabled (not (executable-find "python"))
     :interpreter ("python" . python-mode)
     :preface
     (require 'python)
@@ -1736,7 +1743,7 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
   (use-package cargo
     :after (rust-mode)
-    :if (executable-find "cargo"))
+    :disabled (not (executable-find "cargo")))
   (use-package racer
     :after (rust-mode)
     :init
@@ -1751,7 +1758,7 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     (add-hook 'rust-mode-hook '(lambda ()
                                  (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet)))))
   (use-package rust-mode
-    :if (executable-find "rustc"))
+    :disabled (not (executable-find "rustc")))
   (use-package flycheck-rust
     :after (flycheck rust-mode)
     :config
@@ -1783,7 +1790,7 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
     (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad"))))
         (traad-install-server)))
   (use-package hydra-traad
-    :after (hydra traad)
+    :after (hydra traad python)
     :preface (provide 'hydra-traad)
     :ensure nil
     :init
@@ -1822,7 +1829,7 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
       ("S" traad-imports-super-smackdown "Smackdown!")
       ("b" hydra-traad/body "volver")
       ("q" nil "salir"))
-    (defhydra hydra-traad (python-mode-map "C-c t" :columns 2 :columns 2)
+    (defhydra hydra-traad (:columns 2 :columns 2)
       "Refactorización en Python con rope"
       ("h" hydra-traad-history/body "Historial" :exit t)
       ("r" hydra-traad-rename/body "Renombrar" :exit t)
@@ -1909,7 +1916,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
   (use-package f) ;; requerido para `shackra/go-update-compile-definition'
   (use-package go-mode
     :after (f)
-    :if (executable-find "go")
+    :disabled (not (executable-find "go"))
     :bind (:map go-mode-map
                 ("M-." . godef-jump)
                 ("C-c C-a" . go-import-add)
@@ -1933,7 +1940,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     (add-hook 'after-save-hook 'shackra/go-update-compile-definition))
   (use-package company-go
     :after (go-mode hydra)
-    :if (executable-find "gocode")
+    :disabled (not (executable-find "gocode"))
     :config
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
   (use-package go-eldoc
@@ -1944,7 +1951,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     :after (go-mode hydra))
   (use-package godoctor
     :after (go-mode hydra)
-    :if (executable-find "godoctor")
+    :disabled (not (executable-find "godoctor"))
     :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
     :config
     (defhydra hydra-godoctor (:color blue :columns 2)
@@ -1955,7 +1962,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
       ("f" godoctor-godoc "Crea esqueleto de documentación")))
   (use-package go-guru
     :after (go-mode hydra)
-    :if (executable-find "guru")
+    :disabled (not (executable-find "guru"))
     :demand t
     :init
     (defun shackra/go-mode-set-scope ()
@@ -1981,7 +1988,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
     (add-hook 'projectile-mode-hook #'shackra/go-mode-set-scope))
   (use-package flycheck-gometalinter
-    :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
+    :disabled (not (or (executable-find "gometalinter.v1") (executable-find "gometalinter")))
     :after (go-mode flycheck-mode)
     :init
     (if (executable-find "gometalinter.v1")
@@ -2056,7 +2063,7 @@ Instalar estos componentes en el sistema operativo
 #+BEGIN_SRC emacs-lisp
   (use-package company-tern
     :after (company)
-    :if (executable-find "tern")
+    :disabled (not (executable-find "tern"))
     :bind-keymap (("M-." . nil)
                   ("M-," . nil))
     :init
@@ -2153,7 +2160,7 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 *** kotlin
 #+BEGIN_SRC emacs-lisp
   (use-package kotlin-mode
-    :if (executable-find "kotlin"))
+    :disabled (not (executable-find "kotlin")))
 
   (use-package flycheck-kotlin
     :after (kotlin-mode))
@@ -2175,6 +2182,7 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
     :init
     (setf flyspell-correct-auto-delay 2.0))
   (use-package flyspell
+    :disabled (not (or (executable-find "ispell") (executable-find "hunspell")))
     :diminish flyspell-mode
     :ensure nil
     :init
@@ -2440,7 +2448,7 @@ Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configur
     :preface
     (provide 'text-mode)
     (defun shackra/text-mode ()
-      (flyspell-mode)
+      (when (or (executable-find "ispell") (executable-find "hunspell"))(flyspell-mode))
       (set (make-local-variable 'fill-column) 100)
       (turn-off-auto-fill)
       (turn-on-visual-line-mode))
@@ -2691,7 +2699,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
   ;; a http://redd.it/35kbf6
   (use-package appt
     :after (alert)
-    :if (not (eq system-type 'darwin))
+    :disabled (eq system-type 'darwin)
     :ensure nil
     :init
     (setf appt-message-warning-time 10
@@ -2805,7 +2813,7 @@ Eliminación de espacios de manera no obstrusiva
 Cliente para MPD
 #+BEGIN_SRC emacs-lisp
   (use-package mingus
-    :if (executable-find "mpd"))
+    :disabled (not (executable-find "mpd")))
 #+END_SRC
 *** camcorder
 Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
@@ -2835,7 +2843,7 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
   (use-package emojify
     ;; Este paquete sólo funciona si la versión de Emacs es mayor o igual a 24.3
     ;; y Emacs fue compilado con soporte para PNG
-    :if (and (version<= "24.3" emacs-version) (image-type-available-p 'png))
+    :disabled (not (and (version<= "24.3" emacs-version) (image-type-available-p 'png)))
     :init
     (add-hook 'after-init-hook #'global-emojify-mode))
   (use-package company-emoji
@@ -2881,7 +2889,7 @@ Este modo menor no funciona bien con otros modos menores que hacen uso de la pro
 #+BEGIN_SRC emacs-lisp
   (use-package proced
     :ensure nil
-    :if (or (string-equal system-type "gnu/linux") (string-equal system-type "gnu/kfreebsd")))
+    :disabled (not (or (string-equal system-type "gnu/linux") (string-equal system-type "gnu/kfreebsd"))))
 #+END_SRC
 *** schrute-mode
 Recuerda al usuario que hay una manera más eficiente de hacer algo
