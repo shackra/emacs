@@ -532,7 +532,15 @@ Teclas
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
     :config
-    (setf ivy-ignore-buffers (append ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*" "\\*Help\\*" "\\*Compile-Log\\*" "\\*anaconda-mode\\*" "\\*prodigy-\\*")))
+    (add-to-list 'ivy-ignore-buffers "\\*weechat-relay")
+    (add-to-list 'ivy-ignore-buffers "\\*Messages\\*")
+    (add-to-list 'ivy-ignore-buffers "\\*elfeed-log\\*")
+    (add-to-list 'ivy-ignore-buffers "\\*Help\\*")
+    (add-to-list 'ivy-ignore-buffers "\\*Compile-Log\\*")
+    (add-to-list 'ivy-ignore-buffers "\\*anaconda-mode\\*")
+    (add-to-list 'ivy-ignore-buffers "\\*prodigy-.*")
+    (add-to-list 'ivy-ignore-buffers "\\*godoc .*")
+    (add-to-list 'ivy-ignore-buffers "\\*magit-.*")
     (ivy-mode 1))
 #+END_SRC
 *** =hydra=
@@ -833,8 +841,10 @@ Manejo de archivos de un proyecto.
      projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
+    (setf projectile-globally-ignored-buffers ivy-ignore-buffers)
     :config
     (add-hook 'after-init-hook #'projectile-global-mode))
+
   (use-package ag)
 #+END_SRC
 *** =recentf=
