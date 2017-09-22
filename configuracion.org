@@ -203,7 +203,7 @@ Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-sett
 
 #+BEGIN_SRC emacs-lisp
   (use-package shackra-guardar-todo
-    :disabled t
+    :disabled
     :ensure nil
     :preface (provide 'shackra-guardar-todo)
     :init
@@ -637,7 +637,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
   (use-package dired-details+
     ;; Sólo activa este paquete en caso de que la versión de Emacs no sea mayor
     ;; a 24.4.
-    :disabled (not (version< emacs-version "24.4"))
+    :if (version< emacs-version "24.4")
     :init
     (setf dired-details-propagate-flag t
           dired-details-initially-hide nil))
@@ -702,7 +702,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
 Registra la frecuencia con la que se usan ciertas teclas en Emacs. Esta información se puede utilizar para saber a qué comandos dar combinaciones de teclas más fáciles de presionar.
 #+BEGIN_SRC emacs-lisp
   (use-package keyfreq
-    :disabled (not (daemonp))
+    :if (daemonp)
     :config
     (keyfreq-mode 1)
     (keyfreq-autosave-mode 1))
@@ -754,7 +754,7 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
 Muestra el numero de lineas al margen del buffer, sea con native-linum (emacs 26+) o con nlinum.
 #+BEGIN_SRC emacs-lisp
   (use-package nlinum
-    :disabled (not (version< emacs-version "26"))
+    :if (version< emacs-version "26")
     :pin gnu
     :init
     (defun ancho-nlinum-mode-hook ()
@@ -778,7 +778,7 @@ Muestra el numero de lineas al margen del buffer, sea con native-linum (emacs 26
   (use-package native-linum
     :ensure nil
     :no-require t
-    :disabled (not (version= emacs-version "26"))
+    :if (version= emacs-version "26")
     ;; TODO: ver como se activa native-linum
     )
 #+END_SRC
@@ -1041,7 +1041,7 @@ Crea menús a partir de secciones de documentos. Asociado a @@html:<kbd>C-c i</k
     :config
     (bind-key "C-c i" 'ivy-imenu-anywhere))
   (use-package imenu+
-    :disabled t ;; ver razón en https://redd.it/3ahj2d
+    :disabled ;; ver razón en https://redd.it/3ahj2d
     :init
     (setf imenup-ignore-comments-flag t))
 
@@ -1085,7 +1085,7 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
 *** Chrome desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package kite-mini
-    :disabled t
+    :disabled
     :after (simple-httpd)
     :init
     (defun shackra/webdev-refresh-page-on-save-chrome ()
@@ -1126,8 +1126,8 @@ Teclas:
 Corre procesos externos a Emacs de manera automática
 #+BEGIN_SRC emacs-lisp
   (use-package prodigy
-    :disabled t
-    :disabled (not (daemonp))
+    :disabled
+    :if (daemonp)
     :init
     (prodigy-define-tag
       :name 'email
@@ -1148,7 +1148,7 @@ Corre procesos externos a Emacs de manera automática
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e-alert
-    :disabled (not (executable-find "mu"))
+    :if (executable-find "mu")
     :after (mu4e)
     :init
     (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
@@ -1316,7 +1316,7 @@ Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wikemacs.org/wiki/Mediawiki.el][Mediawiki.el - WikEmacs]]
 #+BEGIN_SRC emacs-lisp
   (use-package mediawiki
-    :disabled t
+    :disabled
     :init
     (setf mediawiki-site-alist '(("Wikipedia en español" "https://es.wikipedia.org/w/" "" "" "Portal:Iglesia_católica")
                                  ("Wikipedia en Inglés" "https://en.wikipedia.org/w/" "" "" "Portal:Catholicism")
@@ -1332,7 +1332,7 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
 Conexión a Weechat desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package weechat
-    :disabled (not (executable-find "weechat"))
+    :if (executable-find "weechat")
     :config
     (add-to-list 'weechat-modules 'weechat-spelling)
     (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
@@ -1599,7 +1599,7 @@ Teclas
 Sincroniza archivos org-mode y tableros en Trello
 #+BEGIN_SRC emacs-lisp
   (use-package org-trello
-    :disabled t
+    :disabled
     :after (org)
     :init
     (custom-set-variables '(org-trello-files '("/home/jorge/go/src/bitbucket.org/capslockdev/betsy/proyecto.org"
@@ -1659,7 +1659,7 @@ Modo mayor para programar en Python
   (use-package pydoc-info)
 
   (use-package company-anaconda
-    :disabled (not (executable-find "python"))
+    :if (executable-find "python")
     :after (python company)
     :bind (:map python-mode-map
                 ("M-." . anaconda-mode-find-definitions)
@@ -1677,7 +1677,7 @@ Modo mayor para programar en Python
 
   (use-package python
     :ensure nil
-    :disabled (not (executable-find "python"))
+    :if (executable-find "python")
     :interpreter ("python" . python-mode)
     :preface
     (require 'python)
@@ -1747,13 +1747,13 @@ Paquete extensivo para escribir y formatear documentos TeX
 Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de programación de sistemas que corre realmente rapido, previene fallos de segmentación (segfaults), y garantiza seguridad en programas multi-hilo.
 #+BEGIN_SRC emacs-lisp
   (use-package rustfmt
-    :disabled t ;; no existe en Melpa (20/05/2017)
+    :disabled ;; no existe en Melpa (20/05/2017)
     :after (rust-mode)
     :config
     (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
   (use-package cargo
     :after (rust-mode)
-    :disabled (not (executable-find "cargo")))
+    :if (executable-find "cargo"))
   (use-package racer
     :after (rust-mode)
     :init
@@ -1768,7 +1768,7 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     (add-hook 'rust-mode-hook '(lambda ()
                                  (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet)))))
   (use-package rust-mode
-    :disabled (not (executable-find "rustc")))
+    :if (executable-find "rustc"))
   (use-package flycheck-rust
     :after (flycheck rust-mode)
     :config
@@ -1926,7 +1926,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
   (use-package f) ;; requerido para `shackra/go-update-compile-definition'
   (use-package go-mode
     :after (f)
-    :disabled (not (executable-find "go"))
+    :if (executable-find "go")
     :bind (:map go-mode-map
                 ("M-." . godef-jump)
                 ("C-c C-a" . go-import-add)
@@ -1950,7 +1950,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     (add-hook 'after-save-hook 'shackra/go-update-compile-definition))
   (use-package company-go
     :after (go-mode hydra)
-    :disabled (not (executable-find "gocode"))
+    :if (executable-find "gocode")
     :config
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
   (use-package go-eldoc
@@ -1961,7 +1961,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     :after (go-mode hydra))
   (use-package godoctor
     :after (go-mode hydra)
-    :disabled (not (executable-find "godoctor"))
+    :if (executable-find "godoctor")
     :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
     :config
     (defhydra hydra-godoctor (:color blue :columns 2)
@@ -1972,7 +1972,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
       ("f" godoctor-godoc "Crea esqueleto de documentación")))
   (use-package go-guru
     :after (go-mode hydra)
-    :disabled (not (executable-find "guru"))
+    :if (executable-find "guru")
     :demand t
     :init
     (defun shackra/go-mode-set-scope ()
@@ -1998,7 +1998,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
     (add-hook 'projectile-mode-hook #'shackra/go-mode-set-scope))
   (use-package flycheck-gometalinter
-    :disabled (not (or (executable-find "gometalinter.v1") (executable-find "gometalinter")))
+    :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
     :after (go-mode flycheck-mode)
     :init
     (if (executable-find "gometalinter.v1")
@@ -2073,7 +2073,7 @@ Instalar estos componentes en el sistema operativo
 #+BEGIN_SRC emacs-lisp
   (use-package company-tern
     :after (company)
-    :disabled (not (executable-find "tern"))
+    :if (executable-find "tern")
     :bind-keymap (("M-." . nil)
                   ("M-," . nil))
     :init
@@ -2170,7 +2170,7 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 *** kotlin
 #+BEGIN_SRC emacs-lisp
   (use-package kotlin-mode
-    :disabled (not (executable-find "kotlin")))
+    :if (executable-find "kotlin"))
 
   (use-package flycheck-kotlin
     :after (kotlin-mode))
@@ -2192,7 +2192,7 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
     :init
     (setf flyspell-correct-auto-delay 2.0))
   (use-package flyspell
-    :disabled (not (or (executable-find "ispell") (executable-find "hunspell")))
+    :if (or (executable-find "ispell") (executable-find "hunspell"))
     :diminish flyspell-mode
     :ensure nil
     :init
@@ -2709,7 +2709,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
   ;; a http://redd.it/35kbf6
   (use-package appt
     :after (alert)
-    :disabled (eq system-type 'darwin)
+    :if (not (eq system-type 'darwin))
     :ensure nil
     :init
     (setf appt-message-warning-time 10
@@ -2823,7 +2823,7 @@ Eliminación de espacios de manera no obstrusiva
 Cliente para MPD
 #+BEGIN_SRC emacs-lisp
   (use-package mingus
-    :disabled (not (executable-find "mpd")))
+    :if (executable-find "mpd"))
 #+END_SRC
 *** camcorder
 Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
@@ -2853,7 +2853,7 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
   (use-package emojify
     ;; Este paquete sólo funciona si la versión de Emacs es mayor o igual a 24.3
     ;; y Emacs fue compilado con soporte para PNG
-    :disabled (not (and (version<= "24.3" emacs-version) (image-type-available-p 'png)))
+    :if (and (version<= "24.3" emacs-version) (image-type-available-p 'png))
     :init
     (add-hook 'after-init-hook #'global-emojify-mode))
   (use-package company-emoji
@@ -2899,13 +2899,13 @@ Este modo menor no funciona bien con otros modos menores que hacen uso de la pro
 #+BEGIN_SRC emacs-lisp
   (use-package proced
     :ensure nil
-    :disabled (not (or (string-equal system-type "gnu/linux") (string-equal system-type "gnu/kfreebsd"))))
+    :if (or (string-equal system-type "gnu/linux") (string-equal system-type "gnu/kfreebsd")))
 #+END_SRC
 *** schrute-mode
 Recuerda al usuario que hay una manera más eficiente de hacer algo
 #+BEGIN_SRC emacs-lisp
   (use-package schrute
-    :disabled t
+    :disabled
     :ensure nil
     :load-path "site-packages/dwight"
     :init
