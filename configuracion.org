@@ -1053,6 +1053,7 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     :init
     (setf bmkp-auto-light-when-set 'all-in-buffer)
     (setf bookmark-save-flag 1)
+    (setf bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
     :bind (("M-p" . hydra-bm/body))
     :config
     (defhydra hydra-bm (:color amaranth :hint nil)
