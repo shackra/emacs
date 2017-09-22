@@ -17,6 +17,11 @@
         (string-prefix-p "CANC" (match-string 1))
       nil)))
 
+(when (or (eq system-type 'windows-nt) (eq system-type 'cygwin))
+  (setq gc-cons-threshold (* 511 1024 1024))
+  (setq gc-cons-percentage 0.5)
+  (run-with-idle-timer 5 t #'garbage-collect))
+
 (defun my-tangle-config-org (orgfile elfile)
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
