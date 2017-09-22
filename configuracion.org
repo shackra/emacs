@@ -2771,6 +2771,7 @@ Modo mayor para editar archivos de servicio systemd.
 Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de ellas
 #+BEGIN_SRC emacs-lisp
   (use-package golden-ratio
+    :disabled
     :diminish golden-ratio-mode
     :init
     (setf golden-ratio-auto-scale nil)
