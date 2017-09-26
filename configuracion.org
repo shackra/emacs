@@ -580,7 +580,25 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
     :after (windmove winner windresize ace-window)
     :preface
     (require 'hydra-examples)
+    :init
+    (defun shackra/python-indent-inclusive ()
+      "Mueve el inicio de la región una linea por encima de `region-beginning'
+
+  Actualmente esta función no funciona como se espera"
+      (interactive)
+      (save-excursion
+        (let ((begin (region-beginning))
+              (end (region-end)))
+          (when (use-region-p)
+            (goto-char begin)
+            (forward-line -1)
+            (push-mark end)
+            (setq mark-active t)))))
     :config
+    (defhydra hydra-py (:color red :pre (flycheck-mode -1) :post (progn (deactivate-mark) (flycheck-mode 1)))
+      "Sangrado de bloques"
+      ("," python-indent-shift-left "← Disminuir")
+      ("." python-indent-shift-right "→ Aumentar"))
     (defhydra hydra-zoom (global-map "<f2>")
       "Acercamiento"
       ("f" text-scale-increase "in")
