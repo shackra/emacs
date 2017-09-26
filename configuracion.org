@@ -1708,13 +1708,12 @@ Modo mayor para programar en Python
     :after (python)
     :init (setf venv-location (or (getenv "WORKON_HOME") "/home/jorge/ENTORNOSVIRTUALES")))
 #+END_SRC
-*** =auctex-mode=
+*** LaTeX
 Paquete extensivo para escribir y formatear documentos TeX
 #+BEGIN_SRC emacs-lisp
-  (use-package auctex
-    :preface
-    (provide 'auctex)
-    :config
+  (use-package latex
+    :ensure auctex
+    :init
     (setf TeX-auto-save t
           TeX-parse-self t
           TeX-save-query nil
@@ -1723,9 +1722,7 @@ Paquete extensivo para escribir y formatear documentos TeX
     (setq-default TeX-master nil)
     (setq-default TeX-engine 'xetex)
     (setq-default TeX-PDF-mode t)
-    (if (fboundp 'shackra/yas)
-        (add-hook 'latex-mode-hook 'shackra/yas)
-      (add-hook 'latex-mode-hook 'yas-minor-mode-on)))
+    (add-hook 'LaTeX-mode-hook 'yas-minor-mode-on))
   (use-package reftex
     :init
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)   ; with AUCTeX LaTeX mode
