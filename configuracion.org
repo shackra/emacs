@@ -2454,17 +2454,13 @@ Porque =electric-indent-mode= no es lo suficientemente bueno.
 :END:
 Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
 #+BEGIN_SRC emacs-lisp
-  (use-package text-mode
-    :ensure nil
-    :preface
-    (provide 'text-mode)
-    (defun shackra/text-mode ()
-      (when (or (executable-find "ispell") (executable-find "hunspell"))(flyspell-mode))
-      (set (make-local-variable 'fill-column) 100)
-      (turn-off-auto-fill)
-      (turn-on-visual-line-mode))
-    (remove-hook 'text-mode-hook #'turn-on-auto-fill)
-    (add-hook 'text-mode-hook #'shackra/text-mode))
+  (defun shackra/text-mode ()
+    (when (or (executable-find "ispell") (executable-find "hunspell"))(flyspell-mode))
+    (set (make-local-variable 'fill-column) 100)
+    (turn-off-auto-fill)
+    (turn-on-visual-line-mode))
+  (remove-hook 'text-mode-hook #'turn-on-auto-fill)
+  (add-hook 'text-mode-hook #'shackra/text-mode)
 #+END_SRC
 **** Mover el cursos de manera inteligente al inicio de la linea
 He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0 en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
@@ -2628,12 +2624,7 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
 :END:
 Envuelve las filas de texto si son muy anchas visualmente en nuevas filas.
 #+BEGIN_SRC emacs-lisp
-  (use-package visual-line
-    :diminish visual-line-mode
-    :preface (provide 'visual-line)
-    :ensure nil
-    :init
-    (setf visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)))
+  (setf visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 #+END_SRC
 *** =notify=
 :LOGBOOK:
