@@ -1020,9 +1020,7 @@ Muestra en el =área de eco= la firma de la función actual.
 *** =auto-revert-mode=
 Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
 #+BEGIN_SRC emacs-lisp
-  (use-package auto-revert-mode
-    :preface
-    (provide 'auto-revert-mode)
+  (use-package autorevert
     :ensure nil
     :init
     (global-auto-revert-mode))
