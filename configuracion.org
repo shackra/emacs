@@ -1677,26 +1677,22 @@ Modo mayor para programar en Python
     (add-hook 'python-mode-hook 'anaconda-mode))
 
   (use-package python
-    :ensure nil
     :if (executable-find "python")
+    :bind (:map python-mode-map
+                ("C-c ," . shackra/python-indent-shift-left)
+                ("C-c ." . shackra/python-indent-shift-right))
     :interpreter ("python" . python-mode)
-    :preface
-    (require 'python)
-    :config
-    (if (fboundp 'defhydra)
-        (prog1 (defhydra hydra-py (:columns 2 :color amaranth)
-                 "Python: sangrado de bloques"
-                 ("<" python-indent-shift-left "Decrementa el sangrado")
-                 (">" python-indent-shift-right "Incrementa el sangrado")
-                 ("SPC" nil "Salir"))
-          ;; atamos la funcion hydra-py
-          (bind-key "C-c <" 'hydra-py/python-indent-shift-left python-mode-map)
-          (bind-key "C-c >" 'hydra-py/python-indent-shift-right python-mode-map))
-      ;; Hydra no esta disponible, no podemos definir nuestra hydra entonces
-      ;; atamos los atajos del teclado como si nada hubiera sucedido
-      (bind-key "C-c <" 'python-indent-shift-left python-mode-map)
-      (bind-key "C-c >" 'python-indent-shift-right python-mode-map))
-
+    :init
+    (defun shackra/python-indent-shift-left ()
+      (interactive)
+      (if (fboundp 'hydra-py/body)
+          (hydra-py/python-indent-shift-left)
+        (python-indent-shift-left)))
+    (defun shackra/python-indent-shift-right ()
+      (interactive)
+      (if (fboundp 'hydra-py/body)
+          (hydra-py/python-indent-shift-right)
+        (python-indent-shift-right)))
     (defun shackra/python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
       (electric-indent-local-mode -1)
