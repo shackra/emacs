@@ -2072,11 +2072,15 @@ Instalar estos componentes en el sistema operativo
 #+END_SRC
 **** Paquetes para editar JavaScript
 #+BEGIN_SRC emacs-lisp
-  (use-package company-tern
-    :after (company)
+  (use-package tern
     :if (executable-find "tern")
-    :bind-keymap (("M-." . nil)
-                  ("M-," . nil))
+    :bind (:map tern-mode-keymap
+                ("M-." . nil)
+                ("M-," . nil)))
+
+  (use-package company-tern
+    :after (company tern)
+    :if (executable-find "tern")
     :init
     (setf company-tern-property-marker " <p>")
     (setf company-tern-meta-as-single-line t)
