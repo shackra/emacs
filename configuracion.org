@@ -1154,7 +1154,7 @@ Un versátil cliente de correo electrónico para Emacs.
     :init
     (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
     (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-    (setq mu4e-alert-email-notification-types '(count subjects))
+    (setq mu4e-alert-email-notification-types '(subjects))
     :config
     (mu4e-alert-set-default-style 'libnotify))
 
