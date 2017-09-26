@@ -1783,6 +1783,7 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
     :preface
     (provide 'traad-projectile)
     :ensure nil
+    :no-require t
     :init
     (defun shackra/traad-open ()
       "Inicia un servidor traad usando la ubicación del proyecto actual"
@@ -1804,6 +1805,7 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
     :after (hydra traad python)
     :preface (provide 'hydra-traad)
     :ensure nil
+    :no-require t
     :init
     (defhydra hydra-traad-history (:columns 2 :color blue)
       "Historial de cambios de rope"
