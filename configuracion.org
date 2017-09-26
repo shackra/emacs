@@ -1359,8 +1359,6 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
   (use-package rainbow-mode)
   (use-package prog-mode
     :ensure nil
-    :preface
-    (provide 'prog-mode)
     :init
     (defun shackra/prog-mode ()
       (set (make-local-variable 'fill-column) 79)
