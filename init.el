@@ -53,7 +53,7 @@
                    (not canc))
             (add-to-list 'body-list body)))))
     (with-temp-file elfile
-      (insert (format ";; Don't edit this file, edit %s instead ...\n\n" orgfile))
+      (insert (format ";; No edite este archivo, en su lugar edite %s ...\n\n" orgfile))
       ;; (insert (apply 'concat (reverse body-list)))
       (apply 'insert (reverse body-list)))
     (message "Wrote %s ..." elfile)
