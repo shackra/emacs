@@ -1643,6 +1643,13 @@ Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquet
 *** =python=
 Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
+  (defun python-template ()
+    (interactive)
+    (insert "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\n\n"))
+
+  (add-hook 'python-mode-hook
+            '(lambda () (when (eq (buffer-size) 0) (python-template))))
+
   (use-package pony-mode
     :after (python)
     :init
@@ -1659,6 +1666,24 @@ Modo mayor para programar en Python
     :init
     (add-hook 'python-mode-hook #'pyvenv-mode)
     (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
+
+  (use-package virtualenvwrapper
+    :after (python)
+    :commands (venv-workon venv-deactivate venv-initialize-interactive-shells venv-initialize-eshell)
+    :init
+    (venv-initialize-interactive-shells)
+    (venv-initialize-eshell)
+    (setf venv-location (or (getenv "WORKON_HOME") "/home/jorge/ENTORNOSVIRTUALES"))
+    :config
+    (add-hook 'venv-postmkvirtualenv-hook
+              (lambda () (shell-command "pip install jedi rope isort importmagic autopep8 yapf pylint virtualenvwrapper"))))
+
+  (use-package pippel)
+
+  (use-package isortify
+    :ensure t
+    :config
+    (add-hook 'python-mode-hook 'isort-mode))
 
   (use-package py-autopep8
     :after (python)
@@ -1715,8 +1740,7 @@ Modo mayor para programar en Python
     (add-hook 'python-mode-hook #'shackra/python-mode))
 
   (use-package traad
-    :after (python)
-    :init (setf venv-location (or (getenv "WORKON_HOME") "/home/jorge/ENTORNOSVIRTUALES")))
+    :after (python))
 #+END_SRC
 *** LaTeX
 Paquete extensivo para escribir y formatear documentos TeX
