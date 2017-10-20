@@ -1236,7 +1236,22 @@ Un versátil cliente de correo electrónico para Emacs.
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?n)
             ("flag:flagged" "Marcados como importantes" ?m)
-            ("maildir:/personal/Drafts OR maildir:/personal/Borradores OR maildir:/gmx/Drafts OR maildir:/gmx/Borradores" "Borradores" ?b)))
+            ("maildir:/personal/Drafts OR maildir:/personal/Borradores" "Borradores" ?b)))
+    (setf user-mail-address "jorge@esavara.cr")
+    (setf smtpmail-smtp-server "mail.privateemail.com")
+    (setf smtpmail-smtp-user "jorge@esavara.cr")
+    (setf mu4e-sent-folder "/personal/Sent")
+    (setf mu4e-drafts-folder "/personal/Drafts")
+    (setf mu4e-trash-folder "/personal/Trash")
+    (setf mu4e-refile-folder "/personal/INBOX/Archive")
+    (setf user-full-name "Jorge Javier Araya Navarro")
+    (setf mu4e-compose-signature (concat
+                                  "👋 Pax et bonum.\n"
+                                  "Jorge Javier Araya Navarro\n"
+                                  "http://www.esavara.cr"))
+    (setf mu4e-maildir-shortcuts '(("/personal/INBOX" . ?p)
+                                   ("/personal/INBOX/Archive" . ?A)
+                                   ("/personal/Trash" .?t)))
     :config
     (require 'mu4e-contrib)
     (defalias 'correo 'mu4e)
