@@ -519,7 +519,12 @@ Teclas
                 :map ctl-x-map
                 ("8 RET" . counsel-unicode-char)
                 ("l" . counsel-locate)
-                ("f" . counsel-recentf)))
+                ("f" . counsel-recentf))
+    :init
+    (setf ivy-use-virtual-buffers nil)
+    :config
+    (with-eval-after-load 'org
+      (global-set-key [remap org-set-tags-command] #'counsel-org-tag)))
   (use-package ivy-hydra
     :after (counsel-projectile))
   (use-package swiper
