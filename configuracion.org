@@ -1418,9 +1418,7 @@ Teclas
 - @@html:<kbd>C-c c</kbd>@@ :: Capturar algo
 #+BEGIN_SRC emacs-lisp
   (use-package org
-    :bind (:map org-mode-map
-                ("C-x b" . org-iswitchb)
-                :map global-map
+    :bind (:map global-map
                 ("C-c a" . org-agenda)
                 ("<F12>" . org-agenda)
                 ("C-c l" . org-store-link)
@@ -1486,11 +1484,11 @@ Teclas
     (setf org-refile-targets `((nil :maxlevel . 9)
                                (org-agenda-files :maxlevel . 9)
                                (org-default-notes-file :maxlevel . 9)
-                               (,(expand-file-name "notas.org" org-directory) :maxlevel . 3)
-                               (,(expand-file-name "quizas.org" org-directory) :maxlevel . 3)))
+                               (,(expand-file-name "notas.org" org-directory) :maxlevel . 9)
+                               (,(expand-file-name "quizas.org" org-directory) :maxlevel . 9)))
     (setf org-clock-modeline-total 'today)
     ;; Use full outline paths for refile targets
-    (setq org-refile-use-outline-path t)
+    (setq org-refile-use-outline-path 'file)
 
     (setq org-outline-path-complete-in-steps t)
 
@@ -1500,7 +1498,7 @@ Teclas
     (setf org-directory "~/org/")
     ;; evita dividir una linea con M-RET
     (setf org-M-RET-may-split-line '((default . nil)))
-    (setf org-default-notes-file (expand-file-name "diario.org" org-directory)
+    (setf org-default-notes-file (expand-file-name "notas.org" org-directory)
           org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)))
     (setf org-todo-keywords
           '((sequence "POR-HACER(p)" "SIGNT(s)" "|" "TERMINADO(t)")
