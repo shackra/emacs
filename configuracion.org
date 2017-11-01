@@ -1538,7 +1538,9 @@ Teclas
             ("bakabt" . "https://bakabt.me/browse.php?only=0&incomplete=1&bonus=1&c1=1&c2=1&reorder=1&q=%s")
             ("tokyotosho" . "https://www.tokyotosho.info/search.php?terms=%s&type=1&size_min=&size_max=&username=")))
     (setf org-capture-templates
-          '(("p" "Tarea por hacer" entry (file+headline "cosas por hacer.org" "Tareas")
+          '(("t" "Anotacion técnica" entry (file "apuntes tecnicos.org")
+             "* %^{titulo o situación} %^g\n%?\n\n- Enlaces de relacionados:\n" :kill-buffer t :clock-in t :clock-resume t)
+            ("p" "Tarea por hacer" entry (file+headline "cosas por hacer.org" "Tareas")
              "* POR-HACER %^{breve descripción} %^a %^g\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
             ("n" "Notas" entry (file+headline org-default-notes-file "Reorganizar")
              "* %^{breve descripción}\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
@@ -1594,8 +1596,8 @@ Teclas
               (alltodo ""
                        ((org-agenda-skip-function
                          '(or (air-org-skip-subtree-if-habit)
-                             (air-org-skip-subtree-if-priority ?A)
-                             (org-agenda-skip-if nil '(scheduled deadline))))
+                              (air-org-skip-subtree-if-priority ?A)
+                              (org-agenda-skip-if nil '(scheduled deadline))))
                         (org-agenda-overriding-header "Todas las tareas de prioridad normal:")))))))
     (setf org-archive-location (expand-file-name "~/org-archivos/archivado.org::* Entradas viejas y archivadas"))
     (setf org-footnote-auto-adjust t)
