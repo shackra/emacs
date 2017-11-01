@@ -1070,12 +1070,17 @@ Crea menús a partir de secciones de documentos. Asociado a @@html:<kbd>C-c i</k
 *** Bookmark+
 Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
 #+BEGIN_SRC emacs-lisp
+  (use-package bookmark
+    :ensure nil
+    :init
+    (setf bookmark-default-file "~/.emacs.d/bookmarks")
+    (setf bookmark-save-flag 1))
+
   (use-package bookmark+
     :init
     (setf bmkp-auto-light-when-set 'all-in-buffer)
-    (setf bookmark-save-flag 1)
-    (setf bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
-    :bind (("M-p" . hydra-bm/body))
+    (setf bmkp-last-as-first-bookmark-file bookmark-default-file)
+    :bind (("C-c b" . hydra-bm/body))
     :config
     (defhydra hydra-bm (:color amaranth :hint nil)
       "
@@ -1084,7 +1089,7 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
       Cambiar                          Agregar           Editar
     ╭──────────────────────────────────────────────────────────────────────╯
      [_j_] Anterior (buffer actual)   [_f_] aquí...   [_e_] aquí...
-     [_l_] Siguiente (buffer actul)
+     [_l_] Siguiente (buffer actual)  [_F_] archivo
      [_k_] Saltar a...
      [_K_] Saltar a... (por tipo)
      [_i_] Saltar a... (otra vent.)
@@ -1096,6 +1101,7 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
       ("K" bmkp-jump-to-type :color blue)
       ("i" bmkp-jump-to-type-other-window :color blue)
       ("f" bmkp-bookmark-set-confirm-overwrite :color blue)
+      ("F" bmkp-file-target-set :color blue)
       ("e" bmkp-edit-bookmark-name-and-location :color blue)
       ("L" bookmark-bmenu-list "Menú de marcadores" :color blue)
       ("<ESC>" nil "Salir")))
