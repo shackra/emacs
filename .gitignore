@@ -25,7 +25,6 @@ tramp
 org-clock-save.el
 irony/*
 history
-bookmarks
 jabber-*
 recentf
 .org-id-locations
