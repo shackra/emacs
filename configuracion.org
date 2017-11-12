@@ -1053,12 +1053,12 @@ Revierte el contenido de un buffer de manera automática cuando el contenido de 
   (use-package yasnippet
     :diminish yas-minor-mode
     :init
-    (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" user-emacs-directory))
     (defun shackra/yas-reload ()
       "Recarga las definiciones de YaSnippet una vez"
       (yas-reload-all)
-      (remove-hook 'after-init-hook shackra/yas-reload))
+      (remove-hook 'after-init-hook 'shackra/yas-reload))
     :config
+    (setq yas-snippet-dirs (append yas-snippet-dirs (list (expand-file-name "plantillas" user-emacs-directory))))
     (add-hook 'prog-mode-hook #'yas-minor-mode-on)
     (add-hook 'after-init-hook #'shackra/yas-reload))
 #+END_SRC
