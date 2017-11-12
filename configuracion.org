@@ -1698,7 +1698,8 @@ Modo mayor para programar en Python
     :after (python)
     :init
     (add-hook 'python-mode-hook #'pyvenv-mode)
-    (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
+    (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)
+    (add-hook 'after-init-hook (lambda () (setenv "WORKON_HOME" venv-location))))
 
   (use-package virtualenvwrapper
     :after (python)
