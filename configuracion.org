@@ -1694,37 +1694,33 @@ Modo mayor para programar en Python
     ;; estropeé las plantillas de DJango
     (add-hook 'pony-tpl-minor-mode-hook #'shackra/pony-remove-beautify-html))
 
-  (use-package pyvenv
-    :after (python)
-    :init
-    (add-hook 'python-mode-hook #'pyvenv-mode)
-    (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)
-    (add-hook 'after-init-hook (lambda () (setenv "WORKON_HOME" venv-location))))
-
   (use-package virtualenvwrapper
     :after (python)
     :commands (venv-workon venv-deactivate venv-initialize-interactive-shells venv-initialize-eshell)
     :init
     (venv-initialize-interactive-shells)
     (venv-initialize-eshell)
-    (setf venv-location (or (getenv "WORKON_HOME") "/home/jorge/ENTORNOSVIRTUALES"))
     :config
     (add-hook 'venv-postmkvirtualenv-hook
-              (lambda () (shell-command "pip install jedi rope isort importmagic autopep8 yapf pylint virtualenvwrapper"))))
+              (lambda () (shell-command "pip install jedi rope isort epc importmagic yapf pylint"))))
 
   (use-package pippel)
+
+  (use-package yapfify
+    :diminish yapf-mode
+    :init (add-hook 'python-mode-hook 'yapf-mode))
+
+  (use-package importmagic
+    :diminish 'importmagic-mode
+    :init
+    (setq importmagic-be-quiet t)
+    (add-hook 'python-mode-hook 'importmagic-mode)
+    (add-hook 'before-save-hook (lambda () (when (eq major-mode 'python-mode) (importmagic-fix-imports)))))
 
   (use-package isortify
     :ensure t
     :config
     (add-hook 'python-mode-hook 'isort-mode))
-
-  (use-package py-autopep8
-    :after (python)
-    :preface (unless (executable-find "autopep8")
-               (message "¡autopep8 no esta instalado! Use `pip install autopep8'"))
-    :init
-    (add-hook 'python-mode-hook 'py-autopep8-enable-on-save))
 
   (use-package sphinx-doc
     :after (python)
@@ -1741,9 +1737,6 @@ Modo mayor para programar en Python
                 ("M-r" . anaconda-mode-find-references)
                 ("M-*" . anaconda-mode-go-back))
     :diminish anaconda-mode
-    :preface
-    (when (>= (call-process "python" nil nil nil "-m" "jedi") 1)
-      (message (format "Modulo jedi no instalado para interprete Python: %s. Auto-completado para Python no funcionara sin ese modulo" "python")))
     :config
     (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet company-capf))))
     (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
@@ -1856,9 +1849,11 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
       (if (projectile-project-p)
           (traad-open (projectile-project-root))
         (message "No estas en ningún proyecto!"))))
+
   (use-package python-environment
     :init
-    (setf python-environment-directory (or (getenv "WORKON_HOME") "/home/jorge/ENTORNOSVIRTUALES")))
+    (setq python-environment-directory "~/.virtualenvs"))
+
   (use-package traad
     :after (python-environment)
     :config
