@@ -1764,10 +1764,11 @@ Modo mayor para programar en Python
       (electric-indent-local-mode -1)
       (aggressive-indent-mode -1))
 
-    (add-hook 'python-mode-hook #'shackra/python-mode))
-
-  (use-package traad
-    :after (python))
+    (add-hook 'python-mode-hook #'shackra/python-mode)
+    :config
+    ;; re-mapea todas los atajos que hagan referencia a `python-indent-shift-*' con `shackra/python-indent-shift-*'
+    (global-set-key [remap python-indent-shift-left] 'shackra/python-indent-shift-left)
+    (global-set-key [remap python-indent-shift-right] 'shackra/python-indent-shift-right))
 #+END_SRC
 *** LaTeX
 Paquete extensivo para escribir y formatear documentos TeX
