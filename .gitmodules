@@ -1,9 +1,3 @@
-[submodule "site-packages/jazz-theme"]
-	path = site-packages/jazz-theme
-	url = https://github.com/donderom/jazz-theme.git
-[submodule "site-packages/transcription-mode"]
-	path = site-packages/transcription-mode
-	url = https://github.com/skeeto/transcription-mode.git
 [submodule "site-packages/secreto.el"]
 	path = site-packages/secreto.el
 	url = https://bitbucket.org/shackra/secreto.el.git
@@ -13,9 +7,6 @@
 [submodule "site-packages/font-man"]
 	path = site-packages/font-man
 	url = https://bitbucket.org/shackra/font-man.git
-[submodule "snippets/amzn-mode"]
-	path = snippets/amzn-mode
-	url = git@bitbucket.org:shackra/amzn-mode-snippets.git
 [submodule "site-packages/dwight"]
 	path = site-packages/dwight
-	url = git@bitbucket.org:shackra/dwight-k.-schrute.git
+	url = https://bitbucket.org/shackra/dwight-k.-schrute.git
