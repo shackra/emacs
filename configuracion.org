@@ -2693,7 +2693,8 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
             (nil .  (shackra-vc-info shackra-flycheck-status))))
 
     (setf telephone-line-rhs '((nil . (telephone-line-misc-info-segment telephone-line-major-mode-segment))
-                               (accent . (telephone-line-minor-mode-segment telephone-line-position-segment))))
+                               (nil . (shackra-virtualenv-name))
+                               (accent . (telephone-line-position-segment))))
     (telephone-line-mode 1))
 #+END_SRC
 *** =visual-line-mode=
