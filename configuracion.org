@@ -2731,7 +2731,9 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
 #+BEGIN_SRC emacs-lisp
   (use-package alert
     :init
-    (setf alert-default-style 'libnotify)
+    (if (eq system-type 'windows-nt)
+        (setf alert-default-style 'message)
+      (setf alert-default-style 'libnotify))
     :config
     (defun shackra/appt-muestra-notificacion (min-to-app new-time msg)
       "Envia notificaciones usando libnotify. Esto no funcionara si DBus no esta instalado y corriendo"
