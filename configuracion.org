@@ -417,43 +417,37 @@ configuración sana de ciertas opciones en Emacs
 **** Tipografía
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
 #+BEGIN_SRC emacs-lisp
-  (use-package existefuente
-    :no-require t
-    :ensure nil
-    :preface (provide 'existefuente)
-    :init
-    (defun font-exists-p (font)
-      "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
-      (if (not (find-font (font-spec :name font)))
-	  nil
-	t))
-    (defun shackra/arregla-emojis (&optional frame)
-      ;; Para NS/Cocoa
-      (when (eq system-type 'darwin)
-	(set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
-      ;; Para GNU/Linux
-      (when (and (font-exists-p "Symbola") (eq system-type 'gnu/linux))
-	(set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend))))
+  (defun font-exists-p (font)
+    "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
+    (if (not (find-font (font-spec :name font)))
+        nil
+      t))
 
-  (use-package misfuentes
-    :no-require t
-    :ensure nil
-    :preface (provide 'misfuentes)
-    :init
-    (defun shackra/font-set (&optional frame)
-      (when (framep frame)
-	(select-frame frame))
-      (cond
-       ((font-exists-p "Fira Code") (set-frame-font "Fira Code 10") (add-to-list 'default-frame-alist '(font . "Fira Code-10")))
-       ((font-exists-p "Monoisome") (set-frame-font "Monoisome 9") (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
-       ((font-exists-p "Monoid") (set-frame-font "Monoid 9") (add-to-list 'default-frame-alist '(font . "Monoid-9")))
-       ((font-exists-p "Source Code Pro") (set-frame-font "Source Code Pro 10") (add-to-list 'default-frame-alist '(font . "Source Code Pro-10")))))
-    :config
-    (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
-    (add-hook 'after-make-frame-functions #'shackra/font-set)
-    (unless (daemonp)
-      (shackra/arregla-emojis)
-      (shackra/font-set)))
+  (defun shackra/arregla-emojis (&optional frame)
+    "Arregla la visualizacion de los emojis"
+    ;; Para NS/Cocoa
+    (when (eq system-type 'darwin)
+      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
+    ;; Para todos los demas sistemas operativos
+    (when (and (font-exists-p "Symbola") (not (eq system-type 'darwin)))
+      (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend)))
+
+  (defun shackra/font-set (&optional frame)
+    "Establece una tipografia para el nuevo marco creado"
+    (when (framep frame)
+      (select-frame frame))
+    (cond
+     ((font-exists-p "Fira Code") (set-frame-font "Fira Code 10") (add-to-list 'default-frame-alist '(font . "Fira Code-10")))
+     ((font-exists-p "Monoisome") (set-frame-font "Monoisome 9") (add-to-list 'default-frame-alist '(font . "Monoisome-9")))
+     ((font-exists-p "Monoid") (set-frame-font "Monoid 9") (add-to-list 'default-frame-alist '(font . "Monoid-9")))
+     ((font-exists-p "Source Code Pro") (set-frame-font "Source Code Pro 10") (add-to-list 'default-frame-alist '(font . "Source Code Pro-10")))))
+
+  (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
+  (add-hook 'after-make-frame-functions #'shackra/font-set)
+
+  (unless (daemonp)
+    (shackra/arregla-emojis)
+    (shackra/font-set))
 #+END_SRC
 *** secreto
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
