@@ -2622,12 +2622,21 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
                    (vc-state (buffer-file-name (current-buffer)))
                  nil))
     :init
+    ;; define una nueva cara
+    (defface shackra-orange '((t (:foreground "white" :background "orange"))) "")
+    ;; Informa a telephine-line sobre la existencia de la nueva cara, llamada `orange'
+    ;; Cambia el estilo de los separadores
+    (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
+          telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
+          telephone-line-primary-right-separator 'telephone-line-cubed-right
+          telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
     (setf telephone-line-height 40)
     (custom-set-faces
      '(mode-line ((t (:box nil))))
      '(mode-line-inactive ((t (:box nil))))
      '(mode-line-highlight ((t (:box nil)))))
     :config
+    (add-to-list 'telephone-line-faces '(orange . shackra-orange))
     (telephone-line-defsegment* shackra-buffer-vc-modified-segment ()
       (list (cond ((buffer-modified-p)
                    (propertize (format " %s" (all-the-icons-faicon "pencil")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
@@ -2647,6 +2656,8 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
                   ((eq (shackra/vc-state) 'unregistered)
                    (propertize (format " %s " (all-the-icons-faicon "question")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
                                'display '(raise -0.1) 'help-echo "Archivo sin registrar al VCS.")))))
+
+    (telephone-line-defsegment shackra-virtualenv-name () venv-current-name)
 
     (telephone-line-defsegment shackra-line-buffer-segment ()
       (telephone-line-raw mode-line-buffer-identification t))
