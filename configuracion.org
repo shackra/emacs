@@ -2618,7 +2618,6 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
     :init
     ;; define una nueva cara
     (defface shackra-orange '((t (:foreground "black" :background "orange"))) "")
-    (defface shackra-orange-inactive '((t (:foreground "grey" :background "#ffc04d"))) "")
     ;; Informa a telephine-line sobre la existencia de la nueva cara, llamada `orange'
     ;; Cambia el estilo de los separadores
     (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
@@ -2631,7 +2630,7 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
      '(mode-line-inactive ((t (:box nil))))
      '(mode-line-highlight ((t (:box nil)))))
     :config
-    (add-to-list 'telephone-line-faces '(accent-orange . (shackra-orange . shackra-orange-inactive)))
+    (add-to-list 'telephone-line-faces '(accent-orange . (shackra-orange . telephone-line-accent-inactive)))
     (telephone-line-defsegment* shackra-buffer-vc-modified-segment ()
       (list (cond ((buffer-modified-p)
                    (propertize (format " %s" (all-the-icons-faicon "pencil")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
