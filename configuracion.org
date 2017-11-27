@@ -360,6 +360,14 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
             t)
         (file-error nil))))
 #+END_SRC
+** Comprobar si un modulo Python existe
+#+BEGIN_SRC emacs-lisp
+  (defun shackra/python-module-exist-p (module)
+    "Retorna `t' si el modulo `MODULE' existe"
+    (let ((exists (string-trim (shell-command-to-string (format "python -c 'import pkgutil; print(0 if pkgutil.find_loader(\"%s\") else 1)'" module)))))
+      (when (string= exists "0")
+        t)))
+#+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages
@@ -540,6 +548,7 @@ Teclas
     (add-to-list 'ivy-ignore-buffers "\\*prodigy-.*")
     (add-to-list 'ivy-ignore-buffers "\\*godoc .*")
     (add-to-list 'ivy-ignore-buffers "\\*magit-.*")
+    (add-to-list 'ivy-ignore-buffers "\\*Slack Log")
     (ivy-mode 1))
 #+END_SRC
 *** =hydra=
