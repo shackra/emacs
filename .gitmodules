@@ -10,3 +10,6 @@
 [submodule "site-packages/dwight"]
 	path = site-packages/dwight
 	url = https://bitbucket.org/shackra/dwight-k.-schrute.git
+[submodule "gimp-mode"]
+	path = .\\site-packages\\gimp-mode
+	url = https://github.com/pft/gimpmode.git

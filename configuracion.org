@@ -2249,6 +2249,18 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
   (use-package gradle-mode
     :after (kotlin-mode))
 #+END_SRC
+*** Gimp
+Now you can run the GIMP with `M-x run-gimp'.
+Alternatively, connect to GIMP server with `M-x gimp-cl-connect'.
+
+Type `M-x gimp-help' for help.
+#+BEGIN_SRC emacs-lisp
+  (use-package gimp-mode
+    :ensure nil
+    :load-path "site-packages/gimp-mode"
+    :config
+    (load (expand-file-name "site-packages/gimp-mode/gimp-init.el" user-emacs-directory)))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
