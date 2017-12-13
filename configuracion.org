@@ -170,27 +170,25 @@ Teclas
 - @@html:<kbd>C-x C-f</kbd>@@ :: Visitar archivo. *Dentro de un proyecto*: Visita archivo de proyecto, prefijo @@html:<kbd>C-u</kbd>@@ Visitar archivo, prefijo @@html:<kbd>C-u</kbd>@@ @@html:<kbd>C-u</kbd>@@ =ag= para buscar una cadena de texto entre miles de archivos.
 - @@html:<kbd>C-x b</kbd>@@ :: Cambiar buffer. *Dentro de un proyecto*: Cambiar buffer de archivo relacionado a proyecto, prefijo @@html:<kbd>C-u</kbd>@@ Cambiar buffer, prefijo @@html:<kbd>C-u</kbd>@@ @@html:<kbd>C-u</kbd>@@ Inicia menú Hydra para Windmove.
 #+BEGIN_SRC emacs-lisp
-  (use-package shackra-find-file-switch-buffer
-    :no-require t
-    :ensure nil
-    :preface (provide 'shackra-find-file-switch-buffer)
-    :after (projectile ivy counsel)
-    :bind (:map ctl-x-map
-		("C-f" . mi/find-file)
-		("b" . mi/switch-buffer))
-    :init
-    (defun mi/find-file (arg)
-      (interactive "p")
-      (cond
-       ((eq arg 4) (counsel-find-file))
-       ((eq arg 16) (counsel-ag))
-       ((eq arg 1) (if (projectile-project-p) (projectile-find-file-dwim) (counsel-find-file)))))
-    (defun mi/switch-buffer (arg)
-      (interactive "p")
-      (cond
-       ((eq arg 4) (ivy-switch-buffer))
-       ((eq arg 16) (hydra-win/body))
-       ((eq arg 1) (if (projectile-project-p) (projectile-switch-to-buffer) (ivy-switch-buffer))))))
+  (with-eval-after-load "ivy"
+    (with-eval-after-load "projectile"
+      (with-eval-after-load "counsel"
+        (defun mi/find-file (arg)
+          (interactive "p")
+          (cond
+           ((eq arg 4) (counsel-find-file))
+           ((eq arg 16) (counsel-ag))
+           ((eq arg 1) (if (projectile-project-p) (projectile-find-file-dwim) (counsel-find-file)))))
+
+        (defun mi/switch-buffer (arg)
+          (interactive "p")
+          (cond
+           ((eq arg 4) (ivy-switch-buffer))
+           ((eq arg 16) (hydra-win/body))
+           ((eq arg 1) (if (projectile-project-p) (projectile-switch-to-buffer) (ivy-switch-buffer)))))
+        ;; Remapea los atajos con mis propios comandos
+        (global-set-key [remap find-file] #'mi/find-file)
+        (global-set-key [remap switch-to-buffer] #'mi/switch-buffer))))
 #+END_SRC
 ** función para =delete-frame-functions=
 #+BEGIN_SRC emacs-lisp
@@ -207,15 +205,12 @@ Teclas
 Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-settings-with-big.html][Programming: Seven specialty Emacs settings with big payoffs]]
 
 #+BEGIN_SRC emacs-lisp
-  (use-package shackra-guardar-todo
-    :disabled
-    :ensure nil
-    :preface (provide 'shackra-guardar-todo)
-    :init
-    (defun guardar-todo ()
-      (interactive)
-      (save-some-buffers t))
-    (add-hook 'focus-out-hook #'guardar-todo))
+  (defun guardar-todo ()
+    (interactive)
+    (save-some-buffers t))
+
+  ;; uso:
+  ;; (add-hook 'focus-out-hook #'guardar-todo)
 #+END_SRC
 ** No molestes, Shia LaBeouf!
 #+BEGIN_SRC emacs-lisp
@@ -385,29 +380,23 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
   (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
   (load custom-file)
 #+END_SRC
-* mapeo de combinaciones de teclas
+* Division de ventanas y movimiento inmediato del cursor a la nueva ventana
 Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 #+BEGIN_SRC emacs-lisp
-  (use-package mdct ;; siglas para Mapeo de Combinaciones de Teclas
-    :no-require t
-    :ensure nil
-    :preface (provide 'mdct)
-    :init
-    (defun shackra/split-window-vertically ()
-      "Divide la ventana por la mitad verticalmente y mueve el cursor a la ventana nueva"
-      (interactive)
-      (split-window-vertically)
-      (other-window 1))
+  (defun shackra/split-window-vertically ()
+    "Divide la ventana por la mitad verticalmente y mueve el cursor a la ventana nueva"
+    (interactive)
+    (split-window-vertically)
+    (other-window 1))
 
-    (defun shackra/split-window-horizontally ()
-      "Divide la ventana por la mitad horizontalmente y mueve el cursor a la ventana nueva"
-      (interactive)
-      (split-window-horizontally)
-      (other-window 1))
-    :config
-    (bind-keys :map ctl-x-map
-	       ("2" . shackra/split-window-vertically)
-	       ("3" . shackra/split-window-horizontally)))
+  (defun shackra/split-window-horizontally ()
+    "Divide la ventana por la mitad horizontalmente y mueve el cursor a la ventana nueva"
+    (interactive)
+    (split-window-horizontally)
+    (other-window 1))
+
+  (global-set-key [remap split-window-below] #'shackra/split-window-vertically)
+  (global-set-key [rempa split-window-right] #'shackra/split-window-horizontally)
 #+END_SRC
 * Aliases
 Nombres más cortos para comandos usados frecuentemente
