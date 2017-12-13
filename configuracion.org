@@ -39,10 +39,6 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
           (when old-dir
             (delete-directory old-dir t))))))
 
-  ;; repositorios de paquetes
-  (setf package-archives '(("melpa" . "https://melpa.org/packages/")
-                           ("gnu" . "https://elpa.gnu.org/packages/")))
-
   (unless package-archive-contents
     (package-refresh-contents))
 
@@ -54,6 +50,15 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
       (package-install 'org)
     ;; El paquete esta instalado. Actualiza el paquete org-mode.
     (shackra/update-one-package 'org))
+
+  (when (not (package-installed-p 'diminish))
+      (package-install 'diminish))
+
+  (when (not (package-installed-p 'bind-key))
+      (package-install 'bind-key))
+
+  (when (not (package-installed-p 'f))
+      (package-install 'f))
 
   ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
   (when (eq system-type 'darwin)

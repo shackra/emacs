@@ -16,12 +16,18 @@
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
 (package-initialize nil)
 
+;; repositorios de paquetes
+(setf package-archives '(("melpa" . "https://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("gnu" . "https://elpa.gnu.org/packages/")))
+
 (setq inhibit-startup-screen t)
 ;; :pin no funciona en use-package por el momento, entonces si deseamos que se
 ;; instale un paquete desde el repositorio que queremos debemos especificarlo
 ;; aqui antes de que use-package sea inicializado
 (setq package-pinned-packages '((auctex . "gnu")
-                                (python . "gnu")))
+                                (python . "gnu")
+                                (use-package . "melpa-stable")))
 
 (defun my-tangle-section-canceled ()
   "Checks if the previous section header was CANC"
