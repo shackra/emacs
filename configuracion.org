@@ -1392,6 +1392,30 @@ Conexión a Weechat desde Emacs
     (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
                                        (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain)))))
 #+END_SRC
+*** Slack
+#+BEGIN_SRC emacs-lisp
+  (use-package color)
+  (use-package slack
+    :init
+    (setq slack-buffer-emojify t)
+    (setq slack-prefer-current-team t)
+    :config
+    (slack-register-team
+     :name "brete"
+     :default t
+     :client-id "15969776599.285906366548"
+     :client-secret (secrets-get-secret "login" "emacs-slack-brete client-secret")
+     :token (secrets-get-secret "login" "emacs-slack-brete password")
+     :subscribed-channels '(general development-coding))
+    (slack-register-team
+     :name "American Chesterton Society Slack"
+     :default t
+     :client-id "108268788771.277619878759"
+     :client-secret (secrets-get-secret "login" "emacs-slack client-secret")
+     :token (secrets-get-secret "login" "emacs-slack password")
+     :subscribed-channels '(general))
+    (slack-start))
+#+END_SRC
 ** Desarrollo de software
 *** org-babel
 #+BEGIN_SRC emacs-lisp
