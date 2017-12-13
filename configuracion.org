@@ -475,8 +475,10 @@ Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
 *** =font-man=
 Escala la altura de la tipografía en todos los buffers de manera temporal
 #+BEGIN_SRC emacs-lisp
-  (use-package switch-buffer-functions)
+  (use-package switch-buffer-functions
+    :commands (switch-buffer-functions-run))
   (use-package font-man
+    :commands (font-man-mode)
     :after (switch-buffer-functions)
     :ensure nil
     :load-path "site-packages/font-man")
@@ -573,7 +575,7 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       "cambia la ventana en que el cursor esta"
       (interactive)
       (ace-window 0)
-      (when golden-ratio-mode
+      (when (fboundp 'golden-ratio-mode)
         (golden-ratio)))
     :config
     (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
@@ -867,7 +869,6 @@ Manejo de archivos de un proyecto.
      projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
-    (setf projectile-globally-ignored-buffers ivy-ignore-buffers)
     :config
     (add-hook 'after-init-hook #'projectile-global-mode))
 
