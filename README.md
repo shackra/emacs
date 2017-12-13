@@ -5,8 +5,8 @@ guías para aquellos que desean usar Emacs pudiendo así ajustarlo a sus necesid
 
 ## Puede que estés viendo un repositorio espejo
 
-Mi configuración se hospeda en [Bitbucket.org](https://bitbucket.org/shackra/.emacs.d/), la configuración que
-ves en [Github.com](https://github.com/shackra/.emacs.d/) no necesariamente estará actualizada con los cambios
+Mi configuración se hospeda en [Bitbucket.org](https://gitlab.com/shackra/emacs/), la configuración
+que ves en [Github.com](https://github.com/shackra/.emacs.d/) es una copia espejo con los cambios
 más recientes.
 
 ## Notas adicionales
