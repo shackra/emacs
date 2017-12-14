@@ -2306,6 +2306,18 @@ Type `M-x gimp-help' for help.
     :config
     (load (expand-file-name "site-packages/gimp-mode/gimp-init.el" user-emacs-directory)))
 #+END_SRC
+*** Java
+#+BEGIN_SRC emacs-lisp
+  (use-package meghanada
+    :config
+    (add-hook 'java-mode-hook
+              (lambda ()
+                ;; meghanada-mode on
+                (meghanada-mode t)
+                (setq c-basic-offset 2)
+                ;; use code format
+                (add-hook 'before-save-hook 'meghanada-code-beautify-before-save))))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
