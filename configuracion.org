@@ -368,6 +368,19 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
       (when (string= exists "0")
         t)))
 #+END_SRC
+** Convertir =hh:mm= a formato de punto flotante
+#+BEGIN_SRC emacs-lisp
+  (defun shackra/time--to-seconds (timestr)
+    "Convierte la notacion HH:MM a segundos"
+    (let* ((matchindex (string-match "\\([0-9]+\\):\\([0-9]+\\)" timestr))
+           (hours (string-to-number (match-string 1 timestr)))
+           (minutes (string-to-number (match-string 2 timestr))))
+      (+ (* 60 (* hours 60)) (* minutes 60))))
+
+  (defun shackra/time-to-hours (timestr)
+    "Expresa el tiempo en notacion de punto decimal"
+    (format "%.3f" (/ (shackra/time--to-seconds timestr) 3600.0)))
+#+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages
@@ -1526,7 +1539,7 @@ Teclas
        ((null mylist) nil)
        ((atom mylist) (list mylist))
        (t
-        (append (flatten (car mylist)) (flatten (cdr mylist))))))
+        (append (shackra--flatten (car mylist)) (shackra--flatten (cdr mylist))))))
 
     (setf org-clock-clocktable-formatter 'shackra-org-clocktable-formatter)
     ;; Targets include this file and any file contributing to the agenda - up to
