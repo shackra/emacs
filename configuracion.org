@@ -1422,12 +1422,18 @@ Conexión a Weechat desde Emacs
      :subscribed-channels '(general development-coding))
     (slack-register-team
      :name "American Chesterton Society Slack"
-     :default t
      :client-id "108268788771.277619878759"
      :client-secret (secrets-get-secret "login" "emacs-slack client-secret")
      :token (secrets-get-secret "login" "emacs-slack password")
      :subscribed-channels '(general))
     (slack-start))
+#+END_SRC
+*** Redmine
+#+BEGIN_SRC emacs-lisp
+  (use-package org-redmine
+    :init
+    (setq org-redmine-uri "https://my.ivrtechnology.com")
+    (setq org-redmine-auth-api-key (secrets-get-secret "login" "brete redmine")))
 #+END_SRC
 ** Desarrollo de software
 *** org-babel
