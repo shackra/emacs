@@ -3118,3 +3118,7 @@ Utilidades para integrar Emacs y docker
   (use-package dockerfile-mode
     :mode "Dockerfile\\'")
 #+END_SRC
+*** Depuración
+#+BEGIN_SRC emacs-lisp
+  (use-package realgud)
+#+END_SRC
