@@ -1417,6 +1417,7 @@ Conexión a Weechat desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package color)
   (use-package slack
+    :disabled
     :init
     (setq slack-buffer-emojify t)
     (setq slack-prefer-current-team t)
@@ -2215,6 +2216,7 @@ Instalar estos componentes en el sistema operativo
       (add-hook hook (lambda ()
                        (add-to-list (make-local-variable 'company-backends) '(company-tern :with company-yasnippet))))))
   (use-package js2-refactor
+    :disabled
     :after (js2-mode)
     :bind (:js2-mode-map
            ("C-k" . js2r-kill)
