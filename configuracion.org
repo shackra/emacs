@@ -1772,9 +1772,10 @@ Modo mayor para programar en Python
   (use-package importmagic
     :diminish 'importmagic-mode
     :init
+    (defun shackra/before-save-py-importmagic-fix ()
+      (when (eq major-mode 'python-mode) (importmagic-fix-imports)))
     (setq importmagic-be-quiet t)
-    (add-hook 'python-mode-hook 'importmagic-mode)
-    (add-hook 'before-save-hook (lambda () (when (eq major-mode 'python-mode) (importmagic-fix-imports)))))
+    (add-hook 'before-save-hook #'shackra/before-save-py-importmagic-fix))
 
   (use-package isortify
     :ensure t
