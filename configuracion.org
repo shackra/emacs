@@ -384,7 +384,10 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
 ** Apaga el auto sangrado
 #+BEGIN_SRC emacs-lisp
   (defun shackra/electric-indent-mode-off ()
-    (electric-indent-local-mode -1))
+    (electric-indent-local-mode -1)
+    ;; Desactiva aggresive-indent si esta instalado y activo
+    (when (fboundp 'aggressive-indent-mode)
+      (aggressive-indent-mode -1)))
 #+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
