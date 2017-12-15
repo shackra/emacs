@@ -1476,7 +1476,6 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
       (rainbow-turn-on)
       (when (or (executable-find "ispell") (executable-find "hunspell"))
         (flyspell-prog-mode)))
-    (bind-key "RET" 'newline-and-indent prog-mode-map)
     (bind-key* "C-M-," 'comment-dwim)
     (add-hook 'prog-mode-hook #'shackra/prog-mode))
 #+END_SRC
