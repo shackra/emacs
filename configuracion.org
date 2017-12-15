@@ -414,7 +414,7 @@ Combinaciones de teclas que no pertenecen a ningún paquete en particular.
     (other-window 1))
 
   (global-set-key [remap split-window-below] #'shackra/split-window-vertically)
-  (global-set-key [rempa split-window-right] #'shackra/split-window-horizontally)
+  (global-set-key [remap split-window-right] #'shackra/split-window-horizontally)
 #+END_SRC
 * Aliases
 Nombres más cortos para comandos usados frecuentemente
