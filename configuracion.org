@@ -381,6 +381,11 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
     "Expresa el tiempo en notacion de punto decimal"
     (format "%.3f" (/ (shackra/time--to-seconds timestr) 3600.0)))
 #+END_SRC
+** Apaga el auto sangrado
+#+BEGIN_SRC emacs-lisp
+  (defun shackra/electric-indent-mode-off ()
+    (electric-indent-local-mode -1))
+#+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages
@@ -1815,7 +1820,7 @@ Modo mayor para programar en Python
         (python-indent-shift-right)))
     (defun shackra/python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
-      (electric-indent-local-mode -1)
+      (shackra/electric-indent-mode-off)
       (aggressive-indent-mode -1))
 
     (add-hook 'python-mode-hook #'shackra/python-mode)
