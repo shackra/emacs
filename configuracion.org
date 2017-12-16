@@ -637,14 +637,9 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
       "Retorna el numero de frames visibles"
       (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
         (length frames)))
-    (defun shackra/other-window ()
-      "cambia la ventana en que el cursor esta"
-      (interactive)
-      (ace-window 0)
-      (when (fboundp 'golden-ratio-mode)
-        (golden-ratio)))
     :config
-    (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)))
+    (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+    (define-key global-map [remap other-window] 'ace-window))
   (use-package windmove
     :ensure nil)
   (use-package winner
