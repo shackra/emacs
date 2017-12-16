@@ -2667,13 +2667,6 @@ He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a
       (and (= oldpos (point))
 	   (beginning-of-line)))))
 #+END_SRC
-*** transcription-mode
-Modo mayor para editar transcripciones
-#+BEGIN_SRC emacs-lisp
-  (use-package transcription-mode
-    :ensure nil
-    :load-path "site-packages/transcription-mode")
-#+END_SRC
 *** paredit
 Un modo menor para la edición de paréntesis. Para aprender qué hace este modo menor y sus posibilidades, ver [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]].
 #+BEGIN_SRC emacs-lisp
