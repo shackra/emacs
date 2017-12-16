@@ -173,22 +173,22 @@ Teclas
   (with-eval-after-load "ivy"
     (with-eval-after-load "projectile"
       (with-eval-after-load "counsel"
-        (defun mi/find-file (arg)
+        (defun shackra/find-file (arg)
           (interactive "p")
           (cond
            ((eq arg 4) (counsel-find-file))
            ((eq arg 16) (counsel-ag))
            ((eq arg 1) (if (projectile-project-p) (projectile-find-file-dwim) (counsel-find-file)))))
 
-        (defun mi/switch-buffer (arg)
+        (defun shackra/switch-to-buffer (arg)
           (interactive "p")
           (cond
            ((eq arg 4) (ivy-switch-buffer))
            ((eq arg 16) (hydra-win/body))
            ((eq arg 1) (if (projectile-project-p) (projectile-switch-to-buffer) (ivy-switch-buffer)))))
         ;; Remapea los atajos con mis propios comandos
-        (global-set-key [remap find-file] #'mi/find-file)
-        (global-set-key [remap switch-to-buffer] #'mi/switch-buffer))))
+        (global-set-key [remap find-file] 'shackra/find-file)
+        (global-set-key [remap ivy-switch-buffer] 'shackra/switch-to-buffer))))
 #+END_SRC
 ** función para =delete-frame-functions=
 #+BEGIN_SRC emacs-lisp
