@@ -1591,7 +1591,7 @@ Teclas
                                (org-default-notes-file :maxlevel . 9)
                                (,(expand-file-name "notas.org" org-directory) :maxlevel . 9)
                                (,(expand-file-name "quizas.org" org-directory) :maxlevel . 9)))
-    (setf org-clock-modeline-total 'today)
+    (setf org-use-property-inheritance t)
     ;; Use full outline paths for refile targets
     (setq org-refile-use-outline-path 'file)
 
