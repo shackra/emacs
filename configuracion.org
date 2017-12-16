@@ -370,9 +370,17 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
 #+END_SRC
 ** Convertir =hh:mm= a formato de punto flotante
 #+BEGIN_SRC emacs-lisp
+  (require 'thingatpt)
+  (require 'rx)
+
+  (defvar shackra/time-re (rx (group (one-or-more digit)) ":" (group (one-or-more digit)))
+    "Expresión regular que coincide con notacion de tiempo HH:MM")
+
   (defun shackra/time--to-seconds (timestr)
     "Convierte la notacion HH:MM a segundos"
-    (let* ((matchindex (string-match "\\([0-9]+\\):\\([0-9]+\\)" timestr))
+    (unless timestr
+      (setf timestr "0:00"))
+    (let* ((matchindex (string-match shackra/time-re timestr))
            (hours (string-to-number (match-string 1 timestr)))
            (minutes (string-to-number (match-string 2 timestr))))
       (+ (* 60 (* hours 60)) (* minutes 60))))
@@ -380,6 +388,26 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
   (defun shackra/time-to-hours (timestr)
     "Expresa el tiempo en notacion de punto decimal"
     (format "%.3f" (/ (shackra/time--to-seconds timestr) 3600.0)))
+
+  (defun shackra/time-at-point-to-hours ()
+    "Convierte el tiempo bajo el cursor a notacion decimal, lo copia al portapapeles"
+    (interactive)
+    (let ((decimal-time (shackra/time-to-hours (thing-at-point 'time))))
+      (message decimal-time)
+      (kill-new decimal-time)))
+
+  (define-key org-mode-map (kbd "C-M-y") 'shackra/time-at-point-to-hours)
+
+  (defun time-bounds-of-time-at-point ()
+    (save-excursion
+      (while (looking-back "[^[:space:]]" 1)
+        (backward-char))
+      (save-match-data
+        (if (looking-at shackra/time-re)
+            (cons (point) (match-end 0))
+          nil))))
+
+  (put 'time 'bounds-of-thing-at-point 'time-bounds-of-time-at-point)
 #+END_SRC
 ** Apaga el auto sangrado
 #+BEGIN_SRC emacs-lisp
