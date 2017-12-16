@@ -415,6 +415,25 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
     (when (fboundp 'aggressive-indent-mode)
       (aggressive-indent-mode -1)))
 #+END_SRC
+** Palabras (='word=) al principio de linea de =(region-beginning)= y =(region-end)=
+#+BEGIN_SRC emacs-lisp
+  (defun shackra-words-region-begin-end (begin end)
+    "Retorna una lista con las palabras al principio de linea para `BEGIN' y `END'"
+    (interactive "r")
+    (save-excursion
+      (let ((word1)
+            (word2))
+        ;; Mueve el cursor al principio de la región
+        (goto-char begin)
+        (beginning-of-line)
+        (setf word1 (thing-at-point 'word t))
+        ;; Mueve el cursor al final de la región
+        (goto-char end)
+        (beginning-of-line)
+        (setf word2 (thing-at-point 'word t))
+        ;; devuelve el resultado
+        `(,word1 ,word2))))
+#+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages
@@ -1014,36 +1033,28 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
 - Refiled on [2015-11-12 jue 16:51]
 :END:
 Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v</kbd>@@ de =projectile= para invocarlo.
+
+- @@html:<kbd>C</kbd>@@ :: Genera fragmento de CHANGELOG en intervalo de commits seleccionados por una region.
 #+BEGIN_SRC emacs-lisp
   (use-package magit-gh-pulls
     :after (magit)
     :config
     (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
   (use-package magit
-    :defer t
-    :after (yasnippet s)
+    :commands (magit-status)
+    :bind (:map magit-mode-map
+                ("C" . shackra-magit-commit-gitchangelog-region))
     :init
-    (defun shackra/git-commit-message-setup ()
-      "Quita la plantilla e inserta un snippet"
-      ;; Busca la región correspondiente a la plantilla de los commits
-      (yas-minor-mode-on)
-      (remove-hook 'git-commit-setup-hook 'yas-reload-all)
-      (search-forward "# Please enter the commit message for your changes." nil t)
-      (search-backward "\n\n#" nil t)
-      ;; Elimina la región anterior, inserta y expande un snippet de YaSnippet
-      (yas-expand-snippet (yas-lookup-snippet "git plantilla" 'text-mode t) (point-min) (point)))
-    (defun shackra/git-commit-lint-summary (str)
-      "Capitaliza y quita puntos finales del sumario `STR'"
-      (interactive)
-      (when (stringp str)
-        (let* ((str (substring-no-properties str))
-               (first-word (car (split-string str " ")))
-               (sentence-capitalized (s-replace first-word (s-capitalize first-word) str)))
-          (while (string-suffix-p "." sentence-capitalized)
-            (setf sentence-capitalized (string-remove-suffix "." sentence-capitalized)))
-          sentence-capitalized)))
-    (add-hook 'git-commit-setup-hook #'yas-reload-all)
-    ;; (add-hook 'git-commit-setup-hook #'shackra/git-commit-message-setup t)
+    (defun shackra-magit-commit-gitchangelog-region (begin end)
+      "Crea un CHANGELOG a partir de un intervalo de commits seleccionados por region"
+      (interactive "r")
+      (when (use-region-p)
+        (let ((words (shackra-words-region-begin-end begin end)))
+          (message "Invocando gitchangelog, por favor espere...")
+          (kill-new
+           (shell-command-to-string
+            (format "gitchangelog %s..%s" (cadr words) (car words))))
+          (message "Salida de gitchangelog copiado al portapapeles"))))
     (setf magit-last-seen-setup-instructions "1.4.0"
           magit-auto-revert-mode t
           magit-completing-read-function 'ivy-completing-read))
