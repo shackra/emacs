@@ -396,8 +396,6 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
       (message decimal-time)
       (kill-new decimal-time)))
 
-  (define-key org-mode-map (kbd "C-M-y") 'shackra/time-at-point-to-hours)
-
   (defun time-bounds-of-time-at-point ()
     (save-excursion
       (while (looking-back "[^[:space:]]" 1)
@@ -1527,7 +1525,9 @@ Teclas
                 ("C-c a" . org-agenda)
                 ("<F12>" . org-agenda)
                 ("C-c l" . org-store-link)
-                ("C-c c" . org-capture))
+                ("C-c c" . org-capture)
+                :map org-mode-map
+                ("C-<F12>" . shackra/time-at-point-to-hours))
     :init
     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
