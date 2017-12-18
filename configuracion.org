@@ -434,6 +434,25 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
         ;; devuelve el resultado
         `(,word1 ,word2))))
 #+END_SRC
+** Conveniencias para convertir de Asciidoc a LaTeX
+Tengo documentos que tienen extensas formateo en Asciidoc. Deseo convertir todo al formato de LaTeX pues en la actualidad lo utilizo con más regularidad para publicar escritos.
+#+BEGIN_SRC emacs-lisp
+  (defvar shackra-footnote-asciidoc (rx "footnote:" "[" (group (one-or-more (not (any "[")))) "]")
+    "Coincide con el formato de notas al pie de asciidoc que es `footnote:[ ... ]'")
+
+  (defvar shackra-emph-asciidoc (rx "_" (group (one-or-more (not (any "_")))) "_")
+    "Coincide con el formato cursiva de asciidoc que es `_foo bar_'")
+
+  (defun shackra-footnote-asciidoc-to-latex ()
+    (interactive)
+    (save-excursion
+      (replace-regexp shackra-footnote-asciidoc "\\\\footnote{\\1}")))
+
+  (defun shackra-emph-asciidoc-to-latex ()
+    (interactive)
+    (save-excursion
+      (replace-regexp shackra-emph-asciidoc "\\\\emph{\\1}")))
+#+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages

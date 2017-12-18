@@ -3,9 +3,11 @@
 
 ## (unreleased)
 
-### Changes
+### New
 
-* Remapea atajo de `other-window` a `ace-window` [Jorge Araya Navarro]
+* Implementa funciones para convertir notas al pie y cursiva. [Jorge Araya Navarro]
+
+  De Asciidoc a LaTeX
 
 
 ## 3.1 (2017-12-16)
