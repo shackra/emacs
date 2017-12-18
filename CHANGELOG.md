@@ -9,6 +9,10 @@
 
   De Asciidoc a LaTeX
 
+### Fix
+
+* Carga Slack y Redmine solo cuando DBus esta disponible en Emacs. [Jorge Araya Navarro]
+
 
 ## 3.1 (2017-12-16)
 
