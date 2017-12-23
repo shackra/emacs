@@ -9,10 +9,6 @@
 (setq package-enable-at-startup nil)
 ;; Ask package.el to not add (package-initialize) to .emacs.
 (setq package--init-file-ensured t)
-;; set use-package-verbose to t for interpreted .emacs,
-;; and to nil for byte-compiled .emacs.elc
-(eval-and-compile
-  (setq use-package-verbose (not (bound-and-true-p byte-compile-current-file))))
 ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
 (package-initialize nil)
 

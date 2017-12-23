@@ -14,6 +14,18 @@
 
 ### Changes
 
+#### Sentencias `use-package` envueltas en `with-eval-after-load`
+
+
+  Simula cargado de dependencias como una expresión lógica `AND`. `:after` hace que un paquete se
+  cargue cuando cualquiera de los simbolos que contiene ha sido definido (como una expresión lógica `OR`).
+
+  https://redd.it/7lq1dv
+
+  https://stackoverflow.com/a/21880276/2020214
+
+~ Jorge Araya Navarro
+
 #### Adquiere los credenciales para redmine de `.netrc`
 
 

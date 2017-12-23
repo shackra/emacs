@@ -173,22 +173,22 @@ Teclas
   (with-eval-after-load "ivy"
     (with-eval-after-load "projectile"
       (with-eval-after-load "counsel"
-        (defun shackra-find-file (arg)
-          (interactive "p")
-          (cond
-           ((eq arg 4) (counsel-find-file))
-           ((eq arg 16) (counsel-ag))
-           ((eq arg 1) (if (projectile-project-p) (projectile-find-file-dwim) (counsel-find-file)))))
+	(defun shackra-find-file (arg)
+	  (interactive "p")
+	  (cond
+	   ((eq arg 4) (counsel-find-file))
+	   ((eq arg 16) (counsel-ag))
+	   ((eq arg 1) (if (projectile-project-p) (projectile-find-file-dwim) (counsel-find-file)))))
 
-        (defun shackra-switch-to-buffer (arg)
-          (interactive "p")
-          (cond
-           ((eq arg 4) (ivy-switch-buffer))
-           ((eq arg 16) (hydra-win/body))
-           ((eq arg 1) (if (projectile-project-p) (projectile-switch-to-buffer) (ivy-switch-buffer)))))
-        ;; Remapea los atajos con mis propios comandos
-        (global-set-key [remap find-file] 'shackra-find-file)
-        (global-set-key (kbd "C-x b") 'shackra-switch-to-buffer))))
+	(defun shackra-switch-to-buffer (arg)
+	  (interactive "p")
+	  (cond
+	   ((eq arg 4) (ivy-switch-buffer))
+	   ((eq arg 16) (hydra-win/body))
+	   ((eq arg 1) (if (projectile-project-p) (projectile-switch-to-buffer) (ivy-switch-buffer)))))
+	;; Remapea los atajos con mis propios comandos
+	(global-set-key [remap find-file] 'shackra-find-file)
+	(global-set-key (kbd "C-x b") 'shackra-switch-to-buffer))))
 #+END_SRC
 ** función para =delete-frame-functions=
 #+BEGIN_SRC emacs-lisp
@@ -548,14 +548,15 @@ Saca cualquier rastro de tus archivos y datos privados de tu configuración de E
 *** secretaria
 Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
 #+BEGIN_SRC emacs-lisp
-  (use-package secretaria
-    :after (f alert)
-    :load-path "site-packages/secretaria/"
-    :ensure nil
-    :init
-    (setf secretaria-clocked-task-save-file "~/.secretaria-tarea")
-    :config
-    (secretaria-today-unknown-time-appt-always-remind-me))
+  (with-eval-after-load 'f
+    (use-package secretaria
+      :after (alert)
+      :load-path "site-packages/secretaria/"
+      :ensure nil
+      :init
+      (setf secretaria-clocked-task-save-file "~/.secretaria-tarea")
+      :config
+      (secretaria-today-unknown-time-appt-always-remind-me)))
 #+END_SRC
 *** =font-man=
 Escala la altura de la tipografía en todos los buffers de manera temporal
@@ -587,9 +588,10 @@ Teclas
 - @@html:<kbd>C-x C-f</kbd>@@ :: Visita un archivo
 - @@html:<kbd>C-x b</kbd>@@ :: Cambia de buffer
 #+BEGIN_SRC emacs-lisp
-  (use-package counsel-projectile
-    :commands (counsel-projectile counsel-projectile-switch-project counsel-projectile-switch-to-buffer)
-    :after (counsel))
+  (with-eval-after-load 'projectile
+    (use-package counsel-projectile
+      :commands (counsel-projectile counsel-projectile-switch-project counsel-projectile-switch-to-buffer)
+      :after (counsel)))
   (use-package counsel
     :after (ivy)
     :commands (counsel-org-tag)
@@ -666,67 +668,70 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
     :config
     (winner-mode 1))
   (use-package windresize)
-  (use-package hydra
-    :after (windmove winner windresize ace-window)
-    :preface
-    (require 'hydra-examples)
-    :init
-    (defun shackra/python-indent-inclusive ()
-      "Mueve el inicio de la región una linea por encima de `region-beginning'
+  (with-eval-after-load 'windmove
+    (with-eval-after-load 'winner
+      (with-eval-after-load 'windresize
+        (with-eval-after-load 'ace-window
+          (use-package hydra
+            :preface
+            (require 'hydra-examples)
+            :init
+            (defun shackra-python-indent-inclusive ()
+              "Mueve el inicio de la región una linea por encima de `region-beginning'
 
   Actualmente esta función no funciona como se espera"
-      (interactive)
-      (save-excursion
-        (let ((begin (region-beginning))
-              (end (region-end)))
-          (when (use-region-p)
-            (goto-char begin)
-            (forward-line -1)
-            (push-mark end)
-            (setq mark-active t)))))
-    :config
-    (defhydra hydra-py (:color red :pre (flycheck-mode -1) :post (progn (deactivate-mark) (flycheck-mode 1)))
-      "Sangrado de bloques"
-      ("," python-indent-shift-left "← Disminuir")
-      ("." python-indent-shift-right "→ Aumentar"))
-    (defhydra hydra-zoom (global-map "<f2>")
-      "Acercamiento"
-      ("f" text-scale-increase "in")
-      ("j" text-scale-decrease "out"))
-    (defhydra hydra-avy (:color blue :columns 2)
-      "avy jump"
-      ("z" avy-goto-line "Ir a la linea...")
-      ("x" avy-goto-word-1 "Ir a la palabra...")
-      ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
-      ("v" avy-goto-char "Ir a la palabra (2)..."))
-    (bind-key "C-z" 'hydra-avy/body)
-    ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
-    ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
-    ;; del macro para hydra
-    (defhydra hydra-win (:columns 4 :color amaranth :pre (progn (golden-ratio-mode -1) (balance-windows)) :post (progn (golden-ratio-mode 1) (golden-ratio-adjust golden-ratio-adjust-factor)))
-      "Manejo de ventanas"
-      ("<up>" windmove-up "Cursor ↑")
-      ("<left>" windmove-left "Cursor ←")
-      ("<down>" windmove-down "Cursor ↓")
-      ("<right>" windmove-right "Cursor →")
-      ("C-<up>" hydra-move-splitter-up "Astilla ↑")
-      ("C-<left>" hydra-move-splitter-left "Astilla ←")
-      ("C-<down>" hydra-move-splitter-down "Astilla ↓")
-      ("C-<right>" hydra-move-splitter-right "Astilla →")
-      ("b" shackra/switch-buffer "Cambiar buffer")
-      ("f" shackra/find-file "Visitar/Crear archivo")
-      ("z" (lambda () (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Mover cursor a otra ventana")
-      ("2" (lambda () (interactive) (split-window-right) (windmove-right)) "Dividir |")
-      ("3" (lambda () (interactive) (split-window-below) (windmove-down)) "Dividir -")
-      ("c" (lambda () (interactive) (ace-window 4) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Intercambiar buffer de ventana")
-      ("s" save-buffer "Guardar buffer")
-      ("x" delete-window "Borrar ventana")
-      ("X" (lambda () (interactive) (ace-window 16) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Borrar esta/otra ventana")
-      ("1" ace-maximize-window "Maximizar esta ventana")
-      ("," (progn (winner-undo) (setf this-command 'winner-undo)) "Deshacer ultimo cambio")
-      ("." winner-redo "Rehacer ultimo cambio")
-      ("SPC" nil "Salir"))
-    (bind-key "M-1" #'hydra-win/body))
+              (interactive)
+              (save-excursion
+                (let ((begin (region-beginning))
+                      (end (region-end)))
+                  (when (use-region-p)
+                    (goto-char begin)
+                    (forward-line -1)
+                    (push-mark end)
+                    (setq mark-active t)))))
+            :config
+            (defhydra hydra-py (:color red :pre (flycheck-mode -1) :post (progn (deactivate-mark) (flycheck-mode 1)))
+              "Sangrado de bloques"
+              ("," python-indent-shift-left "← Disminuir")
+              ("." python-indent-shift-right "→ Aumentar"))
+            (defhydra hydra-zoom (global-map "<f2>")
+              "Acercamiento"
+              ("f" text-scale-increase "in")
+              ("j" text-scale-decrease "out"))
+            (defhydra hydra-avy (:color blue :columns 2)
+              "avy jump"
+              ("z" avy-goto-line "Ir a la linea...")
+              ("x" avy-goto-word-1 "Ir a la palabra...")
+              ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
+              ("v" avy-goto-char "Ir a la palabra (2)..."))
+            (bind-key "C-z" 'hydra-avy/body)
+            ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
+            ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
+            ;; del macro para hydra
+            (defhydra hydra-win (:columns 4 :color amaranth :pre (progn (golden-ratio-mode -1) (balance-windows)) :post (progn (golden-ratio-mode 1) (golden-ratio-adjust golden-ratio-adjust-factor)))
+              "Manejo de ventanas"
+              ("<up>" windmove-up "Cursor ↑")
+              ("<left>" windmove-left "Cursor ←")
+              ("<down>" windmove-down "Cursor ↓")
+              ("<right>" windmove-right "Cursor →")
+              ("C-<up>" hydra-move-splitter-up "Astilla ↑")
+              ("C-<left>" hydra-move-splitter-left "Astilla ←")
+              ("C-<down>" hydra-move-splitter-down "Astilla ↓")
+              ("C-<right>" hydra-move-splitter-right "Astilla →")
+              ("b" shackra-switch-buffer "Cambiar buffer")
+              ("f" shackra-find-file "Visitar/Crear archivo")
+              ("z" (lambda () (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Mover cursor a otra ventana")
+              ("2" (lambda () (interactive) (split-window-right) (windmove-right)) "Dividir |")
+              ("3" (lambda () (interactive) (split-window-below) (windmove-down)) "Dividir -")
+              ("c" (lambda () (interactive) (ace-window 4) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Intercambiar buffer de ventana")
+              ("s" save-buffer "Guardar buffer")
+              ("x" delete-window "Borrar ventana")
+              ("X" (lambda () (interactive) (ace-window 16) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Borrar esta/otra ventana")
+              ("1" ace-maximize-window "Maximizar esta ventana")
+              ("," (progn (winner-undo) (setf this-command 'winner-undo)) "Deshacer ultimo cambio")
+              ("." winner-redo "Rehacer ultimo cambio")
+              ("SPC" nil "Salir"))
+            (bind-key "M-1" #'hydra-win/body))))))
 #+END_SRC
 *** dired
 :LOGBOOK:
@@ -928,10 +933,11 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
 *** company-auctex
 backend para [[*=company=][Company]] que provee auto completado para AUCTeX
 #+BEGIN_SRC emacs-lisp
-  (use-package company-auctex
-    :after (auctex company)
-    :config
-    (company-auctex-init))
+  (with-eval-after-load 'tex-site
+    (use-package company-auctex
+      :after (company)
+      :config
+      (company-auctex-init)))
 #+END_SRC
 *** =projectile=
 :LOGBOOK:
@@ -1268,14 +1274,15 @@ Un versátil cliente de correo electrónico para Emacs.
     :config
     (mu4e-alert-set-default-style 'libnotify))
 
-  (use-package org-mu4e
-    :after (mu4e org)
-    :ensure nil
-    :init
-    (setq org-mu4e-link-query-in-headers-mode nil))
+  (with-eval-after-load 'org
+    (with-eval-after-load 'mu4e
+      (use-package org-mu4e
+        :ensure nil
+        :init
+        (setq org-mu4e-link-query-in-headers-mode nil))))
 
   (use-package mu4e
-    :commands (mu4e correo)
+    :commands (mu4e correo mu4e-compose-new mu4e-compose-edit mu4e-compose-resend mu4e-compose-reply)
     :ensure nil
     :preface
     ;;; message view action
@@ -1396,41 +1403,42 @@ Acceso a Stackoverflow y subsitios desde Emacs.
 :END:
 Generador estático de sitios web que depende de Emacs, Git y Org-mode.
 #+BEGIN_SRC emacs-lisp
-  (use-package org2web
-    :after (el2org ox-gfm)
-    :config
-    ;; Le pedimos a org-mode que no meta las patas cuando exporta archivos a
-    ;; HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
-    ;; Muchas gracias a Chen Bin[1] por los trozos de código[2] sacados de su
-    ;; propio proyecto[3] :)
-    ;;
-    ;; [1]: http://emacs.stackexchange.com/users/202/chen-bin
-    ;; [2]: http://emacs.stackexchange.com/a/9839/690
-    ;; [3]: https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el
-    (load-file (expand-file-name "srcprecode.el" user-emacs-directory))
-    (org2web-add-project '("El blog de Shackra"
-                           :repository-directory "~/Documentos/elblog.deshackra.com/"
-                           :ignore-file-name-regexp "README"
-                           :remote (rclone "rscf" "elblog.deshackra.com")
-                           :site-domain "http://elblog.deshackra.com"
-                           :site-main-title "El blog de Shackra"
-                           :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
-                           :theme-root-directory (:eval (list (expand-file-name "org-page-themes" user-emacs-directory)))
-                           :theme (shackra)
-                           :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog")
-                           :confound-email t
-                           :default-category "blog"
-                           :about ("Sobre mi" "/about")
-                           :rss ("RSS" "/rss.xml")
-                           :summary (("etiquetas" :tags))
-                           :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra/blog/")
-                           :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
-                           :web-server-port 5777))
+  (with-eval-after-load 'el2org
+    (with-eval-after-load 'ox-gfm
+      (use-package org2web
+        :config
+        ;; Le pedimos a org-mode que no meta las patas cuando exporta archivos a
+        ;; HTML. Nosotros manejaremos el marcado de sintaxis de código fuente.
+        ;; Muchas gracias a Chen Bin[1] por los trozos de código[2] sacados de su
+        ;; propio proyecto[3] :)
+        ;;
+        ;; [1]: http://emacs.stackexchange.com/users/202/chen-bin
+        ;; [2]: http://emacs.stackexchange.com/a/9839/690
+        ;; [3]: https://github.com/redguardtoo/org2nikola/blob/master/org2nikola.el
+        (load-file (expand-file-name "srcprecode.el" user-emacs-directory))
+        (org2web-add-project '("El blog de Shackra"
+                               :repository-directory "~/Documentos/elblog.deshackra.com/"
+                               :ignore-file-name-regexp "README"
+                               :remote (rclone "rscf" "elblog.deshackra.com")
+                               :site-domain "http://elblog.deshackra.com"
+                               :site-main-title "El blog de Shackra"
+                               :site-sub-title "No seas tan abierto de mente o tu cerebro se caerá"
+                               :theme-root-directory (:eval (list (expand-file-name "org-page-themes" user-emacs-directory)))
+                               :theme (shackra)
+                               :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra-blog")
+                               :confound-email t
+                               :default-category "blog"
+                               :about ("Sobre mi" "/about")
+                               :rss ("RSS" "/rss.xml")
+                               :summary (("etiquetas" :tags))
+                               :source-browse-url ("Bitbucket" "https://bitbucket.org/shackra-blog/")
+                               :web-server-docroot "~/Documentos/deshackra.com/elblog.deshackra.com"
+                               :web-server-port 5777))
 
-    (eval-after-load 'ox
-      '(progn
-         (add-to-list 'org-export-filter-src-block-functions
-                      'org2html-wrap-blocks-in-code))))
+        (with-eval-after-load 'ox
+          '(progn
+             (add-to-list 'org-export-filter-src-block-functions
+                          'org2html-wrap-blocks-in-code))))))
   (use-package el2org)
   (use-package ox-gfm)
 #+END_SRC
@@ -1469,7 +1477,6 @@ Conexión a Weechat desde Emacs
   (use-package color)
   (when dbus-compiled-version
     (use-package slack
-      :disabled
       :init
       (setq slack-buffer-emojify t)
       (setq slack-prefer-current-team t)
@@ -1748,16 +1755,17 @@ Teclas
     :after (org)
     :ensure nil
     :diminish org-indent-mode)
-  (use-package org-projectile
-    :after (org projectile)
-    :bind (("C-c p o p" . org-projectile-project-todo-completing-read))
-    :init
-    (setq org-confirm-elisp-link-function nil)
-    :config
-    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-    (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
-                                         :capture-character "P"))
-    (setf org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+  (with-eval-after-load 'org
+    (with-eval-after-load 'projectile
+      (use-package org-projectile
+        :bind (("C-c p o p" . org-projectile-project-todo-completing-read))
+        :init
+        (setq org-confirm-elisp-link-function nil)
+        :config
+        (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+        (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
+                                             :capture-character "P"))
+        (setf org-agenda-files (append org-agenda-files (org-projectile-todo-files))))))
 #+END_SRC
 *** =org-trello=
 Sincroniza archivos org-mode y tableros en Trello
@@ -1845,47 +1853,48 @@ Modo mayor para programar en Python
 
   (use-package pydoc-info)
 
-  (use-package company-anaconda
-    :if (executable-find "python")
-    :after (python company)
-    :bind (:map python-mode-map
-                ("M-." . anaconda-mode-find-definitions)
-                ("M-," . anaconda-mode-find-assignments)
-                ("M-r" . anaconda-mode-find-references)
-                ("M-*" . anaconda-mode-go-back))
-    :diminish anaconda-mode
-    :config
-    (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet company-capf))))
-    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-    (add-hook 'python-mode-hook 'anaconda-mode))
+  (with-eval-after-load 'python-mode
+    (use-package company-anaconda
+      :if (executable-find "python")
+      :after (company)
+      :bind (:map python-mode-map
+                  ("M-." . anaconda-mode-find-definitions)
+                  ("M-," . anaconda-mode-find-assignments)
+                  ("M-r" . anaconda-mode-find-references)
+                  ("M-*" . anaconda-mode-go-back))
+      :diminish anaconda-mode
+      :config
+      (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet company-capf))))
+      (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+      (add-hook 'python-mode-hook 'anaconda-mode)))
 
   (use-package python
     :if (executable-find "python")
     :bind (:map python-mode-map
-                ("C-c ," . shackra/python-indent-shift-left)
-                ("C-c ." . shackra/python-indent-shift-right))
+                ("C-c ," . shackra-python-indent-shift-left)
+                ("C-c ." . shackra-python-indent-shift-right))
     :interpreter ("python" . python-mode)
     :init
-    (defun shackra/python-indent-shift-left ()
+    (defun shackra-python-indent-shift-left ()
       (interactive)
       (if (fboundp 'hydra-py/body)
           (hydra-py/python-indent-shift-left)
         (python-indent-shift-left)))
-    (defun shackra/python-indent-shift-right ()
+    (defun shackra-python-indent-shift-right ()
       (interactive)
       (if (fboundp 'hydra-py/body)
           (hydra-py/python-indent-shift-right)
         (python-indent-shift-right)))
-    (defun shackra/python-mode ()
+    (defun shackra-python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
-      (shackra/electric-indent-mode-off)
+      (shackra-electric-indent-mode-off)
       (aggressive-indent-mode -1))
 
-    (add-hook 'python-mode-hook #'shackra/python-mode)
+    (add-hook 'python-mode-hook #'shackra-python-mode)
     :config
-    ;; re-mapea todas los atajos que hagan referencia a `python-indent-shift-*' con `shackra/python-indent-shift-*'
-    (global-set-key [remap python-indent-shift-left] 'shackra/python-indent-shift-left)
-    (global-set-key [remap python-indent-shift-right] 'shackra/python-indent-shift-right))
+    ;; re-mapea todas los atajos que hagan referencia a `python-indent-shift-*' con `shackra-python-indent-shift-*'
+    (global-set-key [remap python-indent-shift-left] 'shackra-python-indent-shift-left)
+    (global-set-key [remap python-indent-shift-right] 'shackra-python-indent-shift-right))
 #+END_SRC
 *** LaTeX
 Paquete extensivo para escribir y formatear documentos TeX
@@ -1939,36 +1948,40 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     :config
     (add-hook 'rust-mode-hook #'racer-mode)
     (add-hook 'racer-mode-hook #'eldoc-mode))
-  (use-package company-racer
-    :after (company racer)
-    :config
-    (add-hook 'rust-mode-hook '(lambda ()
-                                 (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet)))))
+  (with-eval-after-load 'racer
+    (use-package company-racer
+      :after (company)
+      :config
+      (add-hook 'rust-mode-hook '(lambda ()
+                                   (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet))))))
   (use-package rust-mode
     :if (executable-find "rustc"))
-  (use-package flycheck-rust
-    :after (flycheck rust-mode)
-    :config
-    (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
+  (with-eval-after-load 'flycheck
+    (use-package flycheck-rust
+      :after (rust-mode)
+      :config
+      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 #+END_SRC
 *** emacs-traad
 Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
 #+BEGIN_SRC emacs-lisp
-  (use-package traad-projectile
-    :after (traad projectile)
-    :preface
-    (provide 'traad-projectile)
-    :ensure nil
-    :no-require t
-    :init
-    (defun shackra/traad-open ()
-      "Inicia un servidor traad usando la ubicación del proyecto actual"
-      (interactive)
-      (if (projectile-project-p)
-          (traad-open (projectile-project-root))
-        (message "No estas en ningún proyecto!"))))
+  (with-eval-after-load 'projectile
+    (use-package traad-projectile
+      :after (traad)
+      :preface
+      (provide 'traad-projectile)
+      :ensure nil
+      :no-require t
+      :init
+      (defun shackra-traad-open ()
+        "Inicia un servidor traad usando la ubicación del proyecto actual"
+        (interactive)
+        (if (projectile-project-p)
+            (traad-open (projectile-project-root))
+          (message "No estas en ningún proyecto!")))))
 
   (use-package python-environment
+    :after (python)
     :init
     (setq python-environment-directory "~/.virtualenvs"))
 
@@ -1979,54 +1992,55 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
     ;; de manera automática
     (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad"))))
         (traad-install-server)))
-  (use-package hydra-traad
-    :after (hydra traad python)
-    :preface (provide 'hydra-traad)
-    :ensure nil
-    :no-require t
-    :init
-    (defhydra hydra-traad-history (:columns 2 :color blue)
-      "Historial de cambios de rope"
-      ("u" traad-undo "deshacer")
-      ("r" traad-redo "re-hacer")
-      ("h" traad-display-history "mostrar historial de cambios")
-      ("b" hydra-traad/body "volver")
-      ("q" nil "salir"))
-    (defhydra hydra-traad-rename (:columns 2 :color blue)
-      "Renombrar con rope"
-      ("f" traad-rename-current-file "archivo/modulo actual")
-      ("r" traad-rename "objeto en locación actual")
-      ("b" hydra-traad/body "volver")
-      ("q" nil "salir"))
-    (defhydra hydra-traad-signature (:columns 2 :color blue)
-      "Cambiar firma con rope"
-      ("n" traad-normalize-arguments "normalizar argumentos")
-      ("r" traad-remove-argument "remover argumentos")
-      ("b" hydra-traad/body "volver")
-      ("q" nil "salir"))
-    (defhydra hydra-traad-extraction (:columns 2 :color blue)
-      "Extracción con rope"
-      ("m" traad-extract-method "método")
-      ("v" traad-extract-variable "variable")
-      ("b" hydra-traad/body "volver")
-      ("q" nil "salir"))
-    (defhydra hydra-traad-imports (:columns 3 :color blue)
-      "Importaciones con rope"
-      ("o" traad-organize-imports "organizar")
-      ("s" traad-expand-star-imports "expandir *")
-      ("f" traad-froms-to-imports "convertir 'from' a normales")
-      ("r" traad-relatives-to-absolutes "convertir relativos a absolutos")
-      ("l" traad-handle-long-imports "manejar importaciones largas")
-      ("S" traad-imports-super-smackdown "Smackdown!")
-      ("b" hydra-traad/body "volver")
-      ("q" nil "salir"))
-    (defhydra hydra-traad (:columns 2 :columns 2)
-      "Refactorización en Python con rope"
-      ("h" hydra-traad-history/body "Historial" :exit t)
-      ("r" hydra-traad-rename/body "Renombrar" :exit t)
-      ("s" hydra-traad-signature/body "Firma" :exit t)
-      ("e" hydra-traad-extraction/body "Extracción" :exit t)
-      ("i" hydra-traad-imports/body "Importaciones" :exit t)))
+  (with-eval-after-load 'hydra
+    (use-package hydra-traad
+      :after (traad)
+      :preface (provide 'hydra-traad)
+      :ensure nil
+      :no-require t
+      :init
+      (defhydra hydra-traad-history (:columns 2 :color blue)
+        "Historial de cambios de rope"
+        ("u" traad-undo "deshacer")
+        ("r" traad-redo "re-hacer")
+        ("h" traad-display-history "mostrar historial de cambios")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad-rename (:columns 2 :color blue)
+        "Renombrar con rope"
+        ("f" traad-rename-current-file "archivo/modulo actual")
+        ("r" traad-rename "objeto en locación actual")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad-signature (:columns 2 :color blue)
+        "Cambiar firma con rope"
+        ("n" traad-normalize-arguments "normalizar argumentos")
+        ("r" traad-remove-argument "remover argumentos")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad-extraction (:columns 2 :color blue)
+        "Extracción con rope"
+        ("m" traad-extract-method "método")
+        ("v" traad-extract-variable "variable")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad-imports (:columns 3 :color blue)
+        "Importaciones con rope"
+        ("o" traad-organize-imports "organizar")
+        ("s" traad-expand-star-imports "expandir *")
+        ("f" traad-froms-to-imports "convertir 'from' a normales")
+        ("r" traad-relatives-to-absolutes "convertir relativos a absolutos")
+        ("l" traad-handle-long-imports "manejar importaciones largas")
+        ("S" traad-imports-super-smackdown "Smackdown!")
+        ("b" hydra-traad/body "volver")
+        ("q" nil "salir"))
+      (defhydra hydra-traad (:columns 2 :columns 2)
+        "Refactorización en Python con rope"
+        ("h" hydra-traad-history/body "Historial" :exit t)
+        ("r" hydra-traad-rename/body "Renombrar" :exit t)
+        ("s" hydra-traad-signature/body "Firma" :exit t)
+        ("e" hydra-traad-extraction/body "Extracción" :exit t)
+        ("i" hydra-traad-imports/body "Importaciones" :exit t))))
 #+END_SRC
 *** web-mode
 Un modo mayor para editar paginas web
@@ -2140,7 +2154,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     (add-hook 'go-mode-hook 'go-eldoc-setup))
   (use-package go-snippets
     :after (go-mode))
-  (eval-after-load 'hydra
+  (with-eval-after-load 'hydra
     (use-package godoctor
       :after (go-mode)
       :if (executable-find "godoctor")
@@ -2152,7 +2166,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
         ("s" godoctor-extract "Refactorizacion en una función, marca actual")
         ("d" godoctor-toggle "Cambia declaración de variable")
         ("f" godoctor-godoc "Crea esqueleto de documentación"))))
-  (eval-after-load 'hydra
+  (with-eval-after-load 'hydra
     (use-package go-guru
       :after (go-mode)
       :if (executable-find "guru")
@@ -2180,7 +2194,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
         ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
       (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
       (add-hook 'projectile-mode-hook #'shackra-go-mode-set-scope)))
-  (eval-after-load 'go-mode
+  (with-eval-after-load 'go-mode
     (use-package flycheck-gometalinter
       :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
       :after (flycheck-mode)
@@ -2260,18 +2274,18 @@ Instalar estos componentes en el sistema operativo
     :bind (:map tern-mode-keymap
                 ("M-." . nil)
                 ("M-," . nil)))
-
-  (use-package company-tern
-    :after (company tern)
-    :if (executable-find "tern")
-    :init
-    (setf company-tern-property-marker " <p>")
-    (setf company-tern-meta-as-single-line t)
-    :config
-    (dolist (hook '(js2-mode-hook
-                    inferior-js-mode-hook))
-      (add-hook hook (lambda ()
-                       (add-to-list (make-local-variable 'company-backends) '(company-tern :with company-yasnippet))))))
+  (with-eval-after-load 'tern
+    (use-package company-tern
+      :after (company)
+      :if (executable-find "tern")
+      :init
+      (setf company-tern-property-marker " <p>")
+      (setf company-tern-meta-as-single-line t)
+      :config
+      (dolist (hook '(js2-mode-hook
+                      inferior-js-mode-hook))
+        (add-hook hook (lambda ()
+                         (add-to-list (make-local-variable 'company-backends) '(company-tern :with company-yasnippet)))))))
   (use-package js2-refactor
     :disabled
     :after (js2-mode)
@@ -2400,11 +2414,12 @@ Type `M-x gimp-help' for help.
 :END:
 Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd><f8></kbd>@@ cambia el idioma de Español a Inglés y viceversa.
 #+BEGIN_SRC emacs-lisp
-  (use-package flyspell-correct-ivy
-    :after (flyspell ivy-mode)
-    :bind (:map flyspell-mode-map ("C-." . flyspell-correct-previous-word-generic))
-    :init
-    (setf flyspell-correct-auto-delay 2.0))
+  (with-eval-after-load 'flyspell
+    (use-package flyspell-correct-ivy
+      :after (ivy-mode)
+      :bind (:map flyspell-mode-map ("C-." . flyspell-correct-previous-word-generic))
+      :init
+      (setf flyspell-correct-auto-delay 2.0)))
   (use-package flyspell
     :if (or (executable-find "ispell") (executable-find "hunspell"))
     :diminish flyspell-mode
@@ -2546,61 +2561,58 @@ Revisión de errores en el código fuente, al vuelo.
 :END:
 Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
 #+BEGIN_SRC emacs-lisp
-  (use-package hydra-mc
-    :no-require t
-    :ensure nil
-    :preface (provide 'hydra-mc)
-    :after (multiple-cursors hydra)
-    :init
-    (defhydra hydra-mc-next (:columns 4 :color amaranth)
-      "Multiple-cursors: Siguiente"
-      ("n"    mc/mark-next-like-this "Como este")
-      ("N"    mc/unmark-next-like-this "Desmarcar")
-      ("M-n"  mc/skip-to-next-like-this "Saltar")
-      ("C-n"  mc/mark-next-lines "Linea")
-      ("SPC" nil "Salir" :color blue))
-    (defhydra hydra-mc-previous (:columns 4 :color amaranth)
-      "Multiple-cursors: Anterior"
-      ("p"   mc/mark-previous-like-this "Como este")
-      ("P"   mc/unmark-previous-like-this "Desmarcar")
-      ("M-p" mc/skip-to-previous-like-this "Saltar")
-      ("C-p" mc/mark-previous-lines "Linea")
-      ("SPC" nil "Salir" :color blue))
-    (bind-keys :prefix-map shackra/mc-map
-	       :prefix "C-c n"
-	       ("n"   . hydra-mc-next/mc/mark-next-like-this)
-	       ("N"   . hydra-mc-next/mc/unmark-next-like-this)
-	       ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
-	       ("C-n" . hydra-mc-next/mc/mark-next-lines)
-	       ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
-	       ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
-	       ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
-	       ("C-p" . hydra-mc-previous/mc/mark-previous-lines)))
+
+  (with-eval-after-load 'hydra
+    (with-eval-after-load 'multiple-cursors
+      (defhydra hydra-mc-next (:columns 4 :color amaranth)
+        "Multiple-cursors: Siguiente"
+        ("n"    mc/mark-next-like-this "Como este")
+        ("N"    mc/unmark-next-like-this "Desmarcar")
+        ("M-n"  mc/skip-to-next-like-this "Saltar")
+        ("C-n"  mc/mark-next-lines "Linea")
+        ("SPC" nil "Salir" :color blue))
+      (defhydra hydra-mc-previous (:columns 4 :color amaranth)
+        "Multiple-cursors: Anterior"
+        ("p"   mc/mark-previous-like-this "Como este")
+        ("P"   mc/unmark-previous-like-this "Desmarcar")
+        ("M-p" mc/skip-to-previous-like-this "Saltar")
+        ("C-p" mc/mark-previous-lines "Linea")
+        ("SPC" nil "Salir" :color blue))
+      (bind-keys :prefix-map shackra-mc-map
+                 :prefix "C-c n"
+                 ("n"   . hydra-mc-next/mc/mark-next-like-this)
+                 ("N"   . hydra-mc-next/mc/unmark-next-like-this)
+                 ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
+                 ("C-n" . hydra-mc-next/mc/mark-next-lines)
+                 ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
+                 ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
+                 ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
+                 ("C-p" . hydra-mc-previous/mc/mark-previous-lines))))
 
   (use-package multiple-cursors
     :config
-    (bind-keys :prefix-map shackra/mc-map
-	       :prefix "C-c n"
-	       ("n"   . mc/mark-next-like-this)
-	       ("N"   . mc/unmark-next-like-this)
-	       ("M-n" . mc/skip-to-next-like-this)
-	       ("C-n" . mc/mark-next-lines)
-	       ("p"   . mc/mark-previous-like-this)
-	       ("P"   . mc/unmark-previous-like-this)
-	       ("M-p" . mc/skip-to-previous-like-this)
-	       ("C-p" . mc/mark-previous-lines)
-	       ("a"   . mc/mark-all-dwim)
-	       ("A"   . mc/mark-all-like-this-dwim)
-	       ("M-a" . mc/mark-all-like-this-in-defun)
-	       ("M-A" . mc/mark-all-words-like-this-in-defun)
-	       ("0"   . mc/insert-numbers)
-	       ("h"   . mc/mark-sgml-tag-pair)
-	       ("s"   . mc/sort-regions)
-	       ("m"   . set-rectangular-region-anchor)
-	       ("r"   . mc/reverse-regions)
-	       ("M-l" . mc/edit-lines)
-	       ("l"   . mc/edit-beginnings-of-lines)
-	       ("C-l" . mc/edit-ends-of-lines)))
+    (bind-keys :prefix-map shackra-mc-map
+               :prefix "C-c n"
+               ("n"   . mc/mark-next-like-this)
+               ("N"   . mc/unmark-next-like-this)
+               ("M-n" . mc/skip-to-next-like-this)
+               ("C-n" . mc/mark-next-lines)
+               ("p"   . mc/mark-previous-like-this)
+               ("P"   . mc/unmark-previous-like-this)
+               ("M-p" . mc/skip-to-previous-like-this)
+               ("C-p" . mc/mark-previous-lines)
+               ("a"   . mc/mark-all-dwim)
+               ("A"   . mc/mark-all-like-this-dwim)
+               ("M-a" . mc/mark-all-like-this-in-defun)
+               ("M-A" . mc/mark-all-words-like-this-in-defun)
+               ("0"   . mc/insert-numbers)
+               ("h"   . mc/mark-sgml-tag-pair)
+               ("s"   . mc/sort-regions)
+               ("m"   . set-rectangular-region-anchor)
+               ("r"   . mc/reverse-regions)
+               ("M-l" . mc/edit-lines)
+               ("l"   . mc/edit-beginnings-of-lines)
+               ("C-l" . mc/edit-ends-of-lines)))
 #+END_SRC
 *** =pcre2el=
 Convierte entre sintaxis de expresiones regulares PCRE, Emacs y RX.
