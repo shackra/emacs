@@ -14,6 +14,11 @@
 
 ### Changes
 
+#### Adquiere los credenciales para redmine de `.netrc`
+
+
+~ Jorge Araya Navarro
+
 #### Renombra funciones personalizados para usar `-`
 
 

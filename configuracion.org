@@ -1491,11 +1491,10 @@ Conexión a Weechat desde Emacs
 #+END_SRC
 *** Redmine
 #+BEGIN_SRC emacs-lisp
-  (when dbus-compiled-version
+  (when (boundp 'auth-sources)
     (use-package org-redmine
       :init
-      (setq org-redmine-uri "https://my.ivrtechnology.com")
-      (setq org-redmine-auth-api-key (secrets-get-secret "login" "brete redmine"))))
+      (setq org-redmine-uri "https://my.ivrtechnology.com")))
 #+END_SRC
 ** Desarrollo de software
 *** org-babel
