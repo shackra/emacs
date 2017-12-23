@@ -18,7 +18,7 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
   ;; sombrero de aluminio, le bajamos una rayita
   (setq network-security-level 'high)
 
-  (defun shackra/update-one-package (package)
+  (defun shackra-update-one-package (package)
     "Actualiza un paquete PACKAGE"
     (when (package-installed-p package)
       (let* ((newest-pkg (car-safe (cdr (assq package package-archive-contents))))
@@ -49,7 +49,7 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
   (if (not (package-installed-p 'org))
       (package-install 'org)
     ;; El paquete esta instalado. Actualiza el paquete org-mode.
-    (shackra/update-one-package 'org))
+    (shackra-update-one-package 'org))
 
   (when (not (package-installed-p 'diminish))
       (package-install 'diminish))
@@ -78,9 +78,9 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
 
   (setf use-package-always-ensure t)
 
-  (defun shackra/org-confirm-babel-evaluate (lang body)
+  (defun shackra-org-confirm-babel-evaluate (lang body)
     (not (or (string= lang "emacs-lisp"))))
-  (setf org-confirm-babel-evaluate #'shackra/org-confirm-babel-evaluate)
+  (setf org-confirm-babel-evaluate #'shackra-org-confirm-babel-evaluate)
 
   (put 'narrow-to-region 'disabled nil)
   (put 'narrow-to-page 'disabled nil)
@@ -151,12 +151,12 @@ Gracias a Malabarba en su [[http://emacs.stackexchange.com/a/2208/690][respuesta
 estas son funciones que uso muy a menudo durante la edición de texto, tenerlos como comandos interactivos me ahorra tiempo escribiendo las expresiones regulares una y otra vez.
 
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/no-saltos-linea (start end)
+  (defun shackra-no-saltos-linea (start end)
     "Elimina todos los saltos de linea en la selección"
     (interactive "r")
     (vr/replace "\n+" " " start end))
 
-  (defun shackra/no-multiple-espacios (start end)
+  (defun shackra-no-multiple-espacios (start end)
     "Elimina todos los espacios en blanco seguidos en la selección"
     (interactive "r")
     (vr/replace " +" " " start end))
@@ -173,33 +173,33 @@ Teclas
   (with-eval-after-load "ivy"
     (with-eval-after-load "projectile"
       (with-eval-after-load "counsel"
-        (defun shackra/find-file (arg)
+        (defun shackra-find-file (arg)
           (interactive "p")
           (cond
            ((eq arg 4) (counsel-find-file))
            ((eq arg 16) (counsel-ag))
            ((eq arg 1) (if (projectile-project-p) (projectile-find-file-dwim) (counsel-find-file)))))
 
-        (defun shackra/switch-to-buffer (arg)
+        (defun shackra-switch-to-buffer (arg)
           (interactive "p")
           (cond
            ((eq arg 4) (ivy-switch-buffer))
            ((eq arg 16) (hydra-win/body))
            ((eq arg 1) (if (projectile-project-p) (projectile-switch-to-buffer) (ivy-switch-buffer)))))
         ;; Remapea los atajos con mis propios comandos
-        (global-set-key [remap find-file] 'shackra/find-file)
-        (global-set-key [remap ivy-switch-buffer] 'shackra/switch-to-buffer))))
+        (global-set-key [remap find-file] 'shackra-find-file)
+        (global-set-key (kbd "C-x b") 'shackra-switch-to-buffer))))
 #+END_SRC
 ** función para =delete-frame-functions=
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/run-delete-frame-hooks (frame)
+  (defun shackra-run-delete-frame-hooks (frame)
     "Esta función corre algunas funciones que no son llamadas cuando Emacs
   corre como proceso de segundo plano"
     (when (server-running-p)
       (savehist-save)
       (recentf-save-list)))
 
-  (add-hook 'delete-frame-functions 'shackra/run-delete-frame-hooks)
+  (add-hook 'delete-frame-functions 'shackra-run-delete-frame-hooks)
 #+END_SRC
 ** salva algunos buffers al perder Emacs el foco
 Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-settings-with-big.html][Programming: Seven specialty Emacs settings with big payoffs]]
@@ -214,7 +214,7 @@ Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-sett
 #+END_SRC
 ** No molestes, Shia LaBeouf!
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/org-reschedule-tomorrow ()
+  (defun shackra-org-reschedule-tomorrow ()
     "Re-Programa para mañana una tarea que pude hacer hoy"
     (interactive)
     (org-schedule :time (format-time-string "%Y-%m-%d" (time-add (current-time) (seconds-to-time 86400)))))
@@ -223,22 +223,22 @@ Sacado de [[http://timothypratley.blogspot.nl/2015/07/seven-specialty-emacs-sett
 Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (según [[http://tromey.com/blog/?p%3D831][The Cliffs of Inanity]], también [[http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html][lunarsite]]. referencias sobre =mode-line-format= en la [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Mode-Line-Format.html][referencia de Elisp]])
 
 #+BEGIN_SRC emacs-lisp
-  (defvar shackra/vc-mode nil)
-  (make-variable-buffer-local 'shackra/vc-mode)
+  (defvar shackra-vc-mode nil)
+  (make-variable-buffer-local 'shackra-vc-mode)
 
   (require 'vc)
-  (defun shackra/vc-command-hook (&rest args)
+  (defun shackra-vc-command-hook (&rest args)
     (let ((file-name (buffer-file-name)))
-      (setq shackra/vc-mode (and file-name
+      (setq shackra-vc-mode (and file-name
                                  (not (vc-registered file-name))
                                  (ignore-errors
                                    (vc-responsible-backend file-name))))))
 
-  (add-hook 'vc-post-command-functions #'shackra/vc-command-hook)
-  (add-hook 'find-file-hook #'shackra/vc-command-hook)
+  (add-hook 'vc-post-command-functions #'shackra-vc-command-hook)
+  (add-hook 'find-file-hook #'shackra-vc-command-hook)
 
-  (defun shackra/vc-info ()
-    (if shackra/vc-mode
+  (defun shackra-vc-info ()
+    (if shackra-vc-mode
         (propertize "±" 'face 'error)
       " "))
 #+END_SRC
@@ -251,7 +251,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
                   (:eval (if (buffer-modified-p)
                              (propertize " ↓ " 'face 'error)
                            "  "))
-                  (:eval (shackra/vc-info))
+                  (:eval (shackra-vc-info))
                   " " mode-line-buffer-identification
                   " " mode-line-position
                   " " mode-line-modes
@@ -296,11 +296,11 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 #+END_SRC
 ** usar Emacsclient como git mergetool
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/emerge (local remote base output)
+  (defun shackra-emerge (local remote base output)
     "difftool que se abre en emacsclient"
-    (emerge-files-with-ancestor nil local remote base output nil 'shackra/emerge--close-current-frame))
+    (emerge-files-with-ancestor nil local remote base output nil 'shackra-emerge--close-current-frame))
 
-  (defun shackra/emerge--close-current-frame ()
+  (defun shackra-emerge--close-current-frame ()
     "Cierra el frame actual"
     (delete-frame (selected-frame)))
 #+END_SRC
@@ -309,12 +309,12 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
   [merge]
           tool = emacsclient
   [mergetool "emacsclient"]
-          cmd = emacsclient -c -a \"\" --eval \"(shackra/emerge \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$OUTPUT\\\")\"
+          cmd = emacsclient -c -a \"\" --eval \"(shackra-emerge \\\"$LOCAL\\\" \\\"$REMOTE\\\" \\\"$BASE\\\" \\\"$OUTPUT\\\")\"
           trustExitCode = true
 #+END_EXAMPLE
 ** Generar enlaces de descargas para descargas directas y BitTorrent
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/owp-descargas (title hashalist)
+  (defun shackra-owp-descargas (title hashalist)
     "Enlaces Magnet a HTML."
     (let* ((nuevalista '())
            (nuevoelement (ht-create))
@@ -351,7 +351,7 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
 #+END_SRC
 ** Probar si un puerto esta abierto
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/port-open-p (server port)
+  (defun shackra-port-open-p (server port)
     (let* ((conn nil))
       (condition-case err
           (progn
@@ -362,7 +362,7 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
 #+END_SRC
 ** Comprobar si un modulo Python existe
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/python-module-exist-p (module)
+  (defun shackra-python-module-exist-p (module)
     "Retorna `t' si el modulo `MODULE' existe"
     (let ((exists (string-trim (shell-command-to-string (format "python -c 'import pkgutil; print(0 if pkgutil.find_loader(\"%s\") else 1)'" module)))))
       (when (string= exists "0")
@@ -373,26 +373,26 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
   (require 'thingatpt)
   (require 'rx)
 
-  (defvar shackra/time-re (rx (group (one-or-more digit)) ":" (group (one-or-more digit)))
+  (defvar shackra-time-re (rx (group (one-or-more digit)) ":" (group (one-or-more digit)))
     "Expresión regular que coincide con notacion de tiempo HH:MM")
 
-  (defun shackra/time--to-seconds (timestr)
+  (defun shackra-time--to-seconds (timestr)
     "Convierte la notacion HH:MM a segundos"
     (unless timestr
       (setf timestr "0:00"))
-    (let* ((matchindex (string-match shackra/time-re timestr))
+    (let* ((matchindex (string-match shackra-time-re timestr))
            (hours (string-to-number (match-string 1 timestr)))
            (minutes (string-to-number (match-string 2 timestr))))
       (+ (* 60 (* hours 60)) (* minutes 60))))
 
-  (defun shackra/time-to-hours (timestr)
+  (defun shackra-time-to-hours (timestr)
     "Expresa el tiempo en notacion de punto decimal"
-    (format "%.3f" (/ (shackra/time--to-seconds timestr) 3600.0)))
+    (format "%.3f" (/ (shackra-time--to-seconds timestr) 3600.0)))
 
-  (defun shackra/time-at-point-to-hours ()
+  (defun shackra-time-at-point-to-hours ()
     "Convierte el tiempo bajo el cursor a notacion decimal, lo copia al portapapeles"
     (interactive)
-    (let ((decimal-time (shackra/time-to-hours (thing-at-point 'time))))
+    (let ((decimal-time (shackra-time-to-hours (thing-at-point 'time))))
       (message decimal-time)
       (kill-new decimal-time)))
 
@@ -401,7 +401,7 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
       (while (looking-back "[^[:space:]]" 1)
         (backward-char))
       (save-match-data
-        (if (looking-at shackra/time-re)
+        (if (looking-at shackra-time-re)
             (cons (point) (match-end 0))
           nil))))
 
@@ -409,7 +409,7 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
 #+END_SRC
 ** Apaga el auto sangrado
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/electric-indent-mode-off ()
+  (defun shackra-electric-indent-mode-off ()
     (electric-indent-local-mode -1)
     ;; Desactiva aggresive-indent si esta instalado y activo
     (when (fboundp 'aggressive-indent-mode)
@@ -468,20 +468,20 @@ Tengo documentos que tienen extensas formateo en Asciidoc. Deseo convertir todo 
 * Division de ventanas y movimiento inmediato del cursor a la nueva ventana
 Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/split-window-vertically ()
+  (defun shackra-split-window-vertically ()
     "Divide la ventana por la mitad verticalmente y mueve el cursor a la ventana nueva"
     (interactive)
     (split-window-vertically)
     (other-window 1))
 
-  (defun shackra/split-window-horizontally ()
+  (defun shackra-split-window-horizontally ()
     "Divide la ventana por la mitad horizontalmente y mueve el cursor a la ventana nueva"
     (interactive)
     (split-window-horizontally)
     (other-window 1))
 
-  (global-set-key [remap split-window-below] #'shackra/split-window-vertically)
-  (global-set-key [remap split-window-right] #'shackra/split-window-horizontally)
+  (global-set-key [remap split-window-below] #'shackra-split-window-vertically)
+  (global-set-key [remap split-window-right] #'shackra-split-window-horizontally)
 #+END_SRC
 * Aliases
 Nombres más cortos para comandos usados frecuentemente
@@ -510,7 +510,7 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
         nil
       t))
 
-  (defun shackra/arregla-emojis (&optional frame)
+  (defun shackra-arregla-emojis (&optional frame)
     "Arregla la visualizacion de los emojis"
     ;; Para NS/Cocoa
     (when (eq system-type 'darwin)
@@ -519,7 +519,7 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
     (when (and (font-exists-p "Symbola") (not (eq system-type 'darwin)))
       (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend)))
 
-  (defun shackra/font-set (&optional frame)
+  (defun shackra-font-set (&optional frame)
     "Establece una tipografia para el nuevo marco creado"
     (when (framep frame)
       (select-frame frame))
@@ -529,12 +529,12 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
      ((font-exists-p "Monoid") (set-frame-font "Monoid 9") (add-to-list 'default-frame-alist '(font . "Monoid-9")))
      ((font-exists-p "Source Code Pro") (set-frame-font "Source Code Pro 10") (add-to-list 'default-frame-alist '(font . "Source Code Pro-10")))))
 
-  (add-hook 'after-make-frame-functions #'shackra/arregla-emojis)
-  (add-hook 'after-make-frame-functions #'shackra/font-set)
+  (add-hook 'after-make-frame-functions #'shackra-arregla-emojis)
+  (add-hook 'after-make-frame-functions #'shackra-font-set)
 
   (unless (daemonp)
-    (shackra/arregla-emojis)
-    (shackra/font-set))
+    (shackra-arregla-emojis)
+    (shackra-font-set))
 #+END_SRC
 *** secreto
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
@@ -647,7 +647,7 @@ Teclas
 Permite tratar combinaciones de teclas como grupos... es algo difícil de explicar, puede ver este vídeo [[https://www.youtube.com/watch?v=_qZliI1BKzI][Switching Emacs windows with hydra and ace-window - YouTube]] para entender de qué trata este paquete.
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
-    :bind ("M-o" . shackra/other-window)
+    :bind ("M-o" . shackra-other-window)
     :init
     (custom-set-faces
      '(aw-leading-char-face
@@ -763,7 +763,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
     (setq-default dired-omit-verbose nil)
     (setf dired-dwim-target t)
-    (defun shackra/dired-no-esconder-detalles ()
+    (defun shackra-dired-no-esconder-detalles ()
       "No esconder los detalles de los archivos en dired, se ven muy bien"
       (dired-hide-details-mode 0))
     (defun dired-sort-group-dirs ()
@@ -797,7 +797,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
       ;; registra 7zip para compresión de archivos.
       (add-to-list 'dired-compress-files-alist '("\\tar\\.7z\\'" . "tar cf - %i | 7z a -si -m0=lzma2 -mx=3 %o.tar.7z")))
     :config
-    (add-hook 'dired-mode-hook 'shackra/dired-no-esconder-detalles)
+    (add-hook 'dired-mode-hook 'shackra-dired-no-esconder-detalles)
     (defadvice dired-readin
         (after dired-after-updating-hook first () activate)
       "Sort dired listings with directories first before adding marks."
@@ -989,7 +989,7 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
   (use-package avy
     :defer 3
     :config
-    (bind-keys :prefix-map shackra/avy-mode-map
+    (bind-keys :prefix-map shackra-avy-mode-map
                :prefix "C-c z"
                ("z" . avy-goto-line)
                ("x" . avy-goto-word-1)
@@ -1005,11 +1005,11 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
   (use-package multi-term
     :bind ([f1] . multi-term)
     :init
-    (defun shackra/maybe-disable-yasnippet ()
+    (defun shackra-maybe-disable-yasnippet ()
       "Desactiva yasnippet a pedido"
       (if (fboundp 'yas-minor-mode)
           (yas-minor-mode -1)))
-    (defun shackra/term-line-or-char-mode ()
+    (defun shackra-term-line-or-char-mode ()
       "Cambia entre `term-line-mode' y `term-char-mode'"
       (interactive)
       (when (string= (buffer-local-value 'major-mode (current-buffer)) "term-mode")
@@ -1025,7 +1025,7 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
     (add-to-list 'term-bind-key-alist '("C-n"       . next-line))
     (add-to-list 'term-bind-key-alist '("M-f"       . term-send-forward-word))
     (add-to-list 'term-bind-key-alist '("M-b"       . term-send-backward-word))
-    (add-to-list 'term-bind-key-alist '("C-c C-j"   . shackra/term-line-or-char-mode))
+    (add-to-list 'term-bind-key-alist '("C-c C-j"   . shackra-term-line-or-char-mode))
     (add-to-list 'term-bind-key-alist '("C-DEL"     . term-send-backward-kill-word))
     (add-to-list 'term-bind-key-alist '("M-d"       . term-send-forward-kill-word))
     (add-to-list 'term-bind-key-alist '("<C-left>"  . term-send-backward-word))
@@ -1035,7 +1035,7 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
     (add-to-list 'term-bind-key-alist '("M-y"       . term-send-raw-meta))
     (add-to-list 'term-bind-key-alist '("C-y"       . term-paste))
 
-    (add-hook 'term-mode-hook #'shackra/maybe-disable-yasnippet))
+    (add-hook 'term-mode-hook #'shackra-maybe-disable-yasnippet))
 #+END_SRC
 *** =git=
 #+BEGIN_SRC emacs-lisp
@@ -1129,14 +1129,14 @@ Revierte el contenido de un buffer de manera automática cuando el contenido de 
   (use-package yasnippet
     :diminish yas-minor-mode
     :init
-    (defun shackra/yas-reload ()
+    (defun shackra-yas-reload ()
       "Recarga las definiciones de YaSnippet una vez"
       (yas-reload-all)
-      (remove-hook 'after-init-hook 'shackra/yas-reload))
+      (remove-hook 'after-init-hook 'shackra-yas-reload))
     :config
     (setq yas-snippet-dirs (append yas-snippet-dirs (list (expand-file-name "plantillas" user-emacs-directory))))
     (add-hook 'prog-mode-hook #'yas-minor-mode-on)
-    (add-hook 'after-init-hook #'shackra/yas-reload))
+    (add-hook 'after-init-hook #'shackra-yas-reload))
 #+END_SRC
 *** imenu-anywhere
 Crea menús a partir de secciones de documentos. Asociado a @@html:<kbd>C-c i</kbd>@@
@@ -1199,7 +1199,7 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     :disabled
     :after (simple-httpd)
     :init
-    (defun shackra/webdev-refresh-page-on-save-chrome ()
+    (defun shackra-webdev-refresh-page-on-save-chrome ()
       "Refresca la pagina en Chrome para ver los cambios realizados"
       (interactive)
       (let* ((currentfiledir (file-name-directory (buffer-file-name)))
@@ -1211,7 +1211,7 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     (add-hook 'js2-mode-hook (lambda () (kite-mini-mode t)))
     (add-hook 'css-mode-hook (lambda () (kite-mini-mode t)))
     (add-hook 'sgml-mode-hook (lambda () (kite-mini-mode t)))
-    (add-hook 'after-save-hook #'shackra/webdev-refresh-page-on-save-chrome))
+    (add-hook 'after-save-hook #'shackra-webdev-refresh-page-on-save-chrome))
 #+END_SRC
 *** iedit
 Edita varias ocurrencias de un texto en el buffer.
@@ -1369,13 +1369,13 @@ Twitter desde Emacs
     (setf twittering-timer-interval 300)
     (setf twittering-url-show-status nil)
     :config
-    (defun shackra/tt-fav-rett (&optional arg)
+    (defun shackra-tt-fav-rett (&optional arg)
       "Marca como favorito y retweetea un tweet"
       (interactive "P")
       (my/bypass-confirmation-all #'twittering-retweet t)
       (my/bypass-confirmation-all #'twittering-favorite))
     (bind-key "C-c f" 'twittering-favorite twittering-mode-map)
-    (bind-key "C-c F" 'shackra/tt-fav-rett twittering-mode-map)
+    (bind-key "C-c F" 'shackra-tt-fav-rett twittering-mode-map)
 
     (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
     (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
@@ -1518,7 +1518,7 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
   (use-package prog-mode
     :ensure nil
     :init
-    (defun shackra/prog-mode ()
+    (defun shackra-prog-mode ()
       (set (make-local-variable 'fill-column) 79)
       (set (make-local-variable 'comment-auto-fill-only-comments) t)
       ;; Nota: M-q rellena las columnas del párrafo actual
@@ -1531,7 +1531,7 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
       (when (or (executable-find "ispell") (executable-find "hunspell"))
         (flyspell-prog-mode)))
     (bind-key* "C-M-," 'comment-dwim)
-    (add-hook 'prog-mode-hook #'shackra/prog-mode))
+    (add-hook 'prog-mode-hook #'shackra-prog-mode))
 #+END_SRC
 *** =org-mode=                                                      :nuevo:
 El modo Org (Org-mode) es un modo de edición del editor de texto Emacs mediante el cual se editan documentos jerárquicos en texto plano.
@@ -1554,7 +1554,7 @@ Teclas
                 ("C-c l" . org-store-link)
                 ("C-c c" . org-capture)
                 :map org-mode-map
-                ("C-<F12>" . shackra/time-at-point-to-hours))
+                ("C-<F12>" . shackra-time-at-point-to-hours))
     :init
     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
@@ -1769,14 +1769,14 @@ Sincroniza archivos org-mode y tableros en Trello
     :init
     (custom-set-variables '(org-trello-files '("/home/jorge/go/src/bitbucket.org/capslockdev/betsy/proyecto.org"
                                                "/home/jorge/Kartelo/clientes/Design Soft/Selore POS/proyecto.org"
-                                               "/home/jorge/go/src/bitbucket.org/shackra/4hoa/proyecto.org")))
-    (defun shackra/org-trello-sync-after-save ()
+                                               "/home/jorge/go/src/bitbucket.org/shackra-4hoa/proyecto.org")))
+    (defun shackra-org-trello-sync-after-save ()
       "Sincroniza el contenido del archivo org después de salvar"
       (interactive)
       (when (and (eq major-mode 'org-mode)
                (member buffer-file-name org-trello-files))
         (org-trello-sync-buffer)))
-    (add-hook 'after-save-hook #'shackra/org-trello-sync-after-save))
+    (add-hook 'after-save-hook #'shackra-org-trello-sync-after-save))
 #+END_SRC
 *** =pkgbuild-mode=
 Un modo mayor de Emacs para la edición de archivos =PKGBUILD=
@@ -1803,13 +1803,13 @@ Modo mayor para programar en Python
   (use-package pony-mode
     :after (python)
     :init
-    (defun shackra/pony-remove-beautify-html ()
+    (defun shackra-pony-remove-beautify-html ()
       "Quita el gancho para embellecer el HTML"
       (remove-hook 'before-save-hook 'web-beautify-html-buffer t))
     :config
     ;; quitamos el gancho que embellece el HTML cuando es guardado para que no
     ;; estropeé las plantillas de DJango
-    (add-hook 'pony-tpl-minor-mode-hook #'shackra/pony-remove-beautify-html))
+    (add-hook 'pony-tpl-minor-mode-hook #'shackra-pony-remove-beautify-html))
 
   (use-package virtualenvwrapper
     :after (python)
@@ -1830,10 +1830,10 @@ Modo mayor para programar en Python
   (use-package importmagic
     :diminish 'importmagic-mode
     :init
-    (defun shackra/before-save-py-importmagic-fix ()
+    (defun shackra-before-save-py-importmagic-fix ()
       (when (eq major-mode 'python-mode) (importmagic-fix-imports)))
     (setq importmagic-be-quiet t)
-    (add-hook 'before-save-hook #'shackra/before-save-py-importmagic-fix))
+    (add-hook 'before-save-hook #'shackra-before-save-py-importmagic-fix))
 
   (use-package isortify
     :ensure t
@@ -2060,15 +2060,15 @@ Un modo mayor para editar paginas web
     (add-hook 'web-mode-hook 'company-web-fa+))
   (use-package web-mode
     :preface
-    (defun shackra/webdev-refresh-page-on-save ()
+    (defun shackra-webdev-refresh-page-on-save ()
       "Actualiza una pagina web en el navegador al guardar un buffer"
       (interactive)
       (let* ((currentfiledir (file-name-directory (buffer-file-name)))
              (isrootfile (string-suffix-p httpd-root currentfiledir)))
-        (when (and (derived-mode-p 'sgml-mode 'css-mode 'web-mode 'js2-mode) isrootfile (shackra/port-open-p moz-repl-host moz-repl-port))
+        (when (and (derived-mode-p 'sgml-mode 'css-mode 'web-mode 'js2-mode) isrootfile (shackra-port-open-p moz-repl-host moz-repl-port))
           (moz-controller-page-refresh))))
     :config
-    (add-hook 'after-save-hook #'shackra/webdev-refresh-page-on-save)
+    (add-hook 'after-save-hook #'shackra-webdev-refresh-page-on-save)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
@@ -2105,7 +2105,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
 #+END_EXAMPLE
 
 #+BEGIN_SRC emacs-lisp
-  (use-package f) ;; requerido para `shackra/go-update-compile-definition'
+  (use-package f) ;; requerido para `shackra-go-update-compile-definition'
   (use-package go-mode
     :after (f)
     :if (executable-find "go")
@@ -2118,7 +2118,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     :init
     (setf gofmt-show-errors nil) ;; para mostrar los errores es que existe Flycheck
     (setf gofmt-command "goimports")
-    (defun shackra/go-update-compile-definition ()
+    (defun shackra-go-update-compile-definition ()
       "Actualiza la definición del comando COMPILE para go-mode"
       (interactive)
       (when (eq major-mode 'go-mode)
@@ -2128,73 +2128,76 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
     :config
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (add-hook 'before-save-hook 'gofmt-before-save)
-    (add-hook 'go-mode-hook 'shackra/go-update-compile-definition)
-    (add-hook 'after-save-hook 'shackra/go-update-compile-definition))
+    (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
+    (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
   (use-package company-go
-    :after (go-mode hydra)
+    :after (go-mode)
     :if (executable-find "gocode")
     :config
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
   (use-package go-eldoc
-    :after (go-mode hydra)
+    :after (go-mode)
     :config
     (add-hook 'go-mode-hook 'go-eldoc-setup))
   (use-package go-snippets
-    :after (go-mode hydra))
-  (use-package godoctor
-    :after (go-mode hydra)
-    :if (executable-find "godoctor")
-    :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
-    :config
-    (defhydra hydra-godoctor (:color blue :columns 2)
-      "Motor de refactorización para Go"
-      ("a" godoctor-rename "Renombra identificador, punto actual")
-      ("s" godoctor-extract "Refactorizacion en una función, marca actual")
-      ("d" godoctor-toggle "Cambia declaración de variable")
-      ("f" godoctor-godoc "Crea esqueleto de documentación")))
-  (use-package go-guru
-    :after (go-mode hydra)
-    :if (executable-find "guru")
-    :demand t
-    :init
-    (defun shackra/go-mode-set-scope ()
-      (when (eq major-mode 'go-mode)
-        (set (make-local-variable 'go-guru-scope)
-             (concat (projectile-project-root) "..."))))
-    :bind (:map go-mode-map
-                ("M-." . go-guru-definition)
-                ("C-M-g" . hydra-go-guru/body))
-    :config
-    (defhydra hydra-go-guru (:color blue :columns 2)
-      "Contesta preguntas sobre código fuente escrito en Go"
-      ("a" go-guru-callees "Receptores de llamada, función bajo punto actual")
-      ("s" go-guru-callers "Llamadores, función bajo punto actual")
-      ("d" go-guru-callstack "Muestra grafo de llamadas desde una raíz, función bajo punto actual")
-      ("f" go-guru-describe "Describe la sintaxis seleccionada, su tipo y métodos")
-      ("g" go-guru-freevars "Enumera las variables libres, marca actual")
-      ("h" go-guru-referrers "Enumera referencias al objeto, identificador marcado")
-      ("j" go-guru-peers "Enumera un set de remitentes/destinatarios para las operaciones enviar/recibir de este canal")
-      ("k" go-guru-pointsto "Muestra lo que apunta, expresión marcada")
-      ("l" go-guru-implements "Describe la relación de implementación para tipos en un paquete conteniendo el cursor")
-      ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
-    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-    (add-hook 'projectile-mode-hook #'shackra/go-mode-set-scope))
-  (use-package flycheck-gometalinter
-    :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
-    :after (go-mode flycheck-mode)
-    :init
-    (if (executable-find "gometalinter.v1")
-        (setf flycheck-gometalinter-executable "gometalinter.v1")
-      (setf flycheck-gometalinter-executable "gometalinter"))
-    (setf flycheck-gometalinter-vendor t)
-    (setf flycheck-gometalinter-test t)
-    (setf flycheck-gometalinter-fast t)
-    (setf flycheck-gometalinter-enable-linters '("unused"))
-    (setf flycheck-gometalinter-disable-linters '("gotype"))
-    (setq flycheck-gometalinter-deadline "5s")
-    :config
-    (progn
-      (flycheck-gometalinter-setup)))
+    :after (go-mode))
+  (eval-after-load 'hydra
+    (use-package godoctor
+      :after (go-mode)
+      :if (executable-find "godoctor")
+      :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
+      :config
+      (defhydra hydra-godoctor (:color blue :columns 2)
+        "Motor de refactorización para Go"
+        ("a" godoctor-rename "Renombra identificador, punto actual")
+        ("s" godoctor-extract "Refactorizacion en una función, marca actual")
+        ("d" godoctor-toggle "Cambia declaración de variable")
+        ("f" godoctor-godoc "Crea esqueleto de documentación"))))
+  (eval-after-load 'hydra
+    (use-package go-guru
+      :after (go-mode)
+      :if (executable-find "guru")
+      :demand t
+      :init
+      (defun shackra-go-mode-set-scope ()
+        (when (eq major-mode 'go-mode)
+          (set (make-local-variable 'go-guru-scope)
+               (concat (projectile-project-root) "..."))))
+      :bind (:map go-mode-map
+                  ("M-." . go-guru-definition)
+                  ("C-M-g" . hydra-go-guru/body))
+      :config
+      (defhydra hydra-go-guru (:color blue :columns 2)
+        "Contesta preguntas sobre código fuente escrito en Go"
+        ("a" go-guru-callees "Receptores de llamada, función bajo punto actual")
+        ("s" go-guru-callers "Llamadores, función bajo punto actual")
+        ("d" go-guru-callstack "Muestra grafo de llamadas desde una raíz, función bajo punto actual")
+        ("f" go-guru-describe "Describe la sintaxis seleccionada, su tipo y métodos")
+        ("g" go-guru-freevars "Enumera las variables libres, marca actual")
+        ("h" go-guru-referrers "Enumera referencias al objeto, identificador marcado")
+        ("j" go-guru-peers "Enumera un set de remitentes/destinatarios para las operaciones enviar/recibir de este canal")
+        ("k" go-guru-pointsto "Muestra lo que apunta, expresión marcada")
+        ("l" go-guru-implements "Describe la relación de implementación para tipos en un paquete conteniendo el cursor")
+        ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
+      (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+      (add-hook 'projectile-mode-hook #'shackra-go-mode-set-scope)))
+  (eval-after-load 'go-mode
+    (use-package flycheck-gometalinter
+      :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
+      :after (flycheck-mode)
+      :init
+      (if (executable-find "gometalinter.v1")
+          (setf flycheck-gometalinter-executable "gometalinter.v1")
+        (setf flycheck-gometalinter-executable "gometalinter"))
+      (setf flycheck-gometalinter-vendor t)
+      (setf flycheck-gometalinter-test t)
+      (setf flycheck-gometalinter-fast t)
+      (setf flycheck-gometalinter-enable-linters '("unused"))
+      (setf flycheck-gometalinter-disable-linters '("gotype"))
+      (setq flycheck-gometalinter-deadline "5s")
+      :config
+      (progn
+        (flycheck-gometalinter-setup))))
 #+END_SRC
 *** javascript
 **** JSON
@@ -2487,34 +2490,34 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
     :config
     (add-hook 'text-mode #'text-mode-hook-setup))
 
-  (use-package shackra/ispell-dict-switch
-    :bind (("<f8>" . shackra/ispell-cycle-dict))
+  (use-package shackra-ispell-dict-switch
+    :bind (("<f8>" . shackra-ispell-cycle-dict))
     :no-require t
     :ensure nil
-    :preface (provide 'shackra/ispell-dict-switch)
+    :preface (provide 'shackra-ispell-dict-switch)
     :config
-    (setf shackra/ispell-dict-list (list "es" "en"))
+    (setf shackra-ispell-dict-list (list "es" "en"))
     :init
-    (defvar shackra/ispell-dict-list (list) "Lista de diccionarios para cambiar")
+    (defvar shackra-ispell-dict-list (list) "Lista de diccionarios para cambiar")
 
     (defun shackra--ispell-current-dict ()
       "Obtiene el diccionario actual o retorna el establecido por defecto"
       (if ispell-current-dictionary
-          (cl-position ispell-current-dictionary shackra/ispell-dict-list :test 'string=)
+          (cl-position ispell-current-dictionary shackra-ispell-dict-list :test 'string=)
         (if (stringp (getenv "LANG"))
-            (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra/ispell-dict-list :test 'string=)
+            (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra-ispell-dict-list :test 'string=)
           0))) ;; retorna español mientras tanto
 
-    (defun shackra/ispell-cycle-dict ()
+    (defun shackra-ispell-cycle-dict ()
       "Cambia de un diccionario a otro"
       (interactive)
-      (let ((dict-list-size (- (length shackra/ispell-dict-list) 1))
+      (let ((dict-list-size (- (length shackra-ispell-dict-list) 1))
             (dict-current-index (shackra--ispell-current-dict)))
         (if (> (+ dict-current-index 1) dict-list-size)
             (setf dict-current-index 0)
           (setf dict-current-index (+ dict-current-index 1)))
         ;; luego de realizar la matemática, cambiamos el diccionario
-        (ispell-change-dictionary (nth dict-current-index shackra/ispell-dict-list)))
+        (ispell-change-dictionary (nth dict-current-index shackra-ispell-dict-list)))
       ;; Nuevo diccionario, nada de palabras subrayadas
       (flyspell-delete-all-overlays)
       ;; Mandamos a revisar la ortografía del párrafo en que estamos
@@ -2665,13 +2668,13 @@ Porque =electric-indent-mode= no es lo suficientemente bueno.
 :END:
 Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configuración.
 #+BEGIN_SRC emacs-lisp
-  (defun shackra/text-mode ()
+  (defun shackra-text-mode ()
     (when (or (executable-find "ispell") (executable-find "hunspell"))(flyspell-mode))
     (set (make-local-variable 'fill-column) 100)
     (turn-off-auto-fill)
     (turn-on-visual-line-mode))
   (remove-hook 'text-mode-hook #'turn-on-auto-fill)
-  (add-hook 'text-mode-hook #'shackra/text-mode)
+  (add-hook 'text-mode-hook #'shackra-text-mode)
 #+END_SRC
 **** Mover el cursos de manera inteligente al inicio de la linea
 He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0 en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
@@ -2754,7 +2757,7 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
 "/Soy como =powerline=, pero mejor/"
 #+BEGIN_SRC emacs-lisp
   (use-package telephone-line
-    :preface (defun shackra/vc-state ()
+    :preface (defun shackra-vc-state ()
                (if vc-mode
                    (vc-state (buffer-file-name (current-buffer)))
                  nil))
@@ -2778,19 +2781,19 @@ Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
       (list (cond ((buffer-modified-p)
                    (propertize (format " %s" (all-the-icons-faicon "pencil")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
                                'display '(raise -0.1) 'help-echo "Buffer modificado."))
-                  ((eq (shackra/vc-state) 'edited)
+                  ((eq (shackra-vc-state) 'edited)
                    (propertize (format " %s?" (all-the-icons-faicon "cloud-upload")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
                                'display '(raise -0.1) 'help-echo "Cambios sin registrar.")))
-            (cond ((eq (shackra/vc-state) 'missing)
+            (cond ((eq (shackra-vc-state) 'missing)
                    (propertize (format " %s " (all-the-icons-faicon "trash")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
                                'display '(raise -0.1) 'help-echo "Archivo sólo existe en VCS, no en el disco duro."))
-                  ((eq (shackra/vc-state) 'ignored)
+                  ((eq (shackra-vc-state) 'ignored)
                    (propertize (format " %s " (all-the-icons-faicon "ban")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
                                'display '(raise -0.1) 'help-echo "Archivo ignorado"))
-                  ((eq (shackra/vc-state) 'added)
+                  ((eq (shackra-vc-state) 'added)
                    (propertize (format " %s " (all-the-icons-faicon "plus")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
                                'display '(raise -0.1) 'help-echo "Archivo será registrado en VCS en el siguiente commit."))
-                  ((eq (shackra/vc-state) 'unregistered)
+                  ((eq (shackra-vc-state) 'unregistered)
                    (propertize (format " %s " (all-the-icons-faicon "question")) 'face `(:height 1.3 :family ,(all-the-icons-faicon-family))
                                'display '(raise -0.1) 'help-echo "Archivo sin registrar al VCS.")))))
 
@@ -2861,7 +2864,7 @@ Pleguar o desplegar bloques de texto. Asociado a @@html:<kbd>C-c v</kbd>@@.
   (use-package vimish-fold
     :defer 10
     :config
-    (bind-keys :prefix-map shackra/vimish-fold-map
+    (bind-keys :prefix-map shackra-vimish-fold-map
                :prefix "C-c v"
                ("v" . vimish-fold-toggle)
                ("V" . vimish-fold-toggle-all)
@@ -2886,7 +2889,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
         (setf alert-default-style 'message)
       (setf alert-default-style 'libnotify))
     :config
-    (defun shackra/appt-muestra-notificacion (min-to-app new-time msg)
+    (defun shackra-appt-muestra-notificacion (min-to-app new-time msg)
       "Envia notificaciones usando libnotify. Esto no funcionara si DBus no esta instalado y corriendo"
       ;; `min-to-app' puede ser una lista, o no.
       (if (atom min-to-app)
@@ -2920,27 +2923,27 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
           appt-display-interval (1+ appt-message-warning-time)
           appt-display-mode-line nil)
     ;; Muestra las citas como notificaciones en el manejador de ventanas
-    (setf appt-disp-window-function 'shackra/appt-muestra-notificacion)
+    (setf appt-disp-window-function 'shackra-appt-muestra-notificacion)
     ;;(setf appt-delete-window-function nil)
     :config
-    (defun shackra/appt-update-when-file-updated ()
+    (defun shackra-appt-update-when-file-updated ()
       "Actualiza appt cuando ciertos archivos son actualizados"
       ;; si `org-directory' es prefijo en el nombre del archivo del buffer
-      ;; actual, ejecuta la funcion `shackra/org-agenda-to-appt'
+      ;; actual, ejecuta la funcion `shackra-org-agenda-to-appt'
       (if (string-prefix-p org-directory (buffer-file-name))
-          (shackra/org-agenda-to-appt)))
+          (shackra-org-agenda-to-appt)))
 
-    (defun shackra/org-agenda-to-appt ()
+    (defun shackra-org-agenda-to-appt ()
       (interactive)
       (setf appt-time-msg-list nil)
       (org-agenda-to-appt))
 
-    (shackra/org-agenda-to-appt)
-    (run-at-time "12:05am" (* 24 3600) 'shackra/org-agenda-to-appt)
+    (shackra-org-agenda-to-appt)
+    (run-at-time "12:05am" (* 24 3600) 'shackra-org-agenda-to-appt)
     (appt-activate t)
     ;; automáticamente actualiza las citas cuando el archivo cosasporhacer.org es
     ;; salvado (ahí es donde yo guardo mi lista de cosas por hacer, y mi agenda)
-    (add-hook 'after-save-hook #'shackra/appt-update-when-file-updated))
+    (add-hook 'after-save-hook #'shackra-appt-update-when-file-updated))
 #+END_SRC
 *** =uniquify=
 :LOGBOOK:
@@ -3114,32 +3117,32 @@ Recuerda al usuario que hay una manera más eficiente de hacer algo
     :ensure nil
     :load-path "site-packages/dwight"
     :init
-    (defun shackra/super-next-line ()
+    (defun shackra-super-next-line ()
       (interactive)
       (ignore-errors (forward-line 3)))
-    (defun shackra/super-previous-line ()
+    (defun shackra-super-previous-line ()
       (interactive)
       (ignore-errors (forward-line -3)))
-    (defun shackra/super-left-char ()
+    (defun shackra-super-left-char ()
       (interactive)
       (ignore-errors (left-char 3)))
-    (defun shackra/super-right-char ()
+    (defun shackra-super-right-char ()
       (interactive)
       (ignore-errors (right-char 3)))
-    (defun shackra/super-forward-word ()
+    (defun shackra-super-forward-word ()
       (interactive)
       (ignore-errors (forward-word 3)))
-    (defun shackra/super-backward-word ()
+    (defun shackra-super-backward-word ()
       (interactive)
       (ignore-errors (backward-word 3)))
     (setf schrute-command-repetitions 1)
     (setf schrute-lighter " 🐻 ")
-    (setf schrute-shortcuts-commands '((shackra/super-next-line     . (next-line))
-                                       (shackra/super-previous-line . (previous-line))
-                                       (shackra/super-left-char     . (left-char))
-                                       (shackra/super-right-char    . (right-char))
-                                       (shackra/super-forward-word  . (forward-word))
-                                       (shackra/super-backward-word . (backward-word))))
+    (setf schrute-shortcuts-commands '((shackra-super-next-line     . (next-line))
+                                       (shackra-super-previous-line . (previous-line))
+                                       (shackra-super-left-char     . (left-char))
+                                       (shackra-super-right-char    . (right-char))
+                                       (shackra-super-forward-word  . (forward-word))
+                                       (shackra-super-backward-word . (backward-word))))
     (add-hook 'after-init-hook #'schrute-mode))
 #+END_SRC
 *** Yasnippet en todos los backends de Company                   :especial:
