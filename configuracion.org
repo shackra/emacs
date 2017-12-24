@@ -1790,7 +1790,6 @@ Sincroniza archivos org-mode y tableros en Trello
 Un modo mayor de Emacs para la edición de archivos =PKGBUILD=
 #+BEGIN_SRC emacs-lisp
   (use-package pkgbuild-mode
-    :ensure nil
     :mode "/PKGBUILD$")
 #+END_SRC
 **** Preparación previa

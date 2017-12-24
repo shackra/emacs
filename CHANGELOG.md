@@ -5,6 +5,11 @@
 
 ### Fix
 
+#### Elimina opción innecesaria para sentencia de pkgbuild-mode.
+
+
+~ Jorge Araya Navarro
+
 #### Fija atajo para ivy-switch-buffer.
 
 
