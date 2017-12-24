@@ -3,6 +3,18 @@
 
 ## (unreleased)
 
+### Fix
+
+#### Fija atajo para ivy-switch-buffer.
+
+
+  Ejecuta el autoloads para ivy cuando el atajo es utilizado
+
+~ Jorge Araya Navarro
+
+
+## 3.2 (2017-12-23)
+
 ### New
 
 #### Implementa funciones para convertir notas al pie y cursiva.
