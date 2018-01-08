@@ -3,6 +3,15 @@
 
 ## (unreleased)
 
+### New
+
+#### Usa el fork de emacs-slack de Malabarba.
+
+
+  Upstream tiene muchos problemas para ser útil
+
+~ Jorge Araya Navarro
+
 ### Fix
 
 #### Elimina opción innecesaria para sentencia de pkgbuild-mode.

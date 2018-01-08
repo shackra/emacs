@@ -13,3 +13,6 @@
 [submodule "gimp-mode"]
 	path = site-packages/gimp-mode
 	url = https://github.com/pft/gimpmode.git
+[submodule "site-packages/slack"]
+	path = site-packages/slack
+	url = https://github.com/Malabarba/emacs-slack.git

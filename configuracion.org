@@ -1475,34 +1475,25 @@ Conexión a Weechat desde Emacs
 #+END_SRC
 *** Slack
 #+BEGIN_SRC emacs-lisp
+  (unless (fboundp 'dbus-compiled-version)
+    (setf dbus-compiled-version nil))
   (use-package color)
   (when dbus-compiled-version
     (use-package slack
+      :load-path "site-packages/slack"
+      :ensure nil
+      :after color
       :init
       (setq slack-buffer-emojify t)
-      (setq slack-prefer-current-team t)
-      :config
-      (slack-register-team
-       :name "brete"
-       :default t
-       :client-id "15969776599.285906366548"
-       :client-secret (secrets-get-secret "login" "emacs-slack-brete client-secret")
-       :token (secrets-get-secret "login" "emacs-slack-brete password")
-       :subscribed-channels '(general development-coding))
-      (slack-register-team
-       :name "American Chesterton Society Slack"
-       :client-id "108268788771.277619878759"
-       :client-secret (secrets-get-secret "login" "emacs-slack client-secret")
-       :token (secrets-get-secret "login" "emacs-slack password")
-       :subscribed-channels '(general))
-      (slack-start)))
+      (setq slack-prefer-current-team t)))
 #+END_SRC
 *** Redmine
 #+BEGIN_SRC emacs-lisp
   (when (boundp 'auth-sources)
     (use-package org-redmine
       :init
-      (setq org-redmine-uri "https://my.ivrtechnology.com")))
+      (setq org-redmine-uri "https://my.ivrtechnology.com")
+      (setq org-redmine-auth-netrc-use t)))
 #+END_SRC
 ** Desarrollo de software
 *** org-babel
