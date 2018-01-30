@@ -3118,7 +3118,9 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
 *** =systemd=
 Modo mayor para editar archivos de servicio systemd.
 #+BEGIN_SRC emacs-lisp
-  (use-package systemd)
+  (use-package systemd
+    :config
+    (add-hook 'systemd-mode-hook #'yas-minor-mode-on))
 #+END_SRC
 *** =pretty-mode=
 #+BEGIN_SRC emacs-lisp

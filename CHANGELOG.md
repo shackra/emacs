@@ -5,6 +5,11 @@
 
 ### New
 
+#### Habilita Yasnippet en systemd-mode.
+
+
+~ Jorge Araya Navarro
+
 #### Habilita hack en org-mode que mueve etiquetas al final de marco.
 
 
