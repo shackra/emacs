@@ -5,6 +5,11 @@
 
 ### New
 
+#### Habilita hack en org-mode que mueve etiquetas al final de marco.
+
+
+~ Jorge Araya Navarro
+
 #### Habilita paquetes para org-mode y ajusta org-projectile.
 
 
