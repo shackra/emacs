@@ -14,6 +14,11 @@
 
 ### Changes
 
+#### Ajustes para Python.
+
+
+~ Jorge Araya Navarro
+
 #### Dired+ ya no se carga desde Elpa.
 
 

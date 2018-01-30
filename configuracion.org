@@ -411,6 +411,7 @@ Para hacer que Git use emacsclient como /mergetool/ hay que modificar la configu
 #+BEGIN_SRC emacs-lisp
   (defun shackra-electric-indent-mode-off ()
     (electric-indent-local-mode -1)
+    (define-key python-mode-map (kbd "RET") 'newline-and-indent)
     ;; Desactiva aggresive-indent si esta instalado y activo
     (when (fboundp 'aggressive-indent-mode)
       (aggressive-indent-mode -1)))
@@ -1846,20 +1847,19 @@ Modo mayor para programar en Python
 
   (use-package pydoc-info)
 
-  (with-eval-after-load 'python-mode
-    (use-package company-anaconda
-      :if (executable-find "python")
-      :after (company)
-      :bind (:map python-mode-map
-                  ("M-." . anaconda-mode-find-definitions)
-                  ("M-," . anaconda-mode-find-assignments)
-                  ("M-r" . anaconda-mode-find-references)
-                  ("M-*" . anaconda-mode-go-back))
-      :diminish anaconda-mode
-      :config
-      (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet company-capf))))
-      (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-      (add-hook 'python-mode-hook 'anaconda-mode)))
+  (use-package company-anaconda
+    :if (executable-find "python")
+    :after (company)
+    :bind (:map python-mode-map
+                ("M-." . anaconda-mode-find-definitions)
+                ("M-," . anaconda-mode-find-assignments)
+                ("M-r" . anaconda-mode-find-references)
+                ("M-*" . anaconda-mode-go-back))
+    :diminish anaconda-mode
+    :config
+    (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet company-capf))))
+    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+    (add-hook 'python-mode-hook 'anaconda-mode))
 
   (use-package python
     :if (executable-find "python")
@@ -1872,12 +1872,12 @@ Modo mayor para programar en Python
       (interactive)
       (if (fboundp 'hydra-py/body)
           (hydra-py/python-indent-shift-left)
-        (python-indent-shift-left)))
+        (call-interactively (python-indent-shift-left))))
     (defun shackra-python-indent-shift-right ()
       (interactive)
       (if (fboundp 'hydra-py/body)
           (hydra-py/python-indent-shift-right)
-        (python-indent-shift-right)))
+        (call-interactively (python-indent-shift-right))))
     (defun shackra-python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
       (shackra-electric-indent-mode-off)
