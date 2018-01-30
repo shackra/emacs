@@ -14,6 +14,11 @@
 
 ### Changes
 
+#### Separa Alert y Appt.
+
+
+~ Jorge Araya Navarro
+
 #### Establece variable a `nil` si no esta definida.
 
 

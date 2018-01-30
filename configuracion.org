@@ -2967,18 +2967,33 @@ Pleguar o desplegar bloques de texto. Asociado a @@html:<kbd>C-c v</kbd>@@.
                ("p" . vimish-fold-previous-fold))
     (add-hook 'prog-mode #'vimish-fold-mode))
 #+END_SRC
+*** alert
+#+BEGIN_SRC emacs-lisp
+  (use-package alert
+    :init
+    (if (eq system-type 'windows-nt)
+        (setf alert-default-style 'message)
+      (setf alert-default-style 'libnotify)))
+#+END_SRC
 *** =appt=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
 :END:
 Appointments me alerta de mis citas o pendientes que tengo por hacer.
 #+BEGIN_SRC emacs-lisp
-  (use-package alert
+  ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
+  ;; a http://redd.it/35kbf6
+  (use-package appt
+    :after (alert)
+    :if (not (eq system-type 'darwin))
+    :ensure nil
     :init
-    (if (eq system-type 'windows-nt)
-        (setf alert-default-style 'message)
-      (setf alert-default-style 'libnotify))
-    :config
+    (setf appt-message-warning-time 10
+          appt-display-interval (1+ appt-message-warning-time)
+          appt-display-mode-line nil)
+    ;; Muestra las citas como notificaciones en el manejador de ventanas
+    (setf appt-disp-window-function 'shackra-appt-muestra-notificacion)
+    ;;(setf appt-delete-window-function nil)
     (defun shackra-appt-muestra-notificacion (min-to-app new-time msg)
       "Envia notificaciones usando libnotify. Esto no funcionara si DBus no esta instalado y corriendo"
       ;; `min-to-app' puede ser una lista, o no.
@@ -3001,33 +3016,18 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
            :title (nth i msg)
            :mode 'Emacs-Org
            :severity 'high
-           :persistent t)))))
-  ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
-  ;; a http://redd.it/35kbf6
-  (use-package appt
-    :after (alert)
-    :if (not (eq system-type 'darwin))
-    :ensure nil
-    :init
-    (setf appt-message-warning-time 10
-          appt-display-interval (1+ appt-message-warning-time)
-          appt-display-mode-line nil)
-    ;; Muestra las citas como notificaciones en el manejador de ventanas
-    (setf appt-disp-window-function 'shackra-appt-muestra-notificacion)
-    ;;(setf appt-delete-window-function nil)
-    :config
+           :persistent t))))
     (defun shackra-appt-update-when-file-updated ()
       "Actualiza appt cuando ciertos archivos son actualizados"
       ;; si `org-directory' es prefijo en el nombre del archivo del buffer
       ;; actual, ejecuta la funcion `shackra-org-agenda-to-appt'
       (if (string-prefix-p org-directory (buffer-file-name))
           (shackra-org-agenda-to-appt)))
-
     (defun shackra-org-agenda-to-appt ()
       (interactive)
       (setf appt-time-msg-list nil)
       (org-agenda-to-appt))
-
+    :config
     (shackra-org-agenda-to-appt)
     (run-at-time "12:05am" (* 24 3600) 'shackra-org-agenda-to-appt)
     (appt-activate t)
