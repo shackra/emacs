@@ -14,6 +14,13 @@
 
 ### Changes
 
+#### Establece variable a `nil` si no esta definida.
+
+
+  Evita que emacs-slack falle mientras carga en Windows
+
+~ Jorge Araya Navarro
+
 #### Ajustes para Python.
 
 

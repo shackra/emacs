@@ -1478,17 +1478,103 @@ Conexión a Weechat desde Emacs
 #+END_SRC
 *** Slack
 #+BEGIN_SRC emacs-lisp
-  (unless (fboundp 'dbus-compiled-version)
+  (unless (boundp 'dbus-compiled-version)
     (setf dbus-compiled-version nil))
   (use-package color)
-  (when dbus-compiled-version
-    (use-package slack
-      :load-path "site-packages/slack"
-      :ensure nil
-      :after color
-      :init
-      (setq slack-buffer-emojify t)
-      (setq slack-prefer-current-team t)))
+  (use-package slack
+    :load-path "site-packages/slack"
+    :ensure nil
+    :after color
+    :init
+    (setq slack-buffer-emojify t)
+    (setq slack-prefer-current-team t)
+    ;; Big QOL changes. took from
+    ;; http://endlessparentheses.com/keep-your-slack-distractions-under-control-with-emacs.html
+    (setq slack-completing-read-function
+          #'ivy-completing-read)
+    (setq slack-buffer-function #'switch-to-buffer)
+    (setq slack-display-team-name nil)
+    (setq slack-buffer-create-on-notify t)
+
+    (with-eval-after-load 'tracking
+      (define-key tracking-mode-map [f11]
+        #'tracking-next-buffer))
+
+    ;; Channels
+    (setq slack-message-notification-title-format-function
+          (lambda (_team room threadp)
+            (concat (if threadp "Thread in #%s") room)))
+
+    (defun endless/-cleanup-room-name (room-name)
+      "Make group-chat names a bit more human-readable."
+      (replace-regexp-in-string
+       "--" " "
+       (replace-regexp-in-string "#mpdm-" "" room-name)))
+
+    ;; Private messages and group chats
+    (setq
+     slack-message-im-notification-title-format-function
+     (lambda (_team room threadp)
+       (concat (if threadp "Thread in %s")
+               (endless/-cleanup-room-name room))))
+
+    (defun endless/-author-at (pos)
+      (replace-regexp-in-string
+       (rx "\n" (* anything)) ""
+       (or (get-text-property pos 'lui-raw-text) "")))
+
+    (defun endless/-remove-slack-author ()
+      "Remove author here if it's the same as above."
+      (let ((author-here (endless/-author-at (point)))
+            (author-above (endless/-author-at (1- (point)))))
+        (when (and (looking-at-p (regexp-quote author-here))
+                 (equal author-here author-above))
+          (delete-region (1- (point))
+                         (1+ (line-end-position))))))
+
+    (defun endless/remove-slack-author-hook ()
+      "For usage in `lui-pre-output-hook'."
+      (when (derived-mode-p 'slack-mode)
+        (save-excursion
+          (goto-char (point-min))
+          (save-restriction
+            (widen)
+            (endless/-remove-slack-author)))))
+
+    (add-hook 'lui-pre-output-hook
+              #'endless/remove-slack-author-hook)
+
+    ;; Go to any channel with `C-x j'.
+    (define-key ctl-x-map "j" #'slack-select-rooms)
+    ;; Apaga la numeración de lineas en un buffer de slack
+    (add-hook 'slack-mode-hook (lambda () (linum-mode -1)))
+    (add-hook 'slack-mode-hook 'flyspell-mode)
+    (add-hook 'slack-mode-hook #'emojify-mode)
+    :config
+    ;; Quick 'n dirty way of opening the most recent link
+    ;; in the current chat room.
+    (define-key slack-mode-map (kbd "M-o")
+      (kbd "<backtab> RET M->"))
+    ;; I thumbs-up a lot. Don't judge me.
+    (define-key slack-mode-map (kbd "C-;") ":+1:")
+    (define-key slack-mode-map (kbd "C-:") ":thinking:")
+    ;; Bring up the mentions menu with `@', and insert a
+    ;; space afterwards.
+    (define-key slack-mode-map "@"
+      (defun endless/slack-message-embed-mention ()
+        (interactive)
+        (call-interactively #'slack-message-embed-mention)
+        (insert " ")))
+
+    ;; Pretty straightforward.
+    (define-key slack-mode-map (kbd "C-c C-d")
+      #'slack-message-delete)
+    (define-key slack-mode-map (kbd "C-c C-e")
+      #'slack-message-edit)
+    (define-key slack-mode-map (kbd "C-c C-k")
+      #'slack-channel-leave)
+    (define-key slack-mode-map (kbd "C-c C-t")
+      #'slack-thread-select))
 #+END_SRC
 *** Redmine
 #+BEGIN_SRC emacs-lisp
