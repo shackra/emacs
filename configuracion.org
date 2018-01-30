@@ -1684,7 +1684,7 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
     (bind-key* "C-M-," 'comment-dwim)
     (add-hook 'prog-mode-hook #'shackra-prog-mode))
 #+END_SRC
-*** =org-mode=                                                      :nuevo:
+*** =org-mode= :nuevo:
 El modo Org (Org-mode) es un modo de edición del editor de texto Emacs mediante el cual se editan documentos jerárquicos en texto plano.
 
 Su uso encaja con distintas necesidades, como la creación de notas de cosas por hacer, la planificación de proyectos y hasta la escritura de páginas web. Por ejemplo, los elementos to-do (cosas por hacer) pueden disponer de prioridades y fechas de vencimiento, pueden estar subdivididos en subtareas o en listas de verificación, y pueden etiquetarse o dársele propiedades. También puede generarse automáticamente una agenda de las entradas de cosas por hacer. ~[[https://es.wikipedia.org/wiki/Org-mode][org-mode - Wikipedia, la enciclopedia libre]]
@@ -2530,7 +2530,7 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
   (use-package gradle-mode
     :after (kotlin-mode))
 #+END_SRC
-*** Gimp                                                    :deshabilitado:
+*** Gimp :deshabilitado:
 Now you can run the GIMP with `M-x run-gimp'.
 Alternatively, connect to GIMP server with `M-x gimp-cl-connect'.
 
@@ -3307,7 +3307,7 @@ Recuerda al usuario que hay una manera más eficiente de hacer algo
                                        (shackra-super-backward-word . (backward-word))))
     (add-hook 'after-init-hook #'schrute-mode))
 #+END_SRC
-*** Yasnippet en todos los backends de Company                   :especial:
+*** Yasnippet en todos los backends de Company :especial:
 Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer que muestre candidatos de auto-completado y candidatos yasnippet es agrupando los backends
 #+BEGIN_SRC emacs-lisp
   ;; http://emacs.stackexchange.com/questions/10431/get-company-to-show-suggestions-for-yasnippet-names
