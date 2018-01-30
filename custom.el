@@ -62,79 +62,10 @@
     ((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))))
  '(package-selected-packages
    (quote
-    (realgud meghanada org-redmine slack org-download multiple-cursors gimp-mode yapfify importmagic dockerfile-mode docker-compose-mode docker isortify pippel noflet org2web json-mode xref-js2 ng2-mode kotlin-mode gradle-mode flycheck-kotlin kotlin ox-gfm el2org mu4e-alert chronos pkgbuild-mode free-keys company-emoji emojify pdf-tools shackle camcorder mingus ws-butler elfeed golden-ratio aurel pretty-mode systemd alert vimish-fold telephone-line all-the-icons fixmee mustache-mode golden-ratio-scroll-screen move-text paredit aggressive-indent hungry-delete visual-fill-column pcre2el flycheck-package flyspell-correct-ivy scss-mode stylus-mode slime android-mode indium js2-refactor company-tern flycheck-gometalinter go-guru godoctor go-snippets go-eldoc company-go go-mode php-mode php-refactor-mode web-beautify web-mode ac-html-bootstrap company-web emmet-mode python-environment flycheck-rust company-racer racer cargo yaml-mode toml-mode traad pony-mode company-anaconda py-autopep8 pyvenv org-trello org-projectile rainbow-mode highlight-escape-sequences highlight-numbers weechat org-webpage sx iedit moz-controller bookmark+ imenu-anywhere kill-or-bury-alive hgignore-mode monky git-gutter-fringe magit-gh-pulls gitconfig-mode gitignore-mode multi-term ag company-auctex company-quickhelp company-statistics company nlinum feature-mode prodigy pydoc-info sphinx-doc tide expand-region font-lock-studio webpaste highlight-indent-guides el-pocket twittering-mode better-defaults use-package org)))
+    (org-bullets org-beautify-theme zenburn-theme undo-tree keyfreq dired-details+ ranger windresize ace-window ivy-hydra tern virtualenvwrapper counsel counsel-projectile switch-buffer-functions realgud meghanada org-redmine slack org-download multiple-cursors gimp-mode yapfify importmagic dockerfile-mode docker-compose-mode docker isortify pippel noflet org2web json-mode xref-js2 ng2-mode kotlin-mode gradle-mode flycheck-kotlin kotlin ox-gfm el2org mu4e-alert chronos pkgbuild-mode free-keys company-emoji emojify pdf-tools shackle camcorder mingus ws-butler elfeed golden-ratio aurel pretty-mode systemd alert vimish-fold telephone-line all-the-icons fixmee mustache-mode golden-ratio-scroll-screen move-text paredit aggressive-indent hungry-delete visual-fill-column pcre2el flycheck-package flyspell-correct-ivy scss-mode stylus-mode slime android-mode indium js2-refactor company-tern flycheck-gometalinter go-guru godoctor go-snippets go-eldoc company-go go-mode php-mode php-refactor-mode web-beautify web-mode ac-html-bootstrap company-web emmet-mode python-environment flycheck-rust company-racer racer cargo yaml-mode toml-mode traad pony-mode company-anaconda py-autopep8 pyvenv org-trello org-projectile rainbow-mode highlight-escape-sequences highlight-numbers weechat org-webpage sx iedit moz-controller bookmark+ imenu-anywhere kill-or-bury-alive hgignore-mode monky git-gutter-fringe magit-gh-pulls gitconfig-mode gitignore-mode multi-term ag company-auctex company-quickhelp company-statistics company nlinum feature-mode prodigy pydoc-info sphinx-doc tide expand-region font-lock-studio webpaste highlight-indent-guides el-pocket twittering-mode better-defaults use-package org)))
  '(py-autopep8-options nil)
  '(python-shell-interpreter "python3")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python3")
- '(safe-local-variable-values
-   (quote
-    ((eval when
-           (and
-            (buffer-file-name)
-            (file-regular-p
-             (buffer-file-name))
-            (string-match-p "^[^.]"
-                            (buffer-file-name)))
-           (unless
-               (featurep
-                (quote package-build))
-             (let
-                 ((load-path
-                   (cons "../package-build" load-path)))
-               (require
-                (quote package-build))))
-           (package-build-minor-mode)
-           (set
-            (make-local-variable
-             (quote package-build-working-dir))
-            (expand-file-name "../working/"))
-           (set
-            (make-local-variable
-             (quote package-build-archive-dir))
-            (expand-file-name "../packages/"))
-           (set
-            (make-local-variable
-             (quote package-build-recipes-dir))
-            default-directory))
-     (eval when
-           (and
-            (buffer-file-name)
-            (file-regular-p
-             (buffer-file-name))
-            (string-match-p "^[^.]"
-                            (buffer-file-name)))
-           (unless
-               (featurep
-                (quote package-build))
-             (let
-                 ((load-path
-                   (cons ".." load-path)))
-               (require
-                (quote package-build))))
-           (package-build-minor-mode)
-           (set
-            (make-local-variable
-             (quote package-build-working-dir))
-            (expand-file-name "../working/"))
-           (set
-            (make-local-variable
-             (quote package-build-archive-dir))
-            (expand-file-name "../packages/"))
-           (set
-            (make-local-variable
-             (quote package-build-recipes-dir))
-            default-directory))
-     (buffer-read-only . 1)
-     (shackra:var-python-version . 3)
-     (pyvenv-workon . kuotaru)
-     (shackra:var-python-ver . 2)
-     (shackra:var-python-ver . 3)
-     (ispell-dictionary . "en")
-     (pyvenv-workon . sent-api)
-     (ispell-local-dictionary . english)
-     (ispell-local-dictionary . en)
-     (ispell-dictionary . en)
-     (encoding . utf-8))))
  '(tramp-default-method "ssh")
  '(tramp-encoding-shell "/bin/bash")
  '(vc-annotate-background "#2B2B2B")
