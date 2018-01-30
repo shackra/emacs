@@ -746,7 +746,9 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
     :init
     (setf ranger-cleanup-eagerly t))
   (use-package dired+
-    :init
+    :ensure nil
+    :load-path "site-packages/dired+/"
+    :config
     (diredp-toggle-find-file-reuse-dir 1))
   (use-package dired-details+
     ;; Sólo activa este paquete en caso de que la versión de Emacs no sea mayor

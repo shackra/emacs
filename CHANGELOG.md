@@ -12,6 +12,17 @@
 
 ~ Jorge Araya Navarro
 
+### Changes
+
+#### Dired+ ya no se carga desde Elpa.
+
+
+  Esto debido a los ajustes en Melpa sobre archivos inseguros bajados desde la Wiki de Emacs
+
+  https://github.com/melpa/melpa/pull/5008/
+
+~ Jorge Araya Navarro
+
 ### Fix
 
 #### Elimina opción innecesaria para sentencia de pkgbuild-mode.
