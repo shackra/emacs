@@ -62,6 +62,15 @@
 
 ### Fix
 
+#### Deshabilita paquete por error de inicialización.
+
+
+  https://github.com/jonnay/org-beautify-theme/issues/9
+
+  https://github.com/bbatsov/prelude/issues/1093
+
+~ Jorge Araya Navarro
+
 #### Elimina opción innecesaria para sentencia de pkgbuild-mode.
 
 

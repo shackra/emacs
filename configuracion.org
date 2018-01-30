@@ -1695,6 +1695,7 @@ Teclas
 - @@html:<kbd>C-c c</kbd>@@ :: Capturar algo
 #+BEGIN_SRC emacs-lisp
   (use-package org-beautify-theme
+    :disabled
     :after org)
 
   (use-package org-bullets
