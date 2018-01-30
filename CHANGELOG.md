@@ -5,6 +5,11 @@
 
 ### New
 
+#### Habilita paquetes para org-mode y ajusta org-projectile.
+
+
+~ Jorge Araya Navarro
+
 #### Usa el fork de emacs-slack de Malabarba.
 
 

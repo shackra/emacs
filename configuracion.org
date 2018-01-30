@@ -1630,6 +1630,13 @@ Teclas
 - @@html:<kbd>C-c a</kbd>@@ :: Abre la agenda
 - @@html:<kbd>C-c c</kbd>@@ :: Capturar algo
 #+BEGIN_SRC emacs-lisp
+  (use-package org-beautify-theme
+    :after org)
+
+  (use-package org-bullets
+    :after org
+    :init (add-hook 'org-mode-hook 'org-bullets-mode))
+
   (use-package org-download
     :init
     (setq-default org-download-image-dir "~/org/imagenes/"))
@@ -1845,8 +1852,7 @@ Teclas
         :config
         (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
         (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
-                                             :capture-character "P"))
-        (setf org-agenda-files (append org-agenda-files (org-projectile-todo-files))))))
+                                             :capture-character "P")))))
 #+END_SRC
 *** =org-trello=
 Sincroniza archivos org-mode y tableros en Trello
