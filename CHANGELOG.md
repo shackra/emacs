@@ -5,6 +5,11 @@
 
 ### New
 
+#### Agrega plantillas de Yasnippet para systemd-mode.
+
+
+~ Jorge Araya Navarro
+
 #### Habilita Yasnippet en systemd-mode.
 
 
