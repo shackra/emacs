@@ -2267,6 +2267,16 @@ Es necesario instalar [[https://github.com/alecthomas/gometalinter][=gometalinte
 go get -u gopkg.in/alecthomas/gometalinter.v1
 #+END_EXAMPLE
 
+También estas otras bibliotecas
+#+BEGIN_EXAMPLE
+go get -u -ldflags -H=windowsgui github.com/nsf/gocode # Para Windows
+go get -u github.com/nsf/gocode # Para cualquier otro sistema que no sea Windows
+go get github.com/godoctor/godoctor
+go install github.com/godoctor/godoctor
+go get golang.org/x/tools/cmd/guru # Como usar Go Guru http://golang.org/s/using-guru
+go build golang.org/x/tools/cmd/guru
+#+END_EXAMPLE
+
 #+BEGIN_SRC emacs-lisp
   (use-package f) ;; requerido para `shackra-go-update-compile-definition'
   (use-package go-mode
