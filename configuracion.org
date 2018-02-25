@@ -1336,6 +1336,10 @@ Un versátil cliente de correo electrónico para Emacs.
     :init
     (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
     (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+    (setf mu4e-compose-forward-as-attachment t)
+    (setf mu4e-compose-crypto-reply-encrypted-policy 'sign-and-encrypt)
+    (setf mu4e-compose-crypto-reply-plain-policy 'sign)
+    (setf mu4e-index-update-in-background nil) ;; goimapnotify hace esto por nosotros
     (setq mu4e-alert-email-notification-types '(subjects))
     :config
     (mu4e-alert-set-default-style 'libnotify))

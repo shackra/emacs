@@ -5,6 +5,16 @@
 
 ### New
 
+#### Establece opciones para mu4e.
+
+
+~ Jorge Araya Navarro
+
+#### Indicaciones para instalar otros componentes para Go.
+
+
+~ Jorge Araya Navarro
+
 #### Agrega plantillas de Yasnippet para systemd-mode.
 
 
@@ -33,6 +43,16 @@
 ~ Jorge Araya Navarro
 
 ### Changes
+
+#### Ajustes menores en configuración de tipografias.
+
+
+~ Jorge Araya Navarro
+
+#### Actualiza el archivo leame.
+
+
+~ Jorge Araya Navarro
 
 #### Separa Alert y Appt.
 
