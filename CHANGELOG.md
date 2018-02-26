@@ -87,6 +87,11 @@
 
 ### Fix
 
+#### Separa el icono de Git del nombre de la rama.
+
+
+~ Jorge Araya Navarro
+
 #### Deshabilita paquete por error de inicialización.
 
 
