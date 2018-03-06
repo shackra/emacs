@@ -49,6 +49,9 @@ Changes
 
 Fix
 ~~~
+- Usa funciones de fabrica en lugar de terceros. [Jorge Araya Navarro]
+
+  async no parece cargar módulos de terceros, haciendo fallar algunas funciones como `alert` o `notmuch-hello-update`
 - Separa el icono de Git del nombre de la rama. [Jorge Araya Navarro]
 - Deshabilita paquete por error de inicialización. [Jorge Araya Navarro]
 

@@ -1385,8 +1385,7 @@ Un versátil cliente de correo electrónico para Emacs.
          (shell-command "notmuch search --format=text0 --output=files tag:deleted | xargs -0 --no-run-if-empty rm")
          (shell-command "notmuch new")
          (shell-command "pushmail.sh")
-         (notmuch-hello-update)
-         (alert "Correo electrónico borrado y sincronizado")))))
+         (message "Correo electrónico borrado y sincronizado")))))
 
   (use-package org-notmuch
     :ensure nil)
