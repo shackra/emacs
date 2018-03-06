@@ -30,6 +30,7 @@ New
 
 Changes
 ~~~~~~~
+- Quita mu4e-alert y camcorder. [Jorge Araya Navarro]
 - Actualiza lista de paquetes instalados explicitamente. [Jorge Araya
   Navarro]
 - Ajuste menor en comando para invocar interprete de Python. [Jorge

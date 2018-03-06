@@ -3182,11 +3182,6 @@ Cliente para MPD
   (use-package mingus
     :if (executable-find "mpd"))
 #+END_SRC
-*** camcorder
-Permite hacer screen-casts de pequeños frames de Emacs y convertir eso a un GIF
-#+BEGIN_SRC emacs-lisp
-  (use-package camcorder)
-#+END_SRC
 *** Shackle
 Como =display-buffer-alist= pero más sencillo
 #+BEGIN_SRC emacs-lisp
