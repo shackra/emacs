@@ -1802,7 +1802,7 @@ Teclas
              "* %^{breve descripción}\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
             ("f" "Fechas o eventos" entry (file+headline "cosas por hacer.org" "Fechas")
              "* POR-HACER %^{Nombre del evento} %^g\nSCHEDULED: %^T%?\n:PROPERTIES:%(if (yes-or-no-p \"¿Es esto un cumpleaños?\") (format \"\n:NACIMIENTO: %s\" (with-temp-buffer (org-time-stamp nil t) (buffer-string))) \"\")\n:CREATED: %U\n:END:" :kill-buffer t :clock-in t :clock-resume t)
-            ("d" "Escribir una nota en el diario" entry (file+datetree "diario.org")
+            ("d" "Escribir una nota en el diario" entry (file+olp+datetree "diario.org")
              "* %^{Querido diario...}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :empty-lines 1 :kill-buffer t :clock-in t :clock-resume t)
             ("r" "Receta de cocina" entry (file "recetas.org")
              "* %^{Nombre de la receta}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?\n%(call-interactively 'org-download-image)\n- Sacado de: %^a\n** Ingredientes\n** Procedimiento"
