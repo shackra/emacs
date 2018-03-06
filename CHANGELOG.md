@@ -28,6 +28,8 @@ New
 
 Changes
 ~~~~~~~
+- Actualiza lista de paquetes instalados explicitamente. [Jorge Araya
+  Navarro]
 - Ajuste menor en comando para invocar interprete de Python. [Jorge
   Araya Navarro]
 - Ajustes menores en configuración de tipografias. [Jorge Araya Navarro]
