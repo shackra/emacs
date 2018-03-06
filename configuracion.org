@@ -1323,113 +1323,87 @@ Corre procesos externos a Emacs de manera automática
       :kill-signal 'sigkill)
     (prodigy-start-service (car prodigy-services)))
 #+END_SRC
-*** =mu4e=
+*** Notmuch
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:52]
 - Refiled on [2015-11-12 jue 16:51]
 :END:
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
-  (use-package mu4e-alert
-    :if (executable-find "mu")
-    :after (mu4e)
-    :init
-    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-    (setf mu4e-compose-forward-as-attachment t)
-    (setf mu4e-compose-crypto-reply-encrypted-policy 'sign-and-encrypt)
-    (setf mu4e-compose-crypto-reply-plain-policy 'sign)
-    (setf mu4e-index-update-in-background nil) ;; goimapnotify hace esto por nosotros
-    (setq mu4e-alert-email-notification-types '(subjects))
-    :config
-    (mu4e-alert-set-default-style 'libnotify))
-
-  (with-eval-after-load 'org
-    (with-eval-after-load 'mu4e
-      (use-package org-mu4e
-        :ensure nil
-        :init
-        (setq org-mu4e-link-query-in-headers-mode nil))))
-
-  (use-package mu4e
-    :commands (mu4e correo mu4e-compose-new mu4e-compose-edit mu4e-compose-resend mu4e-compose-reply)
+  (use-package notmuch
     :ensure nil
-    :preface
-    ;;; message view action
-    (defun mu4e-msgv-action-view-in-browser (msg)
-      "Ver el cuerpo del mensaje HTML en el navegador web"
-      (interactive)
-      (let ((html (mu4e-msg-field (mu4e-message-at-point t) :body-html))
-            (tmpfile (format "%s/%d.html" temporary-file-directory (random))))
-        (unless html (error "No hay partes en HTML para este mensaje"))
-        (with-temp-file tmpfile
-          (insert
-           "<html>"
-           "<head><meta http-equiv=\"content-type\""
-           "content=\"text/html;charset=UTF-8\">"
-           html))
-        (browse-url (concat "file://" tmpfile))))
-
-    (defadvice mu4e (before mu4e-start activate)
-      "Antes de ejecutar `mu4e' borramos todas las ventanas"
-      (window-configuration-to-register :mu4e-fullscreen)
-      (delete-other-windows))
-
-    (defadvice mu4e-quit (after mu4e-close-and-push activate)
-      "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
-      (start-process "pushmail" nil "pushmail.sh")
-      (jump-to-register :mu4e-fullscreen))
+    :demand t
+    :after (async)
+    :bind (:map notmuch-show-mode-map
+                ("d" . shackra-notmuch-delete)
+                ("b" . shackra-notmuch-bounce)
+                ("S" . shackra-notmuch-spam)
+                :map notmuch-search-mode-map
+                ("d" . shackra-notmuch-delete)
+                ("S" . shackra-notmuch-spam)
+                :map notmuch-hello-mode-map
+                ("p" . shackra-notmuch-pushmail)
+                ("K" . shackra-notmuch-kill-deleted))
     :init
-    (setf mu4e-get-mail-command "getmail.sh")
-    ;; html2text es un paquete que debe estar instalado en tu sistema
-    (setf mu4e-html2text-command 'mu4e-shr2text)
-    ;; hace mu4e el programa por defecto para escribir correo
-    (setq mail-user-agent 'mu4e-user-agent)
-    (setf mu4e-confirm-quit nil)
-    (setf mu4e-context-policy 'pick-first)
-    (setf mu4e-change-filenames-when-moving t)
-    (setf mu4e-headers-date-format "%d/%m/%Y %H:%M")
-    (setf message-citation-line-format "\nEl %A %d de %B del %Y a las %H%M horas, %N escribió:\n")
-    (setf message-citation-line-function 'message-insert-formatted-citation-line)
-    (setf message-cite-reply-position 'below)
-    (setf mu4e-auto-retrieve-keys t)
-    (setf mu4e-headers-leave-behavior 'apply)
-    (setf mu4e-headers-visible-lines 8)
-    (setf mu4e-hide-index-messages t)
-    (setf message-kill-buffer-on-exit t)
-    ;; TODO: Modificar esto de manera dinámica para otros sistemas operativos
-    (setf mu4e-attachment-dir  "~/Descargas")
-    ;; TODO: modificar esto segun sistema operativo?
-    (setf mu4e-maildir "~/Mail")
-    (setf smtpmail-stream-type  'ssl)
-    (setf smtpmail-smtp-service 465)
+    (defalias 'correo 'notmuch)
+    (setf notmuch-show-logo nil)
+    (setf notmuch-mua-cite-function 'message-cite-original-without-signature)
     (setf message-send-mail-function 'smtpmail-send-it)
-    (setf mu4e-bookmarks
-          '(("flag:unread" "No leido" ?n)
-            ("flag:flagged" "Marcados como importantes" ?m)
-            ("maildir:/personal/Drafts OR maildir:/personal/Borradores" "Borradores" ?b)))
-    (setf user-mail-address "jorge@esavara.cr")
-    (setf smtpmail-smtp-server "mail.privateemail.com")
-    (setf smtpmail-smtp-user "jorge@esavara.cr")
-    (setf mu4e-sent-folder "/personal/Sent")
-    (setf mu4e-drafts-folder "/personal/Drafts")
-    (setf mu4e-trash-folder "/personal/Trash")
-    (setf mu4e-refile-folder "/personal/INBOX/Archive")
-    (setf user-full-name "Jorge Javier Araya Navarro")
-    (setf mu4e-compose-signature (concat
-                                  "👋 Pax et bonum.\n"
-                                  "Jorge Javier Araya Navarro\n"
-                                  "http://www.esavara.cr"))
-    (setf mu4e-maildir-shortcuts '(("/personal/INBOX" . ?p)
-                                   ("/personal/INBOX/Archive" . ?A)
-                                   ("/personal/Trash" .?t)))
+    (setf message-kill-buffer-on-exit t)
+    (defun shackra-notmuch-spam ()
+      "Marca mensajes como spam"
+      (interactive)
+      (if (eq major-mode 'notmuch-show-mode)
+          (notmuch-show-tag (list "+spam" "-inbox"))
+        (notmuch-search-tag (list "+spam" "-inbox")))
+      (next-line))
+    (defun shackra-notmuch-delete ()
+      "Marca los mensajes como borrados"
+      (interactive)
+      (when (eq major-mode 'notmuch-show-mode)
+        (if (member "deleted" (notmuch-show-get-tags))
+            (notmuch-show-tag (list "-deleted"))
+          (notmuch-show-tag (list "+deleted"))))
+      (when (eq major-mode 'notmuch-search-mode)
+        (if (member "deleted" (notmuch-search-get-tags))
+            (notmuch-search-tag (list "-deleted"))
+          (notmuch-search-tag (list "+deleted"))))
+      (next-line))
+    (defun shackra-notmuch-pushmail ()
+      "Empuja cambios en el buzón de e-mail a Internet"
+      (start-process "pushmail" nil "pushmail.sh"))
+    (defun shackra-notmuch-bounce (&optional address)
+      "Bounce the current message."
+      (interactive "sRebotar a: ")
+      (notmuch-show-view-raw-message)
+      (message-resend address))
+    (defun shackra-notmuch-kill-deleted ()
+      "Borra email marcado como +deleted"
+      (interactive)
+      (async-sandbox
+       (lambda ()
+         (shell-command "notmuch search --format=text0 --output=files tag:deleted | xargs -0 --no-run-if-empty rm")
+         (shell-command "notmuch new")
+         (shell-command "pushmail.sh")
+         (notmuch-hello-update)
+         (alert "Correo electrónico borrado y sincronizado")))))
+
+  (use-package org-notmuch
+    :ensure nil)
+
+  (use-package counsel-notmuch)
+
+  (use-package notmuch-labeler
     :config
-    (require 'mu4e-contrib)
-    (defalias 'correo 'mu4e)
-    (add-to-list 'mu4e-view-actions
-                 '("navegador web" . mu4e-msgv-action-view-in-browser) t)
-    (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
-    (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map))
+    (notmuch-labeler-hide "unread")
+    (notmuch-labeler-rename "replied" "✅")
+    (notmuch-labeler-rename "inbox" "📥")
+    (notmuch-labeler-rename "deleted" ":small-red-triangle-down:")
+    (notmuch-labeler-rename "spam" ":face_with_rolling_eyes:")
+    (notmuch-labeler-rename "encrypted" "🔒")
+    (notmuch-labeler-rename "signed" "🖊")
+    (notmuch-labeler-rename "attachment" "📎")
+    (notmuch-labeler-rename "flagged" "⭐"))
 #+END_SRC
 *** =twittering-mode=
 :LOGBOOK:
