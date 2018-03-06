@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: linkedin badge
+# key: linkedin
+# --
+[![LinkedIn](https://img.shields.io/badge/Visit%20my-LinkedIn-blue.svg)](https://www.linkedin.com/in/jorgejavieran)

@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Añade nuevas plantillas de YASnippet. [Jorge Araya Navarro]
 - Reemplaza mu4e con notmuch. [Jorge Araya Navarro]
 
   La versión 1.x de mu4e rompió mi flujo de trabajo
