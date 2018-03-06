@@ -46,10 +46,10 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
   (when (not (package-installed-p 'use-package))
     (package-install 'use-package))
 
-  (if (not (package-installed-p 'org))
-      (package-install 'org)
+  (if (not (package-installed-p 'org-plus-contrib))
+      (package-install 'org-plus-contrib)
     ;; El paquete esta instalado. Actualiza el paquete org-mode.
-    (shackra-update-one-package 'org))
+    (shackra-update-one-package 'org-plus-contrib))
 
   (when (not (package-installed-p 'diminish))
       (package-install 'diminish))
@@ -657,7 +657,7 @@ Teclas
       :after (counsel)))
   (use-package counsel
     :after (ivy)
-    :commands (counsel-org-tag)
+    :commands (counsel-org-tag dired)
     :bind (:map global-map
                 ("M-x" . counsel-M-x)
                 ("M-y" . counsel-yank-pop)
@@ -1332,8 +1332,8 @@ Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package notmuch
     :ensure nil
-    :demand t
     :after (async)
+    :commands (notmuch notmuch-hello-update)
     :bind (:map notmuch-show-mode-map
                 ("d" . shackra-notmuch-delete)
                 ("b" . shackra-notmuch-bounce)
@@ -1683,6 +1683,7 @@ Teclas
     (setq-default org-download-image-dir "~/org/imagenes/"))
 
   (use-package org
+    :ensure org-plus-contrib ;; Funciona solo si el ELPA de Org-mode esta registrado
     :bind (:map global-map
                 ("C-c a" . org-agenda)
                 ("<F12>" . org-agenda)
@@ -3231,7 +3232,7 @@ Muestra cuales combinaciones de teclas están libres para asignar. Asociado @@ht
 #+BEGIN_SRC emacs-lisp
   (use-package el-pocket
     :preface (require 'thingatpt)
-    :bind (:map mu4e-view-mode-map ("l" . el-pocket-add-url-at-point))
+    :bind (:map notmuch-show-mode-map ("l" . el-pocket-add-url-at-point))
     :init (defun el-pocket-add-url-at-point ()
             "Add URL at point to Pocket"
             (interactive)

@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Habilita org-mode para enlazar email en notmuch. [Jorge Araya Navarro]
 - Añade nuevas plantillas de YASnippet. [Jorge Araya Navarro]
 - Reemplaza mu4e con notmuch. [Jorge Araya Navarro]
 
