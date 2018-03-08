@@ -51,6 +51,7 @@ Changes
 
 Fix
 ~~~
+- Hace que el comando sea interactivo. [Jorge Araya Navarro]
 - Da prioridad a WGet en Twittering-mode. [Jorge Araya Navarro]
 - Usa funciones de fabrica en lugar de terceros. [Jorge Araya Navarro]
 

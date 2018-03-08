@@ -1371,6 +1371,7 @@ Un versátil cliente de correo electrónico para Emacs.
       (next-line))
     (defun shackra-notmuch-pushmail ()
       "Empuja cambios en el buzón de e-mail a Internet"
+      (interactive)
       (start-process "pushmail" nil "pushmail.sh"))
     (defun shackra-notmuch-bounce (&optional address)
       "Bounce the current message."
