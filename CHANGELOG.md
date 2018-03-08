@@ -51,6 +51,7 @@ Changes
 
 Fix
 ~~~
+- Da prioridad a WGet en Twittering-mode. [Jorge Araya Navarro]
 - Usa funciones de fabrica en lugar de terceros. [Jorge Araya Navarro]
 
   async no parece cargar módulos de terceros, haciendo fallar algunas funciones como `alert` o `notmuch-hello-update`

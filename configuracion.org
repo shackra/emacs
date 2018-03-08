@@ -1418,6 +1418,7 @@ Twitter desde Emacs
     (setf twittering-icon-mode t)
     (setf twittering-timer-interval 300)
     (setf twittering-url-show-status nil)
+    (setf twittering-connection-type-order '(wget native curl urllib-http urllib-https))
     :config
     (defun shackra-tt-fav-rett (&optional arg)
       "Marca como favorito y retweetea un tweet"
