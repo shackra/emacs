@@ -1330,6 +1330,12 @@ Corre procesos externos a Emacs de manera automática
 :END:
 Un versátil cliente de correo electrónico para Emacs.
 #+BEGIN_SRC emacs-lisp
+  (use-package smtpmail
+    :ensure nil
+    :init
+    (setf smtpmail-smtp-user "jorge@esavara.cr")
+    (setf smtpmail-auth-credentials "~/.authinfo"))
+
   (use-package notmuch
     :ensure nil
     :after (async)
@@ -1350,6 +1356,9 @@ Un versátil cliente de correo electrónico para Emacs.
     (setf notmuch-mua-cite-function 'message-cite-original-without-signature)
     (setf message-send-mail-function 'smtpmail-send-it)
     (setf message-kill-buffer-on-exit t)
+    (setf notmuch-search-oldest-first nil)
+    (setf notmuch-crypto-process-mime t)
+    (add-hook 'message-setup-hook 'mml-secure-sign-pgpmime)
     (defun shackra-notmuch-spam ()
       "Marca mensajes como spam"
       (interactive)

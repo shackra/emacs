@@ -66,6 +66,8 @@
  '(py-autopep8-options nil)
  '(python-shell-interpreter "python")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python")
+ '(smtpmail-smtp-server "mail.privateemail.com")
+ '(smtpmail-smtp-service 587)
  '(tramp-default-method "ssh")
  '(tramp-encoding-shell "/bin/bash")
  '(vc-annotate-background "#2B2B2B")
