@@ -1358,6 +1358,7 @@ Un versátil cliente de correo electrónico para Emacs.
     (setf message-kill-buffer-on-exit t)
     (setf notmuch-search-oldest-first nil)
     (setf notmuch-crypto-process-mime t)
+    (setf mm-text-html-renderer nil) ;; Usa el navegador web, `. v' para invocarlo
     (add-hook 'message-setup-hook 'mml-secure-sign-pgpmime)
     (defun shackra-notmuch-spam ()
       "Marca mensajes como spam"
