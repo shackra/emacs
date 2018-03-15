@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- El archivo de configuración es visitado a través de una función.
+  [Jorge Araya Navarro]
 - El correo es visualizado en el navegador web. [Jorge Araya Navarro]
 - Habilita org-mode para enlazar email en notmuch. [Jorge Araya Navarro]
 - Añade nuevas plantillas de YASnippet. [Jorge Araya Navarro]

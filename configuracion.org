@@ -18,6 +18,14 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
   ;; sombrero de aluminio, le bajamos una rayita
   (setq network-security-level 'high)
 
+  ;; https://jamiecollinson.com/blog/my-emacs-config/#make-it-easy-to-edit-this-file
+  (defun find-config ()
+    "Abre el archivo de configuración de Emacs"
+    (interactive)
+    (find-file "~/.emacs.d/configuracion.org"))
+
+  (global-set-key (kbd "C-c I") 'find-config)
+
   (defun shackra-update-one-package (package)
     "Actualiza un paquete PACKAGE"
     (when (package-installed-p package)
