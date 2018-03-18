@@ -33,6 +33,7 @@ New
 
 Changes
 ~~~~~~~
+- Mejoras en Traad. [Jorge Araya Navarro]
 - Actualiza plantilla de captura. [Jorge Araya Navarro]
 - Quita mu4e-alert y camcorder. [Jorge Araya Navarro]
 - Actualiza lista de paquetes instalados explicitamente. [Jorge Araya

@@ -2023,14 +2023,14 @@ Modo mayor para programar en Python
     :init
     (defun shackra-python-indent-shift-left ()
       (interactive)
-      (if (fboundp 'hydra-py/body)
+      (if (fboundp 'hydra-py/python-indent-shift-left)
           (hydra-py/python-indent-shift-left)
-        (call-interactively (python-indent-shift-left))))
+        (python-indent-shift-left)))
     (defun shackra-python-indent-shift-right ()
       (interactive)
-      (if (fboundp 'hydra-py/body)
+      (if (fboundp 'hydra-py/python-indent-shift-right)
           (hydra-py/python-indent-shift-right)
-        (call-interactively (python-indent-shift-right))))
+        (python-indent-shift-right)))
     (defun shackra-python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
       (shackra-electric-indent-mode-off)
@@ -2112,19 +2112,12 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
 Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'projectile
-    (use-package traad-projectile
-      :after (traad)
-      :preface
-      (provide 'traad-projectile)
-      :ensure nil
-      :no-require t
-      :init
-      (defun shackra-traad-open ()
-        "Inicia un servidor traad usando la ubicación del proyecto actual"
-        (interactive)
-        (if (projectile-project-p)
-            (traad-open (projectile-project-root))
-          (message "No estas en ningún proyecto!")))))
+    (defun shackra-traad-open ()
+      "Inicia un servidor traad usando la ubicación del proyecto actual"
+      (interactive)
+      (if (projectile-project-p)
+          (traad-open (projectile-project-root))
+        (message "No estas en ningún proyecto!"))))
 
   (use-package python-environment
     :after (python)
@@ -2133,60 +2126,57 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
 
   (use-package traad
     :after (python-environment)
-    :config
-    ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
-    ;; de manera automática
-    (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad"))))
-        (traad-install-server)))
-  (with-eval-after-load 'hydra
-    (use-package hydra-traad
-      :after (traad)
-      :preface (provide 'hydra-traad)
-      :ensure nil
-      :no-require t
-      :init
-      (defhydra hydra-traad-history (:columns 2 :color blue)
+    :init
+    (with-eval-after-load 'hydra
+      (defhydra hydra-traad-history (:columns 2)
         "Historial de cambios de rope"
-        ("u" traad-undo "deshacer")
-        ("r" traad-redo "re-hacer")
-        ("h" traad-display-history "mostrar historial de cambios")
-        ("b" hydra-traad/body "volver")
+        ("u" traad-undo "deshacer" :color red)
+        ("r" traad-redo "re-hacer" :color red)
+        ("h" traad-display-history "mostrar historial de cambios" :color blue)
+        ("b" hydra-traad/body "volver" :color blue)
         ("q" nil "salir"))
-      (defhydra hydra-traad-rename (:columns 2 :color blue)
+      (defhydra hydra-traad-rename (:columns 2)
         "Renombrar con rope"
-        ("f" traad-rename-current-file "archivo/modulo actual")
-        ("r" traad-rename "objeto en locación actual")
-        ("b" hydra-traad/body "volver")
+        ("f" traad-rename-current-file "archivo/modulo actual" :color blue)
+        ("r" traad-rename "objeto en locación actual" :color red)
+        ("b" hydra-traad/body "volver" :color blue)
         ("q" nil "salir"))
-      (defhydra hydra-traad-signature (:columns 2 :color blue)
+      (defhydra hydra-traad-signature (:columns 2)
         "Cambiar firma con rope"
-        ("n" traad-normalize-arguments "normalizar argumentos")
-        ("r" traad-remove-argument "remover argumentos")
-        ("b" hydra-traad/body "volver")
+        ("n" traad-normalize-arguments "normalizar argumentos" :color blue)
+        ("r" traad-remove-argument "remover argumentos" :color blue)
+        ("b" hydra-traad/body "volver" :color blue)
         ("q" nil "salir"))
-      (defhydra hydra-traad-extraction (:columns 2 :color blue)
+      (defhydra hydra-traad-extraction (:columns 2)
         "Extracción con rope"
-        ("m" traad-extract-method "método")
-        ("v" traad-extract-variable "variable")
-        ("b" hydra-traad/body "volver")
+        ("m" traad-extract-method "método" :color blue)
+        ("v" traad-extract-variable "variable" :color blue)
+        ("b" hydra-traad/body "volver" :color blue)
         ("q" nil "salir"))
-      (defhydra hydra-traad-imports (:columns 3 :color blue)
+      (defhydra hydra-traad-imports (:columns 3)
         "Importaciones con rope"
-        ("o" traad-organize-imports "organizar")
-        ("s" traad-expand-star-imports "expandir *")
-        ("f" traad-froms-to-imports "convertir 'from' a normales")
-        ("r" traad-relatives-to-absolutes "convertir relativos a absolutos")
-        ("l" traad-handle-long-imports "manejar importaciones largas")
-        ("S" traad-imports-super-smackdown "Smackdown!")
+        ("o" traad-organize-imports "organizar" :color red)
+        ("s" traad-expand-star-imports "expandir *" :color red)
+        ("f" traad-froms-to-imports "convertir 'from' a normales" :color red)
+        ("r" traad-relatives-to-absolutes "convertir relativos a absolutos" :color red)
+        ("l" traad-handle-long-imports "manejar importaciones largas" :color red)
+        ("S" traad-imports-super-smackdown "Smackdown!" :color blue)
         ("b" hydra-traad/body "volver")
         ("q" nil "salir"))
-      (defhydra hydra-traad (:columns 2 :columns 2)
+      (defhydra hydra-traad (:columns 2)
         "Refactorización en Python con rope"
         ("h" hydra-traad-history/body "Historial" :exit t)
         ("r" hydra-traad-rename/body "Renombrar" :exit t)
         ("s" hydra-traad-signature/body "Firma" :exit t)
         ("e" hydra-traad-extraction/body "Extracción" :exit t)
-        ("i" hydra-traad-imports/body "Importaciones" :exit t))))
+        ("i" hydra-traad-imports/body "Importaciones" :exit t)))
+    :config
+    (with-eval-after-load 'hydra
+      (bind-key "C-c t" 'hydra-traad/body python-mode-map))
+    ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
+    ;; de manera automática
+    (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad"))))
+        (traad-install-server)))
 #+END_SRC
 *** web-mode
 Un modo mayor para editar paginas web
