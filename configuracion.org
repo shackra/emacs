@@ -821,13 +821,6 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
     :load-path "site-packages/dired+/"
     :config
     (diredp-toggle-find-file-reuse-dir 1))
-  (use-package dired-details+
-    ;; Sólo activa este paquete en caso de que la versión de Emacs no sea mayor
-    ;; a 24.4.
-    :if (version< emacs-version "24.4")
-    :init
-    (setf dired-details-propagate-flag t
-          dired-details-initially-hide nil))
   ;; -*- lexical-binding: t -*-
   (use-package dired
     :ensure nil
@@ -1240,6 +1233,8 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     (setf bookmark-save-flag 1))
 
   (use-package bookmark+
+    :ensure nil
+    :load-path "site-packages/bookmark+/"
     :init
     (setf bmkp-auto-light-when-set 'all-in-buffer)
     (setf bmkp-last-as-first-bookmark-file bookmark-default-file)
@@ -1528,12 +1523,12 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
 *** Weechat
 Conexión a Weechat desde Emacs
 #+BEGIN_SRC emacs-lisp
+  (when (executable-find "weechat")
   (use-package weechat
-    :if (executable-find "weechat")
     :config
     (add-to-list 'weechat-modules 'weechat-spelling)
     (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
-                                       (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain)))))
+                                       (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain))))))
 #+END_SRC
 *** Slack
 #+BEGIN_SRC emacs-lisp
