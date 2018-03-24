@@ -16,3 +16,6 @@
 [submodule "site-packages/slack"]
 	path = site-packages/slack
 	url = https://github.com/Malabarba/emacs-slack.git
+[submodule "site-packages/counsel-term"]
+	path = site-packages/counsel-term
+	url = https://github.com/tautologyclub/counsel-term.git

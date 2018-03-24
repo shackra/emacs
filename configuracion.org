@@ -1078,6 +1078,13 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
 :END:
 Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<kbd><f1></kbd>@@
 #+BEGIN_SRC emacs-lisp
+  (use-package counsel-term
+    :after (counsel)
+    :ensure nil
+    :load-path "site-packages/counsel-term"
+    :bind (:map term-mode-map
+                ("C-." . counsel-term-cd)))
+
   (use-package multi-term
     :bind ([f1] . multi-term)
     :init
@@ -1088,12 +1095,12 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
     (defun shackra-term-line-or-char-mode ()
       "Cambia entre `term-line-mode' y `term-char-mode'"
       (interactive)
-      (when (string= (buffer-local-value 'major-mode (current-buffer)) "term-mode")
+      (when (derived-mode-p 'term-mode)
         (if (term-in-char-mode)
             (term-line-mode)
           (term-char-mode))))
     :config
-    (setf multi-term-buffer-name "sh-"
+    (setf multi-term-buffer-name "term-"
           multi-term-program "/usr/bin/zsh"
           multi-term-program-switches "--login")
     (add-to-list 'term-bind-key-alist '("C-c C-c"   . term-interrupt-subjob))
@@ -1101,7 +1108,7 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
     (add-to-list 'term-bind-key-alist '("C-n"       . next-line))
     (add-to-list 'term-bind-key-alist '("M-f"       . term-send-forward-word))
     (add-to-list 'term-bind-key-alist '("M-b"       . term-send-backward-word))
-    (add-to-list 'term-bind-key-alist '("C-c C-j"   . shackra-term-line-or-char-mode))
+    (add-to-list 'term-bind-key-alist '("C-,"       . shackra-term-line-or-char-mode))
     (add-to-list 'term-bind-key-alist '("C-DEL"     . term-send-backward-kill-word))
     (add-to-list 'term-bind-key-alist '("M-d"       . term-send-forward-kill-word))
     (add-to-list 'term-bind-key-alist '("<C-left>"  . term-send-backward-word))

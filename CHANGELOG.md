@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Habilita counsel-term. [Jorge Araya Navarro]
+
+  Facilita navegación de directorios en una shell dentro de Emacs
 - El archivo de configuración es visitado a través de una función.
   [Jorge Araya Navarro]
 - El correo es visualizado en el navegador web. [Jorge Araya Navarro]
