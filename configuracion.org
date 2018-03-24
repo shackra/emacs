@@ -740,11 +740,14 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
     :config
     (winner-mode 1))
   (use-package windresize)
+  (use-package ace-window)
+
   (with-eval-after-load 'windmove
     (with-eval-after-load 'winner
       (with-eval-after-load 'windresize
         (with-eval-after-load 'ace-window
           (use-package hydra
+            :after (ace-window)
             :preface
             (require 'hydra-examples)
             :init
@@ -1108,7 +1111,8 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
     (add-to-list 'term-bind-key-alist '("M-y"       . term-send-raw-meta))
     (add-to-list 'term-bind-key-alist '("C-y"       . term-paste))
 
-    (add-hook 'term-mode-hook #'shackra-maybe-disable-yasnippet))
+    (add-hook 'term-mode-hook #'shackra-maybe-disable-yasnippet)
+    (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 #+END_SRC
 *** =git=
 #+BEGIN_SRC emacs-lisp
@@ -2547,6 +2551,16 @@ Type `M-x gimp-help' for help.
                 ;; use code format
                 (add-hook 'before-save-hook 'meghanada-code-beautify-before-save))))
 #+END_SRC
+*** VueJS
+#+BEGIN_SRC emacs-lisp
+  (use-package vue-mode
+    :init
+    (setq mmm-submode-decoration-level 2))
+
+  (use-package lsp-vue
+    :init
+    (add-hook 'vue-mode-hook #'lsp-vue-mmm-enable))
+#+END_SRC
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
@@ -3337,5 +3351,7 @@ Utilidades para integrar Emacs y docker
 #+END_SRC
 *** Depuración
 #+BEGIN_SRC emacs-lisp
-  (use-package realgud)
+  (use-package realgud
+    :init
+    (setf realgud:ipdb-command-name "python -c \"from IPython import start_ipython; from sys import argv; start_ipython(['--simple-prompt', '-i', '-c', '%run -d {}'.format(' '.join(argv[1:]))])\""))
 #+END_SRC
