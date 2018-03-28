@@ -36,6 +36,7 @@ New
 
 Changes
 ~~~~~~~
+- Cambia el tema a Monokai y ajusta el cursor. [Jorge Araya Navarro]
 - Mejoras en Traad. [Jorge Araya Navarro]
 - Actualiza plantilla de captura. [Jorge Araya Navarro]
 - Quita mu4e-alert y camcorder. [Jorge Araya Navarro]

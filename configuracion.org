@@ -572,7 +572,12 @@ configuración sana de ciertas opciones en Emacs
     :config
     ;; Se cargan otras modificaciones para mejorar el comportamiento de Emacs
     (load-file (expand-file-name "sane.el" user-emacs-directory))
-    (ido-mode nil))
+    (ido-mode nil)
+    ;; Cursor de barra delgada
+    (setq-default cursor-type 'box)
+    (setf blink-cursor-blinks 0)
+    (blink-cursor-mode)
+    (setf blink-cursor-interval 0.1))
 #+END_SRC
 **** Tipografía
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
@@ -927,11 +932,25 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
 #+END_SRC
-*** zenburn
+*** Temas
+**** CANCELADO zenburn                                         :CANCELADO:
+- State "CANCELADO"  from              [2018-03-28 mié 02:06] \\
+  desactiva el tema
 #+BEGIN_SRC emacs-lisp
   (use-package zenburn-theme
+    :disabled
     :config
     (load-theme 'zenburn t))
+#+END_SRC
+**** Monokai
+#+BEGIN_SRC emacs-lisp
+  (use-package monokai-theme
+    :init
+    ;; FIX: Arregla tipografia erronea en org-mode en Windows
+    (when (and (eq system-type 'windows-nt) (> emacs-major-version 24))
+      (add-hook 'window-setup-hook '(lambda () (load-theme 'monokai t))))
+    :config
+    (load-theme 'monokai t))
 #+END_SRC
 *** numero de lineas
 Muestra el numero de lineas al margen del buffer, sea con native-linum (emacs 26+) o con nlinum.
@@ -1911,15 +1930,14 @@ Teclas
     :ensure nil
     :diminish org-indent-mode)
   (with-eval-after-load 'org
-    (with-eval-after-load 'projectile
-      (use-package org-projectile
-        :bind (("C-c p o p" . org-projectile-project-todo-completing-read))
-        :init
-        (setq org-confirm-elisp-link-function nil)
-        :config
-        (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-        (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
-                                             :capture-character "P")))))
+    (use-package org-projectile
+      :after (projectile)
+      :init
+      (setq org-confirm-elisp-link-function nil)
+      :config
+      (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+      (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
+                                           :capture-character "P"))))
 #+END_SRC
 *** =org-trello=
 Sincroniza archivos org-mode y tableros en Trello
