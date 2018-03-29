@@ -38,6 +38,9 @@ New
 
 Changes
 ~~~~~~~
+- Cambia la fuente de Slack a la de upstream. [Jorge Araya Navarro]
+
+  - https://disqus.com/home/discussion/endlessparentheses/keep_your_slack_distractions_under_control_with_emacs/#comment-3701525479
 - Mueve variables de smtpmail a la configuración. [Jorge Araya Navarro]
 - Evita compilar el archivo de configuración. [Jorge Araya Navarro]
 

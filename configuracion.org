@@ -1550,8 +1550,6 @@ Conexión a Weechat desde Emacs
     (setf dbus-compiled-version nil))
   (use-package color)
   (use-package slack
-    :load-path "site-packages/slack"
-    :ensure nil
     :after color
     :init
     (setq slack-buffer-emojify t)
