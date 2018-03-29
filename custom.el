@@ -62,36 +62,12 @@
     ((sequence "POR-HACER(p)" "EN-PROGRESO(g)" "EN-ESPERA(e@/!)" "EN-REVISIÓN(r@/!)" "|" "CANCELADO(c@)" "TERMINADO(t!)"))))
  '(package-selected-packages
    (quote
-    (monokai-theme lsp-vue vue-mode org-plus-contrib counsel-notmuch notmuch-labeler org-bullets org-beautify-theme zenburn-theme undo-tree keyfreq dired-details+ ranger windresize ace-window ivy-hydra tern virtualenvwrapper counsel counsel-projectile switch-buffer-functions realgud meghanada org-redmine slack org-download multiple-cursors gimp-mode yapfify importmagic dockerfile-mode docker-compose-mode docker isortify pippel noflet org2web json-mode xref-js2 ng2-mode kotlin-mode gradle-mode flycheck-kotlin kotlin ox-gfm el2org chronos pkgbuild-mode free-keys company-emoji emojify pdf-tools shackle mingus ws-butler elfeed golden-ratio aurel pretty-mode systemd alert vimish-fold telephone-line all-the-icons fixmee mustache-mode golden-ratio-scroll-screen move-text paredit aggressive-indent hungry-delete visual-fill-column pcre2el flycheck-package flyspell-correct-ivy scss-mode stylus-mode slime android-mode indium js2-refactor company-tern flycheck-gometalinter go-guru godoctor go-snippets go-eldoc company-go go-mode php-mode php-refactor-mode web-beautify web-mode ac-html-bootstrap company-web emmet-mode python-environment flycheck-rust company-racer racer cargo yaml-mode toml-mode traad pony-mode company-anaconda py-autopep8 pyvenv org-trello org-projectile rainbow-mode highlight-escape-sequences highlight-numbers weechat org-webpage sx iedit moz-controller bookmark+ imenu-anywhere kill-or-bury-alive hgignore-mode monky git-gutter-fringe magit-gh-pulls gitconfig-mode gitignore-mode multi-term ag company-auctex company-quickhelp company-statistics company nlinum feature-mode prodigy pydoc-info sphinx-doc tide expand-region font-lock-studio webpaste highlight-indent-guides el-pocket twittering-mode better-defaults use-package org)))
+    (yasnippet projectile monokai-theme lsp-vue vue-mode org-plus-contrib counsel-notmuch notmuch-labeler org-bullets org-beautify-theme zenburn-theme undo-tree keyfreq dired-details+ ranger windresize ace-window ivy-hydra tern virtualenvwrapper counsel counsel-projectile switch-buffer-functions realgud meghanada org-redmine slack org-download multiple-cursors gimp-mode yapfify importmagic dockerfile-mode docker-compose-mode docker isortify pippel noflet org2web json-mode xref-js2 ng2-mode kotlin-mode gradle-mode flycheck-kotlin kotlin ox-gfm el2org chronos pkgbuild-mode free-keys company-emoji emojify pdf-tools shackle mingus ws-butler elfeed golden-ratio aurel pretty-mode systemd alert vimish-fold telephone-line all-the-icons fixmee mustache-mode golden-ratio-scroll-screen move-text paredit aggressive-indent hungry-delete visual-fill-column pcre2el flycheck-package flyspell-correct-ivy scss-mode stylus-mode slime android-mode indium js2-refactor company-tern flycheck-gometalinter go-guru godoctor go-snippets go-eldoc company-go go-mode php-mode php-refactor-mode web-beautify web-mode ac-html-bootstrap company-web emmet-mode python-environment flycheck-rust company-racer racer cargo yaml-mode toml-mode traad pony-mode company-anaconda py-autopep8 pyvenv org-trello org-projectile rainbow-mode highlight-escape-sequences highlight-numbers weechat org-webpage sx iedit moz-controller bookmark+ imenu-anywhere kill-or-bury-alive hgignore-mode monky git-gutter-fringe magit-gh-pulls gitconfig-mode gitignore-mode multi-term ag company-auctex company-quickhelp company-statistics company nlinum feature-mode prodigy pydoc-info sphinx-doc tide expand-region font-lock-studio webpaste highlight-indent-guides el-pocket twittering-mode better-defaults use-package org)))
  '(py-autopep8-options nil)
  '(python-shell-interpreter "python")
  '(pyvenv-virtualenvwrapper-python "/usr/bin/python")
- '(smtpmail-smtp-server "mail.privateemail.com")
- '(smtpmail-smtp-service 587)
  '(tramp-default-method "ssh")
  '(tramp-encoding-shell "/bin/bash")
- '(vc-annotate-background "#2B2B2B")
- '(vc-annotate-color-map
-   (quote
-    ((20 . "#BC8383")
-     (40 . "#CC9393")
-     (60 . "#DFAF8F")
-     (80 . "#D0BF8F")
-     (100 . "#E0CF9F")
-     (120 . "#F0DFAF")
-     (140 . "#5F7F5F")
-     (160 . "#7F9F7F")
-     (180 . "#8FB28F")
-     (200 . "#9FC59F")
-     (220 . "#AFD8AF")
-     (240 . "#BFEBBF")
-     (260 . "#93E0E3")
-     (280 . "#6CA0A3")
-     (300 . "#7CB8BB")
-     (320 . "#8CD0D3")
-     (340 . "#94BFF3")
-     (360 . "#DC8CC3"))))
- '(vc-annotate-very-old-color "#DC8CC3")
  '(vr/default-replace-preview t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
