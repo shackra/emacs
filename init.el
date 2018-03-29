@@ -74,7 +74,9 @@
       ;; (insert (apply 'concat (reverse body-list)))
       (apply 'insert (reverse body-list)))
     (message "Wrote %s ..." elfile)
-    (byte-compile-file elfile)))
+    ;;(byte-compile-file elfile) ;; desactiva la compilación del archivo .el de
+    ;;la configuración
+    ))
 
 (let ((orgfile (concat user-emacs-directory "configuracion.org"))
       (elfile (concat user-emacs-directory "configuracion.el"))

@@ -36,6 +36,9 @@ New
 
 Changes
 ~~~~~~~
+- Evita compilar el archivo de configuración. [Jorge Araya Navarro]
+
+  Asegura que todos los paquetes sean descargados de Elpa.
 - Cambia el tema a Monokai y desactiva weechat. [Jorge Araya Navarro]
 
   - https://github.com/oneKelvinSmith/monokai-emacs/issues/94
