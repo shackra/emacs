@@ -71,6 +71,8 @@ Changes
 
 Fix
 ~~~
+- Muestra lista de todos los estados de un buffer en el mode-line.
+  [Jorge Araya Navarro]
 - Carga ace-window adecuadamente. [Jorge Araya Navarro]
 - Carga boormark-plus. [Jorge Araya Navarro]
 - Hace que el comando sea interactivo. [Jorge Araya Navarro]
