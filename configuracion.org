@@ -932,26 +932,6 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     (defalias 'redo 'undo-tree-redo)
     (global-undo-tree-mode 1))
 #+END_SRC
-*** Temas
-**** CANCELADO zenburn                                         :CANCELADO:
-- State "CANCELADO"  from              [2018-03-28 mié 02:06] \\
-  desactiva el tema
-#+BEGIN_SRC emacs-lisp
-  (use-package zenburn-theme
-    :disabled
-    :config
-    (load-theme 'zenburn t))
-#+END_SRC
-**** Monokai
-#+BEGIN_SRC emacs-lisp
-  (use-package monokai-theme
-    :init
-    ;; FIX: Arregla tipografia erronea en org-mode en Windows
-    (when (and (eq system-type 'windows-nt) (> emacs-major-version 24))
-      (add-hook 'window-setup-hook '(lambda () (load-theme 'monokai t))))
-    :config
-    (load-theme 'monokai t))
-#+END_SRC
 *** numero de lineas
 Muestra el numero de lineas al margen del buffer, sea con native-linum (emacs 26+) o con nlinum.
 #+BEGIN_SRC emacs-lisp
@@ -1550,7 +1530,9 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
                                       (turn-off-auto-fill)
                                       (visual-line-mode 1))))
 #+END_SRC
-*** Weechat
+*** CANCELADO Weechat                                           :CANCELADO:
+- State "CANCELADO"  from              [2018-03-28 mié 17:36] \\
+  desactivado hasta arreglo del bug https://github.com/oneKelvinSmith/monokai-emacs/issues/94 en Monokai theme
 Conexión a Weechat desde Emacs
 #+BEGIN_SRC emacs-lisp
   (when (executable-find "weechat")
@@ -3379,4 +3361,27 @@ Utilidades para integrar Emacs y docker
   (use-package realgud
     :init
     (setf realgud:ipdb-command-name "python -c \"from IPython import start_ipython; from sys import argv; start_ipython(['--simple-prompt', '-i', '-c', '%run -d {}'.format(' '.join(argv[1:]))])\""))
+#+END_SRC
+*** Temas
+**** CANCELADO zenburn                                         :CANCELADO:
+- State "CANCELADO"  from              [2018-03-28 mié 02:06] \\
+  desactiva el tema
+#+BEGIN_SRC emacs-lisp
+  (use-package zenburn-theme
+    :disabled
+    :config
+    (load-theme 'zenburn t))
+#+END_SRC
+**** Monokai                                                   :CANCELADO:
+- State "CANCELADO"  from "CANCELADO"  [2018-03-28 mié 17:25]
+- State "CANCELADO"  from              [2018-03-28 mié 16:55] \\
+  desactiva el tema
+#+BEGIN_SRC emacs-lisp
+  (use-package monokai-theme
+    :init
+    ;; FIX: Arregla tipografia erronea en org-mode en Windows
+    (when (and (eq system-type 'windows-nt) (> emacs-major-version 24))
+      (add-hook 'window-setup-hook '(lambda () (load-theme 'monokai t))))
+    :config
+    (load-theme 'monokai t))
 #+END_SRC
