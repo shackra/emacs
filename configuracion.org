@@ -1379,8 +1379,8 @@ Un versátil cliente de correo electrónico para Emacs.
       "Marca mensajes como spam"
       (interactive)
       (if (eq major-mode 'notmuch-show-mode)
-          (notmuch-show-tag (list "+spam" "-inbox"))
-        (notmuch-search-tag (list "+spam" "-inbox")))
+          (notmuch-show-tag (list "+spam" "-inbox" "-unread"))
+        (notmuch-search-tag (list "+spam" "-inbox" "-unread")))
       (next-line))
     (defun shackra-notmuch-delete ()
       "Marca los mensajes como borrados"
@@ -1388,11 +1388,11 @@ Un versátil cliente de correo electrónico para Emacs.
       (when (eq major-mode 'notmuch-show-mode)
         (if (member "deleted" (notmuch-show-get-tags))
             (notmuch-show-tag (list "-deleted"))
-          (notmuch-show-tag (list "+deleted"))))
+          (notmuch-show-tag (list "+deleted" "-unread"))))
       (when (eq major-mode 'notmuch-search-mode)
         (if (member "deleted" (notmuch-search-get-tags))
             (notmuch-search-tag (list "-deleted"))
-          (notmuch-search-tag (list "+deleted"))))
+          (notmuch-search-tag (list "+deleted" "-unread"))))
       (next-line))
     (defun shackra-notmuch-pushmail ()
       "Empuja cambios en el buzón de e-mail a Internet"

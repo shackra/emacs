@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- Marca correos como leidos si son borrados o marcados como spam. [Jorge
+  Araya Navarro]
 - Habilita counsel-term. [Jorge Araya Navarro]
 
   Facilita navegación de directorios en una shell dentro de Emacs
