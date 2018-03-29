@@ -2895,13 +2895,6 @@ Subraya la linea anterior y la siguiente luego de hacer saltar de linea el curso
     (global-set-key [remap scroll-down-command] 'golden-ratio-scroll-screen-down)
     (global-set-key [remap scroll-up-command] 'golden-ratio-scroll-screen-up))
 #+END_SRC
-*** =htmlize=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:47]
-:END:
-#+BEGIN_SRC emacs-lisp
-  (use-package htmlize)
-#+END_SRC
 *** mustache
 #+BEGIN_SRC emacs-lisp
   (use-package mustache-mode)
