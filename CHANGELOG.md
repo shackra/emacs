@@ -71,6 +71,9 @@ Changes
 
 Fix
 ~~~
+- Integra dependencia Bookmark+ [Jorge Araya Navarro]
+
+  - https://github.com/melpa/melpa/issues/2342
 - Muestra lista de todos los estados de un buffer en el mode-line.
   [Jorge Araya Navarro]
 - Carga ace-window adecuadamente. [Jorge Araya Navarro]
