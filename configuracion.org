@@ -73,9 +73,7 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
     (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
 
   ;; En caso de que /usr/local/bin no este agregado
-  (when (and (not (member "/usr/local/bin" exec-path)) (or (not (eq system-type 'windows-nt))
-                                                      (not (eq system-type 'cygwin))
-                                                      (not (eq system-type 'ms-dos))))
+  (when (or (eq system-type 'gnu/linux) (eq system-type 'darwin))
     (setf exec-path (append exec-path '("/usr/local/bin")))
     (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
 
