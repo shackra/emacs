@@ -593,8 +593,9 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
   (when (eq system-type 'darwin)
     (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoji") nil 'prepend))
   ;; Para todos los demas sistemas operativos
-  (when (and (font-exists-p "Symbola") (not (eq system-type 'darwin)))
-    (set-fontset-font t 'unicode (font-spec :size 20 :name "Symbola") nil 'prepend))
+  (if (not (eq system-type 'darwin))
+      (set-fontset-font t 'unicode (font-spec :size 20 :name "Symbola") nil 'prepend)
+    (message "Symbola no setteada"))
 #+END_SRC
 *** secreto
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs

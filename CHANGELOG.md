@@ -38,6 +38,11 @@ New
 
 Changes
 ~~~~~~~
+- Usa prettify-symbols-mode. [Jorge Araya Navarro]
+- Simplifica la configuración de tipografias. [Jorge Araya Navarro]
+- Agrega opciones para utf-8 como sistema de codificado. [Jorge Araya
+  Navarro]
+- Ajustes en Org y Python para Windows. [Jorge Araya Navarro]
 - Cambia la fuente de Slack a la de upstream. [Jorge Araya Navarro]
 
   - https://disqus.com/home/discussion/endlessparentheses/keep_your_slack_distractions_under_control_with_emacs/#comment-3701525479
@@ -71,6 +76,11 @@ Changes
 
 Fix
 ~~~
+- Establece tipografía Symbola correctamente en GNU/Linux. [Jorge Araya
+  Navarro]
+- No cambia el PATH en Windows. [Jorge Araya Navarro]
+
+  Un ajuste para MacOS estaba desconfigurando el valor de la variable PATH.
 - Integra dependencia Bookmark+ [Jorge Araya Navarro]
 
   - https://github.com/melpa/melpa/issues/2342
