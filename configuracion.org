@@ -1666,7 +1666,8 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
       (electric-pair-mode)
       (rainbow-turn-on)
       (when (or (executable-find "ispell") (executable-find "hunspell"))
-        (flyspell-prog-mode)))
+        (flyspell-prog-mode))
+      (prettify-symbols-mode))
     (bind-key* "C-M-," 'comment-dwim)
     (add-hook 'prog-mode-hook #'shackra-prog-mode))
 #+END_SRC
@@ -3113,12 +3114,6 @@ Modo mayor para editar archivos de servicio systemd.
   (use-package systemd
     :config
     (add-hook 'systemd-mode-hook #'yas-minor-mode-on))
-#+END_SRC
-*** =pretty-mode=
-#+BEGIN_SRC emacs-lisp
-  (use-package pretty-mode
-    :config
-    (add-hook 'prog-mode-hook 'turn-on-pretty-mode))
 #+END_SRC
 *** interfaz para AUR
 #+BEGIN_SRC emacs-lisp
