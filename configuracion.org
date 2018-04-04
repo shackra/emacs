@@ -1718,6 +1718,9 @@ Teclas
                 :map org-mode-map
                 ("C-<F12>" . shackra-time-at-point-to-hours))
     :init
+    (setf org-directory (expand-file-name "org" (getenv "HOME")))
+    (setf org-default-notes-file (expand-file-name  "diario.org" org-directory))
+    (setf org-agenda-files `(,(expand-file-name "cosas por hacer.org" org-directory)))
     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
@@ -1789,7 +1792,6 @@ Teclas
     ;; Allow refile to create parent tasks with confirmation
     (setq org-refile-allow-creating-parent-nodes 'confirm)
 
-    (setf org-directory "~/org/")
     ;; evita dividir una linea con M-RET
     (setf org-M-RET-may-split-line '((default . nil)))
     (setf org-default-notes-file (expand-file-name "notas.org" org-directory)
