@@ -2410,33 +2410,40 @@ Instalar estos componentes en el sistema operativo
 #+END_SRC
 **** Paquetes para editar JavaScript
 #+BEGIN_SRC emacs-lisp
-  (use-package tern
-    :if (executable-find "tern")
-    :bind (:map tern-mode-keymap
-                ("M-." . nil)
-                ("M-," . nil)))
-  (with-eval-after-load 'tern
-    (use-package company-tern
-      :after (company)
-      :if (executable-find "tern")
-      :init
-      (setf company-tern-property-marker " <p>")
-      (setf company-tern-meta-as-single-line t)
-      :config
-      (dolist (hook '(js2-mode-hook
-                      inferior-js-mode-hook))
-        (add-hook hook (lambda ()
-                         (add-to-list (make-local-variable 'company-backends) '(company-tern :with company-yasnippet)))))))
-  (use-package js2-refactor
-    :disabled
-    :after (js2-mode)
-    :bind (:js2-mode-map
-           ("C-k" . js2r-kill)
-           :js-mode-map
-           ("M-.". nil))
+  (setq-default js-indent-level 2)
+
+  (use-package ng2-mode)
+
+  ;; TODO: Eliminar cuando el soporte para lsp-mode sea activado
+  (use-package tide
     :init
-    (add-hook 'js2-mode-hook #'js2-refactor-mode)
+    (defun setup-tide-mode ()
+      (interactive)
+      (tide-setup)
+      (tide-hl-identifier-mode +1))
+    (setf tide-format-options
+          '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+    (setf tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
+    (add-hook 'before-save-hook 'tide-format-before-save)
+    ;; Añade company-tide como fuente de auto-completado para varios modos
+    ;; mayores que lidian con JavaScript/Typescript
+    (dolist (hook '(js2-mode-hook
+                    rjsx-mode-hook
+                    inferior-js-mode-hook
+                    typescript-mode-hook
+                    ng2-ts-mode-hook))
+      (add-hook hook #'setup-tide-mode)
+      (add-hook hook (lambda ()
+                       (add-to-list (make-local-variable 'company-backends)
+                                    '(company-tide :with company-yasnippet)))))
     :config
+    (with-eval-after-load flycheck-mode
+      (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)))
+
+  (use-package js2-refactor
+    :after (js2-mode)
+    :config
+    (add-hook 'js2-mode-hook #'js2-refactor-mode)
     (js2r-add-keybindings-with-prefix "C-c C-r"))
 
   (use-package xref-js2
@@ -2448,9 +2455,44 @@ Instalar estos componentes en el sistema operativo
     :mode "\\.js\\'"
     :init
     (add-hook 'js2-mode-hook #'js2-imenu-extras-mode))
+
+  ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
+  ;; y provee varias características para el desarrollo en JavaScript
   (use-package indium ;; https://indium.readthedocs.io/en/latest/setup.html
     :config
     (add-hook 'js-mode-hook #'indium-interaction-mode))
+
+  ;; Modo mayor para trabajar con Reactive.JS
+  (use-package rjsx-mode
+    :init
+    (add-to-list 'auto-mode-alist '("components?\\/.*\\.js\\'" . rjsx-mode))
+    (add-to-list 'auto-mode-alist '("containers?\\/.*\\.js\\'" . rjsx-mode))
+    :config
+    ;; tomado de https://emacs.stackexchange.com/a/33544/690 mejora el sangrado
+    ;; de lineas
+    (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
+      "Workaround sgml-mode and follow airbnb component style."
+      (save-excursion
+        (beginning-of-line)
+        (if (looking-at-p "^ +\/?> *$")
+            (delete-char sgml-basic-offset)))))
+
+  (with-eval-after-load flycheck-mode
+    ;; tomado de https://jamiecollinson.com/blog/my-emacs-config/ hace que
+    ;; flycheck utilice eslint instalado en el proyecto en lugar del habilitado
+    ;; globalmente en el sistema
+    (defun jc/use-eslint-from-node-modules ()
+      "Set local eslint if available."
+      (let* ((root (locate-dominating-file
+                    (or (buffer-file-name) default-directory)
+                    "node_modules"))
+             (eslint (and root
+                          (expand-file-name "node_modules/eslint/bin/eslint.js"
+                                            root))))
+        (when (and eslint (file-executable-p eslint))
+          (setq-local flycheck-javascript-eslint-executable eslint))))
+
+    (add-hook 'flycheck-mode-hook #'jc/use-eslint-from-node-module))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
@@ -2485,26 +2527,6 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package scss-mode
     :init (setf scss-compile-at-save nil))
-#+END_SRC
-*** AngularJS
-#+BEGIN_SRC emacs-lisp
-  (use-package ng2-mode
-    :after (tide))
-
-  (use-package tide
-    :init
-    (defun setup-tide-mode ()
-      (interactive)
-      (tide-setup)
-      (tide-hl-identifier-mode +1))
-    (setf tide-format-options '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
-    (setf tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
-    (add-hook 'before-save-hook 'tide-format-before-save)
-    (add-hook 'typescript-mode-hook #'setup-tide-mode)
-    (add-hook 'js2-mode-hook #'setup-tide-mode)
-    (add-hook 'web-mode-hook (lambda ()
-                               (when (string-equal "jsx" (or (file-name-extension buffer-file-name) ""))
-                                 (setup-tide-mode)))))
 #+END_SRC
 *** Gherkin
 #+BEGIN_SRC emacs-lisp

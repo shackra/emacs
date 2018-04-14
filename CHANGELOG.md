@@ -38,6 +38,9 @@ New
 
 Changes
 ~~~~~~~
+- Elimina Tern en favor de Tide. [Jorge Araya Navarro]
+
+  tsserver tiene actualizaciones mas frecuentes que Tern
 - Usa prettify-symbols-mode. [Jorge Araya Navarro]
 - Simplifica la configuración de tipografias. [Jorge Araya Navarro]
 - Agrega opciones para utf-8 como sistema de codificado. [Jorge Araya
