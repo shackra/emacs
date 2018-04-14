@@ -38,6 +38,15 @@ New
 
 Changes
 ~~~~~~~
+- Ajustes para mode-line y Telephone-line. [Jorge Araya Navarro]
+
+  Se ha sacado las cadenas de texto con tipografía de all-the-icons de las areas marcadas con `accent`
+  de Telephone-line debido a un bug posiblemente relacionado con las caras `telephone-line-accent-*`
+
+  También se refactorizo código relacionado al establecimiento de la cara para cadenas de texto que
+  usan la tipografía de Font Awesome con la nueva función `shackra-faicon-icon`.
+
+  - https://github.com/dbordak/telephone-line/issues/67
 - Ajustes varios para Telephone-line. [Jorge Araya Navarro]
 
   - https://github.com/dbordak/telephone-line/issues/66
