@@ -38,6 +38,9 @@ New
 
 Changes
 ~~~~~~~
+- Ajustes varios para Telephone-line. [Jorge Araya Navarro]
+
+  - https://github.com/dbordak/telephone-line/issues/66
 - Elimina Tern en favor de Tide. [Jorge Araya Navarro]
 
   tsserver tiene actualizaciones mas frecuentes que Tern
