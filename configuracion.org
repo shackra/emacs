@@ -1976,6 +1976,7 @@ Modo mayor para programar en Python
     :init (add-hook 'python-mode-hook 'yapf-mode))
 
   (use-package importmagic
+    :disabled
     :diminish 'importmagic-mode
     :init
     (defun shackra-before-save-py-importmagic-fix ()

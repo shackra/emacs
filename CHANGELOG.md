@@ -76,6 +76,7 @@ Changes
 
 Fix
 ~~~
+- Desactiva importmagic en Python. [Jorge Araya Navarro]
 - Establece tipografía Symbola correctamente en GNU/Linux. [Jorge Araya
   Navarro]
 - No cambia el PATH en Windows. [Jorge Araya Navarro]
