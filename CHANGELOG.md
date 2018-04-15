@@ -7,6 +7,13 @@ Changelog
 
 New
 ~~~
+- Actualiza el estado vc de los archivos abiertos del proyecto. [Jorge
+  Araya Navarro]
+
+  Permite que vc-state se comporte conforme a la realidad de los archivos registrados y pujados al
+  repositorio remoto.
+
+  - https://emacs.stackexchange.com/q/35758/690
 - Muestra errores y advertencias de Flycheck. [Jorge Araya Navarro]
 - Icono de guardado es pintado en verde y el de editado en rojo. [Jorge
   Araya Navarro]
