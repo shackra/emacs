@@ -7,6 +7,10 @@ Changelog
 
 New
 ~~~
+- Icono de guardado es pintado en verde y el de editado en rojo. [Jorge
+  Araya Navarro]
+
+  Permite diferenciar el estado del buffer más pronto a través de los colores de ambos iconos.
 - Marca correos como leidos si son borrados o marcados como spam. [Jorge
   Araya Navarro]
 - Habilita counsel-term. [Jorge Araya Navarro]
