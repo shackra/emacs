@@ -96,6 +96,7 @@ Changes
 
 Fix
 ~~~
+- Abandona función obsoleta. [Jorge Araya Navarro]
 - Desactiva importmagic en Python. [Jorge Araya Navarro]
 - Establece tipografía Symbola correctamente en GNU/Linux. [Jorge Araya
   Navarro]

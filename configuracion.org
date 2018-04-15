@@ -442,7 +442,7 @@ Sacado de [[https://orgmode.org/worg/org-hacks.html#org34c56ba][Org ad hoc code,
                 (goto-char (point-min))
                 (command-execute 'outline-next-visible-heading)
                 ;; disable (message) that org-set-tags generates
-                (flet ((message (&rest ignored) nil))
+                (cl-flet ((message (&rest ignored) nil))
                   (org-set-tags 1 t))
                 (set-buffer-modified-p b-m-p))
             (error nil)))))
