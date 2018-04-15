@@ -2918,9 +2918,15 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
         (let ((warns (let-alist (flycheck-count-errors flycheck-current-errors)
                        (or .warning 0)))
               (errors (let-alist (flycheck-count-errors flycheck-current-errors)
-                        (or .error 0))))
-          (concat (shackra-faicon-icon "area-chart") (propertize (format "Errores: %s" errors) 'face `(:foreground "orange")) (propertize (format "Advertencias: %s" warns) 'face `(:foreground "gold"))))
-      (concat (shackra-faicon-icon "check" "medium sea green") (propertize " Sin problemas" 'face `(:foreground "medium sea green")))))
+                        (or .error 0)))
+              (messages nil))
+          (when (> warns 0)
+            (push (propertize (format "Advertencias: %s" warns) 'face compilation-warning-face) messages))
+          (when (> errors 0)
+            (push (propertize (format "Errores: %s" errors) 'face compilation-error-face) messages))
+          (when (or (> warns 0) (> errors 0))
+            (string-join messages " ")))
+      (propertize "Sin problemas" 'face 'success)))
 
   (defun shackra-vc-state ()
     "Revisa el estado VC del buffer"

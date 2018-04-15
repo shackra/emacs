@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Muestra errores y advertencias de Flycheck. [Jorge Araya Navarro]
 - Icono de guardado es pintado en verde y el de editado en rojo. [Jorge
   Araya Navarro]
 
