@@ -1,11 +1,11 @@
-# La configuración de GNU Emacs de Jorge Javier Araya Navarro (Shackra Sislock)
+# Mi configuración de GNU Emacs
 
 Mi configuración de GNU Emacs, casi siempre le estoy haciendo ajustes.
 
 ## Puede que estés viendo un repositorio espejo
 
 Mi configuración se hospeda en [GitLab](https://gitlab.com/shackra/emacs/), la configuración que ves
-en [Github.com](https://github.com/shackra/.emacs.d/) es una copia espejo con los cambios más
+en [Github.com](https://github.com/shackra/emacs/) es una copia espejo con los cambios más
 recientes.
 
 ## Notas adicionales
