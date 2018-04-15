@@ -71,4 +71,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
- '(mode-line-highlight ((t (:box nil)))))
+ '(mode-line ((t (:box nil))))
+ '(mode-line-highlight ((t (:box nil))))
+ '(mode-line-inactive ((t (:box nil)))))

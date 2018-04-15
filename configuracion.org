@@ -3013,10 +3013,6 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
           telephone-line-primary-right-separator 'telephone-line-cubed-right
           telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
     (setf telephone-line-height 40)
-    (custom-set-faces
-     '(mode-line ((t (:box nil))))
-     '(mode-line-inactive ((t (:box nil))))
-     '(mode-line-highlight ((t (:box nil)))))
     :config
     ;; Informa a telephone-line sobre la existencia de la nueva cara, llamada `orange'
     (add-to-list 'telephone-line-faces '(accent-orange . (shackra-orange . telephone-line-accent-inactive)))

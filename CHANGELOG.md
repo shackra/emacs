@@ -38,6 +38,7 @@ New
 
 Changes
 ~~~~~~~
+- Mueve fragmento de elisp a custom.el. [Jorge Araya Navarro]
 - Ajustes para mode-line y Telephone-line. [Jorge Araya Navarro]
 
   Se ha sacado las cadenas de texto con tipografía de all-the-icons de las areas marcadas con `accent`
