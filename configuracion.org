@@ -2937,7 +2937,6 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
   (defun shackra-buffer-vc-modified ()
     "Retorna iconos de acuerdo al estado VCS del buffer actual"
     (let ((vc-modified ""))
-      (when (not (buffer-modified-p)))
       (if (buffer-modified-p)
           (setf vc-modified (concat vc-modified (shackra-faicon-icon "exclamation-circle" "tomato" "Buffer modificado.")))
         (setf vc-modified (concat vc-modified (shackra-faicon-icon "check-circle" "medium sea green" "Guardado."))))
