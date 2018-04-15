@@ -2966,13 +2966,13 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
     "Estado de Flycheck"
     (let* ((text (pcase flycheck-last-status-change
                    (`finished (shackra-flycheck-errors))
-                   (`running     (concat (shackra-faicon-icon "history" "deep sky blue") (propertize " En ejecución" 'face `(:foreground "deep sky blue"))))
-                   (`no-checker  (concat (shackra-faicon-icon "exclamation"  "dim grey") (propertize " No existe revisor" 'face `(:foreground "dim grey"))))
-                   (`not-checked (concat (shackra-faicon-icon "question" "dim grey") (propertize " Sin revisar" 'face `(:foreground "dim grey"))))
-                   (`errored     (concat (shackra-faicon-icon "exclamation" "tomato") (propertize " Error con Flycheck" 'face `(:foreground "tomato"))))
-                   (`interrupted (concat (shackra-faicon-icon "minus-circle" "tomato") (propertize " Interrumpido" 'face `(:foreground "tomato"))))
+                   (`running     (propertize "En ejecución" 'face `(:foreground "deep sky blue")))
+                   (`no-checker  (propertize "No existe revisor" 'face `(:foreground "dim grey")))
+                   (`not-checked (propertize "Sin revisar" 'face `(:foreground "dim grey")))
+                   (`errored     (propertize "Error con Flycheck" 'face `(:foreground "tomato")))
+                   (`interrupted (propertize "Interrumpido" 'face `(:foreground "tomato")))
                    (`suspicious  (shackra-faicon-icon "question" "tomato")))))
-      (propertize text
+      (propertize (concat (propertize "!Flyc:" 'face compilation-error-face) " " text)
                   'help-echo "Muestra errores detectados por Flycheck"
                   'local-map (make-mode-line-mouse-map
                               'mouse-1 (lambda () (interactive) (flycheck-list-errors))))))

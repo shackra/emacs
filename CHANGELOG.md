@@ -43,6 +43,10 @@ New
 
 Changes
 ~~~~~~~
+- Elimina todos los iconos de los estado para Flycheck. [Jorge Araya
+  Navarro]
+
+  Elimina distracciones esteticas en el mode-line
 - Mueve fragmento de elisp a custom.el. [Jorge Araya Navarro]
 - Ajustes para mode-line y Telephone-line. [Jorge Araya Navarro]
 
