@@ -108,6 +108,7 @@ Changes
 
 Fix
 ~~~
+- Arregla revisión errónea de variable. [Jorge Araya Navarro]
 - Elimina sentencia condicional innecesaria. [Jorge Araya Navarro]
 - Abandona función obsoleta. [Jorge Araya Navarro]
 - Desactiva importmagic en Python. [Jorge Araya Navarro]

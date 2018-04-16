@@ -2979,7 +2979,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
                               'mouse-1 (lambda () (interactive) (flycheck-list-errors))))))
 
   (defun shackra-virtualenv-name ()
-    (when (boundp venv-current-dir)
+    (when (boundp 'venv-current-name)
       (if venv-current-name
           (format "venv: %s" venv-current-name)
         "venv: -")))
