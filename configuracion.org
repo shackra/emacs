@@ -1089,6 +1089,16 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
     :bind (:map magit-mode-map
                 ("C" . shackra-magit-commit-gitchangelog-region))
     :init
+    (defcustom vc-state-update-commands '(other-window kill-buffer ace-window bury-buffer kill-or-bury-alive magit-mode-bury-buffer)
+      "Cuando cada comando de esta lista es ejecutado, actualiza el estado VC del archivo actual"
+      :type '(list (function :tag "Comandos de actualización")
+                   (repeat :inline t (function :tag "Comandos de actualización"))))
+
+    (defun vc-state-refresh-post-command-hook ()
+      "Check if command in `this-command' was executed, then run `vc-refresh-state'"
+      (when (memq this-command vc-state-update-commands)
+        (vc-refresh-state)))
+
     (defun shackra-magit-commit-gitchangelog-region (begin end)
       "Crea un CHANGELOG a partir de un intervalo de commits seleccionados por region"
       (interactive "r")
@@ -1102,7 +1112,9 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
     (setf magit-last-seen-setup-instructions "1.4.0"
           magit-auto-revert-mode t
           magit-completing-read-function 'ivy-completing-read)
-    (add-hook 'magit-refresh-buffer-hook 'vc-refresh-state))
+    (add-hook 'after-save-hook 'vc-refresh-state)
+    (add-hook 'after-revert-hook 'vc-refresh-state)
+    (add-hook 'post-command-hook #'vc-state-refresh-post-command-hook))
 #+END_SRC
 *** git-gutter-fring
 Muestra información de =git diff= en el fringe.
