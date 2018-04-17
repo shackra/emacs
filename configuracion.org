@@ -3010,7 +3010,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
                   "   "
                   (:eval (concat
                           (shackra-buffer-vc-modified)
-                          "	"
+                          "  "
                           (shackra-vc-info)
                           "	"
                           (shackra-flycheck-status)
