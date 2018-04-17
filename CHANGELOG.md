@@ -53,6 +53,8 @@ New
 
 Changes
 ~~~~~~~
+- Cambia el diseño visual de Flycheck en el mode-line. [Jorge Araya
+  Navarro]
 - Elimina todos los iconos de los estado para Flycheck. [Jorge Araya
   Navarro]
 

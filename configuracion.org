@@ -2990,8 +2990,8 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
                    (`errored     (propertize "Error con Flycheck" 'face `(:foreground "tomato")))
                    (`interrupted (propertize "Interrumpido" 'face `(:foreground "tomato")))
                    (`suspicious  (shackra-faicon-icon "question" "tomato")))))
-      (propertize (concat (propertize "!Flyc:" 'face compilation-error-face) " " text)
-                  'help-echo "Muestra errores detectados por Flycheck"
+      (propertize (concat (propertize "!Flyc" 'face 'flycheck-error-list-error) (propertize "{" 'face 'flycheck-error-list-error) text (propertize "}" 'face 'flycheck-error-list-error))
+                  'help-echo "Reporte de Flycheck para errores de alta y baja prioridad"
                   'local-map (make-mode-line-mouse-map
                               'mouse-1 (lambda () (interactive) (flycheck-list-errors))))))
 
