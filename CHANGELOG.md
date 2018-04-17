@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Incluye errores informativos en la visualización. [Jorge Araya
+  Navarro]
+- Añade comandos adicionales. [Jorge Araya Navarro]
 - Actualiza el estado vc de los archivos abiertos del proyecto. [Jorge
   Araya Navarro]
 
@@ -108,6 +111,10 @@ Changes
 
 Fix
 ~~~
+- Utiliza los ganchos adecuados para actualizar el estado vc. [Jorge
+  Araya Navarro]
+
+  Este es un arreglo del commit c0db8680494d3a6ec5a2acaf2cbb5c6057175e4d
 - Arregla revisión errónea de variable. [Jorge Araya Navarro]
 - Elimina sentencia condicional innecesaria. [Jorge Araya Navarro]
 - Abandona función obsoleta. [Jorge Araya Navarro]
@@ -140,6 +147,11 @@ Fix
 - Fija atajo para ivy-switch-buffer. [Jorge Araya Navarro]
 
   Ejecuta el autoloads para ivy cuando el atajo es utilizado
+
+Other
+~~~~~
+- Merge branch 'master' of gitlab.com:shackra/emacs. [Jorge Araya
+  Navarro]
 
 
 3.2 (2017-12-23)

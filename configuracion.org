@@ -2928,18 +2928,23 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
   (defun shackra-flycheck-errors ()
     "Retorna una cadena con errores y warnings de Flycheck"
     (if flycheck-current-errors
-        (let ((warns (let-alist (flycheck-count-errors flycheck-current-errors)
-                       (or .warning 0)))
-              (errors (let-alist (flycheck-count-errors flycheck-current-errors)
-                        (or .error 0)))
-              (messages nil))
+        (let* ((count (flycheck-count-errors flycheck-current-errors))
+               (warns (let-alist count
+                        (or .warning 0)))
+               (errors (let-alist count
+                         (or .error 0)))
+               (info (let-alist count
+                       (or .info 0)))
+               (messages nil))
           (when (> warns 0)
-            (push (propertize (format "Advertencias: %s" warns) 'face compilation-warning-face) messages))
+            (push (propertize (format "Adv: %s" warns) 'face 'flycheck-error-list-warning) messages))
           (when (> errors 0)
-            (push (propertize (format "Errores: %s" errors) 'face compilation-error-face) messages))
-          (when (or (> warns 0) (> errors 0))
-            (string-join messages " ")))
-      (propertize "Sin problemas" 'face 'success)))
+            (push (propertize (format "Err: %s" errors) 'face 'flycheck-error-list-error) messages))
+          (when (> info 0)
+            (push (propertize (format "Inf: %s" info) 'face 'flycheck-error-list-info) messages))
+          (when (or (> (or info warns errors) 0))
+            (string-join messages ", ")))
+      (propertize "Nada que reportar" 'face 'success)))
 
   (defun shackra-vc-state ()
     "Revisa el estado VC del buffer"
