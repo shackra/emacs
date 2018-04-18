@@ -2419,7 +2419,7 @@ Instalar estos componentes en el sistema operativo
     :after (js2-mode)
     :config
     (add-hook 'js2-mode-hook #'js2-refactor-mode)
-    (js2r-add-keybindings-with-prefix "C-c C-r"))
+    (js2r-add-keybindings-with-prefix "C-c C-m"))
 
   (use-package xref-js2
     :after (js2-mode)
