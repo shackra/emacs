@@ -2942,7 +2942,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
             (push (propertize (format "Err: %s" errors) 'face 'flycheck-error-list-error) messages))
           (when (> info 0)
             (push (propertize (format "Inf: %s" info) 'face 'flycheck-error-list-info) messages))
-          (when (or (> (or info warns errors) 0))
+          (when (> (+ warns errors info) 0)
             (string-join messages ", ")))
       (propertize "Nada que reportar" 'face 'success)))
 

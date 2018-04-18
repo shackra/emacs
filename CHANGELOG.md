@@ -115,6 +115,15 @@ Changes
 
 Fix
 ~~~
+- Comprobación mejorada de errores graves o triviales. [Jorge Araya
+  Navarro]
+
+  Cualquier cosa que no sea `nil` es `t` o "verdadero" en Emacs Lisp. Sumar los números de errores y
+  avisos simplifica la lógica en el código para hacer la comprobación logica.
+
+  Este commit arregla el commit 9d070fe9ad1acd41ede0c399342a7f7d8e4d78a8
+
+  - 9d070fe9ad1acd41ede0c399342a7f7d8e4d78a8
 - Elimina referencia a variable inexistente. [Jorge Araya Navarro]
 - Utiliza los ganchos adecuados para actualizar el estado vc. [Jorge
   Araya Navarro]
