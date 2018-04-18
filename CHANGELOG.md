@@ -113,6 +113,7 @@ Changes
 
 Fix
 ~~~
+- Elimina referencia a variable inexistente. [Jorge Araya Navarro]
 - Utiliza los ganchos adecuados para actualizar el estado vc. [Jorge
   Araya Navarro]
 
