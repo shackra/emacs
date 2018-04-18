@@ -1,0 +1,14 @@
+# -*- mode: snippet -*-
+# name: jsconfig
+# condition: (string-match-p "jsconfig.json" (buffer-file-name))
+# --
+{
+  "compilerOptions": {
+    "target": "es2017",
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "checkJs": true,
+    "jsx": "react",
+    "lib": [ "dom", "es2017" ]
+  }
+}

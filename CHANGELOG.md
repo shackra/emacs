@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Incluye plantilla de configuración para tide. [Jorge Araya Navarro]
+
+  - https://github.com/ananthakumaran/tide#javascript
 - Incluye errores informativos en la visualización. [Jorge Araya
   Navarro]
 - Añade comandos adicionales. [Jorge Araya Navarro]
