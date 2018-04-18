@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- Inserta configuración para Tide al abrir un archivo jsconfig.json.
+  [Jorge Araya Navarro]
 - Incluye plantilla de configuración para tide. [Jorge Araya Navarro]
 
   - https://github.com/ananthakumaran/tide#javascript

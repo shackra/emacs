@@ -2338,7 +2338,16 @@ go build golang.org/x/tools/cmd/guru
 - @@html:<kbd>C-c C-i</kbd>@@: Increment the number at point
 - @@html:<kbd>C-c C-d</kbd>@@: Decrement the number at point
 #+BEGIN_SRC emacs-lisp
-  (use-package json-mode)
+  (use-package json-mode
+    :init
+    (defun jsconfig-default-conf ()
+      (interactive)
+      (yas-insert-snippet))
+
+    (add-hook 'json-mode-hook
+              '(lambda () (when (and (eq (buffer-size) 0)
+                                (string-match-p "jsconfig.json" (buffer-file-name)))
+                       (jsconfig-default-conf)))))
 #+END_SRC
 **** Dependencias externas
 Instalar estos componentes en el sistema operativo
