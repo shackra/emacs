@@ -98,7 +98,9 @@ La ubicación geográfica usada es la de San José, Costa Rica siendo tan peque�
         user-mail-address "jorge@esavara.cr"
         calendar-location-name "Heredia, CR"
         calendar-latitude 9.935607
-        calendar-longitude -84.1833856)
+        calendar-longitude -84.1833856
+        calendar-christian-all-holidays-flag t
+        calendar-date-style 'european)
 #+END_SRC
 * Repositorio de paquetes
 Desde la versión 24 Emacs permite la instalación de paquetes de la misma manera como se realiza en distribuciones de GNU/Linux.
@@ -486,19 +488,7 @@ Sacado de [[https://orgmode.org/worg/org-hacks.html#org34c56ba][Org ad hoc code,
         ad-do-it))
     (ad-activate 'org-refile))
 #+END_SRC
-* Macros
-#+BEGIN_SRC emacs-lisp
-  (fset 'untangle-use-packages
-        [?\C-s ?\( delete ?u ?s ?e ?- ?p ?a ?c ?k ?a ?g ?e prior return ?\C-\M-b ?\C-  ?\C-\M-f ?\C-\M-f ?\M-x ?c ?o ?p ?y ?  ?t ?o return ?p ?\C-s ?\( delete ?u ?s ?e ?- ?p ?a ?c ?k ?a ?g ?e next up return ?\C-f ?\C-  ?\C-\M-f ?\M-x ?c ?o ?p ?y ?  return ?n ?\C-s ?\( delete ?u ?s ?e ?- ?p ?a ?c ?k ?a ?g ?e next return ?\C-\M-b ?\C-b ?\C-c ?0 ?\C-w ?\M-x ?b ?e ?g down down down down return return ?\M-x ?b ?e down down down down return ?\C-y ?\C-s ?\( delete ?u ?s ?e ?- ?p ?a ?c ?k ?a ?g ?e prior return ?\C-\M-f return ?: ?a ?f ?t ?e ?r ?  ?\( ?\M-x ?i ?n ?s ?e ?r ?t down down down return ?n ?\C-s ?\M-x ?i ?n ?s ?e ?r ?t ?  ?r ?e ?g return ?p return])
-#+END_SRC
-* Custom.el
- El archivo customize sera éste. Cualquier modificación de Emacs que se haga a través de =customize= ira al archivo especificado.
-
-#+BEGIN_SRC emacs-lisp
-  (setf custom-file (expand-file-name "custom.el" user-emacs-directory))
-  (load custom-file)
-#+END_SRC
-* Division de ventanas y movimiento inmediato del cursor a la nueva ventana
+** Division de ventanas y movimiento inmediato del cursor a la nueva ventana
 Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 #+BEGIN_SRC emacs-lisp
   (defun shackra-split-window-vertically ()
@@ -516,6 +506,17 @@ Combinaciones de teclas que no pertenecen a ningún paquete en particular.
   (global-set-key [remap split-window-below] #'shackra-split-window-vertically)
   (global-set-key [remap split-window-right] #'shackra-split-window-horizontally)
 #+END_SRC
+* Macros
+#+BEGIN_SRC emacs-lisp
+  (fset 'untangle-use-packages
+        [?\C-s ?\( delete ?u ?s ?e ?- ?p ?a ?c ?k ?a ?g ?e prior return ?\C-\M-b ?\C-  ?\C-\M-f ?\C-\M-f ?\M-x ?c ?o ?p ?y ?  ?t ?o return ?p ?\C-s ?\( delete ?u ?s ?e ?- ?p ?a ?c ?k ?a ?g ?e next up return ?\C-f ?\C-  ?\C-\M-f ?\M-x ?c ?o ?p ?y ?  return ?n ?\C-s ?\( delete ?u ?s ?e ?- ?p ?a ?c ?k ?a ?g ?e next return ?\C-\M-b ?\C-b ?\C-c ?0 ?\C-w ?\M-x ?b ?e ?g down down down down return return ?\M-x ?b ?e down down down down return ?\C-y ?\C-s ?\( delete ?u ?s ?e ?- ?p ?a ?c ?k ?a ?g ?e prior return ?\C-\M-f return ?: ?a ?f ?t ?e ?r ?  ?\( ?\M-x ?i ?n ?s ?e ?r ?t down down down return ?n ?\C-s ?\M-x ?i ?n ?s ?e ?r ?t ?  ?r ?e ?g return ?p return])
+#+END_SRC
+* Custom.el
+ El archivo customize es completamente innecesario y todas las variables modificadas usando =Customize= fueron migradas. Cualquier cambio que se haga con =Customize= no será preservado *pase lo que pase*.
+
+#+BEGIN_SRC emacs-lisp
+  (setf custom-file null-device)
+#+END_SRC
 * Aliases
 Nombres más cortos para comandos usados frecuentemente
 #+BEGIN_SRC emacs-lisp
@@ -525,6 +526,16 @@ Nombres más cortos para comandos usados frecuentemente
 #+END_SRC
 * Paquetes de extensiones
 ** Utilidades
+*** TRAMP
+Transparent Remote Access, Multiple Protocols: paquete para editar archivos remotos. [[https://www.gnu.org/software/tramp/][Manual de usuario]].
+#+BEGIN_SRC emacs-lisp
+  (setf tramp-default-method "ssh")
+  (setf tramp-encoding-shell "/bin/zsh")
+#+END_SRC
+*** Bug hunter para configuración de Emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package bug-hunter)
+#+END_SRC
 *** =better-defaults=
 configuración sana de ciertas opciones en Emacs
 #+BEGIN_SRC emacs-lisp
@@ -558,7 +569,14 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
   (when (not (eq system-type 'darwin))
     (set-fontset-font t 'unicode (font-spec :size 20 :name "Symbola") nil 'prepend))
 #+END_SRC
-
+*** View large files
+Permite a Emacs manejar archivos enormes. Automáticamente se activa para archivos mayores a =large-file-warning-threshold=.
+#+BEGIN_SRC emacs-lisp
+  (use-package vlf-setup
+    :ensure vlf
+    :init
+    (setf vlf-application 'dont-ask))
+#+END_SRC
 *** secreto
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
 #+BEGIN_SRC emacs-lisp
@@ -675,14 +693,12 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
   (use-package ace-window
     :bind ("M-o" . shackra-other-window)
     :init
-    (custom-set-faces
-     '(aw-leading-char-face
-       ((t (:inherit ace-jump-face-foreground :height 3.0)))))
     (defun --count-frames ()
       "Retorna el numero de frames visibles"
       (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
         (length frames)))
     :config
+    (defface aw-leading-char-face '(:inherit ace-jump-face-foreground :height 2.0) "ace-jump leading character size")
     (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
     (define-key global-map [remap other-window] 'ace-window))
   (use-package windmove
@@ -1114,7 +1130,9 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
           magit-completing-read-function 'ivy-completing-read)
     (add-hook 'after-save-hook 'vc-refresh-state)
     (add-hook 'after-revert-hook 'vc-refresh-state)
-    (add-hook 'post-command-hook #'vc-state-refresh-post-command-hook))
+    (add-hook 'post-command-hook #'vc-state-refresh-post-command-hook)
+    (setf magit-commit-arguments nil)
+    (setf magit-use-overlays nil))
 #+END_SRC
 *** git-gutter-fring
 Muestra información de =git diff= en el fringe.
@@ -1200,6 +1218,7 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     :ensure nil
     :init
     (setf bookmark-default-file "~/.emacs.d/bookmarks")
+    (setf bmkp-last-as-first-bookmark-file bookmark-default-file)
     (setf bookmark-save-flag 1))
 
   (use-package bookmark+
@@ -1604,10 +1623,11 @@ Conexión a Weechat desde Emacs
 #+END_SRC
 *** Redmine
 #+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'auth-source
+    (setf auth-source-save-behavior nil))
   (when (boundp 'auth-sources)
     (use-package org-redmine
       :init
-      (setq org-redmine-uri "https://my.ivrtechnology.com")
       (setq org-redmine-auth-netrc-use t)))
 #+END_SRC
 ** Desarrollo de software
@@ -1767,6 +1787,21 @@ Teclas
             ("ESPERA" :foreground "orange" :weight bold)
             ("RETENER" :foreground "magenta" :weight bold)
             ("CANCELADO" :foreground "forest green" :weight bold)))
+    (setf org-catch-invisible-edits 'show)
+    (setf org-clock-persist 'history)
+    (setf org-ctrl-k-protect-subtree t)
+    (setf org-export-backends '(ascii html icalendar latex md texinfo))
+    (setf org-fontify-quote-and-verse-blocks t)
+    (setf org-footnote-auto-adjust t)
+    (setf org-habit-graph-column 55)
+    (setf org-imenu-depth 5)
+    (setf org-log-done 'time)
+    (setf org-modules '(org-bbdb org-bibtex org-crypt org-docview
+                                 org-gnus org-habit org-id org-info
+                                 org-irc org-mhe org-rmail org-w3m))
+    (setf org-special-ctrl-k t)
+    (setf org-startup-folded nil)
+    (setf org-startup-indented t)
     (setf org-use-fast-todo-selection t)
     (setf org-treat-S-cursor-todo-selection-as-state-change nil)
     (setf org-todo-state-tags-triggers
@@ -2006,6 +2041,7 @@ Modo mayor para programar en Python
       (shackra-electric-indent-mode-off)
       (aggressive-indent-mode -1))
 
+    (setf python-shell-interpreter "python")
     (add-hook 'python-mode-hook #'shackra-python-mode)
     :config
     ;; re-mapea todas los atajos que hagan referencia a `python-indent-shift-*' con `shackra-python-indent-shift-*'
@@ -2186,6 +2222,8 @@ Un modo mayor para editar paginas web
              (isrootfile (string-suffix-p httpd-root currentfiledir)))
         (when (and (derived-mode-p 'sgml-mode 'css-mode 'web-mode 'js2-mode) isrootfile (shackra-port-open-p moz-repl-host moz-repl-port))
           (moz-controller-page-refresh))))
+    :init
+    (setf web-mode-code-indent-offset 2)
     :config
     (add-hook 'after-save-hook #'shackra-webdev-refresh-page-on-save)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
@@ -2406,8 +2444,9 @@ Instalar estos componentes en el sistema operativo
       (tide-setup)
       (tide-hl-identifier-mode +1))
     (setf tide-format-options
-          '(:insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
+          '(:indentSize 2 :tabSize: 2 :insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
     (setf tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
+    (setf typescript-indent-level 2)
     (add-hook 'before-save-hook 'tide-format-before-save)
     ;; Añade company-tide como fuente de auto-completado para varios modos
     ;; mayores que lidian con JavaScript/Typescript
@@ -2451,6 +2490,8 @@ Instalar estos componentes en el sistema operativo
     :init
     (add-to-list 'auto-mode-alist '("components?\\/.*\\.js\\'" . rjsx-mode))
     (add-to-list 'auto-mode-alist '("containers?\\/.*\\.js\\'" . rjsx-mode))
+    ;; TODO: Eliminar cuando el bug sea resuelto https://github.com/felipeochoa/rjsx-mode/issues/68
+    (add-hook 'rjsx-mode-hook (lambda () (flyspell-mode-off)))
     :config
     ;; tomado de https://emacs.stackexchange.com/a/33544/690 mejora el sangrado
     ;; de lineas
@@ -2489,7 +2530,8 @@ Instalar estos componentes en el sistema operativo
 Desarrollo de aplicaciones para Android desde GNU Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package android-mode
-    :init (custom-set-variables '(android-mode-sdk-dir "~/opt/android")))
+    :init
+    (setf android-mode-sdk-dir "~/opt/android"))
 #+END_SRC
 *** SLIME
 SLIME is the Superior Lisp Interaction Mode for Emacs.
@@ -3286,6 +3328,7 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
     ;; Este paquete sólo funciona si la versión de Emacs es mayor o igual a 24.3
     ;; y Emacs fue compilado con soporte para PNG
     :if (and (version<= "24.3" emacs-version) (image-type-available-p 'png))
+    :bind (:map global-map ("C-!" . emojify-insert-emoji))
     :init
     (add-hook 'after-init-hook #'global-emojify-mode))
   (use-package company-emoji
@@ -3417,6 +3460,10 @@ Utilidades para integrar Emacs y docker
     (setf realgud:ipdb-command-name "python -c \"from IPython import start_ipython; from sys import argv; start_ipython(['--simple-prompt', '-i', '-c', '%run -d {}'.format(' '.join(argv[1:]))])\""))
 #+END_SRC
 *** Temas
+Establece cuales temás son seguros.
+#+BEGIN_SRC emacs-lisp
+  (setf custom-safe-themes '("f1a6cbc40528dbee63390fc81da426f1b00b4fc09a60fe35752f5838b12fbe0a" "51867fa64534ff7ca87fdc1537fbfffc168fa4673e3980850436dc87e31ef426" "3119b66b441eaa36acad473952dfdf901a5924b1fbc995b58477f031e12547c4" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "134f38000f413a88743764983c751ac34edbec75a602065e2ae3b87fcf26c451" "930a202ae41cb4417a89bc3a6f969ebb7fcea5ffa9df6e7313df4f7a2a631434" "c5a044ba03d43a725bd79700087dea813abcb6beb6be08c7eb3303ed90782482" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default))
+#+END_SRC
 **** CANCELADO zenburn                                         :CANCELADO:
 - State "CANCELADO"  from              [2018-03-28 mié 02:06] \\
   desactiva el tema
@@ -3426,7 +3473,7 @@ Utilidades para integrar Emacs y docker
     :config
     (load-theme 'zenburn t))
 #+END_SRC
-**** Monokai                                                   :CANCELADO:
+**** Monokai
 - State "CANCELADO"  from "CANCELADO"  [2018-03-28 mié 17:25]
 - State "CANCELADO"  from              [2018-03-28 mié 16:55] \\
   desactiva el tema

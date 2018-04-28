@@ -10,22 +10,42 @@
 (setq package-enable-at-startup nil)
 ;; Ask package.el to not add (package-initialize) to .emacs.
 (setq package--init-file-ensured t)
-;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Packaging-Basics.html
-(package-initialize nil)
+(setf byte-compile-warnings nil)
 
 ;; repositorios de paquetes
-(setf package-archives '(("melpa" . "https://melpa.org/packages/")
+(setf package-archives '(("melpa"        . "https://melpa.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("gnu" . "https://elpa.gnu.org/packages/")
-                         ("org" . "https://orgmode.org/elpa/")))
+                         ("gnu"          . "https://elpa.gnu.org/packages/")
+                         ("org"          . "https://orgmode.org/elpa/")))
 
 (setq inhibit-startup-screen t)
 ;; :pin no funciona en use-package por el momento, entonces si deseamos que se
 ;; instale un paquete desde el repositorio que queremos debemos especificarlo
 ;; aqui antes de que use-package sea inicializado
-(setq package-pinned-packages '((auctex . "gnu")
-                                (python . "gnu")
+(setq package-pinned-packages '((auctex      . "gnu")
+                                (python      . "gnu")
                                 (use-package . "melpa-stable")))
+
+(setf package-selected-packages '(ac-html-bootstrap ace-window ag aggressive-indent alert all-the-icons android-mode aurel better-defaults bookmark+ bug-hunter cargo chronos company company-anaconda company-auctex company-emoji company-go company-quickhelp company-racer company-statistics company-tern company-web counsel counsel-notmuch counsel-projectile dired-details+ docker docker-compose-mode dockerfile-mode el-pocket el2org elfeed emmet-mode emojify expand-region feature-mode fixmee flycheck-gometalinter flycheck-kotlin flycheck-package flycheck-rust flyspell-correct-ivy font-lock-studio free-keys gimp-mode git-gutter-fringe gitconfig-mode gitignore-mode go-eldoc go-guru go-mode go-snippets godoctor golden-ratio golden-ratio-scroll-screen gradle-mode hgignore-mode highlight-escape-sequences highlight-indent-guides highlight-numbers hungry-delete iedit imenu-anywhere importmagic indium isortify ivy-hydra js2-refactor json-mode keyfreq kill-or-bury-alive kotlin kotlin-mode lsp-vue magit-gh-pulls meghanada mingus monky monokai-theme move-text moz-controller multi-term multiple-cursors mustache-mode ng2-mode nlinum noflet notmuch-labeler org-beautify-theme org-bullets org-download org-projectile org-redmine org-trello org-webpage org2web ox-gfm paredit pcre2el php-mode php-refactor-mode pippel pkgbuild-mode pony-mode pretty-mode prodigy projectile py-autopep8 pydoc-info python-environment pyvenv racer rainbow-mode ranger realgud rjsx-mode scss-mode shackle slime sphinx-doc stylus-mode switch-buffer-functions sx systemd telephone-line tern tide toml-mode traad twittering-mode undo-tree use-package vimish-fold virtualenvwrapper visual-fill-column vlf vue-mode web-beautify web-mode webpaste weechat windresize ws-butler xref-js2 yaml-mode yapfify yasnippet zenburn-theme))
+
+(defun package--save-selected-packages (&optional value)
+  "Set and save `package-selected-packages' to VALUE.
+
+The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabetically."
+  (when value
+    (setq package-selected-packages value))
+  ;; Sort alphabetically all symbols of package-selected-packages
+  (setf package-selected-packages (map 'list 'intern (cl-sort (map 'list 'symbol-name package-selected-packages) 'string-lessp)))
+  (if after-init-time
+      (let ((save-silently inhibit-message))
+        ;; save the content of package-selected-packages
+        (with-current-buffer (find-file-noselect "~/.emacs.d/init.el")
+          (search-forward "package-selected-packages")
+          (delete-region (point-at-bol) (point-at-eol))
+          (insert (format "(setf package-selected-packages '%s)" package-selected-packages))
+          (save-buffer)
+          (kill-buffer)))
+    (add-hook 'after-init-hook #'package--save-selected-packages)))
 
 (defun my-tangle-section-canceled ()
   "Checks if the previous section header was CANC"
@@ -66,8 +86,8 @@
               (body (match-string 5))
               (canc (my-tangle-section-canceled)))
           (when (and (string= lang "emacs-lisp")
-                   (not (string-match-p ":tangle\\s-+no" args))
-                   (not canc))
+                     (not (string-match-p ":tangle\\s-+no" args))
+                     (not canc))
             (add-to-list 'body-list body)))))
     (with-temp-file elfile
       (insert (format ";; No edite este archivo, en su lugar edite %s ...\n\n" orgfile))
@@ -82,7 +102,7 @@
       (elfile (concat user-emacs-directory "configuracion.el"))
       (gc-cons-threshold most-positive-fixnum))
   (when (or (not (file-exists-p elfile))
-           (file-newer-than-file-p orgfile elfile))
+            (file-newer-than-file-p orgfile elfile))
     (my-tangle-config-org orgfile elfile))
   (load-file elfile)
   ;; Solo al final inicializamos los paquetes

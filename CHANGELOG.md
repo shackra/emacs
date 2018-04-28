@@ -120,6 +120,12 @@ Changes
 
 Fix
 ~~~
+- Elimina el uso de `custom-file` [Jorge Araya Navarro]
+
+  Evita desorden y la posibilidad de fallos en la configuración, aumenta el control sobre la configuración.
+
+  - https://github.com/dbordak/telephone-line/issues/66
+  - https://github.com/felipeochoa/rjsx-mode/issues/68
 - Comprobación mejorada de errores graves o triviales. [Jorge Araya
   Navarro]
 
