@@ -35,7 +35,7 @@ The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabeti
   (when value
     (setq package-selected-packages value))
   ;; Sort alphabetically all symbols of package-selected-packages
-  (setf package-selected-packages (map 'list 'intern (cl-sort (map 'list 'symbol-name package-selected-packages) 'string-lessp)))
+  (setf package-selected-packages (cl-sort package-selected-packages 'string-lessp))
   (if after-init-time
       (let ((save-silently inhibit-message))
         ;; save the content of package-selected-packages

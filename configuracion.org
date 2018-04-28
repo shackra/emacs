@@ -1511,7 +1511,7 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
                                       (turn-off-auto-fill)
                                       (visual-line-mode 1))))
 #+END_SRC
-*** CANCELADO Weechat                                           :CANCELADO:
+*** Weechat                                                     :CANCELADO:
 - State "CANCELADO"  from              [2018-03-28 mié 17:36] \\
   desactivado hasta arreglo del bug https://github.com/oneKelvinSmith/monokai-emacs/issues/94 en Monokai theme
 Conexión a Weechat desde Emacs

@@ -5,6 +5,17 @@ Changelog
 (unreleased)
 ------------
 
+Changes
+~~~~~~~
+- Sortea los simbolos sin convertirlos en cadenas de texto. [Jorge Araya
+  Navarro]
+
+  - https://www.reddit.com/r/emacs/comments/8fiukr/so_i_modified_packagesaveselectedpackages_into/dy43ph1/
+
+
+3.3 (2018-04-28)
+----------------
+
 New
 ~~~
 - Inserta configuración para Tide al abrir un archivo jsconfig.json.
@@ -58,6 +69,10 @@ New
 
 Changes
 ~~~~~~~
+- Sortea los simbolos sin convertirlos en cadenas de texto. [Jorge Araya
+  Navarro]
+
+  - https://www.reddit.com/r/emacs/comments/8fiukr/so_i_modified_packagesaveselectedpackages_into/dy43ph1/
 - Evita colisión de atajos entre rjsx-mode y js2-refactor-mode. [Jorge
   Araya Navarro]
 - Cambia el diseño visual de Flycheck en el mode-line. [Jorge Araya
