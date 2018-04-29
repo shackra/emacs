@@ -5,19 +5,11 @@ Changelog
 (unreleased)
 ------------
 
-Changes
-~~~~~~~
-- Sortea los simbolos sin convertirlos en cadenas de texto. [Jorge Araya
-  Navarro]
-
-  - https://www.reddit.com/r/emacs/comments/8fiukr/so_i_modified_packagesaveselectedpackages_into/dy43ph1/
-
-
-3.3 (2018-04-28)
-----------------
-
 New
 ~~~
+- Mejoras en Weechat. [Jorge Araya Navarro]
+
+  Activa corrección ortográfica en buffers monitorizados, activa `visual-line-mode' y desactiva linum.
 - Inserta configuración para Tide al abrir un archivo jsconfig.json.
   [Jorge Araya Navarro]
 - Incluye plantilla de configuración para tide. [Jorge Araya Navarro]

@@ -1517,11 +1517,20 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
 Conexión a Weechat desde Emacs
 #+BEGIN_SRC emacs-lisp
   (when (executable-find "weechat")
-  (use-package weechat
-    :config
-    (add-to-list 'weechat-modules 'weechat-spelling)
-    (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
-                                       (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain))))))
+    (use-package weechat
+      :init
+      (defun shackra-weechat-buffer-goodies ()
+        "Activa y desactiva cosas"
+        (linum-mode -1)
+        (visual-line-mode 1))
+      (add-hook 'weechat-mode-hook #'shackra-weechat-buffer-goodies)
+      (setf weechat-spelling-dictionaries '(("freenode\\." . "en")
+                                            ("irc-hispano\\." . "es")
+                                            ("afternet\\." . "en")))
+      :config
+      (load-library "weechat-spelling")
+      (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
+                                         (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain))))))
 #+END_SRC
 *** Slack
 #+BEGIN_SRC emacs-lisp
