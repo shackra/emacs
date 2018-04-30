@@ -2533,7 +2533,7 @@ Instalar estos componentes en el sistema operativo
   (use-package sgml-mode
     :ensure nil
     :init
-    (setf sgml-basic-offset 4))
+    (setf sgml-basic-offset 2))
 #+END_SRC
 *** Android
 Desarrollo de aplicaciones para Android desde GNU Emacs

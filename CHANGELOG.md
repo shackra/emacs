@@ -61,6 +61,8 @@ New
 
 Changes
 ~~~~~~~
+- Utiliza el valor por defecto para sangrar etiquetas en HTML. [Jorge
+  Araya Navarro]
 - Sortea los simbolos sin convertirlos en cadenas de texto. [Jorge Araya
   Navarro]
 
