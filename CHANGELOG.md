@@ -129,6 +129,8 @@ Changes
 
 Fix
 ~~~
+- Incluye información de VCS en el mode-line, de estar disponible.
+  [Jorge Araya Navarro]
 - Elimina el uso de `custom-file` [Jorge Araya Navarro]
 
   Evita desorden y la posibilidad de fallos en la configuración, aumenta el control sobre la configuración.

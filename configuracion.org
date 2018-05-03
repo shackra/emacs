@@ -3105,8 +3105,8 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 
     (telephone-line-defsegment shackra-vc-segment ()
       (if (shackra-vc-info)
-          (telephone-line-raw (concat (shackra-buffer-vc-modified) "  " (shackra-vc-info))))
-      (telephone-line-raw (shackra-buffer-vc-modified)))
+          (telephone-line-raw (concat (shackra-buffer-vc-modified) "  " (shackra-vc-info)))
+        (telephone-line-raw (shackra-buffer-vc-modified))))
 
     (telephone-line-defsegment shackra-flycheck-status-segment ()
       (telephone-line-raw (shackra-flycheck-status)))
