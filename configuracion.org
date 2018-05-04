@@ -675,6 +675,8 @@ Teclas
     (add-to-list 'ivy-ignore-buffers "\\*godoc .*")
     (add-to-list 'ivy-ignore-buffers "\\*magit-.*")
     (add-to-list 'ivy-ignore-buffers "\\*Slack Log")
+    (add-to-list 'ivy-ignore-buffers "\\*tide")
+    (add-to-list 'ivy-ignore-buffers "\\*Flycheck")
     (ivy-mode 1))
 
   (use-package swiper

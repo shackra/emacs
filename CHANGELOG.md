@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Actualiza ivy. [Jorge Araya Navarro]
+
+  Ignora más buffers
 - Mejoras en Weechat. [Jorge Araya Navarro]
 
   Activa corrección ortográfica en buffers monitorizados, activa `visual-line-mode' y desactiva linum.
