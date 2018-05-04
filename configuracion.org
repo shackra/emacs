@@ -2103,9 +2103,6 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     :if (executable-find "cargo"))
   (use-package racer
     :after (rust-mode)
-    :init
-    (setf racer-rust-src-path (getenv "RUST_SRC_PATH"))
-    (setf racer-cmd (expand-file-name "~/.cargo/bin/racer"))
     :config
     (add-hook 'rust-mode-hook #'racer-mode)
     (add-hook 'racer-mode-hook #'eldoc-mode))
@@ -2116,7 +2113,9 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
       (add-hook 'rust-mode-hook '(lambda ()
                                    (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet))))))
   (use-package rust-mode
-    :if (executable-find "rustc"))
+    :if (executable-find "rustc")
+    :init
+    (setq rust-format-on-save t))
   (with-eval-after-load 'flycheck
     (use-package flycheck-rust
       :after (rust-mode)
