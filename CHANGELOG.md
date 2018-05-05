@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Actualiza bookmark+ [Jorge Araya Navarro]
 - Actualiza ivy. [Jorge Araya Navarro]
 
   Ignora más buffers

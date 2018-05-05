@@ -1220,7 +1220,6 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     :ensure nil
     :init
     (setf bookmark-default-file "~/.emacs.d/bookmarks")
-    (setf bmkp-last-as-first-bookmark-file bookmark-default-file)
     (setf bookmark-save-flag 1))
 
   (use-package bookmark+
@@ -1229,7 +1228,6 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     :init
     (setf bmkp-auto-light-when-set 'all-in-buffer)
     (setf bmkp-last-as-first-bookmark-file bookmark-default-file)
-    :bind (("C-c b" . hydra-bm/body))
     :config
     (defhydra hydra-bm (:color amaranth :hint nil)
       "
@@ -1253,7 +1251,9 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
       ("F" bmkp-file-target-set :color blue)
       ("e" bmkp-edit-bookmark-name-and-location :color blue)
       ("L" bookmark-bmenu-list "Menú de marcadores" :color blue)
-      ("<ESC>" nil "Salir")))
+      ("l" bookmark-load "Cargar otro archivo de marcadores" :color blue)
+      ("<ESC>" nil "Salir"))
+    (bind-key (kbd "C-c b") 'hydra-bm/body global-map))
 #+END_SRC
 *** Firefox desde Emacs
 #+BEGIN_SRC emacs-lisp
