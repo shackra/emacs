@@ -65,6 +65,9 @@ New
 
 Changes
 ~~~~~~~
+- Actualiza notmuch. [Jorge Araya Navarro]
+
+  El comando de correo borrado no desactiva las etiquetas al invocarse nuevamente
 - Actualiza Rust. [Jorge Araya Navarro]
 - Utiliza el valor por defecto para sangrar etiquetas en HTML. [Jorge
   Araya Navarro]
