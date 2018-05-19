@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- Inserta marcadores para directorios en GNU/Linux. [Jorge Araya
+  Navarro]
 - Actualiza bookmark+ [Jorge Araya Navarro]
 - Actualiza ivy. [Jorge Araya Navarro]
 
