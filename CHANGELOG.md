@@ -137,6 +137,7 @@ Changes
 
 Fix
 ~~~
+- Restaura archivos de estilo de mi blog. [Jorge Araya Navarro]
 - Incluye información de VCS en el mode-line, de estar disponible.
   [Jorge Araya Navarro]
 - Elimina el uso de `custom-file` [Jorge Araya Navarro]
