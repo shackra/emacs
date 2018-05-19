@@ -65,6 +65,8 @@ New
 
 Changes
 ~~~~~~~
+- Deja de jugar con el recolector de basura en Windows. [Jorge Araya
+  Navarro]
 - Actualiza notmuch. [Jorge Araya Navarro]
 
   El comando de correo borrado no desactiva las etiquetas al invocarse nuevamente

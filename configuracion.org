@@ -540,15 +540,24 @@ Transparent Remote Access, Multiple Protocols: paquete para editar archivos remo
 configuración sana de ciertas opciones en Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package better-defaults
+    :init
+    (defun my-minibuffer-setup-hook ()
+      (setq gc-cons-threshold most-positive-fixnum))
+    (defun my-minibuffer-exit-hook ()
+      (setq gc-cons-threshold 800000))
     :config
     ;; Se cargan otras modificaciones para mejorar el comportamiento de Emacs
     (load-file (expand-file-name "sane.el" user-emacs-directory))
     (ido-mode nil)
-    ;; Cursor de barra delgada
+    ;; Cursor
     (setq-default cursor-type 'box)
     (setf blink-cursor-blinks 0)
     (blink-cursor-mode)
-    (setf blink-cursor-interval 0.1))
+    (setf blink-cursor-interval 0.1)
+    ;; Evita que el recolector de basura entre en funcionamiento cuando se esta
+    ;; dentro del minibuffer
+    (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+    (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook))
 #+END_SRC
 **** Tipografía
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.

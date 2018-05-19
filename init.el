@@ -54,11 +54,6 @@ The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabeti
         (string-prefix-p "CANC" (match-string 1))
       nil)))
 
-(when (or (eq system-type 'windows-nt) (eq system-type 'cygwin))
-  (setq gc-cons-threshold (* 511 1024 1024))
-  (setq gc-cons-percentage 0.5)
-  (run-with-idle-timer 5 t #'garbage-collect))
-
 (defun my-tangle-config-org (orgfile elfile)
   "This function will write all source blocks from =config.org= into
 =config.el= that are ...
@@ -104,9 +99,11 @@ The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabeti
   (when (or (not (file-exists-p elfile))
             (file-newer-than-file-p orgfile elfile))
     (my-tangle-config-org orgfile elfile))
-  (load-file elfile)
-  ;; Solo al final inicializamos los paquetes
-  (package-initialize))
+  (progn
+    (load-file elfile)
+    ;; Solo al final inicializamos los paquetes
+    (package-initialize)
+    (message "Tiempo de inicialización %.2fs" (float-time (time-subtract (current-time) my-start-time)))))
 
 (defun my-tangle-config-org-hook-func ()
   (when (string= "configuracion.org" (buffer-name))
@@ -115,5 +112,3 @@ The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabeti
       (my-tangle-config-org orgfile elfile))))
 
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
-
-(message "Start up time %.2fs" (float-time (time-subtract (current-time) my-start-time)))
