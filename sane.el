@@ -15,7 +15,6 @@
  x-underline-at-descent-line t ;; la linea que subraya es puesta en la base de
  ;; la tipografía en lugar de en la linea base. 
  save-interprogram-paste-before-kill t
- bookmark-default-file (expand-file-name "bookmarks" user-emacs-directory)
  bookmark-save-flag 1
  inhibit-startup-message t 
  initial-scratch-message nil
@@ -41,13 +40,13 @@
 (set-default-coding-systems 'utf-8)
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
-(setq default-buffer-file-coding-system 'utf-8)
+(setq buffer-file-coding-system 'utf-8)
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 (if
     (boundp 'buffer-file-coding-system)
     (setq-default buffer-file-coding-system 'utf-8)
-  (setf default-buffer-file-coding-system 'utf-8))
+  (setf buffer-file-coding-system 'utf-8))
 (add-to-list 'default-frame-alist '(tty-color-mode . -1))
 (require 'cl)
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
