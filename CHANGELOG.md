@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Instala company childframe. [Jorge Araya Navarro]
+
+  Si Emacs es versión 26, y desactiva `company-quickhelp` para evitar problemas de compatibilidad
 - Inserta marcadores para directorios en GNU/Linux. [Jorge Araya
   Navarro]
 - Actualiza bookmark+ [Jorge Araya Navarro]

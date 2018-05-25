@@ -959,6 +959,13 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     (setf company-auto-complete nil)
     (add-hook 'after-init-hook #'global-company-mode))
 #+END_SRC
+=company-childframe= permite a company usar child-frame como menu de candidatos
+#+BEGIN_SRC emacs-lisp
+  (when (not (version< emacs-version "26.0"))
+  (use-package company-childframe
+    :config
+    (company-childframe-mode 1)))
+#+END_SRC
 =company-statistics= ofrece mejores predicciones en sus resultados de acuerdo a datos estadísticos.
 #+BEGIN_SRC emacs-lisp
   (use-package company-statistics
@@ -970,6 +977,7 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
 =company-quickhelp= genera mejores popups que Emacs para visualizar documentación de funciones/variables.
 #+BEGIN_SRC emacs-lisp
   (use-package company-quickhelp
+    :if (not (fboundp 'company-childframe-mode))
     :after (company)
     :config (company-quickhelp-mode 1))
 #+END_SRC
