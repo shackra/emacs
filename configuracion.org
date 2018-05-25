@@ -2023,7 +2023,7 @@ Modo mayor para programar en Python
   (use-package isortify
     :ensure t
     :config
-    (add-hook 'python-mode-hook 'isort-mode))
+    (add-hook 'python-mode-hook 'isortify-mode))
 
   (use-package sphinx-doc
     :after (python)

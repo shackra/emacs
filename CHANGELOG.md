@@ -144,6 +144,7 @@ Changes
 
 Fix
 ~~~
+- Comando correcto para `isortify-mode` [Jorge Araya Navarro]
 - Ignora archivos generados por org2web. [Jorge Araya Navarro]
 - Restaura archivos de estilo de mi blog. [Jorge Araya Navarro]
 - Incluye información de VCS en el mode-line, de estar disponible.
