@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- El Infierno se congelo. [Jorge Araya Navarro]
 - Instala company childframe. [Jorge Araya Navarro]
 
   Si Emacs es versión 26, y desactiva `company-quickhelp` para evitar problemas de compatibilidad
