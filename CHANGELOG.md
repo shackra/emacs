@@ -71,6 +71,9 @@ New
 
 Changes
 ~~~~~~~
+- Restaura mu4e como cliente de correo. [Jorge Araya Navarro]
+
+  - https://github.com/djcb/mu/issues/8#issuecomment-396649525
 - Deja de jugar con el recolector de basura en Windows. [Jorge Araya
   Navarro]
 - Actualiza notmuch. [Jorge Araya Navarro]
