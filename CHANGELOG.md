@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Habilita corrección gramatical con LanguageTool. [Jorge Araya Navarro]
+
+  - https://www.reddit.com/r/emacs/comments/2zqetc/languagetool_exited_abnormally_with_code_1/ctapph0
 - El Infierno se congelo. [Jorge Araya Navarro]
 - Instala company childframe. [Jorge Araya Navarro]
 
@@ -208,6 +211,11 @@ Fix
 
 Other
 ~~~~~
+- Merge branch 'mu4e' into 'master' [Jorge Javier Araya Navarro]
+
+  chg: Restaura mu4e como cliente de correo
+
+  See merge request shackra/emacs!2
 - Merge branch 'master' of gitlab.com:shackra/emacs. [Jorge Araya
   Navarro]
 
