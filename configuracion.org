@@ -2841,12 +2841,10 @@ Corrección gramatical en varios idiomas con =languagetool=.
 Configuración adecuada para Arch Linux gracias a la siguiente [[https://www.reddit.com/r/emacs/comments/2zqetc/languagetool_exited_abnormally_with_code_1/ctapph0][corrección desde Reddit]].
 #+BEGIN_SRC emacs-lisp
   (use-package langtool
-    :if (executable-find "languagetool")
     :init
     (if (not (member system-type '(ms-dos windows-nt cygwin)))
         (setq langtool-java-classpath "/usr/share/languagetool:/usr/share/java/languagetool/*")
-      ;; TODO: Localizar la ubicación de language tool en Windows
-      )
+      (setf langtool-language-tool-jar "d:/languagetool/4.1/languagetool-commandline.jar"))
     (defalias 'lt-check 'langtool-check)
     (defalias 'lt-correct 'langtool-correct-buffer))
 #+END_SRC
