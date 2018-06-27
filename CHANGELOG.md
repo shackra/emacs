@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- Configura Emacs para usar languagetool en Windows 10. [Jorge Araya
+  Navarro]
 - Habilita corrección gramatical con LanguageTool. [Jorge Araya Navarro]
 
   - https://www.reddit.com/r/emacs/comments/2zqetc/languagetool_exited_abnormally_with_code_1/ctapph0
@@ -151,6 +153,10 @@ Changes
 
 Fix
 ~~~
+- Ejecuta comando de sincronizado de email. [Jorge Araya Navarro]
+
+  El script pushmail.sh estaba siendo desenredado por org-mode pero no estaba siendo marcado como
+  ejecutable, para simplificar las cosas el comando es ejecutado por `start-process` directamente.
 - Comando correcto para `isortify-mode` [Jorge Araya Navarro]
 - Ignora archivos generados por org2web. [Jorge Araya Navarro]
 - Restaura archivos de estilo de mi blog. [Jorge Araya Navarro]

@@ -1334,7 +1334,7 @@ Corre procesos externos a Emacs de manera automática
       :kill-signal 'sigkill)
     (prodigy-start-service (car prodigy-services)))
 #+END_SRC
-*** COMMENT Correo electrónico
+*** Correo electrónico
 =mu4e= se usa para leer y enviar correo electrónico.
 
 Este script descarga el correo y lo indexa, aquí asumimos que mbsync esta correctamente configurado.
@@ -1350,19 +1350,11 @@ Este script descarga el correo y lo indexa, aquí asumimos que mbsync esta corre
       mu index --maildir=~/Mail
   fi
 #+END_SRC
-Este otro script se encarga de pujar los cambios a la bandeja de entrada remoto para que otros dispositivos queden sincronizados también (teléfono movíles, tabletas y "web mail").
-#+BEGIN_SRC sh :tangle ~/.local/bin/pushmail.sh
-  #!/usr/bin/sh
-
-  mbsync -a -V --push -c ~/.mbsyncrc.private >/tmp/mu4e-push.log 2>&1
-  notify-send -u low "Correo electrónico" "Cambios en los buzones de correo empujado a Internet"
-#+END_SRC
-Nos aseguramos que ambos scripts sean ejecutables.
+Scripts ejecutables.
 #+BEGIN_SRC sh :results silent
   #!/bin/sh
 
   chmod +x ~/.local/bin/getmail.sh
-  chmod +x ~/.local/bin/pushmail.sh
 #+END_SRC
 Para una configuración personalizada hay que cambiar =user-mail-address= y =user-full-name= ubicados en [[*Informaci%C3%B3n personal][Información personal]].
 #+BEGIN_SRC emacs-lisp
@@ -1413,7 +1405,7 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
 
     (defadvice mu4e-quit (after mu4e-close-and-push activate)
       "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
-      (start-process "pushmail" nil "pushmail.sh")
+      (start-process "pushmail" "*pushmail-mbsync*" "mbsync" "-a" "-V" "--push" "-c" "/home/jorge/.mbsyncrc.private")
       (when (get-register :mu4e-fullscreen)
         (jump-to-register :mu4e-fullscreen)))
     :init
