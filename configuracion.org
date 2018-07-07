@@ -506,6 +506,60 @@ Combinaciones de teclas que no pertenecen a ningún paquete en particular.
   (global-set-key [remap split-window-below] #'shackra-split-window-vertically)
   (global-set-key [remap split-window-right] #'shackra-split-window-horizontally)
 #+END_SRC
+** Filtro de temas de mi cuaderno de apuntes técnicos
+#+BEGIN_SRC emacs-lisp
+  (defvar shackra-technotes-search-engine-url "https://duckduckgo.com/?q="
+    "Motor de busqueda para encontrar coincidencias sobre determinada frase")
+
+  (defvar shackra-technotes-notebook "~/org/apuntes tecnicos.org"
+    "Documento org-mode donde tengo apuntes de ingeniería")
+
+  (defun shackra--kill-this-buffer ()
+    "Mata el buffer actual y borra la ventana"
+    (interactive)
+    (kill-this-buffer)
+    (delete-window))
+
+  (defun shackra--technotes-action (entry)
+    "Abre un enlace en `entry' apropiadamente"
+    (progn
+      (org-open-link-from-string (get-text-property 0 'property entry))
+      (with-current-buffer (file-name-nondirectory shackra-technotes-notebook)
+        (org-narrow-to-element)
+        (org-cycle)
+        ;; Cierra el buffer de `shackra-technotes-notebook'
+        (use-local-map (copy-keymap org-mode-map))
+        (local-set-key "q" 'shackra--kill-this-buffer)
+        (read-only-mode))))
+
+  (defun shackra--technotes-source (string &optional predicate flag)
+    (let ((collection))
+      (with-current-buffer (find-file-noselect shackra-technotes-notebook)
+        (goto-char (point-min))
+        ;; Se dirige al primer encabezado
+        (goto-char (re-search-forward "^*"))
+        (set-mark (line-beginning-position))
+        (goto-char (point-max))
+        (setf collection
+              (org-map-entries
+               (lambda ()
+                 (let ((entry '())
+                       (link (org-store-link 0))
+                       (tags (map 'list (lambda (x) (concat "#" x)) (split-string (or (nth 5 (org-heading-components)) "") ":" t " "))))
+                   (setf entry `(,(concat (nth 4 (org-heading-components)) " " (string-join tags " ")) . ,link))
+                   (deactivate-mark)
+                   entry)))))
+      (setf collection (cl-remove-if-not (lambda (element) (string-match-p (counsel-unquote-regex-parens (ivy--regex-ignore-order string)) (car element))) collection))
+      (add-to-list 'collection `(,(concat "Buscar en la web: " string) . ,(concat shackra-technotes-search-engine-url (url-encode-url string))) t)
+      (cl-map 'list (lambda (elemt) (propertize (car elemt) 'property (cdr elemt))) collection)))
+
+  (defun shackra-technotes ()
+    "Consulta una entrada de mis apuntes técnicos"
+    (interactive)
+    (ivy-read "Consultar> " #'shackra--technotes-source :action 'shackra--technotes-action :require-match t :dynamic-collection t :caller 'shackra-technotes))
+
+  (global-set-key (kbd "C-c T") #'shackra-technotes)
+#+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages

@@ -7,6 +7,10 @@ Changelog
 
 New
 ~~~
+- Habilita comando para filtrar cuaderno de apuntes técnicos. [Jorge
+  Araya Navarro]
+
+  - https://www.reddit.com/r/emacs/comments/8wx52n/if_you_have_a_software_engineering_notebook_this/
 - Configura Emacs para usar languagetool en Windows 10. [Jorge Araya
   Navarro]
 - Habilita corrección gramatical con LanguageTool. [Jorge Araya Navarro]
