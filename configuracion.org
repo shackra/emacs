@@ -3585,9 +3585,7 @@ Multiples temporizadores simultaneos
 *** docker 🐋
 Utilidades para integrar Emacs y docker
 #+BEGIN_SRC emacs-lisp
-  (use-package docker
-    :config
-    (docker-global-mode))
+  (use-package docker)
 
   (use-package docker-compose-mode)
 

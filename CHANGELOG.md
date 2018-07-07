@@ -157,6 +157,7 @@ Changes
 
 Fix
 ~~~
+- Elimina llamada a comando inexistente. [Jorge Araya Navarro]
 - Ejecuta comando de sincronizado de email. [Jorge Araya Navarro]
 
   El script pushmail.sh estaba siendo desenredado por org-mode pero no estaba siendo marcado como
