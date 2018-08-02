@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Añade nuevos paquetes. [Jorge Araya Navarro]
 - Habilita comando para filtrar cuaderno de apuntes técnicos. [Jorge
   Araya Navarro]
 

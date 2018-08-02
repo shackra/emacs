@@ -580,6 +580,11 @@ Nombres más cortos para comandos usados frecuentemente
 #+END_SRC
 * Paquetes de extensiones
 ** Utilidades
+*** noflet
+Nos permite sobreescribir localmente funciones al estilo de =flet=, pero con acceso a la función original a través del símbolo =this-fn=.
+#+BEGIN_SRC emacs-lisp
+  (use-package noflet)
+#+END_SRC
 *** TRAMP
 Transparent Remote Access, Multiple Protocols: paquete para editar archivos remotos. [[https://www.gnu.org/software/tramp/][Manual de usuario]].
 #+BEGIN_SRC emacs-lisp
@@ -1206,6 +1211,7 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
     (add-hook 'post-command-hook #'vc-state-refresh-post-command-hook)
     (setf magit-commit-arguments nil)
     (setf magit-use-overlays nil))
+  (use-package magit-todos)
 #+END_SRC
 *** git-gutter-fring
 Muestra información de =git diff= en el fringe.
