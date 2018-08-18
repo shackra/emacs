@@ -81,6 +81,7 @@ New
 
 Changes
 ~~~~~~~
+- Habilita magit-todos. [Jorge Araya Navarro]
 - Establece buffers a ignorar y cambia el prefijo para Projectile.
   [Jorge Araya Navarro]
 - Esconde el indicador de linea y activa native-linum. [Jorge Araya

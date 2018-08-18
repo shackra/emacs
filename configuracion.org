@@ -1199,7 +1199,9 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
     (add-hook 'post-command-hook #'vc-state-refresh-post-command-hook)
     (setf magit-commit-arguments nil)
     (setf magit-use-overlays nil))
-  (use-package magit-todos)
+  (use-package magit-todos
+    :config
+    (add-hook 'magit-status-mode-hook 'magit-todos-mode))
 #+END_SRC
 *** git-gutter-fring
 Muestra información de =git diff= en el fringe.
