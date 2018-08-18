@@ -163,6 +163,8 @@ Changes
 
 Fix
 ~~~
+- Elimina TODOs innecesarios de paquetes de terceros. [Jorge Araya
+  Navarro]
 - Simplifica configuración para mostrar lineas enumeradas. [Jorge Araya
   Navarro]
 - Elimina TODOs innecesarios. [Jorge Araya Navarro]
