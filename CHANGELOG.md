@@ -81,6 +81,8 @@ New
 
 Changes
 ~~~~~~~
+- Esconde el indicador de linea y activa native-linum. [Jorge Araya
+  Navarro]
 - Restaura mu4e como cliente de correo. [Jorge Araya Navarro]
 
   - https://github.com/djcb/mu/issues/8#issuecomment-396649525

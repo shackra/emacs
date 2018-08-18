@@ -966,36 +966,21 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
     (global-undo-tree-mode 1))
 #+END_SRC
 *** numero de lineas
-Muestra el numero de lineas al margen del buffer, sea con native-linum (emacs 26+) o con nlinum.
+Muestra el numero de lineas al margen del buffer.
 #+BEGIN_SRC emacs-lisp
-  (use-package nlinum
-    :if (version< emacs-version "26")
-    :pin gnu
-    :init
-    (defun ancho-nlinum-mode-hook ()
-      "Calcula el ancho de los números para evitar feos saltos al desplazarse"
-      (when nlinum-mode
-        (setq-local nlinum-format (concat "%" (number-to-string
-                                               (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))
-                                          "d"))))
-    (defun initialize-nlinum (&optional frame)
-      "Flanque de error en nlinum al usar Emacs como demonio"
-      (require 'nlinum)
-      (add-hook 'prog-mode-hook 'nlinum-mode))
-    (add-hook 'nlinum-mode-hook #'ancho-nlinum-mode-hook)
-    (if (daemonp)
-        (progn
-          (add-hook 'window-setup-hook #'initialize-nlinum)
-          (defadvice make-frame (around toggle-nlinum-mode compile activate)
-            (nlinum-mode -1) ad-do-it (nlinum-mode 1)))
-      (add-hook 'prog-mode-hook #'nlinum-mode)))
-
   (use-package native-linum
     :ensure nil
     :no-require t
-    :if (version= emacs-version "26")
-    ;; TODO: ver como se activa native-linum
-    )
+    ;; Esto requiere Emacs 26 o superior
+    :if (not (version< emacs-version "26"))
+    :init
+    (setf display-line-numbers-type 'relative)
+    (defun shackra--display-line-numbers-better-width ()
+      (setf display-line-numbers-width (number-to-string
+                                        (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))))
+    :config
+    (add-hook 'display-line-numbers-mode-hook #'shackra--display-line-numbers-better-width)
+    (global-display-line-numbers-mode))
 #+END_SRC
 *** =company=
 :LOGBOOK:
@@ -3215,8 +3200,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
                           ))
                   "	"
                   mode-line-modes
-                  mode-line-misc-info
-                  mode-line-position))
+                  mode-line-misc-info))
 #+END_SRC
 *** =telephone-line=
 :LOGBOOK:
@@ -3257,8 +3241,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
             (nil .  (shackra-vc-segment shackra-flycheck-status-segment))))
 
     (setf telephone-line-rhs '((nil . (telephone-line-misc-info-segment telephone-line-major-mode-segment))
-                               (accent-orange . (shackra-venv-segment))
-                               (accent . (telephone-line-position-segment))))
+                               (accent-orange . (shackra-venv-segment))))
     (telephone-line-mode 1))
 #+END_SRC
 *** =visual-line-mode=
