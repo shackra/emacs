@@ -1050,7 +1050,10 @@ Manejo de archivos de un proyecto.
      projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
+    (with-eval-after-load ivy
+      (setf projectile-globally-ignored-buffers ivy-ignore-buffers))
     :config
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (add-hook 'after-init-hook #'projectile-global-mode))
 
   (use-package ag)
