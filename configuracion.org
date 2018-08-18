@@ -1471,9 +1471,7 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     (setf mu4e-headers-visible-lines 8)
     (setf mu4e-hide-index-messages t)
     (setf message-kill-buffer-on-exit t)
-    ;; TODO: Modificar esto de manera dinámica para otros sistemas operativos
     (setf mu4e-attachment-dir  "~/Descargas")
-    ;; TODO: modificar esto segun sistema operativo?
     (setf mu4e-maildir "~/Mail")
     (setf smtpmail-stream-type  'ssl)
     (setf smtpmail-smtp-service 465)
@@ -2592,7 +2590,6 @@ Instalar estos componentes en el sistema operativo
     :init
     (add-to-list 'auto-mode-alist '("components?\\/.*\\.js\\'" . rjsx-mode))
     (add-to-list 'auto-mode-alist '("containers?\\/.*\\.js\\'" . rjsx-mode))
-    ;; TODO: Eliminar cuando el bug sea resuelto https://github.com/felipeochoa/rjsx-mode/issues/68
     (add-hook 'rjsx-mode-hook (lambda () (flyspell-mode-off)))
     :config
     ;; tomado de https://emacs.stackexchange.com/a/33544/690 mejora el sangrado

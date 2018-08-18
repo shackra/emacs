@@ -160,6 +160,7 @@ Changes
 
 Fix
 ~~~
+- Elimina TODOs innecesarios. [Jorge Araya Navarro]
 - Elimina llamada a comando inexistente. [Jorge Araya Navarro]
 - Ejecuta comando de sincronizado de email. [Jorge Araya Navarro]
 
