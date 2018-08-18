@@ -163,6 +163,8 @@ Changes
 
 Fix
 ~~~
+- Simplifica configuración para mostrar lineas enumeradas. [Jorge Araya
+  Navarro]
 - Elimina TODOs innecesarios. [Jorge Araya Navarro]
 - Elimina llamada a comando inexistente. [Jorge Araya Navarro]
 - Ejecuta comando de sincronizado de email. [Jorge Araya Navarro]

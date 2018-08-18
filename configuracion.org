@@ -968,17 +968,11 @@ Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los c
 *** numero de lineas
 Muestra el numero de lineas al margen del buffer.
 #+BEGIN_SRC emacs-lisp
-  (use-package native-linum
-    :ensure nil
-    :no-require t
-    ;; Esto requiere Emacs 26 o superior
-    :if (not (version< emacs-version "26"))
-    :init
+  (when (not (version< emacs-version "26"))
     (setf display-line-numbers-type 'relative)
     (defun shackra--display-line-numbers-better-width ()
       (setf display-line-numbers-width (number-to-string
                                         (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))))
-    :config
     (add-hook 'display-line-numbers-mode-hook #'shackra--display-line-numbers-better-width)
     (global-display-line-numbers-mode))
 #+END_SRC
