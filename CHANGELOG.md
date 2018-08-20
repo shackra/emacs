@@ -81,6 +81,7 @@ New
 
 Changes
 ~~~~~~~
+- Cambia como se escribe mi apodo. [Jorge Araya Navarro]
 - Habilita magit-todos. [Jorge Araya Navarro]
 - Establece buffers a ignorar y cambia el prefijo para Projectile.
   [Jorge Araya Navarro]
