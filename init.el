@@ -12,6 +12,9 @@
 (setq package--init-file-ensured t)
 (setf byte-compile-warnings nil)
 
+;; Resuelve problema en Windows 10 con codificaciones incorrectas
+(define-coding-system-alias 'cp65001 'utf-8)
+
 ;; repositorios de paquetes
 (setf package-archives '(("melpa"        . "https://melpa.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org/packages/")
