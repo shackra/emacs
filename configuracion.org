@@ -2307,11 +2307,6 @@ Un modo mayor para editar paginas web
     :config
     (add-hook 'web-mode-hook (lambda ()
                                (add-to-list (make-local-variable 'company-backends) '(company-web-html :with company-yasnippet)))))
-  (use-package ac-html-bootstrap
-    :after (company-web)
-    :init
-    (add-hook 'web-mode-hook 'company-web-bootstrap+)
-    (add-hook 'web-mode-hook 'company-web-fa+))
   (use-package web-mode
     :preface
     (defun shackra-webdev-refresh-page-on-save ()
