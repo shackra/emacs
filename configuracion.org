@@ -974,7 +974,7 @@ Muestra el numero de lineas al margen del buffer.
       (setf display-line-numbers-width (number-to-string
                                         (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))))
     (add-hook 'display-line-numbers-mode-hook #'shackra--display-line-numbers-better-width)
-    (global-display-line-numbers-mode))
+    (add-hook 'prog-mode 'display-line-numbers-mode))
 #+END_SRC
 *** =company=
 :LOGBOOK:
@@ -1141,6 +1141,9 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
     (add-to-list 'term-bind-key-alist '("C-y"       . term-paste))
 
     (add-hook 'term-mode-hook #'shackra-maybe-disable-yasnippet)
+    (add-hook 'term-mode-hook (lambda ()
+                                (when (fboundp 'display-line-numbers-mode)
+                                  (display-line-numbers-mode -1))))
     (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 #+END_SRC
 *** =git=
@@ -1612,7 +1615,10 @@ Conexión a Weechat desde Emacs
       :init
       (defun shackra-weechat-buffer-goodies ()
         "Activa y desactiva cosas"
-        (linum-mode -1)
+        (when (fboundp 'linum-mode)
+          (linum-mode -1))
+        (when (fboundp 'display-line-numbers-mode)
+          (display-line-numbers-mode -1))
         (visual-line-mode 1))
       (add-hook 'weechat-mode-hook #'shackra-weechat-buffer-goodies)
       (setf weechat-spelling-dictionaries '(("freenode\\." . "en")
