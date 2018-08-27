@@ -2633,7 +2633,7 @@ Instalar estos componentes en el sistema operativo
     (with-eval-after-load "lsp-javascript-typescript"
       (add-hook 'rjsx-mode-hook #'lsp-javascript-typescript-enable)))
 
-  (with-eval-after-load flycheck-mode
+  (with-eval-after-load 'flycheck
     ;; tomado de https://jamiecollinson.com/blog/my-emacs-config/ hace que
     ;; flycheck utilice eslint instalado en el proyecto en lugar del habilitado
     ;; globalmente en el sistema
