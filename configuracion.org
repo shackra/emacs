@@ -997,12 +997,12 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     (setf company-auto-complete nil)
     (add-hook 'after-init-hook #'global-company-mode))
 #+END_SRC
-=company-childframe= permite a company usar child-frame como menu de candidatos
+=company-posframe= permite a company usar child-frame como menu de candidatos
 #+BEGIN_SRC emacs-lisp
   (when (not (version< emacs-version "26.0"))
-  (use-package company-childframe
+  (use-package company-posframe
     :config
-    (company-childframe-mode 1)))
+    (company-posframe-mode 1)))
 #+END_SRC
 =company-statistics= ofrece mejores predicciones en sus resultados de acuerdo a datos estadísticos.
 #+BEGIN_SRC emacs-lisp
@@ -1011,13 +1011,6 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     :init
     (setf company-statistics-file "~/.company-statistics-cache.el")
     (add-hook 'after-init-hook 'company-statistics-mode))
-#+END_SRC
-=company-quickhelp= genera mejores popups que Emacs para visualizar documentación de funciones/variables.
-#+BEGIN_SRC emacs-lisp
-  (use-package company-quickhelp
-    :if (not (fboundp 'company-childframe-mode))
-    :after (company)
-    :config (company-quickhelp-mode 1))
 #+END_SRC
 *** company-auctex
 backend para [[*=company=][Company]] que provee auto completado para AUCTeX
@@ -1361,6 +1354,24 @@ Teclas:
            iedit-mode-keymap ("RET" . iedit-quit)
            :map
            global-map ("C-'" . iedit-mode)))
+#+END_SRC
+*** Language Server Protocol
+Implementación para Emacs del Language Server Protocol.
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :config
+    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu))
+
+  (use-package lsp-ui
+    :after (lsp-mode)
+    :config
+    (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
+    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+
+  (use-package company-lsp
+    :config
+    (push 'company-lsp company-backends))
 #+END_SRC
 ** Comunicación
 *** prodigy
@@ -2083,7 +2094,7 @@ Modo mayor para programar en Python
     (venv-initialize-eshell)
     :config
     (add-hook 'venv-postmkvirtualenv-hook
-              (lambda () (shell-command "pip install jedi rope isort epc importmagic yapf pylint"))))
+              (lambda () (shell-command "pip install python-language-server[all] isort epc importmagic yapf pylint"))))
 
   (use-package pippel)
 
@@ -2111,7 +2122,13 @@ Modo mayor para programar en Python
 
   (use-package pydoc-info)
 
+  (use-package lsp-python
+    :after (lsp-mode)
+    :config
+    (add-hook 'python-mode-hook #'lsp-python-enable))
+
   (use-package company-anaconda
+    :disabled ;; Usando usando LSP por ahora
     :if (executable-find "python")
     :after (company)
     :bind (:map python-mode-map
@@ -2198,26 +2215,17 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
   (use-package cargo
     :after (rust-mode)
     :if (executable-find "cargo"))
-  (use-package racer
-    :after (rust-mode)
+
+  (use-package lsp-rust
+    :after (lsp-mode)
     :config
-    (add-hook 'rust-mode-hook #'racer-mode)
-    (add-hook 'racer-mode-hook #'eldoc-mode))
-  (with-eval-after-load 'racer
-    (use-package company-racer
-      :after (company)
-      :config
-      (add-hook 'rust-mode-hook '(lambda ()
-                                   (add-to-list (make-local-variable 'company-backends) '(company-racer :with company-yasnippet))))))
+    (with-eval-after-load "rust-mode"
+      (add-hook 'rust-mode-hook #'lsp-rust-enable)))
+
   (use-package rust-mode
     :if (executable-find "rustc")
     :init
     (setq rust-format-on-save t))
-  (with-eval-after-load 'flycheck
-    (use-package flycheck-rust
-      :after (rust-mode)
-      :config
-      (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)))
 #+END_SRC
 *** emacs-traad
 Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
@@ -2308,11 +2316,7 @@ Un modo mayor para editar paginas web
     :config
     (add-hook 'sgml-mode-hook 'emmet-mode)
     (add-hook 'web-mode-hook 'emmet-mode))
-  (use-package company-web
-    :after (web-mode)
-    :config
-    (add-hook 'web-mode-hook (lambda ()
-                               (add-to-list (make-local-variable 'company-backends) '(company-web-html :with company-yasnippet)))))
+
   (use-package web-mode
     :preface
     (defun shackra-webdev-refresh-page-on-save ()
@@ -2325,6 +2329,8 @@ Un modo mayor para editar paginas web
     :init
     (setf web-mode-code-indent-offset 2)
     :config
+    (with-eval-after-load "lsp-html"
+      (add-hook 'web-mode-hook #'lsp-html-enable))
     (add-hook 'after-save-hook #'shackra-webdev-refresh-page-on-save)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -2335,14 +2341,56 @@ Un modo mayor para editar paginas web
     (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode)))
 #+END_SRC
+**** CSS con LSP-mode
+***** dependencias externas
+Si esto no se instala no tendremos disponible autocompletado para CSS con LSP
+#+BEGIN_SRC sh :dir /sudo:: :results silent
+npm i -g vscode-css-languageserver-bin
+#+END_SRC
+***** =lsp-css=
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-css
+    :config
+    (add-hook 'css-mode-hook 'lsp-css-enable))
+#+END_SRC
+**** HTML con LSP-mode
+***** dependencias externas
+#+BEGIN_SRC sh :dir /sudo:: :results silent
+npm i -g vscode-html-languageserver-bin
+#+END_SRC
+***** =lsp-html=
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-html
+    :config
+    (add-hook 'html-mode-hook #'lsp-html-enable))
+#+END_SRC
 *** PHP
 modo mayor para editar código PHP
+**** dependencias externas
+Composer debe estar configurado con al menos la siguientes lineas, este cambio afecta globalmente todos los paquetes de PHP por lo cual hay que ser cauteloso.
+#+BEGIN_SRC json :tangle ~/.config/composer/composer.json
+  {
+    "minimum-stability": "dev",
+    "prefer-stable": true
+  }
+#+END_SRC
+Se instala el paquete externo mediante =composer=
+#+BEGIN_SRC sh :dir /sudo:: :results silent
+  composer global require felixfbecker/language-server
+  composer global run-script --working-dir=vendor/felixfbecker/language-server parse-stubs
+#+END_SRC
+Y esta es la configuración.
 #+BEGIN_SRC emacs-lisp
   (use-package php-refactor-mode
     :after (php-mode)
     :config
     (add-hook 'php-mode-hook 'php-refactor-mode))
   (use-package php-mode)
+  (use-package lsp-php
+    :after (lsp-mode)
+    :config
+    (with-eval-after-load "php-mode"
+      (add-hook 'php-mode-hook #'lsp-mode)))
 #+END_SRC
 *** golang
 Modo mayor para editar archivos Golang.
@@ -2397,11 +2445,10 @@ go build golang.org/x/tools/cmd/guru
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
     (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
-  (use-package company-go
-    :after (go-mode)
-    :if (executable-find "gocode")
+  (use-package lsp-go
+    :after (lsp-mode)
     :config
-    (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-go :with company-yasnippet)))))
+    (add-hook 'go-mode-hook #'lsp-go-enable))
   (use-package go-eldoc
     :after (go-mode)
     :config
@@ -2490,7 +2537,7 @@ go build golang.org/x/tools/cmd/guru
 **** Dependencias externas
 Instalar estos componentes en el sistema operativo
 #+BEGIN_SRC sh :dir /sudo:: :results silent
-  npm install -g babel-cli babel-preset-react eslint@3.x babel-eslint@7 eslint-plugin-react --save-dev
+  npm install -g babel-cli babel-preset-react eslint@3.x babel-eslint@7 eslint-plugin-react typescript-language-server --save-dev
 #+END_SRC
 ***** configuracion eslint
 #+BEGIN_SRC json :tangle ~/.eslintrc
@@ -2535,33 +2582,13 @@ Instalar estos componentes en el sistema operativo
   (setq-default js-indent-level 2)
 
   (use-package ng2-mode)
-
-  ;; TODO: Eliminar cuando el soporte para lsp-mode sea activado
-  (use-package tide
-    :init
-    (defun setup-tide-mode ()
-      (interactive)
-      (tide-setup)
-      (tide-hl-identifier-mode +1))
-    (setf tide-format-options
-          '(:indentSize 2 :tabSize: 2 :insertSpaceAfterFunctionKeywordForAnonymousFunctions t :placeOpenBraceOnNewLineForFunctions nil))
-    (setf tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
-    (setf typescript-indent-level 2)
-    (add-hook 'before-save-hook 'tide-format-before-save)
-    ;; Añade company-tide como fuente de auto-completado para varios modos
-    ;; mayores que lidian con JavaScript/Typescript
-    (dolist (hook '(js2-mode-hook
-                    rjsx-mode-hook
-                    inferior-js-mode-hook
-                    typescript-mode-hook
-                    ng2-ts-mode-hook))
-      (add-hook hook #'setup-tide-mode)
-      (add-hook hook (lambda ()
-                       (add-to-list (make-local-variable 'company-backends)
-                                    '(company-tide :with company-yasnippet)))))
+  (use-package typescript-mode
+    :init (setf typescript-indent-level js-indent-level)
     :config
-    (with-eval-after-load flycheck-mode
-      (flycheck-add-next-checker 'javascript-eslint 'jsx-tide 'append)))
+    (with-eval-after-load "lsp-javascript-typescript"
+      (add-hook 'typescript-mode-hook #'lsp-javascript-typescript-enable)))
+
+  (use-package lsp-javascript-typescript)
 
   (use-package js2-refactor
     :after (js2-mode)
@@ -2577,7 +2604,10 @@ Instalar estos componentes en el sistema operativo
   (use-package js2-mode
     :mode "\\.js\\'"
     :init
-    (add-hook 'js2-mode-hook #'js2-imenu-extras-mode))
+    (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
+    :config
+    (with-eval-after-load "lsp-javascript-typescript"
+      (add-hook 'js2-mode-hook #'lsp-javascript-typescript-enable)))
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript
@@ -2599,7 +2629,9 @@ Instalar estos componentes en el sistema operativo
       (save-excursion
         (beginning-of-line)
         (if (looking-at-p "^ +\/?> *$")
-            (delete-char sgml-basic-offset)))))
+            (delete-char sgml-basic-offset))))
+    (with-eval-after-load "lsp-javascript-typescript"
+      (add-hook 'rjsx-mode-hook #'lsp-javascript-typescript-enable)))
 
   (with-eval-after-load flycheck-mode
     ;; tomado de https://jamiecollinson.com/blog/my-emacs-config/ hace que
@@ -2651,7 +2683,10 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 *** SCSS
 #+BEGIN_SRC emacs-lisp
   (use-package scss-mode
-    :init (setf scss-compile-at-save nil))
+    :init (setf scss-compile-at-save nil)
+    :config
+    (when (fboundp 'lsp-scss-enable)
+      (add-hook 'scss-mode-hook 'lsp-scss-enable)))
 #+END_SRC
 *** Gherkin
 #+BEGIN_SRC emacs-lisp
@@ -2701,6 +2736,7 @@ Type `M-x gimp-help' for help.
     (setq mmm-submode-decoration-level 2))
 
   (use-package lsp-vue
+    :after (lsp-mode)
     :init
     (add-hook 'vue-mode-hook #'lsp-vue-mmm-enable))
 #+END_SRC
