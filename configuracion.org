@@ -560,6 +560,11 @@ Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 
   (global-set-key (kbd "C-c T") #'shackra-technotes)
 #+END_SRC
+** Nivel de sangrado para desarrollo web
+Varios modos mayores que uso para desarrollo web tienen para personalizar el nivel de sangrado. Para todos quiero usar el mismo nivel de sangrado pero también quiero cambiarlo cuando así lo desee sin tener que rastrear las varias en la configuración.
+#+BEGIN_SRC emacs-lisp
+  (defvar shackra-webdev-indent 2 "Nivel de sangrado para desarrollo web")
+#+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages
@@ -2327,7 +2332,7 @@ Un modo mayor para editar paginas web
         (when (and (derived-mode-p 'sgml-mode 'css-mode 'web-mode 'js2-mode) isrootfile (shackra-port-open-p moz-repl-host moz-repl-port))
           (moz-controller-page-refresh))))
     :init
-    (setf web-mode-code-indent-offset 2)
+    (setf web-mode-code-indent-offset shackra-webdev-indent)
     :config
     (with-eval-after-load "lsp-html"
       (add-hook 'web-mode-hook #'lsp-html-enable))
@@ -2579,11 +2584,11 @@ Instalar estos componentes en el sistema operativo
 #+END_SRC
 **** Paquetes para editar JavaScript
 #+BEGIN_SRC emacs-lisp
-  (setq-default js-indent-level 2)
+  (setq-default js-indent-level shackra-webdev-indent)
 
   (use-package ng2-mode)
   (use-package typescript-mode
-    :init (setf typescript-indent-level js-indent-level)
+    :init (setf typescript-indent-level shackra-webdev-indent)
     :config
     (with-eval-after-load "lsp-javascript-typescript"
       (add-hook 'typescript-mode-hook #'lsp-javascript-typescript-enable)))

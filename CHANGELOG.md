@@ -81,6 +81,8 @@ New
 
 Changes
 ~~~~~~~
+- Controla sangrado en desarrollo web con una sola variable. [Jorge
+  Araya Navarro]
 - Ajustes para activar la numeración de lineas. [Jorge Araya Navarro]
 
   Limita la activación a modos derivados de `prog-mode`, también desactiva la numeración para
