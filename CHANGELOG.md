@@ -81,6 +81,12 @@ New
 
 Changes
 ~~~~~~~
+- Genera fragmento de CHANGELOG en formato Commonmark. [Jorge Araya
+  Navarro]
+
+  Utilidad para generar un resumen de cambios en un merge request en Gitlab.
+
+  - https://github.com/zonuexe/pandoc.el/blob/198d262d09e30448f1672338b0b5a81cf75e1eaa/pandoc.el#L98
 - Implementa función, instala dependencias externas manualmente. [Jorge
   Araya Navarro]
 - Controla sangrado en desarrollo web con una sola variable. [Jorge
