@@ -2080,6 +2080,11 @@ Modo mayor para programar en Python
   (add-hook 'python-mode-hook
             '(lambda () (when (eq (buffer-size) 0) (python-template))))
 
+  (defun shackra-python-install-deps ()
+    "Instala dependencias básicas dentro de un entorno virtual"
+    (interactive)
+    (shell-command "pip install python-language-server[all] isort epc importmagic yapf pylint"))
+
   (use-package pony-mode
     :after (python)
     :init
@@ -2098,8 +2103,7 @@ Modo mayor para programar en Python
     (venv-initialize-interactive-shells)
     (venv-initialize-eshell)
     :config
-    (add-hook 'venv-postmkvirtualenv-hook
-              (lambda () (shell-command "pip install python-language-server[all] isort epc importmagic yapf pylint"))))
+    (add-hook 'venv-postmkvirtualenv-hook #'shackra-python-install-deps))
 
   (use-package pippel)
 
@@ -2131,21 +2135,6 @@ Modo mayor para programar en Python
     :after (lsp-mode)
     :config
     (add-hook 'python-mode-hook #'lsp-python-enable))
-
-  (use-package company-anaconda
-    :disabled ;; Usando usando LSP por ahora
-    :if (executable-find "python")
-    :after (company)
-    :bind (:map python-mode-map
-                ("M-." . anaconda-mode-find-definitions)
-                ("M-," . anaconda-mode-find-assignments)
-                ("M-r" . anaconda-mode-find-references)
-                ("M-*" . anaconda-mode-go-back))
-    :diminish anaconda-mode
-    :config
-    (add-hook 'python-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) '(company-anaconda :with company-yasnippet company-capf))))
-    (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-    (add-hook 'python-mode-hook 'anaconda-mode))
 
   (use-package python
     :if (executable-find "python")
@@ -2543,6 +2532,12 @@ go build golang.org/x/tools/cmd/guru
 Instalar estos componentes en el sistema operativo
 #+BEGIN_SRC sh :dir /sudo:: :results silent
   npm install -g babel-cli babel-preset-react eslint@3.x babel-eslint@7 eslint-plugin-react typescript-language-server --save-dev
+#+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun shackra-js-install-deps ()
+    "Instala localmente dependencias de JavaScript"
+    (interactive)
+    (shell-command "yarn add eslint@3.x babel-eslint@7 eslint-plugin-react --dev"))
 #+END_SRC
 ***** configuracion eslint
 #+BEGIN_SRC json :tangle ~/.eslintrc

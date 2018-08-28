@@ -81,6 +81,8 @@ New
 
 Changes
 ~~~~~~~
+- Implementa función, instala dependencias externas manualmente. [Jorge
+  Araya Navarro]
 - Controla sangrado en desarrollo web con una sola variable. [Jorge
   Araya Navarro]
 - Ajustes para activar la numeración de lineas. [Jorge Araya Navarro]
