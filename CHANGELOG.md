@@ -81,6 +81,7 @@ New
 
 Changes
 ~~~~~~~
+- Ignora buffers de LSP. [Jorge Araya Navarro]
 - Genera fragmento de CHANGELOG en formato Commonmark. [Jorge Araya
   Navarro]
 

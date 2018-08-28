@@ -750,6 +750,7 @@ Teclas
     (add-to-list 'ivy-ignore-buffers "\\*Slack Log")
     (add-to-list 'ivy-ignore-buffers "\\*tide")
     (add-to-list 'ivy-ignore-buffers "\\*Flycheck")
+    (add-to-list 'ivy-ignore-buffers "\\*lsp-")
     (ivy-mode 1))
 
   (use-package swiper
