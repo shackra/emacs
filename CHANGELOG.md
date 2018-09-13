@@ -81,6 +81,7 @@ New
 
 Changes
 ~~~~~~~
+- Ajustes menores para Windows 10. [Jorge Araya Navarro]
 - Cambia hydra-win para que use dos columnas. [Jorge Araya Navarro]
 
   Ajusta mejor al ancho del cuadro
@@ -262,6 +263,8 @@ Fix
 
 Other
 ~~~~~
+- Merge branch 'master' of gitlab.com:shackra/emacs. [Jorge Araya
+  Navarro]
 - Merge branch 'lsp-mode' into 'master' [Jorge Javier Araya Navarro]
 
   Habilita Language Server Protocol en Emacs
