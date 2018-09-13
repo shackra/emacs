@@ -81,6 +81,7 @@ New
 
 Changes
 ~~~~~~~
+- Elimina prodigy e instala Cask. [Jorge Araya Navarro]
 - Ignora buffers de LSP. [Jorge Araya Navarro]
 - Genera fragmento de CHANGELOG en formato Commonmark. [Jorge Araya
   Navarro]
