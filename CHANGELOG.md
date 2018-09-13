@@ -81,6 +81,7 @@ New
 
 Changes
 ~~~~~~~
+- Cambios en Eldoc y Slime para Paredit. [Jorge Araya Navarro]
 - Ajustes menores para Windows 10. [Jorge Araya Navarro]
 - Cambia hydra-win para que use dos columnas. [Jorge Araya Navarro]
 

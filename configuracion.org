@@ -1242,7 +1242,12 @@ Muestra en el =área de eco= la firma de la función actual.
     :ensure nil
     :diminish eldoc-mode
     :init
-    (setf eldoc-idle-delay 1.0))
+    (setf eldoc-idle-delay 1.0)
+    :config
+    (with-eval-after-load 'paredit
+      (eldoc-add-command
+       'paredit-backward-delete
+       'paredit-close-round)))
 #+END_SRC
 *** =auto-revert-mode=
 Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
@@ -2665,9 +2670,16 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package slime
     :init
+    ;; Sacado de https://www.emacswiki.org/emacs/ParEdit#toc3 evita que SLIME
+    ;; coja DEL porque interfiere con el funcionamiento normal de paredit
+    (defun override-slime-repl-bindings-with-paredit ()
+      (define-key slime-repl-mode-map
+        (read-kbd-macro paredit-backward-delete-key) nil))
     ;; Estoy leyendo Land of Lisp, así que necesito usar CLISP
     (setf inferior-lisp-program "/usr/bin/clisp")
-    (setf slime-contribs '(slime-fancy)))
+    (setf slime-contribs '(slime-fancy))
+    (add-hook 'slime-repl-mode-hook #'enable-paredit-mode)
+    (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit))
 #+END_SRC
 *** Stylus
 #+BEGIN_SRC emacs-lisp
