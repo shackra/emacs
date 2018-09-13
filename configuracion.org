@@ -827,7 +827,7 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
             ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
             ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
             ;; del macro para hydra
-            (defhydra hydra-win (:columns 4 :color amaranth)
+            (defhydra hydra-win (:columns 2 :color amaranth)
               "Manejo de ventanas"
               ("<up>" windmove-up "Cursor ↑")
               ("<left>" windmove-left "Cursor ←")

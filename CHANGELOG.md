@@ -81,6 +81,9 @@ New
 
 Changes
 ~~~~~~~
+- Cambia hydra-win para que use dos columnas. [Jorge Araya Navarro]
+
+  Ajusta mejor al ancho del cuadro
 - Activa paredit para otros modos mayores. [Jorge Araya Navarro]
 - Elimina prodigy e instala Cask. [Jorge Araya Navarro]
 - Ignora buffers de LSP. [Jorge Araya Navarro]
