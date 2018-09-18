@@ -2084,7 +2084,7 @@ Modo mayor para programar en Python
   (defun shackra-python-install-deps ()
     "Instala dependencias básicas dentro de un entorno virtual"
     (interactive)
-    (shell-command "pip install python-language-server[rope,pydocstyle] pylint pyls-mypy pyls-isort pyls-black"))
+    (shell-command "pip install python-language-server[rope,pydocstyle,pyflakes] pylint pyls-mypy pyls-isort pyls-black"))
 
   (use-package pony-mode
     :after (python)

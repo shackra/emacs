@@ -189,6 +189,7 @@ Changes
 
 Fix
 ~~~
+- Instala pyflakes en nuevos entornos virtuales. [Jorge Araya Navarro]
 - Añade correctamente función dentro de gancho. [Jorge Araya Navarro]
 
   Prog-mode no tenia su gancho correctamente establecido con la función que activa el conteo de lineas
