@@ -2084,7 +2084,7 @@ Modo mayor para programar en Python
   (defun shackra-python-install-deps ()
     "Instala dependencias básicas dentro de un entorno virtual"
     (interactive)
-    (shell-command "pip install python-language-server[all] isort epc importmagic yapf pylint"))
+    (shell-command "pip install python-language-server[rope,pydocstyle] pylint pyls-mypy pyls-isort pyls-black"))
 
   (use-package pony-mode
     :after (python)
@@ -2107,24 +2107,6 @@ Modo mayor para programar en Python
     (add-hook 'venv-postmkvirtualenv-hook #'shackra-python-install-deps))
 
   (use-package pippel)
-
-  (use-package yapfify
-    :diminish yapf-mode
-    :init (add-hook 'python-mode-hook 'yapf-mode))
-
-  (use-package importmagic
-    :disabled
-    :diminish 'importmagic-mode
-    :init
-    (defun shackra-before-save-py-importmagic-fix ()
-      (when (eq major-mode 'python-mode) (importmagic-fix-imports)))
-    (setq importmagic-be-quiet t)
-    (add-hook 'before-save-hook #'shackra-before-save-py-importmagic-fix))
-
-  (use-package isortify
-    :ensure t
-    :config
-    (add-hook 'python-mode-hook 'isortify-mode))
 
   (use-package sphinx-doc
     :after (python)

@@ -81,6 +81,9 @@ New
 
 Changes
 ~~~~~~~
+- Relega funciones de formateo de código. [Jorge Araya Navarro]
+
+  Para Python se ha sacado algunas funciones de formateo de código fuera de Emacs y relegado a LSP
 - Cambios en Eldoc y Slime para Paredit. [Jorge Araya Navarro]
 - Ajustes menores para Windows 10. [Jorge Araya Navarro]
 - Cambia hydra-win para que use dos columnas. [Jorge Araya Navarro]
