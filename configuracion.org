@@ -2119,6 +2119,12 @@ Modo mayor para programar en Python
     :config
     (add-hook 'python-mode-hook #'lsp-python-enable))
 
+  (use-package blacken
+    :after (python-mode)
+    :load-path "site-packages/blacken"
+    :init
+    (add-hook 'python-mode #'blacken-mode))
+
   (use-package python
     :if (executable-find "python")
     :bind (:map python-mode-map

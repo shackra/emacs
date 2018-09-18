@@ -81,6 +81,9 @@ New
 
 Changes
 ~~~~~~~
+- Instala blacken. [Jorge Araya Navarro]
+
+  Formatea código Python desde Emacs antes de guardar
 - Relega funciones de formateo de código. [Jorge Araya Navarro]
 
   Para Python se ha sacado algunas funciones de formateo de código fuera de Emacs y relegado a LSP
