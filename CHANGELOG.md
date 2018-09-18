@@ -189,6 +189,9 @@ Changes
 
 Fix
 ~~~
+- Añade correctamente función dentro de gancho. [Jorge Araya Navarro]
+
+  Prog-mode no tenia su gancho correctamente establecido con la función que activa el conteo de lineas
 - Define función despues de flycheck-mode es activado. [Jorge Araya
   Navarro]
 

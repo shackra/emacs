@@ -980,7 +980,7 @@ Muestra el numero de lineas al margen del buffer.
       (setf display-line-numbers-width (number-to-string
                                         (ceiling (log (max 1 (/ (buffer-size) 80)) 10)))))
     (add-hook 'display-line-numbers-mode-hook #'shackra--display-line-numbers-better-width)
-    (add-hook 'prog-mode 'display-line-numbers-mode))
+    (add-hook 'prog-mode-hook 'display-line-numbers-mode))
 #+END_SRC
 *** =company=
 :LOGBOOK:
