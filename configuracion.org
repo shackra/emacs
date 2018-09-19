@@ -2121,9 +2121,8 @@ Modo mayor para programar en Python
 
   (use-package blacken
     :after (python-mode)
-    :load-path "site-packages/blacken"
     :init
-    (add-hook 'python-mode #'blacken-mode))
+    (add-hook 'python-mode-hook #'blacken-mode))
 
   (use-package python
     :if (executable-find "python")

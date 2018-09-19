@@ -19,6 +19,3 @@
 [submodule "site-packages/counsel-term"]
 	path = site-packages/counsel-term
 	url = https://github.com/tautologyclub/counsel-term.git
-[submodule "site-packages/blacken"]
-	path = site-packages/blacken
-	url = https://github.com/proofit404/blacken.git

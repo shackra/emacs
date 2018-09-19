@@ -81,6 +81,7 @@ New
 
 Changes
 ~~~~~~~
+- Instala blacken desde Melpa. [Jorge Araya Navarro]
 - Instala blacken. [Jorge Araya Navarro]
 
   Formatea código Python desde Emacs antes de guardar
