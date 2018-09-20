@@ -193,6 +193,7 @@ Changes
 
 Fix
 ~~~
+- Elimina archivos de paquete clonado desde Git. [Jorge Araya Navarro]
 - Elimina plugins de pyls. [Jorge Araya Navarro]
 - Instala pyflakes en nuevos entornos virtuales. [Jorge Araya Navarro]
 - Añade correctamente función dentro de gancho. [Jorge Araya Navarro]
