@@ -747,10 +747,12 @@ Teclas
     (add-to-list 'ivy-ignore-buffers "\\*prodigy-.*")
     (add-to-list 'ivy-ignore-buffers "\\*godoc .*")
     (add-to-list 'ivy-ignore-buffers "\\*magit-.*")
-    (add-to-list 'ivy-ignore-buffers "\\*Slack Log")
+    (add-to-list 'ivy-ignore-buffers "\\*Slack Log.*")
     (add-to-list 'ivy-ignore-buffers "\\*tide")
-    (add-to-list 'ivy-ignore-buffers "\\*Flycheck")
-    (add-to-list 'ivy-ignore-buffers "\\*lsp-")
+    (add-to-list 'ivy-ignore-buffers "\\*Flycheck.*")
+    (add-to-list 'ivy-ignore-buffers "\\*lsp-.*")
+    (with-eval-after-load "projectile"
+      (setf projectile-globally-ignored-buffers ivy-ignore-buffers))
     (ivy-mode 1))
 
   (use-package swiper
@@ -1043,8 +1045,6 @@ Manejo de archivos de un proyecto.
      projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
-    (with-eval-after-load "ivy"
-      (setf projectile-globally-ignored-buffers ivy-ignore-buffers))
     :config
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
     (add-hook 'after-init-hook #'projectile-global-mode))
