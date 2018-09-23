@@ -83,6 +83,7 @@ New
 
 Changes
 ~~~~~~~
+- Ignora algunos buffers creados por Magit. [Jorge Araya Navarro]
 - Cambia a company-go para el autocompletado. [Jorge Araya Navarro]
 
   lsp-go falla mucho

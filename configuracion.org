@@ -747,13 +747,14 @@ Teclas
     (add-to-list 'ivy-ignore-buffers "\\*prodigy-.*")
     (add-to-list 'ivy-ignore-buffers "\\*godoc .*")
     (add-to-list 'ivy-ignore-buffers "\\*magit-.*")
+    (add-to-list 'ivy-ignore-buffers "\\magit-.*")
     (add-to-list 'ivy-ignore-buffers "\\*Slack Log.*")
     (add-to-list 'ivy-ignore-buffers "\\*tide")
     (add-to-list 'ivy-ignore-buffers "\\*Flycheck.*")
     (add-to-list 'ivy-ignore-buffers "\\*lsp-.*")
     (with-eval-after-load "projectile"
-      (setf projectile-globally-ignored-buffers ivy-ignore-buffers))
-    (ivy-mode 1))
+      (setf projectile-globally-ignored-buffers ivy-ignore-buffers)))
+  (ivy-mode 1)
 
   (use-package swiper
     :bind (:map global-map
