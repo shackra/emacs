@@ -2571,7 +2571,9 @@ Instalar estos componentes en el sistema operativo
 
   (use-package ng2-mode)
   (use-package typescript-mode
-    :init (setf typescript-indent-level shackra-webdev-indent)
+    :init
+    (setf typescript-indent-level shackra-webdev-indent)
+    (add-to-list 'auto-mode-alist '("\\.tsx\\'" . (lambda () (typescript-mode) (rjsx-minor-mode))))
     :config
     (with-eval-after-load "lsp-javascript-typescript"
       (add-hook 'typescript-mode-hook #'lsp-javascript-typescript-enable)))

@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- Activa typescript-mode y rjsx-minor-mode para archivos tsx. [Jorge
+  Araya Navarro]
 - Añade nuevos paquetes. [Jorge Araya Navarro]
 - Habilita comando para filtrar cuaderno de apuntes técnicos. [Jorge
   Araya Navarro]
