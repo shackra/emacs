@@ -83,6 +83,11 @@ New
 
 Changes
 ~~~~~~~
+- Cambia a company-go para el autocompletado. [Jorge Araya Navarro]
+
+  lsp-go falla mucho
+
+  - https://github.com/emacs-lsp/lsp-go/issues/8#issuecomment-423693153
 - Instala blacken desde Melpa. [Jorge Araya Navarro]
 - Instala blacken. [Jorge Araya Navarro]
 

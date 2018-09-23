@@ -2427,10 +2427,11 @@ go build golang.org/x/tools/cmd/guru
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
     (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
-  (use-package lsp-go
-    :after (lsp-mode)
-    :config
-    (add-hook 'go-mode-hook #'lsp-go-enable))
+  (use-package company-go
+    :init
+    (add-hook 'go-mode-hook (lambda ()
+                              (set (make-local-variable 'company-backends) '(company-go))
+                              (company-mode))))
   (use-package go-eldoc
     :after (go-mode)
     :config
