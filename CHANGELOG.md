@@ -86,6 +86,8 @@ New
 
 Changes
 ~~~~~~~
+- Normaliza el sangrado en desarrollo web a 2 espacios en blanco. [Jorge
+  Araya Navarro]
 - Ignora algunos buffers creados por Magit. [Jorge Araya Navarro]
 - Cambia a company-go para el autocompletado. [Jorge Araya Navarro]
 

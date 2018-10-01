@@ -2344,6 +2344,13 @@ npm i -g vscode-css-languageserver-bin
     :config
     (add-hook 'css-mode-hook 'lsp-css-enable))
 #+END_SRC
+***** css-mode
+#+BEGIN_SRC emacs-lisp
+  (use-package css-mode
+    :ensure nil
+    :init
+    (setf css-indent-offset shackra-webdev-indent))
+#+END_SRC
 **** HTML con LSP-mode
 ***** dependencias externas
 #+BEGIN_SRC sh :dir /sudo:: :results silent
@@ -2655,7 +2662,7 @@ Instalar estos componentes en el sistema operativo
   (use-package sgml-mode
     :ensure nil
     :init
-    (setf sgml-basic-offset 2))
+    (setf sgml-basic-offset shackra-webdev-indent))
 #+END_SRC
 *** Android
 Desarrollo de aplicaciones para Android desde GNU Emacs
