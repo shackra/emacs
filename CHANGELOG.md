@@ -201,6 +201,9 @@ Changes
 
 Fix
 ~~~
+- Calla los mensajes de error en lsp-mode. [Jorge Araya Navarro]
+
+  - https://github.com/emacs-lsp/lsp-mode/issues/342
 - Projectile recibe correctamente la lista de buffers a ignorar. [Jorge
   Araya Navarro]
 - Elimina archivos de paquete clonado desde Git. [Jorge Araya Navarro]

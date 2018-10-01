@@ -1374,7 +1374,10 @@ Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :config
-    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu))
+    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
+    :init
+    (setq lsp-inhibit-message t)
+    (setq lsp-message-project-root-warning t))
 
   (use-package lsp-ui
     :after (lsp-mode)
