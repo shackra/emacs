@@ -2319,6 +2319,9 @@ Un modo mayor para editar paginas web
           (moz-controller-page-refresh))))
     :init
     (setf web-mode-code-indent-offset shackra-webdev-indent)
+    (setf web-mode-css-indent-offset shackra-webdev-indent)
+    (setf web-mode-sql-indent-offset shackra-webdev-indent)
+    (setf web-mode-markup-indent-offset shackra-webdev-indent)
     :config
     (with-eval-after-load "lsp-html"
       (add-hook 'web-mode-hook #'lsp-html-enable))

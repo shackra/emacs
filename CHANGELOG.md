@@ -86,6 +86,7 @@ New
 
 Changes
 ~~~~~~~
+- Normaliza sangrado en web-mode. [Jorge Araya Navarro]
 - Normaliza el sangrado en desarrollo web a 2 espacios en blanco. [Jorge
   Araya Navarro]
 - Ignora algunos buffers creados por Magit. [Jorge Araya Navarro]
