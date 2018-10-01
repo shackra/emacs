@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Instala auto-yasnippet. [Jorge Araya Navarro]
+
+  Ayuda con la escritura repetitiva de lineas
 - Activa typescript-mode y rjsx-minor-mode para archivos tsx. [Jorge
   Araya Navarro]
 - Añade nuevos paquetes. [Jorge Araya Navarro]
