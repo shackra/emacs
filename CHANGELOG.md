@@ -86,6 +86,10 @@ New
 
 Changes
 ~~~~~~~
+- Elimina paquete kill-or-bury y remapea atajo para kill-buffer. [Jorge
+  Araya Navarro]
+
+  Me canse del paquete
 - Normaliza sangrado en web-mode. [Jorge Araya Navarro]
 - Normaliza el sangrado en desarrollo web a 2 espacios en blanco. [Jorge
   Araya Navarro]

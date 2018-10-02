@@ -565,6 +565,10 @@ Varios modos mayores que uso para desarrollo web tienen para personalizar el niv
 #+BEGIN_SRC emacs-lisp
   (defvar shackra-webdev-indent 2 "Nivel de sangrado para desarrollo web")
 #+END_SRC
+** Matar buffers de forma inmediata
+#+BEGIN_SRC emacs-lisp
+  (define-key global-map [remap kill-buffer] 'kill-this-buffer)
+#+END_SRC
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages
@@ -1225,16 +1229,6 @@ Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emac
     (setf monky-process-type 'cmdserver))
 
   (use-package hgignore-mode)
-#+END_SRC
-*** =kill-or-bury-alive=
-Permite designar qué buffers queremos matar o enterrar (/bury/). Asociado a @@html:<kbd>C-x k</kbd>@@
-#+BEGIN_SRC emacs-lisp
-  (use-package kill-or-bury-alive
-    :bind (("C-x k" . kill-or-bury-alive))
-    :config
-    (setf kill-or-bury-alive-must-die-list
-          '("^\\*Calendar\\*$" "^\\*Help\\*$" "^\\*Packages\\*$" dired-mode prog-mode text-mode rust-mode fundamental-mode weechat-mode "^\\*Backtrace\\*$"))
-    (add-to-list 'kill-or-bury-alive-long-lasting-list "^\\*sh-<[:digit:]+>\\*$" t))
 #+END_SRC
 *** eldoc
 Muestra en el =área de eco= la firma de la función actual.
