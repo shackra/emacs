@@ -666,15 +666,10 @@ Saca cualquier rastro de tus archivos y datos privados de tu configuración de E
 *** secretaria
 Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
 #+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'f
-    (use-package secretaria
-      :after (alert)
-      :load-path "site-packages/secretaria/"
-      :ensure nil
-      :init
-      (setf secretaria-clocked-task-save-file "~/.secretaria-tarea")
-      :config
-      (secretaria-today-unknown-time-appt-always-remind-me)))
+  (use-package secretaria
+    :init
+    (setf secretaria-clocked-task-save-file "~/.secretaria-tarea")
+    (add-hook 'after-init-hook #'secretaria-unknown-time-always-remind-me))
 #+END_SRC
 *** =font-man=
 Escala la altura de la tipografía en todos los buffers de manera temporal
@@ -3131,6 +3126,10 @@ Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
 Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package all-the-icons)
+
+  (use-package all-the-icons-dired
+    :init
+    (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 #+END_SRC
 *** mode-line
 Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (según [[http://tromey.com/blog/?p%3D831][The Cliffs of Inanity]], también [[http://www.lunaryorn.com/2014/07/26/make-your-emacs-mode-line-more-useful.html][lunarsite]]. referencias sobre =mode-line-format= en la [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Mode-Line-Format.html][referencia de Elisp]])

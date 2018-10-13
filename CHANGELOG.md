@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Agrega nuevos paquetes. [Jorge Araya Navarro]
+
+  Secretaria ahora es descargado de Melpa
 - Carga perfil de entorno para zsh. [Jorge Araya Navarro]
 
   - https://www.gnu.org/software/emacs/manual/html_node/emacs/Interactive-Shell.html
