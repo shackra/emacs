@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Ignora Cask. [Jorge Araya Navarro]
 - Agrega nuevos paquetes. [Jorge Araya Navarro]
 
   Secretaria ahora es descargado de Melpa
