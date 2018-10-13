@@ -6,9 +6,16 @@
   "compilerOptions": {
     "target": "es2017",
     "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "module": "commonjs",
     "noEmit": true,
     "checkJs": true,
     "jsx": "react",
-    "lib": [ "dom", "es2017" ]
-  }
+    "lib": ["dom", "es2017"]
+  },
+  "exclude": [
+    "dist",
+    "build",
+    "node_modules"
+  ]
 }

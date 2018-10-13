@@ -92,6 +92,7 @@ New
 
 Changes
 ~~~~~~~
+- Actualiza plantilla para jsconfig.json. [Jorge Araya Navarro]
 - Activa globalmente whitespace butler de manera global. [Jorge Araya
   Navarro]
 - Activa projectile-mode con ganchos de prog-mode y text-mode. [Jorge
