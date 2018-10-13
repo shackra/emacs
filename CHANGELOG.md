@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Carga perfil de entorno para zsh. [Jorge Araya Navarro]
+
+  - https://www.gnu.org/software/emacs/manual/html_node/emacs/Interactive-Shell.html
 - Instala auto-yasnippet. [Jorge Araya Navarro]
 
   Ayuda con la escritura repetitiva de lineas
