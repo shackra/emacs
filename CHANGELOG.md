@@ -92,6 +92,9 @@ New
 
 Changes
 ~~~~~~~
+- Elimina submodulo para Secretaria. [Jorge Araya Navarro]
+
+  - 79ffe11
 - Actualiza plantilla para jsconfig.json. [Jorge Araya Navarro]
 - Activa globalmente whitespace butler de manera global. [Jorge Araya
   Navarro]
