@@ -1370,11 +1370,15 @@ Implementación para Emacs del Language Server Protocol.
     :config
     (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
     :init
+    (setf lsp-eldoc-render-all nil)
     (setq lsp-inhibit-message t)
     (setq lsp-message-project-root-warning t))
 
   (use-package lsp-ui
     :after (lsp-mode)
+    :init
+    (setf lsp-ui-sideline-enable nil)
+    (setf lsp-ui-doc-enable nil)
     :config
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
     (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)

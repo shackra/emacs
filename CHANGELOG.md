@@ -92,6 +92,7 @@ New
 
 Changes
 ~~~~~~~
+- Desactiva sidelines en lsp-ui. [Jorge Araya Navarro]
 - Elimina paquete kill-or-bury y remapea atajo para kill-buffer. [Jorge
   Araya Navarro]
 
