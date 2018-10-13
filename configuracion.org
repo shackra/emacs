@@ -1046,8 +1046,10 @@ Manejo de archivos de un proyecto.
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
     :config
+    (add-to-list 'projectile-globally-ignored-directories "node_modules")
     (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-    (add-hook 'after-init-hook #'projectile-global-mode))
+    (add-hook 'text-mode-hook #'projectile-mode)
+    (add-hook 'prog-mode-hook #'projectile-mode))
 
   (use-package ag)
 #+END_SRC

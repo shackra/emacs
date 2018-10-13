@@ -92,6 +92,8 @@ New
 
 Changes
 ~~~~~~~
+- Activa projectile-mode con ganchos de prog-mode y text-mode. [Jorge
+  Araya Navarro]
 - Desactiva sidelines en lsp-ui. [Jorge Araya Navarro]
 - Elimina paquete kill-or-bury y remapea atajo para kill-buffer. [Jorge
   Araya Navarro]
