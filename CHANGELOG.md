@@ -93,6 +93,9 @@ New
 
 Changes
 ~~~~~~~
+- Acorta contenido de `init_zsh.sh` [Jorge Araya Navarro]
+
+  Emacs carga el contenido del archivo en la linea de comandos luego de la inicialización
 - Elimina submodulo para Secretaria. [Jorge Araya Navarro]
 
   - 79ffe11
