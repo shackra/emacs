@@ -60,22 +60,27 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
     (shackra-update-one-package 'org-plus-contrib))
 
   (when (not (package-installed-p 'diminish))
-      (package-install 'diminish))
+    (package-install 'diminish))
 
   (when (not (package-installed-p 'bind-key))
-      (package-install 'bind-key))
+    (package-install 'bind-key))
 
   (when (not (package-installed-p 'f))
-      (package-install 'f))
+    (package-install 'f))
+
+  (when (not (package-installed-p 'exec-path-from-shell))
+    (package-install 'exec-path-from-shell))
 
   ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
   (when (eq system-type 'darwin)
     (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
 
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize))
+
   ;; En caso de que /usr/local/bin no este agregado
-  (when (or (eq system-type 'gnu/linux) (eq system-type 'darwin))
-    (setf exec-path (append exec-path '("/usr/local/bin")))
-    (setenv "PATH" "/usr/local/bin:/Library/TeX/texbin/:$PATH" t))
+  (when (or (eq system-type 'darwin))
+    (setenv "PATH" "Library/TeX/texbin/:$PATH" t))
 
   (eval-when-compile
     (require 'use-package))

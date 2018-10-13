@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- Carga la variable de entorno PATH desde la shell. [Jorge Araya
+  Navarro]
 - Ignora Cask. [Jorge Araya Navarro]
 - Agrega nuevos paquetes. [Jorge Araya Navarro]
 
