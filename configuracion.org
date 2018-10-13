@@ -3477,8 +3477,7 @@ Eliminación de espacios de manera no obstrusiva
   (use-package ws-butler
     :diminish ws-butler-mode
     :config
-    (add-hook 'prog-mode-hook 'ws-butler-mode)
-    (add-hook 'text-mode-hook 'ws-butler-mode))
+    (add-hook 'after-init-hook #'ws-butler-global-mode))
 #+END_SRC
 *** Mingus
 Cliente para MPD

@@ -92,6 +92,8 @@ New
 
 Changes
 ~~~~~~~
+- Activa globalmente whitespace butler de manera global. [Jorge Araya
+  Navarro]
 - Activa projectile-mode con ganchos de prog-mode y text-mode. [Jorge
   Araya Navarro]
 - Desactiva sidelines en lsp-ui. [Jorge Araya Navarro]
