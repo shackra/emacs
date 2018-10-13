@@ -95,6 +95,9 @@ New
 
 Changes
 ~~~~~~~
+- Instala los paquetes de NodeJS sin sudo. [Jorge Araya Navarro]
+
+  el prefijo de nodejs ahora es a nivel de usuario, lo cual hace que sea innecesario invocar npm con sudo.
 - Acorta contenido de `init_zsh.sh` [Jorge Araya Navarro]
 
   Emacs carga el contenido del archivo en la linea de comandos luego de la inicialización

@@ -2338,7 +2338,7 @@ Un modo mayor para editar paginas web
 **** CSS con LSP-mode
 ***** dependencias externas
 Si esto no se instala no tendremos disponible autocompletado para CSS con LSP
-#+BEGIN_SRC sh :dir /sudo:: :results silent
+#+BEGIN_SRC sh :results silent
 npm i -g vscode-css-languageserver-bin
 #+END_SRC
 ***** =lsp-css=
@@ -2356,7 +2356,7 @@ npm i -g vscode-css-languageserver-bin
 #+END_SRC
 **** HTML con LSP-mode
 ***** dependencias externas
-#+BEGIN_SRC sh :dir /sudo:: :results silent
+#+BEGIN_SRC sh :results silent
 npm i -g vscode-html-languageserver-bin
 #+END_SRC
 ***** =lsp-html=
@@ -2538,8 +2538,8 @@ go build golang.org/x/tools/cmd/guru
 #+END_SRC
 **** Dependencias externas
 Instalar estos componentes en el sistema operativo
-#+BEGIN_SRC sh :dir /sudo:: :results silent
-  npm install -g babel-cli babel-preset-react eslint@3.x babel-eslint@7 eslint-plugin-react typescript-language-server --save-dev
+#+BEGIN_SRC sh :results silent
+  npm install -g babel-cli babel-preset-react eslint babel-eslint eslint-plugin-react javascript-typescript-langserver --save-dev
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
   (defun shackra-js-install-deps ()
