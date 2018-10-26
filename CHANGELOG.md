@@ -95,6 +95,9 @@ New
 
 Changes
 ~~~~~~~
+- Recorta el nombre de la rama si es muy larga. [Jorge Araya Navarro]
+
+  Mejora la experiencia con ramas con nombres excesivamente largos
 - Instala los paquetes de NodeJS sin sudo. [Jorge Araya Navarro]
 
   el prefijo de nodejs ahora es a nivel de usuario, lo cual hace que sea innecesario invocar npm con sudo.
