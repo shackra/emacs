@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Cambia el nombre del archivo de configuración. [Jorge Araya Navarro]
+
+  Mata dos pajaros de un solo tiro.
 - Carga la variable de entorno PATH desde la shell. [Jorge Araya
   Navarro]
 - Ignora Cask. [Jorge Araya Navarro]

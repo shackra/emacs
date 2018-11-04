@@ -11,8 +11,12 @@
                                                🕇   🕇
 #+end_example
 
-* Configuración de GNU Emacs en un archivo de org-mode
-He decidido mover mi configuración a un sólo archivo. Anteriormente mi configuración estaba dividida en varios archivos =.el=, esto no era malo, sin embargo debo estar visitando diferentes archivos si deseo realizar varios cambios en mi configuración creándome una plétora de buffers en Emacs. Además, con =org-mode= me es posible documentar varios aspectos de mi configuración. Sí, sí... ya sé que esto se puede hacer con comentarios en el código. Otro beneficio de usar =org-mode= y =babel= es la capacidad de contraer o expandir varias secciones de la configuración, o navegar rápidamente entre secciones (cosa que aun no sé hacer), además, con Babel no me veo restringido a ejecutar solamente código elisp ¡también puedo correr código Python!.
+* Introducción
+Mi configuración de GNU Emacs, casi siempre le estoy haciendo ajustes.
+
+Mi configuración se hospeda en [[https://gitlab.com/shackra/emacs/][GitLab]], la configuración que ves en [[https://github.com/shackra/emacs/][Github]] es una copia espejo.
+
+Mi configuración esta escrita en un archivo de org-mode, escribir la configuración en un archivo de esos es algo que los chicos cool hacen hoy día.  El archivo =init.el= contiene código Elisp para hacer funcionar este formato de configuración.
 
 #+BEGIN_SRC emacs-lisp
   ;; sombrero de aluminio, le bajamos una rayita
@@ -22,7 +26,7 @@ He decidido mover mi configuración a un sólo archivo. Anteriormente mi configu
   (defun find-config ()
     "Abre el archivo de configuración de Emacs"
     (interactive)
-    (find-file "~/.emacs.d/configuracion.org"))
+    (find-file "~/.emacs.d/README.org"))
 
   (global-set-key (kbd "C-c I") 'find-config)
 
@@ -101,7 +105,7 @@ La ubicación geográfica usada es la de San José, Costa Rica siendo tan peque�
 #+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Javier Araya Navarro"
         user-mail-address "jorge@esavara.cr"
-        calendar-location-name "Heredia, CR"
+        calendar-location-name "Siquirres, CR"
         calendar-latitude 9.935607
         calendar-longitude -84.1833856
         calendar-christian-all-holidays-flag t

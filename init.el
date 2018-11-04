@@ -96,8 +96,8 @@ The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabeti
     ;;la configuración
     ))
 
-(let ((orgfile (concat user-emacs-directory "configuracion.org"))
-      (elfile (concat user-emacs-directory "configuracion.el"))
+(let ((orgfile (concat user-emacs-directory "README.org"))
+      (elfile (concat user-emacs-directory "README.el"))
       (gc-cons-threshold most-positive-fixnum))
   (when (or (not (file-exists-p elfile))
             (file-newer-than-file-p orgfile elfile))
@@ -109,9 +109,9 @@ The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabeti
     (message "Tiempo de inicialización %.2fs" (float-time (time-subtract (current-time) my-start-time)))))
 
 (defun my-tangle-config-org-hook-func ()
-  (when (string= "configuracion.org" (buffer-name))
-    (let ((orgfile (concat user-emacs-directory "configuracion.org"))
-          (elfile (concat user-emacs-directory "configuracion.el")))
+  (when (string= "README.org" (buffer-name))
+    (let ((orgfile (concat user-emacs-directory "README.org"))
+          (elfile (concat user-emacs-directory "README.el")))
       (my-tangle-config-org orgfile elfile))))
 
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)
