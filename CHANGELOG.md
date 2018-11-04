@@ -95,6 +95,8 @@ New
 
 Changes
 ~~~~~~~
+- Desactiva el conteo de lineas en algunos modos mayores. [Jorge Araya
+  Navarro]
 - Recorta el nombre de la rama si es muy larga. [Jorge Araya Navarro]
 
   Mejora la experiencia con ramas con nombres excesivamente largos
