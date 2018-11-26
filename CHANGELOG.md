@@ -243,6 +243,11 @@ Changes
 
 Fix
 ~~~
+- Arregla congelamiento de Emacs usando iedit o mc con lsp-mode. [Jorge
+  Araya Navarro]
+
+  Mejora la experiencia de edición de texto cuando lsp-mode esta activado en el buffer actual y se
+  recurre a iedit o a multiple-cursors.
 - Calla los mensajes de error en lsp-mode. [Jorge Araya Navarro]
 
   - https://github.com/emacs-lsp/lsp-mode/issues/342
