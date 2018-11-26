@@ -18,7 +18,7 @@ La configuración se hospeda en [[https://gitlab.com/shackra/emacs/][GitLab]], l
 
 #+BEGIN_SRC emacs-lisp
   ;; sombrero de aluminio, le bajamos una rayita
-  (setq network-security-level 'high)
+  (setq network-security-level 'medium)
 
   ;; https://jamiecollinson.com/blog/my-emacs-config/#make-it-easy-to-edit-this-file
   (defun find-config ()

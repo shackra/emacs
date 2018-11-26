@@ -99,6 +99,11 @@ New
 
 Changes
 ~~~~~~~
+- Cambia el nivel de seguridad de la red a `medium` [Jorge Araya
+  Navarro]
+
+  Debería permitir a Emacs arrancar con normalidad y aceptar nuevos certificados SSL de los
+  repositorios Elpa.
 - Desactiva el conteo de lineas en algunos modos mayores. [Jorge Araya
   Navarro]
 - Recorta el nombre de la rama si es muy larga. [Jorge Araya Navarro]
