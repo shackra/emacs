@@ -37,7 +37,7 @@ La configuración se hospeda en [[https://gitlab.com/shackra/emacs/][GitLab]], l
              (installed-pkg (car-safe (cdr (assq package package-alist))))
              (old-dir (and installed-pkg (package-desc-dir installed-pkg)))
              (old-ver (or (and installed-pkg (package-desc-version installed-pkg))
-                         (and builtin-pkg (package--bi-desc-version builtin-pkg)))))
+                          (and builtin-pkg (package--bi-desc-version builtin-pkg)))))
         (when (and new-ver (version-list-< old-ver new-ver))
           ;; Instalamos la nueva versión de org-mode
           (condition-case nil
@@ -2618,7 +2618,7 @@ Instalar estos componentes en el sistema operativo
   (use-package typescript-mode
     :init
     (setf typescript-indent-level shackra-webdev-indent)
-    (add-to-list 'auto-mode-alist '("\\.tsx\\'" . (lambda () (typescript-mode) (rjsx-minor-mode))))
+    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . (lambda () (typescript-mode) (rjsx-minor-mode))))
     :config
     (with-eval-after-load "lsp-javascript-typescript"
       (add-hook 'typescript-mode-hook #'lsp-javascript-typescript-enable)))
@@ -2640,6 +2640,7 @@ Instalar estos componentes en el sistema operativo
     :mode "\\.js\\'"
     :init
     (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
+    (setf js2-mode-indent-inhibit-undo t)
     :config
     (with-eval-after-load "lsp-javascript-typescript"
       (add-hook 'js2-mode-hook #'lsp-javascript-typescript-enable)))
