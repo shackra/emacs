@@ -1788,10 +1788,11 @@ Set de paquetes que me ayudan a escribir paquetes para GNU Emacs
 *** org-babel
 #+BEGIN_SRC emacs-lisp
   (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((emacs-lisp . t)
-       (python . t)
-       (shell . t)))
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)
+     (shell . t)
+     (go . t)))
 #+END_SRC
 *** =prog-mode=
 Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
@@ -2536,6 +2537,8 @@ go build golang.org/x/tools/cmd/guru
       :config
       (progn
         (flycheck-gometalinter-setup))))
+
+  (use-package ob-go)
 #+END_SRC
 *** javascript
 **** JSON

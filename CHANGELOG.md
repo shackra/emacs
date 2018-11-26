@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Habilita go-mode para programación literaria. [Jorge Araya Navarro]
 - Cambia el nombre del archivo de configuración. [Jorge Araya Navarro]
 
   Mata dos pajaros de un solo tiro.
