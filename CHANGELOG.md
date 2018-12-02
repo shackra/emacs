@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Habilita plantilla para rjsx-mode y material-ui. [Jorge Araya Navarro]
 - Migra varios modos mayores a LSP. [Jorge Araya Navarro]
 
   Los modos afectados son:
