@@ -1396,8 +1396,10 @@ Teclas:
 *** Language Server Protocol
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-mode
+  (use-package lsp
+    :ensure lsp-mode
     :config
+    (require 'lsp-clients)
     (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
     :init
     (setf lsp-eldoc-render-all nil)
@@ -1405,7 +1407,7 @@ Implementación para Emacs del Language Server Protocol.
     (setq lsp-message-project-root-warning t))
 
   (use-package lsp-ui
-    :after (lsp-mode)
+    :after (lsp)
     :init
     (setf lsp-ui-sideline-enable nil)
     (setf lsp-ui-doc-enable nil)
@@ -2147,11 +2149,6 @@ Modo mayor para programar en Python
 
   (use-package pydoc-info)
 
-  (use-package lsp-python
-    :after (lsp-mode)
-    :config
-    (add-hook 'python-mode-hook #'lsp-python-enable))
-
   (use-package blacken
     :after (python-mode)
     :init
@@ -2181,6 +2178,8 @@ Modo mayor para programar en Python
 
     (setf python-shell-interpreter "python")
     (add-hook 'python-mode-hook #'shackra-python-mode)
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'python-mode-hook #'lsp))
     :config
     ;; re-mapea todas los atajos que hagan referencia a `python-indent-shift-*' con `shackra-python-indent-shift-*'
     (global-set-key [remap python-indent-shift-left] 'shackra-python-indent-shift-left)
@@ -2227,20 +2226,18 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     :after (rust-mode)
     :config
     (add-hook 'rust-mode-hook #'rustfmt-enable-on-save))
+
   (use-package cargo
     :after (rust-mode)
     :if (executable-find "cargo"))
 
-  (use-package lsp-rust
-    :after (lsp-mode)
-    :config
-    (with-eval-after-load "rust-mode"
-      (add-hook 'rust-mode-hook #'lsp-rust-enable)))
-
   (use-package rust-mode
     :if (executable-find "rustc")
     :init
-    (setq rust-format-on-save t))
+    (setq rust-format-on-save t)
+    :config
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'rust-mode-hook #'lsp)))
 #+END_SRC
 *** emacs-traad
 Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
@@ -2347,8 +2344,8 @@ Un modo mayor para editar paginas web
     (setf web-mode-sql-indent-offset shackra-webdev-indent)
     (setf web-mode-markup-indent-offset shackra-webdev-indent)
     :config
-    (with-eval-after-load "lsp-html"
-      (add-hook 'web-mode-hook #'lsp-html-enable))
+    (with-eval-after-load lsp-clients
+      (add-hook 'web-mode-hook #'lsp))
     (add-hook 'after-save-hook #'shackra-webdev-refresh-page-on-save)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -2365,29 +2362,14 @@ Si esto no se instala no tendremos disponible autocompletado para CSS con LSP
 #+BEGIN_SRC sh :results silent
 npm i -g vscode-css-languageserver-bin
 #+END_SRC
-***** =lsp-css=
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-css
-    :config
-    (add-hook 'css-mode-hook 'lsp-css-enable))
-#+END_SRC
 ***** css-mode
 #+BEGIN_SRC emacs-lisp
   (use-package css-mode
     :ensure nil
     :init
-    (setf css-indent-offset shackra-webdev-indent))
-#+END_SRC
-**** HTML con LSP-mode
-***** dependencias externas
-#+BEGIN_SRC sh :results silent
-npm i -g vscode-html-languageserver-bin
-#+END_SRC
-***** =lsp-html=
-#+BEGIN_SRC emacs-lisp
-  (use-package lsp-html
-    :config
-    (add-hook 'html-mode-hook #'lsp-html-enable))
+    (setf css-indent-offset shackra-webdev-indent)
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'css-mode-hook #'lsp)))
 #+END_SRC
 *** PHP
 modo mayor para editar código PHP
@@ -2400,9 +2382,9 @@ Composer debe estar configurado con al menos la siguientes lineas, este cambio a
   }
 #+END_SRC
 Se instala el paquete externo mediante =composer=
-#+BEGIN_SRC sh :dir /sudo:: :results silent
+#+BEGIN_SRC sh :results silent
   composer global require felixfbecker/language-server
-  composer global run-script --working-dir=vendor/felixfbecker/language-server parse-stubs
+  composer global run-script --working-dir=~/.config/composer/vendor/felixfbecker/language-server parse-stubs
 #+END_SRC
 Y esta es la configuración.
 #+BEGIN_SRC emacs-lisp
@@ -2410,12 +2392,11 @@ Y esta es la configuración.
     :after (php-mode)
     :config
     (add-hook 'php-mode-hook 'php-refactor-mode))
-  (use-package php-mode)
-  (use-package lsp-php
-    :after (lsp-mode)
+
+  (use-package php-mode
     :config
-    (with-eval-after-load "php-mode"
-      (add-hook 'php-mode-hook #'lsp-mode)))
+    (with-eval-after-load
+        (add-hook 'php-mode-hook #'lsp)))
 #+END_SRC
 *** golang
 Modo mayor para editar archivos Golang.
@@ -2436,8 +2417,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
 
 También estas otras bibliotecas
 #+BEGIN_EXAMPLE
-go get -u -ldflags -H=windowsgui github.com/nsf/gocode # Para Windows
-go get -u github.com/nsf/gocode # Para cualquier otro sistema que no sea Windows
+go get -u github.com/sourcegraph/go-langserver # reemplaza a gocode ya que estamos usando lsp-mode
 go get github.com/godoctor/godoctor
 go install github.com/godoctor/godoctor
 go get golang.org/x/tools/cmd/guru # Como usar Go Guru http://golang.org/s/using-guru
@@ -2456,8 +2436,6 @@ go build golang.org/x/tools/cmd/guru
                 ("C-c C-i" . go-goto-imports)
                 ("C-c C-c" . compile))
     :init
-    (setf gofmt-show-errors nil) ;; para mostrar los errores es que existe Flycheck
-    (setf gofmt-command "goimports")
     (defun shackra-go-update-compile-definition ()
       "Actualiza la definición del comando COMPILE para go-mode"
       (interactive)
@@ -2467,20 +2445,19 @@ go build golang.org/x/tools/cmd/guru
           (set (make-local-variable 'compile-command) (format "go build && ./%s" (f-base (f-dirname (f-full (buffer-name)))))))))
     :config
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
-    (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'go-mode-hook #'lsp))
     (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
-  (use-package company-go
-    :init
-    (add-hook 'go-mode-hook (lambda ()
-                              (set (make-local-variable 'company-backends) '(company-go))
-                              (company-mode))))
+
   (use-package go-eldoc
     :after (go-mode)
     :config
     (add-hook 'go-mode-hook 'go-eldoc-setup))
+
   (use-package go-snippets
     :after (go-mode))
+
   (with-eval-after-load 'hydra
     (use-package godoctor
       :after (go-mode)
@@ -2565,7 +2542,7 @@ go build golang.org/x/tools/cmd/guru
 **** Dependencias externas
 Instalar estos componentes en el sistema operativo
 #+BEGIN_SRC sh :results silent
-  npm install -g babel-cli babel-preset-react eslint babel-eslint eslint-plugin-react javascript-typescript-langserver --save-dev
+  npm install -g babel-cli babel-preset-react eslint babel-eslint eslint-plugin-react typescript-language-server --save-dev
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
   (defun shackra-js-install-deps ()
@@ -2621,10 +2598,8 @@ Instalar estos componentes en el sistema operativo
     (setf typescript-indent-level shackra-webdev-indent)
     (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . (lambda () (typescript-mode) (rjsx-minor-mode))))
     :config
-    (with-eval-after-load "lsp-javascript-typescript"
-      (add-hook 'typescript-mode-hook #'lsp-javascript-typescript-enable)))
-
-  (use-package lsp-javascript-typescript)
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'typescript-mode-hook #'lsp)))
 
   (use-package js2-refactor
     :after (js2-mode)
@@ -2643,8 +2618,8 @@ Instalar estos componentes en el sistema operativo
     (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
     (setf js2-mode-indent-inhibit-undo t)
     :config
-    (with-eval-after-load "lsp-javascript-typescript"
-      (add-hook 'js2-mode-hook #'lsp-javascript-typescript-enable)))
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'js2-mode-hook #'lsp)))
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript
@@ -2667,8 +2642,9 @@ Instalar estos componentes en el sistema operativo
         (beginning-of-line)
         (if (looking-at-p "^ +\/?> *$")
             (delete-char sgml-basic-offset))))
-    (with-eval-after-load "lsp-javascript-typescript"
-      (add-hook 'rjsx-mode-hook #'lsp-javascript-typescript-enable)))
+    (with-eval-after-load 'lsp-clients
+      (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript"))
+      (add-hook 'rjsx-mode-hook #'lsp)))
 
   (with-eval-after-load 'flycheck
     ;; tomado de https://jamiecollinson.com/blog/my-emacs-config/ hace que
@@ -2692,7 +2668,14 @@ Instalar estos componentes en el sistema operativo
   (use-package sgml-mode
     :ensure nil
     :init
-    (setf sgml-basic-offset shackra-webdev-indent))
+    (setf sgml-basic-offset shackra-webdev-indent)
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'html-mode-hook #'lsp)))
+#+END_SRC
+**** HTML con LSP-mode
+***** dependencias externas
+#+BEGIN_SRC sh :results silent
+npm i -g vscode-html-languageserver-bin
 #+END_SRC
 *** Android
 Desarrollo de aplicaciones para Android desde GNU Emacs
@@ -2777,12 +2760,9 @@ Type `M-x gimp-help' for help.
 #+BEGIN_SRC emacs-lisp
   (use-package vue-mode
     :init
-    (setq mmm-submode-decoration-level 2))
-
-  (use-package lsp-vue
-    :after (lsp-mode)
-    :init
-    (add-hook 'vue-mode-hook #'lsp-vue-mmm-enable))
+    (setq mmm-submode-decoration-level 2)
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'vue-mode-hook #'lsp)))
 #+END_SRC
 *** C#
 #+BEGIN_SRC emacs-lisp

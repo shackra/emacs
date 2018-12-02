@@ -7,6 +7,26 @@ Changelog
 
 New
 ~~~
+- Migra varios modos mayores a LSP. [Jorge Araya Navarro]
+
+  Los modos afectados son:
+
+  - python-mode
+  - rjsx-mode
+  - js2-mode
+  - js-mode
+  - rust-mode
+  - go-mode
+  - web-mode
+  - css-mode
+  - html-mode
+  - php-mode
+  - typescript-mode
+  - vue-mode
+
+  - https://github.com/emacs-lsp/lsp-mode/issues/489
+  - https://github.com/emacs-lsp/lsp-mode/issues/479
+  - https://github.com/emacs-lsp/lsp-mode/issues/335
 - Habilita go-mode para programación literaria. [Jorge Araya Navarro]
 - Cambia el nombre del archivo de configuración. [Jorge Araya Navarro]
 
