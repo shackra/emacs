@@ -249,6 +249,8 @@ Changes
 
 Fix
 ~~~
+- Importa correctamente el valor de la variable PATH. [Jorge Araya
+  Navarro]
 - Arregla congelamiento de Emacs usando iedit o mc con lsp-mode. [Jorge
   Araya Navarro]
 

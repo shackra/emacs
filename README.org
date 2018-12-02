@@ -77,7 +77,8 @@ La configuración se hospeda en [[https://gitlab.com/shackra/emacs/][GitLab]], l
   (when (eq system-type 'darwin)
     (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
 
-  (when (memq window-system '(mac ns x))
+  (unless (memq system-type '(ms-dos windos-nt cygwin))
+    (require 'exec-path-from-shell)
     (exec-path-from-shell-initialize))
 
   ;; En caso de que /usr/local/bin no este agregado
