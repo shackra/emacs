@@ -2344,7 +2344,7 @@ Un modo mayor para editar paginas web
     (setf web-mode-sql-indent-offset shackra-webdev-indent)
     (setf web-mode-markup-indent-offset shackra-webdev-indent)
     :config
-    (with-eval-after-load lsp-clients
+    (with-eval-after-load 'lsp-clients
       (add-hook 'web-mode-hook #'lsp))
     (add-hook 'after-save-hook #'shackra-webdev-refresh-page-on-save)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
