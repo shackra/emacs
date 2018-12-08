@@ -1413,8 +1413,7 @@ Implementación para Emacs del Language Server Protocol.
     (setf lsp-ui-doc-enable nil)
     :config
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
-    (add-hook 'lsp-mode-hook 'lsp-ui-mode))
+    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
   (use-package company-lsp
     :config
@@ -2395,8 +2394,8 @@ Y esta es la configuración.
 
   (use-package php-mode
     :config
-    (with-eval-after-load
-        (add-hook 'php-mode-hook #'lsp)))
+    (with-eval-after-load 'lsp-clients
+      (add-hook 'php-mode-hook #'lsp)))
 #+END_SRC
 *** golang
 Modo mayor para editar archivos Golang.
@@ -2446,7 +2445,11 @@ go build golang.org/x/tools/cmd/guru
     :config
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
+    (add-hook 'go-mode-hook (lambda ()
+                              (add-to-list 'flycheck-disabled-checkers 'lsp-ui)
+                              (setf flycheck-checker 'go-golint)))
     (with-eval-after-load 'lsp-clients
+      (setf lsp-clients-go-server "go-langserver")
       (add-hook 'go-mode-hook #'lsp))
     (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
 
@@ -2592,7 +2595,6 @@ Instalar estos componentes en el sistema operativo
 #+BEGIN_SRC emacs-lisp
   (setq-default js-indent-level shackra-webdev-indent)
 
-  (use-package ng2-mode)
   (use-package typescript-mode
     :init
     (setf typescript-indent-level shackra-webdev-indent)
