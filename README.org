@@ -1391,7 +1391,7 @@ Teclas:
 #+BEGIN_SRC emacs-lisp
   (use-package iedit
     :demand t
-    :bind (("RET" . iedit-quit))
+    :bind (:map iedit-mode-keymap ("RET" . iedit-quit))
     :init
     (add-hook 'iedit-mode-hook #'shackra-lsp-on-change-modify-hook)
     (add-hook 'iedit-mode-end-hook #'shackra-lsp-on-change-modify-hook))

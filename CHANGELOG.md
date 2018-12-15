@@ -270,6 +270,7 @@ Changes
 
 Fix
 ~~~
+- Establece RET para terminar iedit-mode. [Jorge Araya Navarro]
 - Usa símbolo en lugar de variable. [Jorge Araya Navarro]
 
   - 551ae91
