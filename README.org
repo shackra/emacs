@@ -2644,9 +2644,13 @@ Instalar estos componentes en el sistema operativo
     :init
     (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
     (setf js2-mode-indent-inhibit-undo t)
+    ;; retrasa el procesamiento del contenido de un archivo luego haberle hecho
+    ;; algun cambio, esto debería mejorar el rendimiento para archivos grandes.
+    (setf js2-dynamic-idle-timer-adjust 2500)
     :config
     (with-eval-after-load 'lsp-clients
-      (add-hook 'js2-mode-hook #'lsp)))
+      (add-hook 'js2-mode-hook #'lsp))
+    )
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript
@@ -3088,7 +3092,8 @@ Porque =electric-indent-mode= no es lo suficientemente bueno.
            (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
                                (thing-at-point 'line)))))
     (global-aggressive-indent-mode 1)
-    (add-to-list 'aggressive-indent-excluded-modes 'html-mode))
+    (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
+    (add-to-list 'aggressive-indent-excluded-modes 'rjsx-mode))
 #+END_SRC
 *** =text-mode=
 :LOGBOOK:

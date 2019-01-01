@@ -120,6 +120,10 @@ New
 
 Changes
 ~~~~~~~
+- Ajusta dinamicamente temporizador de procesamiento en js2-mode. [Jorge
+  Araya Navarro]
+
+  Mejora un poco el comportamiento lento en algunos archivos extensos
 - Mejoras para go-mode. [Jorge Araya Navarro]
 - Cambia el nivel de seguridad de la red a `medium` [Jorge Araya
   Navarro]
