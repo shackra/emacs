@@ -120,6 +120,9 @@ New
 
 Changes
 ~~~~~~~
+- Ajuste menor para rjsx-mode. [Jorge Araya Navarro]
+
+  flymake ya no es preferido sobre lsp-ui automáticamente.
 - Ajusta dinamicamente temporizador de procesamiento en js2-mode. [Jorge
   Araya Navarro]
 
