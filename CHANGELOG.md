@@ -120,6 +120,7 @@ New
 
 Changes
 ~~~~~~~
+- Mejoras para go-mode. [Jorge Araya Navarro]
 - Cambia el nivel de seguridad de la red a `medium` [Jorge Araya
   Navarro]
 

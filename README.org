@@ -2445,6 +2445,7 @@ go build golang.org/x/tools/cmd/guru
                 ("C-c C-i" . go-goto-imports)
                 ("C-c C-c" . compile))
     :init
+    (setf gofmt-command "goimports")
     (defun shackra-go-update-compile-definition ()
       "Actualiza la definición del comando COMPILE para go-mode"
       (interactive)
@@ -2453,11 +2454,12 @@ go build golang.org/x/tools/cmd/guru
             (set (make-local-variable 'compile-command) "go test -bench=. -v")
           (set (make-local-variable 'compile-command) (format "go build && ./%s" (f-base (f-dirname (f-full (buffer-name)))))))))
     :config
+    (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
     (add-hook 'go-mode-hook (lambda ()
                               (add-to-list 'flycheck-disabled-checkers 'lsp-ui)
-                              (setf flycheck-checker 'go-golint)))
+                              (setf flycheck-checker 'golangci-lint)))
     (with-eval-after-load 'lsp-clients
       (setf lsp-clients-go-server "go-langserver")
       (add-hook 'go-mode-hook #'lsp))
@@ -2470,6 +2472,19 @@ go build golang.org/x/tools/cmd/guru
 
   (use-package go-snippets
     :after (go-mode))
+
+  (use-package flycheck-golangci-lint
+    :if (executable-find "golangci-lint")
+    :init
+    (add-hook 'flycheck-mode-hook #'flycheck-golangci-lint-setup))
+
+  (use-package go-fill-struct
+    :if (executable-find "fillstruct"))
+
+  (use-package go-tag
+    :if (executable-find "gomodifytags"))
+
+  (use-package go-playground)
 
   (with-eval-after-load 'hydra
     (use-package godoctor
