@@ -1397,6 +1397,7 @@ Teclas:
     (add-hook 'iedit-mode-end-hook #'shackra-lsp-on-change-modify-hook))
 #+END_SRC
 *** Language Server Protocol
+- State "CANCELADO"  from              [2018-12-31 lun 21:20]
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
   (use-package lsp
@@ -1407,7 +1408,13 @@ Implementación para Emacs del Language Server Protocol.
     :init
     (setf lsp-eldoc-render-all nil)
     (setq lsp-inhibit-message t)
-    (setq lsp-message-project-root-warning t))
+    (setq lsp-message-project-root-warning t)
+    (setf lsp-prefer-flymake nil)
+    ;; arreglo rápido; hay que correr `yarn global add
+    ;; typescript-language-server'
+    ;; https://github.com/emacs-lsp/lsp-mode/issues/588
+    (setq lsp-clients-typescript-server "typescript-language-server"
+          lsp-clients-typescript-server-args '("--stdio")))
 
   (use-package lsp-ui
     :after (lsp)

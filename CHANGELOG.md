@@ -270,6 +270,14 @@ Changes
 
 Fix
 ~~~
+- Cambia el servidor para ts-ls. [Jorge Araya Navarro]
+
+  Hay un bug con el servidor actual, javascript-typescript-stdio, que releentiza la edición de código
+  en rjsx-mode.
+
+  Feliz año nuevo y feliz solemnidad de María madre de Dios :)
+
+  - https://github.com/emacs-lsp/lsp-mode/issues/588
 - Establece RET para terminar iedit-mode. [Jorge Araya Navarro]
 - Usa símbolo en lugar de variable. [Jorge Araya Navarro]
 
