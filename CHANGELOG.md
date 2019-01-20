@@ -282,6 +282,7 @@ Changes
 
 Fix
 ~~~
+- Indica ubicación temporal de los borradores. [Jorge Araya Navarro]
 - Cambia el servidor para ts-ls. [Jorge Araya Navarro]
 
   Hay un bug con el servidor actual, javascript-typescript-stdio, que releentiza la edición de código

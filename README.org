@@ -1534,10 +1534,12 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
                    "/kue/Sent"))))
     (setf mu4e-drafts-folder ;; carpeta de borradores
           (lambda (msg)
-            (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
-                   "/yahoo/Draft")
-                  ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
-                   "/kue/Drafts"))))
+            (if msg
+                (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
+                       "/yahoo/Draft")
+                      ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
+                       "/kue/Drafts"))
+              "/Draft")))
     (setf mu4e-trash-folder ;; carpeta de correo borrado
           (lambda (msg)
             (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
