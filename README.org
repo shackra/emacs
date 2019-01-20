@@ -1545,7 +1545,8 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
             (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
                    "/yahoo/Trash")
                   ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
-                   "/kue/Trash"))))
+                   "/kue/Trash")
+                  (t "/yahoo/Trash"))))
     (setf mu4e-refile-folder ;; carpeta de correo salvado
           (lambda (msg)
             (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))

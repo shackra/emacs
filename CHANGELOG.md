@@ -282,6 +282,7 @@ Changes
 
 Fix
 ~~~
+- Indica carpeta de basurero por defecto. [Jorge Araya Navarro]
 - Indica ubicación temporal de los borradores. [Jorge Araya Navarro]
 - Cambia el servidor para ts-ls. [Jorge Araya Navarro]
 
