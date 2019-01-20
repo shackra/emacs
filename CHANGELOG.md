@@ -121,6 +121,8 @@ New
 
 Changes
 ~~~~~~~
+- Actualiza información y configuración de correo electrónico. [Jorge
+  Araya Navarro]
 - Ajuste menor para rjsx-mode. [Jorge Araya Navarro]
 
   flymake ya no es preferido sobre lsp-ui automáticamente.

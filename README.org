@@ -105,7 +105,7 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
 La ubicación geográfica usada es la de San José, Costa Rica siendo tan pequeño hace innecesario especificar nuestra ubicación geográfica exacta.
 #+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Javier Araya Navarro"
-        user-mail-address "jorge@esavara.cr"
+        user-mail-address "jorgejavieran@yahoo.com.mx"
         calendar-location-name "Siquirres, CR"
         calendar-latitude 9.935607
         calendar-longitude -84.1833856
@@ -1512,7 +1512,7 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     ;; hace mu4e el programa por defecto para escribir correo
     (setq mail-user-agent 'mu4e-user-agent)
     (setf mu4e-confirm-quit nil)
-    (setf mu4e-context-policy 'pick-first)
+    (setf mu4e-context-policy 'always-ask)
     (setf mu4e-change-filenames-when-moving t)
     (setf mu4e-headers-date-format "%d/%m/%Y %H:%M")
     (setf message-citation-line-format "\nEl %A %d de %B del %Y a las %H%M horas, %N escribió:\n")
@@ -1525,26 +1525,40 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     (setf message-kill-buffer-on-exit t)
     (setf mu4e-attachment-dir  "~/Descargas")
     (setf mu4e-maildir "~/Mail")
+    (setf mu4e-sent-folder ;; carpeta de enviados
+          (lambda (msg)
+            (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
+                   "/yahoo/Sent")
+                  ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
+                   "/kue/Sent"))))
+    (setf mu4e-drafts-folder ;; carpeta de borradores
+          (lambda (msg)
+            (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
+                   "/yahoo/Draft")
+                  ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
+                   "/kue/Drafts"))))
+    (setf mu4e-trash-folder ;; carpeta de correo borrado
+          (lambda (msg)
+            (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
+                   "/yahoo/Trash")
+                  ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
+                   "/kue/Trash"))))
+    (setf mu4e-refile-folder ;; carpeta de correo salvado
+          (lambda (msg)
+            (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
+                   (format-time-string "/yahoo/Archive/%Y" (mu4e-message-field msg :date)))
+                  ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
+                   (format-time-string "/kue/Archive/%Y" (mu4e-message-field msg :date)))
+                  ;; si el email es de otra carpeta no concebida aquí, mueve el
+                  ;; email al archivero de Yahoo
+                  (t (format-time-string "/yahoo/Archive/%Y" (mu4e-message-field msg :date))))))
     (setf smtpmail-stream-type  'ssl)
     (setf smtpmail-smtp-service 465)
     (setf message-send-mail-function 'smtpmail-send-it)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?u)
             ("flag:flagged" "Marcados como importantes" ?f)
-            ("maildir:/personal/Drafts OR maildir:/personal/Borradores" "Borradores" ?b)))
-    (setf smtpmail-smtp-server "mail.privateemail.com")
-    (setf smtpmail-smtp-user user-mail-address)
-    (setf mu4e-sent-folder "/personal/Sent")
-    (setf mu4e-drafts-folder "/personal/Drafts")
-    (setf mu4e-trash-folder "/personal/Trash")
-    (setf mu4e-refile-folder "/personal/INBOX/Archive")
-    (setf mu4e-compose-signature (concat
-                                  "👋 Pax et bonum.\n"
-                                  "Jorge Javier Araya Navarro\n"
-                                  "http://www.esavara.cr"))
-    (setf mu4e-maildir-shortcuts '(("/personal/INBOX" . ?p)
-                                   ("/personal/INBOX/Archive" . ?A)
-                                   ("/personal/Trash" .?t)))
+            ("maildir:/personal/Drafts OR maildir:/personal/Borradores OR maildir:/yahoo/Drafts OR maildir:/kue/Draft" "Borradores" ?b)))
     :config
     (require 'mu4e-contrib)
     (defalias 'correo 'mu4e)
