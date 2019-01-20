@@ -121,6 +121,7 @@ New
 
 Changes
 ~~~~~~~
+- Ignora buffer relacionado a LSP con Go. [Jorge Araya Navarro]
 - Actualiza información y configuración de correo electrónico. [Jorge
   Araya Navarro]
 - Ajuste menor para rjsx-mode. [Jorge Araya Navarro]

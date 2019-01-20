@@ -781,6 +781,7 @@ Teclas
     (add-to-list 'ivy-ignore-buffers "\\*Flycheck.*")
     (add-to-list 'ivy-ignore-buffers "\\*lsp-.*")
     (add-to-list 'ivy-ignore-buffers ".*-ls")
+    (add-to-list 'ivy-ignore-buffers "\\*go-bingo.*")
     (add-to-list 'ivy-ignore-buffers "\\*Flymake log\\*")
     (with-eval-after-load "projectile"
       (setf projectile-globally-ignored-buffers ivy-ignore-buffers)))
