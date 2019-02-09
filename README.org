@@ -179,7 +179,8 @@ estas son funciones que uso muy a menudo durante la edición de texto, tenerlos 
     (interactive "r")
     (vr/replace " +" " " start end))
 #+END_SRC
-** =find-file= y =switch-buffer= personalizados
+** CANCELADO =find-file= y =switch-buffer= personalizados        :CANCELADO:
+- State "CANCELADO"  from              [2019-01-27 dom 01:32]
 Problema: Cuando estoy dentro de un proyecto con Projectile-mode, me gusta visitar archivos y buffers relacionados con el proyecto en el cual estoy trabajando.
 
 Solución: Crear mis funciones personalizadas para =find-file= y =switch-buffer=.

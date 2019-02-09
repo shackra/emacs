@@ -121,6 +121,8 @@ New
 
 Changes
 ~~~~~~~
+- Desactiva find-file y switch-buffer personalizados. [Jorge Araya
+  Navarro]
 - Aumenta el tamaño de la tipografía. [Jorge Araya Navarro]
 - Cambia configuración para mu4e. [Jorge Araya Navarro]
 - Ignora buffer relacionado a LSP con Go. [Jorge Araya Navarro]
