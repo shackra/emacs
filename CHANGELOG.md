@@ -121,6 +121,7 @@ New
 
 Changes
 ~~~~~~~
+- Aumenta el tamaño de la tipografía. [Jorge Araya Navarro]
 - Cambia configuración para mu4e. [Jorge Araya Navarro]
 - Ignora buffer relacionado a LSP con Go. [Jorge Araya Navarro]
 - Actualiza información y configuración de correo electrónico. [Jorge
