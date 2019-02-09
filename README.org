@@ -1513,7 +1513,8 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     ;; hace mu4e el programa por defecto para escribir correo
     (setq mail-user-agent 'mu4e-user-agent)
     (setf mu4e-confirm-quit nil)
-    (setf mu4e-context-policy 'always-ask)
+    (setf mu4e-context-policy 'pick-first)
+    (setf mu4e-compose-context-policy 'ask)
     (setf mu4e-change-filenames-when-moving t)
     (setf mu4e-headers-date-format "%d/%m/%Y %H:%M")
     (setf message-citation-line-format "\nEl %A %d de %B del %Y a las %H%M horas, %N escribió:\n")
@@ -1556,8 +1557,6 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
                   ;; si el email es de otra carpeta no concebida aquí, mueve el
                   ;; email al archivero de Yahoo
                   (t (format-time-string "/yahoo/Archive/%Y" (mu4e-message-field msg :date))))))
-    (setf smtpmail-stream-type  'ssl)
-    (setf smtpmail-smtp-service 465)
     (setf message-send-mail-function 'smtpmail-send-it)
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?u)
