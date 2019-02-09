@@ -559,7 +559,7 @@ Combinaciones de teclas que no pertenecen a ningún paquete en particular.
                    (setf entry `(,(concat (nth 4 (org-heading-components)) " " (string-join tags " ")) . ,link))
                    (deactivate-mark)
                    entry)))))
-      (setf collection (cl-remove-if-not (lambda (element) (string-match-p (counsel-unquote-regex-parens (ivy--regex-ignore-order string)) (car element))) collection))
+      (setf collection (cl-remove-if-not (lambda (element) (string-match-p (counsel--elisp-to-pcre (ivy--regex-ignore-order string)) (car element))) collection))
       (add-to-list 'collection `(,(concat "Buscar en la web: " string) . ,(concat shackra-technotes-search-engine-url (url-encode-url string))) t)
       (cl-map 'list (lambda (elemt) (propertize (car elemt) 'property (cdr elemt))) collection)))
 

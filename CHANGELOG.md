@@ -282,6 +282,12 @@ Changes
 
 Fix
 ~~~
+- Renombra función. [Jorge Araya Navarro]
+
+  algunas funciones de swiper fueron cambiadas de nombre
+
+  - https://github.com/abo-abo/swiper/commit/58bf1b94c8346491b906aa306f5ed734be67310c
+  - https://github.com/syl20bnr/spacemacs/issues/11757
 - Indica carpeta de basurero por defecto. [Jorge Araya Navarro]
 - Indica ubicación temporal de los borradores. [Jorge Araya Navarro]
 - Cambia el servidor para ts-ls. [Jorge Araya Navarro]
