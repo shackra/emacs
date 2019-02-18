@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Instala use-package-hydra. [Jorge Araya Navarro]
+
+  me permite integrar mejor Hydra con la configuración de algunos paquetes
 - Instala string-inflection. [Jorge Araya Navarro]
 - Lista paquete instalado manualmente. [Jorge Araya Navarro]
 - Habilita plantilla para rjsx-mode y material-ui. [Jorge Araya Navarro]
