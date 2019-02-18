@@ -125,6 +125,7 @@ New
 
 Changes
 ~~~~~~~
+- Centra la plegaria. [Jorge Araya Navarro]
 - Desactiva find-file y switch-buffer personalizados. [Jorge Araya
   Navarro]
 - Aumenta el tamaño de la tipografía. [Jorge Araya Navarro]

@@ -5,10 +5,10 @@
 #+STARTUP: overview
 
 #+begin_example
-                                                 🕇
-                              Actiones nostras tibi comítimus, Dómine,
-                               ut ad maiorem gloriam tuam repleamur.
-                                               🕇   🕇
+                                    🕇
+                 Actiones nostras tibi comítimus, Dómine,
+                  ut ad maiorem gloriam tuam repleamur.
+                                  🕇   🕇
 #+end_example
 
 * Introducción
