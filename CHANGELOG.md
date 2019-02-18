@@ -125,6 +125,7 @@ New
 
 Changes
 ~~~~~~~
+- Instala Hydra por default. [Jorge Araya Navarro]
 - Centra la plegaria. [Jorge Araya Navarro]
 - Desactiva find-file y switch-buffer personalizados. [Jorge Araya
   Navarro]
