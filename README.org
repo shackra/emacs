@@ -797,25 +797,43 @@ Teclas
                 ("C-s" . swiper)
                 ("C-r" . swiper)))
 #+END_SRC
-*** =hydra=
+*** Manipulación de ventanas
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:45]
 :END:
-"/Cut off one head, Two more shall take its place. Hail HYDRA!/" [[http://marvel-movies.wikia.com/wiki/HYDRA][―miembro HYDRA]].
-
-Permite tratar combinaciones de teclas como grupos... es algo difícil de explicar, puede ver este vídeo [[https://www.youtube.com/watch?v=_qZliI1BKzI][Switching Emacs windows with hydra and ace-window - YouTube]] para entender de qué trata este paquete.
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
-    :bind ("M-o" . shackra-other-window)
-    :init
-    (defun --count-frames ()
-      "Retorna el numero de frames visibles"
-      (let* ((frames (if (daemonp) (butlast (visible-frame-list) 1) (visible-frame-list))))
-        (length frames)))
+    :after (windmove winner windresize)
+    :bind (:map global-map (("M-o" . shackra-other-window)
+                            ("M-1" . hydra-win/body)))
     :config
     (defface aw-leading-char-face '(:inherit ace-jump-face-foreground :height 2.0) "ace-jump leading character size")
     (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-    (define-key global-map [remap other-window] 'ace-window))
+    (define-key global-map [remap other-window] 'ace-window)
+    :hydra (hydra-win (:columns 2 :color amaranth)
+                      "Manejo de ventanas"
+                      ("<up>" windmove-up "Cursor ↑")
+                      ("<left>" windmove-left "Cursor ←")
+                      ("<down>" windmove-down "Cursor ↓")
+                      ("<right>" windmove-right "Cursor →")
+                      ("C-<up>" hydra-move-splitter-up "Astilla ↑")
+                      ("C-<left>" hydra-move-splitter-left "Astilla ←")
+                      ("C-<down>" hydra-move-splitter-down "Astilla ↓")
+                      ("C-<right>" hydra-move-splitter-right "Astilla →")
+                      ("b" switch-to-buffer "Cambiar buffer")
+                      ("f" find-file "Visitar/Crear archivo")
+                      ("z" (lambda () (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Mover cursor a otra ventana")
+                      ("2" (lambda () (interactive) (split-window-right) (windmove-right)) "Dividir |")
+                      ("3" (lambda () (interactive) (split-window-below) (windmove-down)) "Dividir -")
+                      ("c" (lambda () (interactive) (ace-window 4) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Intercambiar buffer de ventana")
+                      ("s" save-buffer "Guardar buffer")
+                      ("x" delete-window "Borrar ventana")
+                      ("X" (lambda () (interactive) (ace-window 16) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Borrar esta/otra ventana")
+                      ("1" ace-maximize-window "Maximizar esta ventana")
+                      ("," (progn (winner-undo) (setf this-command 'winner-undo)) "Deshacer ultimo cambio")
+                      ("." winner-redo "Rehacer ultimo cambio")
+                      ("SPC" nil "Salir")))
+
   (use-package windmove
     :ensure nil)
   (use-package winner
@@ -823,73 +841,6 @@ Permite tratar combinaciones de teclas como grupos... es algo difícil de explic
     :config
     (winner-mode 1))
   (use-package windresize)
-  (use-package ace-window)
-
-  (with-eval-after-load 'windmove
-    (with-eval-after-load 'winner
-      (with-eval-after-load 'windresize
-        (with-eval-after-load 'ace-window
-          (use-package hydra
-            :after (ace-window)
-            :preface
-            (require 'hydra-examples)
-            :init
-            (defun shackra-python-indent-inclusive ()
-              "Mueve el inicio de la región una linea por encima de `region-beginning'
-
-  Actualmente esta función no funciona como se espera"
-              (interactive)
-              (save-excursion
-                (let ((begin (region-beginning))
-                      (end (region-end)))
-                  (when (use-region-p)
-                    (goto-char begin)
-                    (forward-line -1)
-                    (push-mark end)
-                    (setq mark-active t)))))
-            :config
-            (defhydra hydra-py (:color red :pre (flycheck-mode -1) :post (progn (deactivate-mark) (flycheck-mode 1)))
-              "Sangrado de bloques"
-              ("," python-indent-shift-left "← Disminuir")
-              ("." python-indent-shift-right "→ Aumentar"))
-            (defhydra hydra-zoom (global-map "<f2>")
-              "Acercamiento"
-              ("f" text-scale-increase "in")
-              ("j" text-scale-decrease "out"))
-            (defhydra hydra-avy (:color blue :columns 2)
-              "avy jump"
-              ("z" avy-goto-line "Ir a la linea...")
-              ("x" avy-goto-word-1 "Ir a la palabra...")
-              ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
-              ("v" avy-goto-char "Ir a la palabra (2)..."))
-            (bind-key "C-z" 'hydra-avy/body)
-            ;; Hydra nos permite hacer magia con la administración de ventanas dentro de
-            ;; un marco de Emacs. Varios paquetes estan especificados en el `:preface'
-            ;; del macro para hydra
-            (defhydra hydra-win (:columns 2 :color amaranth)
-              "Manejo de ventanas"
-              ("<up>" windmove-up "Cursor ↑")
-              ("<left>" windmove-left "Cursor ←")
-              ("<down>" windmove-down "Cursor ↓")
-              ("<right>" windmove-right "Cursor →")
-              ("C-<up>" hydra-move-splitter-up "Astilla ↑")
-              ("C-<left>" hydra-move-splitter-left "Astilla ←")
-              ("C-<down>" hydra-move-splitter-down "Astilla ↓")
-              ("C-<right>" hydra-move-splitter-right "Astilla →")
-              ("b" shackra-switch-buffer "Cambiar buffer")
-              ("f" shackra-find-file "Visitar/Crear archivo")
-              ("z" (lambda () (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Mover cursor a otra ventana")
-              ("2" (lambda () (interactive) (split-window-right) (windmove-right)) "Dividir |")
-              ("3" (lambda () (interactive) (split-window-below) (windmove-down)) "Dividir -")
-              ("c" (lambda () (interactive) (ace-window 4) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Intercambiar buffer de ventana")
-              ("s" save-buffer "Guardar buffer")
-              ("x" delete-window "Borrar ventana")
-              ("X" (lambda () (interactive) (ace-window 16) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Borrar esta/otra ventana")
-              ("1" ace-maximize-window "Maximizar esta ventana")
-              ("," (progn (winner-undo) (setf this-command 'winner-undo)) "Deshacer ultimo cambio")
-              ("." winner-redo "Rehacer ultimo cambio")
-              ("SPC" nil "Salir"))
-            (bind-key "M-1" #'hydra-win/body))))))
 #+END_SRC
 *** dired
 :LOGBOOK:
@@ -1123,14 +1074,14 @@ Incrementa la selección por unidades semánticas. Asociado a @@html:<kbd>C-c 0<
 El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ basado en caracteres. Asociado a @@html:<kbd>C-c z</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package avy
-    :defer 3
-    :config
-    (bind-keys :prefix-map shackra-avy-mode-map
-               :prefix "C-c z"
-               ("z" . avy-goto-line)
-               ("x" . avy-goto-word-1)
-               ("c" . avy-goto-char-in-line)
-               ("v" . avy-goto-char)))
+    :demand t
+    :hydra (hydra-avy (:color blue :columns 2)
+                      "avy jump"
+                      ("z" avy-goto-line "Ir a la linea...")
+                      ("x" avy-goto-word-1 "Ir a la palabra...")
+                      ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
+                      ("v" avy-goto-char "Ir a la palabra (2)..."))
+    :bind (:map global-map ("M-z" . hydra-avy/body)))
 #+END_SRC
 *** =multi-term=
 :LOGBOOK:
@@ -1332,9 +1283,9 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
     :init
     (setf bmkp-auto-light-when-set 'all-in-buffer)
     (setf bmkp-last-as-first-bookmark-file bookmark-default-file)
-    :config
-    (defhydra hydra-bm (:color amaranth :hint nil)
-      "
+    :bind (:map global-map ("C-c b" . hydra-bm/body))
+    :hydra (hydra-bm (:color amaranth :hint nil)
+                     "
       Marcadores
 
       Cambiar                          Agregar           Editar
@@ -1346,18 +1297,17 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
      [_i_] Saltar a... (otra vent.)
     -----------------------------------------------------------------------
   "
-      ("j" bmkp-previous-bookmark-this-buffer)
-      ("l" bmkp-next-bookmark-this-buffer)
-      ("k" bmkp-jump-in-navlist :color blue)
-      ("K" bmkp-jump-to-type :color blue)
-      ("i" bmkp-jump-to-type-other-window :color blue)
-      ("f" bmkp-bookmark-set-confirm-overwrite :color blue)
-      ("F" bmkp-file-target-set :color blue)
-      ("e" bmkp-edit-bookmark-name-and-location :color blue)
-      ("L" bookmark-bmenu-list "Menú de marcadores" :color blue)
-      ("l" bookmark-load "Cargar otro archivo de marcadores" :color blue)
-      ("<ESC>" nil "Salir"))
-    (bind-key (kbd "C-c b") 'hydra-bm/body global-map))
+                     ("j" bmkp-previous-bookmark-this-buffer)
+                     ("l" bmkp-next-bookmark-this-buffer)
+                     ("k" bmkp-jump-in-navlist :color blue)
+                     ("K" bmkp-jump-to-type :color blue)
+                     ("i" bmkp-jump-to-type-other-window :color blue)
+                     ("f" bmkp-bookmark-set-confirm-overwrite :color blue)
+                     ("F" bmkp-file-target-set :color blue)
+                     ("e" bmkp-edit-bookmark-name-and-location :color blue)
+                     ("L" bookmark-bmenu-list "Menú de marcadores" :color blue)
+                     ("l" bookmark-load "Cargar otro archivo de marcadores" :color blue)
+                     ("<ESC>" nil "Salir")))
 #+END_SRC
 *** Firefox desde Emacs
 #+BEGIN_SRC emacs-lisp
@@ -2188,9 +2138,10 @@ Modo mayor para programar en Python
 
   (use-package python
     :if (executable-find "python")
-    :bind (:map python-mode-map
-                ("C-c ," . shackra-python-indent-shift-left)
-                ("C-c ." . shackra-python-indent-shift-right))
+    :hydra (hydra-py (:color red :pre (flycheck-mode -1) :post (progn (deactivate-mark) (flycheck-mode 1)))
+                     "Sangrado de bloques"
+                     ("," python-indent-shift-left "← Disminuir")
+                     ("." python-indent-shift-right "→ Aumentar"))
     :interpreter ("python" . python-mode)
     :init
     (defun shackra-python-indent-shift-left ()
@@ -2290,52 +2241,50 @@ Una aproximación cliente servidor para usar la librería de refactorización [[
   (use-package traad
     :after (python-environment)
     :init
-    (with-eval-after-load 'hydra
-      (defhydra hydra-traad-history (:columns 2)
-        "Historial de cambios de rope"
-        ("u" traad-undo "deshacer" :color red)
-        ("r" traad-redo "re-hacer" :color red)
-        ("h" traad-display-history "mostrar historial de cambios" :color blue)
-        ("b" hydra-traad/body "volver" :color blue)
-        ("q" nil "salir"))
-      (defhydra hydra-traad-rename (:columns 2)
-        "Renombrar con rope"
-        ("f" traad-rename-current-file "archivo/modulo actual" :color blue)
-        ("r" traad-rename "objeto en locación actual" :color red)
-        ("b" hydra-traad/body "volver" :color blue)
-        ("q" nil "salir"))
-      (defhydra hydra-traad-signature (:columns 2)
-        "Cambiar firma con rope"
-        ("n" traad-normalize-arguments "normalizar argumentos" :color blue)
-        ("r" traad-remove-argument "remover argumentos" :color blue)
-        ("b" hydra-traad/body "volver" :color blue)
-        ("q" nil "salir"))
-      (defhydra hydra-traad-extraction (:columns 2)
-        "Extracción con rope"
-        ("m" traad-extract-method "método" :color blue)
-        ("v" traad-extract-variable "variable" :color blue)
-        ("b" hydra-traad/body "volver" :color blue)
-        ("q" nil "salir"))
-      (defhydra hydra-traad-imports (:columns 3)
-        "Importaciones con rope"
-        ("o" traad-organize-imports "organizar" :color red)
-        ("s" traad-expand-star-imports "expandir *" :color red)
-        ("f" traad-froms-to-imports "convertir 'from' a normales" :color red)
-        ("r" traad-relatives-to-absolutes "convertir relativos a absolutos" :color red)
-        ("l" traad-handle-long-imports "manejar importaciones largas" :color red)
-        ("S" traad-imports-super-smackdown "Smackdown!" :color blue)
-        ("b" hydra-traad/body "volver")
-        ("q" nil "salir"))
-      (defhydra hydra-traad (:columns 2)
-        "Refactorización en Python con rope"
-        ("h" hydra-traad-history/body "Historial" :exit t)
-        ("r" hydra-traad-rename/body "Renombrar" :exit t)
-        ("s" hydra-traad-signature/body "Firma" :exit t)
-        ("e" hydra-traad-extraction/body "Extracción" :exit t)
-        ("i" hydra-traad-imports/body "Importaciones" :exit t)))
+    :bind (:map python-mode-map ("C-c t" . hydra-traad/body))
+    :hydra (hydra-traad-history (:columns 2)
+                                "Historial de cambios de rope"
+                                ("u" traad-undo "deshacer" :color red)
+                                ("r" traad-redo "re-hacer" :color red)
+                                ("h" traad-display-history "mostrar historial de cambios" :color blue)
+                                ("b" hydra-traad/body "volver" :color blue)
+                                ("q" nil "salir"))
+    :hydra (hydra-traad-rename (:columns 2)
+                               "Renombrar con rope"
+                               ("f" traad-rename-current-file "archivo/modulo actual" :color blue)
+                               ("r" traad-rename "objeto en locación actual" :color red)
+                               ("b" hydra-traad/body "volver" :color blue)
+                               ("q" nil "salir"))
+    :hydra (hydra-traad-signature (:columns 2)
+                                  "Cambiar firma con rope"
+                                  ("n" traad-normalize-arguments "normalizar argumentos" :color blue)
+                                  ("r" traad-remove-argument "remover argumentos" :color blue)
+                                  ("b" hydra-traad/body "volver" :color blue)
+                                  ("q" nil "salir"))
+    :hydra (hydra-traad-extraction (:columns 2)
+                                   "Extracción con rope"
+                                   ("m" traad-extract-method "método" :color blue)
+                                   ("v" traad-extract-variable "variable" :color blue)
+                                   ("b" hydra-traad/body "volver" :color blue)
+                                   ("q" nil "salir"))
+    :hydra (hydra-traad-imports (:columns 3)
+                                "Importaciones con rope"
+                                ("o" traad-organize-imports "organizar" :color red)
+                                ("s" traad-expand-star-imports "expandir *" :color red)
+                                ("f" traad-froms-to-imports "convertir 'from' a normales" :color red)
+                                ("r" traad-relatives-to-absolutes "convertir relativos a absolutos" :color red)
+                                ("l" traad-handle-long-imports "manejar importaciones largas" :color red)
+                                ("S" traad-imports-super-smackdown "Smackdown!" :color blue)
+                                ("b" hydra-traad/body "volver")
+                                ("q" nil "salir"))
+    :hydra (hydra-traad (:columns 2)
+                        "Refactorización en Python con rope"
+                        ("h" hydra-traad-history/body "Historial" :exit t)
+                        ("r" hydra-traad-rename/body "Renombrar" :exit t)
+                        ("s" hydra-traad-signature/body "Firma" :exit t)
+                        ("e" hydra-traad-extraction/body "Extracción" :exit t)
+                        ("i" hydra-traad-imports/body "Importaciones" :exit t))
     :config
-    (with-eval-after-load 'hydra
-      (bind-key "C-c t" 'hydra-traad/body python-mode-map))
     ;; Si aun no se ha creado el entorno virtual para traad, lo mandamos a crear
     ;; de manera automática
     (if (not (file-exists-p (expand-file-name (concat python-environment-directory "/traad"))))
@@ -2509,63 +2458,62 @@ go build golang.org/x/tools/cmd/guru
 
   (use-package go-playground)
 
-  (with-eval-after-load 'hydra
-    (use-package godoctor
-      :after (go-mode)
-      :if (executable-find "godoctor")
-      :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
-      :config
-      (defhydra hydra-godoctor (:color blue :columns 2)
-        "Motor de refactorización para Go"
-        ("a" godoctor-rename "Renombra identificador, punto actual")
-        ("s" godoctor-extract "Refactorizacion en una función, marca actual")
-        ("d" godoctor-toggle "Cambia declaración de variable")
-        ("f" godoctor-godoc "Crea esqueleto de documentación"))))
-  (with-eval-after-load 'hydra
-    (use-package go-guru
-      :after (go-mode)
-      :if (executable-find "guru")
-      :demand t
-      :init
-      (defun shackra-go-mode-set-scope ()
-        (when (eq major-mode 'go-mode)
-          (set (make-local-variable 'go-guru-scope)
-               (concat (projectile-project-root) "..."))))
-      :bind (:map go-mode-map
-                  ("M-." . go-guru-definition)
-                  ("C-M-g" . hydra-go-guru/body))
-      :config
-      (defhydra hydra-go-guru (:color blue :columns 2)
-        "Contesta preguntas sobre código fuente escrito en Go"
-        ("a" go-guru-callees "Receptores de llamada, función bajo punto actual")
-        ("s" go-guru-callers "Llamadores, función bajo punto actual")
-        ("d" go-guru-callstack "Muestra grafo de llamadas desde una raíz, función bajo punto actual")
-        ("f" go-guru-describe "Describe la sintaxis seleccionada, su tipo y métodos")
-        ("g" go-guru-freevars "Enumera las variables libres, marca actual")
-        ("h" go-guru-referrers "Enumera referencias al objeto, identificador marcado")
-        ("j" go-guru-peers "Enumera un set de remitentes/destinatarios para las operaciones enviar/recibir de este canal")
-        ("k" go-guru-pointsto "Muestra lo que apunta, expresión marcada")
-        ("l" go-guru-implements "Describe la relación de implementación para tipos en un paquete conteniendo el cursor")
-        ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
-      (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-      (add-hook 'projectile-mode-hook #'shackra-go-mode-set-scope)))
-  (with-eval-after-load 'go-mode
-    (use-package flycheck-gometalinter
-      :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
-      :after (flycheck-mode)
-      :init
-      (if (executable-find "gometalinter.v1")
-          (setf flycheck-gometalinter-executable "gometalinter.v1")
-        (setf flycheck-gometalinter-executable "gometalinter"))
-      (setf flycheck-gometalinter-vendor t)
-      (setf flycheck-gometalinter-test t)
-      (setf flycheck-gometalinter-fast t)
-      (setf flycheck-gometalinter-enable-linters '("unused"))
-      (setf flycheck-gometalinter-disable-linters '("gotype"))
-      (setq flycheck-gometalinter-deadline "5s")
-      :config
-      (progn
-        (flycheck-gometalinter-setup))))
+  (use-package godoctor
+    :after (go-mode)
+    :if (executable-find "godoctor")
+    :bind (:map go-mode-map ("C-M-m" . hydra-godoctor/body))
+    :config
+    :hydra (hydra-godoctor (:color blue :columns 2)
+                           "Motor de refactorización para Go"
+                           ("a" godoctor-rename "Renombra identificador, punto actual")
+                           ("s" godoctor-extract "Refactorizacion en una función, marca actual")
+                           ("d" godoctor-toggle "Cambia declaración de variable")
+                           ("f" godoctor-godoc "Crea esqueleto de documentación")))
+
+  (use-package go-guru
+    :after (go-mode)
+    :if (executable-find "guru")
+    :demand t
+    :init
+    (defun shackra-go-mode-set-scope ()
+      (when (eq major-mode 'go-mode)
+        (set (make-local-variable 'go-guru-scope)
+             (concat (projectile-project-root) "..."))))
+    :bind (:map go-mode-map
+                ("M-." . go-guru-definition)
+                ("C-M-g" . hydra-go-guru/body))
+    :hydra (hydra-go-guru (:color blue :columns 2)
+                          "Contesta preguntas sobre código fuente escrito en Go"
+                          ("a" go-guru-callees "Receptores de llamada, función bajo punto actual")
+                          ("s" go-guru-callers "Llamadores, función bajo punto actual")
+                          ("d" go-guru-callstack "Muestra grafo de llamadas desde una raíz, función bajo punto actual")
+                          ("f" go-guru-describe "Describe la sintaxis seleccionada, su tipo y métodos")
+                          ("g" go-guru-freevars "Enumera las variables libres, marca actual")
+                          ("h" go-guru-referrers "Enumera referencias al objeto, identificador marcado")
+                          ("j" go-guru-peers "Enumera un set de remitentes/destinatarios para las operaciones enviar/recibir de este canal")
+                          ("k" go-guru-pointsto "Muestra lo que apunta, expresión marcada")
+                          ("l" go-guru-implements "Describe la relación de implementación para tipos en un paquete conteniendo el cursor")
+                          ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
+    :config
+    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
+    (add-hook 'projectile-mode-hook #'shackra-go-mode-set-scope))
+
+  (use-package flycheck-gometalinter
+    :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
+    :after (flycheck-mode go-mode)
+    :init
+    (if (executable-find "gometalinter.v1")
+        (setf flycheck-gometalinter-executable "gometalinter.v1")
+      (setf flycheck-gometalinter-executable "gometalinter"))
+    (setf flycheck-gometalinter-vendor t)
+    (setf flycheck-gometalinter-test t)
+    (setf flycheck-gometalinter-fast t)
+    (setf flycheck-gometalinter-enable-linters '("unused"))
+    (setf flycheck-gometalinter-disable-linters '("gotype"))
+    (setq flycheck-gometalinter-deadline "5s")
+    :config
+    (progn
+      (flycheck-gometalinter-setup)))
 
   (use-package ob-go)
 #+END_SRC
@@ -3003,60 +2951,34 @@ Configuración adecuada para Arch Linux gracias a la siguiente [[https://www.red
 :END:
 Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
 #+BEGIN_SRC emacs-lisp
-
-  (with-eval-after-load 'hydra
-    (with-eval-after-load 'multiple-cursors
-      (defhydra hydra-mc-next (:columns 4 :color amaranth)
-        "Multiple-cursors: Siguiente"
-        ("n"    mc/mark-next-like-this "Como este")
-        ("N"    mc/unmark-next-like-this "Desmarcar")
-        ("M-n"  mc/skip-to-next-like-this "Saltar")
-        ("C-n"  mc/mark-next-lines "Linea")
-        ("SPC" nil "Salir" :color blue))
-      (defhydra hydra-mc-previous (:columns 4 :color amaranth)
-        "Multiple-cursors: Anterior"
-        ("p"   mc/mark-previous-like-this "Como este")
-        ("P"   mc/unmark-previous-like-this "Desmarcar")
-        ("M-p" mc/skip-to-previous-like-this "Saltar")
-        ("C-p" mc/mark-previous-lines "Linea")
-        ("SPC" nil "Salir" :color blue))
-      (bind-keys :prefix-map shackra-mc-map
-                 :prefix "C-c n"
-                 ("n"   . hydra-mc-next/mc/mark-next-like-this)
-                 ("N"   . hydra-mc-next/mc/unmark-next-like-this)
-                 ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
-                 ("C-n" . hydra-mc-next/mc/mark-next-lines)
-                 ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
-                 ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
-                 ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
-                 ("C-p" . hydra-mc-previous/mc/mark-previous-lines))))
-
   (use-package multiple-cursors
     :init
     (add-hook 'multiple-cursors-mode-hook #'shackra-lsp-on-change-modify-hook)
+    :hydra (hydra-mc-next (:columns 4 :color amaranth)
+                          "Multiple-cursors: Siguiente"
+                          ("n"    mc/mark-next-like-this "Como este")
+                          ("N"    mc/unmark-next-like-this "Desmarcar")
+                          ("M-n"  mc/skip-to-next-like-this "Saltar")
+                          ("C-n"  mc/mark-next-lines "Linea")
+                          ("SPC" nil "Salir" :color blue))
+    :hydra (hydra-mc-previous (:columns 4 :color amaranth)
+                              "Multiple-cursors: Anterior"
+                              ("p"   mc/mark-previous-like-this "Como este")
+                              ("P"   mc/unmark-previous-like-this "Desmarcar")
+                              ("M-p" mc/skip-to-previous-like-this "Saltar")
+                              ("C-p" mc/mark-previous-lines "Linea")
+                              ("SPC" nil "Salir" :color blue))
     :config
     (bind-keys :prefix-map shackra-mc-map
                :prefix "C-c n"
-               ("n"   . mc/mark-next-like-this)
-               ("N"   . mc/unmark-next-like-this)
-               ("M-n" . mc/skip-to-next-like-this)
-               ("C-n" . mc/mark-next-lines)
-               ("p"   . mc/mark-previous-like-this)
-               ("P"   . mc/unmark-previous-like-this)
-               ("M-p" . mc/skip-to-previous-like-this)
-               ("C-p" . mc/mark-previous-lines)
-               ("a"   . mc/mark-all-dwim)
-               ("A"   . mc/mark-all-like-this-dwim)
-               ("M-a" . mc/mark-all-like-this-in-defun)
-               ("M-A" . mc/mark-all-words-like-this-in-defun)
-               ("0"   . mc/insert-numbers)
-               ("h"   . mc/mark-sgml-tag-pair)
-               ("s"   . mc/sort-regions)
-               ("m"   . set-rectangular-region-anchor)
-               ("r"   . mc/reverse-regions)
-               ("M-l" . mc/edit-lines)
-               ("l"   . mc/edit-beginnings-of-lines)
-               ("C-l" . mc/edit-ends-of-lines)))
+               ("n"   . hydra-mc-next/mc/mark-next-like-this)
+               ("N"   . hydra-mc-next/mc/unmark-next-like-this)
+               ("M-n" . hydra-mc-next/mc/skip-to-next-like-this)
+               ("C-n" . hydra-mc-next/mc/mark-next-lines)
+               ("p"   . hydra-mc-previous/mc/mark-previous-like-this)
+               ("P"   . hydra-mc-previous/mc/unmark-previous-like-this)
+               ("M-p" . hydra-mc-previous/mc/skip-to-previous-like-this)
+               ("C-p" . hydra-mc-previous/mc/mark-previous-lines)))
 #+END_SRC
 *** =pcre2el=
 Convierte entre sintaxis de expresiones regulares PCRE, Emacs y RX.

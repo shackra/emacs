@@ -125,6 +125,7 @@ New
 
 Changes
 ~~~~~~~
+- Migra las hydras a :hydra en use-package. [Jorge Araya Navarro]
 - Instala Hydra por default. [Jorge Araya Navarro]
 - Centra la plegaria. [Jorge Araya Navarro]
 - Desactiva find-file y switch-buffer personalizados. [Jorge Araya
