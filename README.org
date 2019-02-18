@@ -3168,6 +3168,12 @@ Mover texto a voluntad
   (use-package move-text
     :config (move-text-default-bindings))
 #+END_SRC
+*** Conversion de nombres de variables
+#+BEGIN_SRC emacs-lisp
+  (use-package string-inflection
+    :bind (:map global-map
+                ("C-c C-u" . string-inflection-all-cycle)))
+#+END_SRC
 ** Otros
 *** golden-ratio-scroll-screen
 Subraya la linea anterior y la siguiente luego de hacer saltar de linea el cursor del mouse
