@@ -125,6 +125,9 @@ New
 
 Changes
 ~~~~~~~
+- Cambia el hydra para MC por uno mejor. [Jorge Araya Navarro]
+
+  - https://github.com/abo-abo/hydra/wiki/multiple-cursors
 - Migra las hydras a :hydra en use-package. [Jorge Araya Navarro]
 - Instala Hydra por default. [Jorge Araya Navarro]
 - Centra la plegaria. [Jorge Araya Navarro]
