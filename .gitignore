@@ -52,3 +52,4 @@ javacomp/
 php-language-server/
 .cask/
 README.el
+/transient/history.el
