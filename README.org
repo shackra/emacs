@@ -3329,12 +3329,16 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
     (telephone-line-defsegment shackra-venv-segment ()
       (shackra-virtualenv-name))
 
-    (setf telephone-line-lhs
-          '((accent . (shackra-line-buffer-segment))
-            (nil .  (shackra-vc-segment shackra-flycheck-status-segment))))
+    (telephone-line-defsegment christian-mark ()
+      "🕇")
 
-    (setf telephone-line-rhs '((nil . (telephone-line-misc-info-segment telephone-line-major-mode-segment))
-                               (accent-orange . (shackra-venv-segment))))
+    (setf telephone-line-lhs
+          '((accent . (christian-mark shackra-line-buffer-segment))
+            (nil .  (shackra-vc-segment shackra-flycheck-status-segment))
+            (accent  . ((lambda () nil)))))
+
+    (setf telephone-line-rhs '((accent . (shackra-venv-segment telephone-line-misc-info-segment telephone-line-major-mode-segment))
+                               (nil  . ())))
     (telephone-line-mode 1))
 #+END_SRC
 *** =visual-line-mode=

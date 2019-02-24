@@ -128,6 +128,9 @@ New
 
 Changes
 ~~~~~~~
+- Modifica el mode-line de telephone-line. [Jorge Araya Navarro]
+
+  elimina el borde duro de la derecha y colores innecesarios
 - Cambia el hydra para MC por uno mejor. [Jorge Araya Navarro]
 
   - https://github.com/abo-abo/hydra/wiki/multiple-cursors
