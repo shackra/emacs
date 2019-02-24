@@ -299,6 +299,7 @@ Changes
 
 Fix
 ~~~
+- Devuelve cadena si msg es nil. [Jorge Araya Navarro]
 - Renombra función. [Jorge Araya Navarro]
 
   algunas funciones de swiper fueron cambiadas de nombre
