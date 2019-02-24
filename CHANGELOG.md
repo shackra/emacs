@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Habilita hydra para smerge. [Jorge Araya Navarro]
+
+  - https://github.com/kaushalmodi/.emacs.d/blob/master/setup-files/setup-diff.el#L157
 - Instala use-package-hydra. [Jorge Araya Navarro]
 
   me permite integrar mejor Hydra con la configuración de algunos paquetes
