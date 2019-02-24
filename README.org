@@ -3276,7 +3276,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
     (when (boundp 'venv-current-name)
       (if venv-current-name
           (format "venv: %s" venv-current-name)
-        "venv: -")))
+        nil)))
 #+END_SRC
 **** =mode-line-format=
 #+BEGIN_SRC emacs-lisp

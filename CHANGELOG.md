@@ -128,6 +128,8 @@ New
 
 Changes
 ~~~~~~~
+- Despliega nada si no hay entorno virtual de Python activado. [Jorge
+  Araya Navarro]
 - Modifica el mode-line de telephone-line. [Jorge Araya Navarro]
 
   elimina el borde duro de la derecha y colores innecesarios
