@@ -302,6 +302,8 @@ Changes
 
 Fix
 ~~~
+- Ajusta el mapeo de teclas para kill-buffer y kill-this-buffer. [Jorge
+  Araya Navarro]
 - Devuelve cadena si msg es nil. [Jorge Araya Navarro]
 - Renombra función. [Jorge Araya Navarro]
 

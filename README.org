@@ -582,7 +582,8 @@ Varios modos mayores que uso para desarrollo web tienen para personalizar el niv
 #+END_SRC
 ** Matar buffers de forma inmediata
 #+BEGIN_SRC emacs-lisp
-  (define-key global-map [remap kill-buffer] 'kill-this-buffer)
+  (unbind-key "C-x k" global-map)
+  (define-key global-map (kbd "C-x k") 'kill-this-buffer)
 #+END_SRC
 ** Desactivar lsp-mode cuando se activa múltiples cursores
 He notado un grave descenso de la responsividad de Emacs cuando estoy usando iedit-mode o multiple-cursors mientras lsp-mode esta activo. Aparentemente el problema radica en =lsp-on-change= ejecutandose en cada cambio hecho al buffer a traves del gancho =after-change-functions=, esta función hace solicitudes a un servidor RPC lo cual por alguna razón congela Emacs.
