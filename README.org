@@ -3261,11 +3261,11 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
     "Estado de Flycheck"
     (let* ((text (pcase flycheck-last-status-change
                    (`finished (shackra-flycheck-errors))
-                   (`running     (propertize "En ejecución" 'face `(:foreground "deep sky blue")))
-                   (`no-checker  (propertize "No existe revisor" 'face `(:foreground "dim grey")))
-                   (`not-checked (propertize "Sin revisar" 'face `(:foreground "dim grey")))
-                   (`errored     (propertize "Error con Flycheck" 'face `(:foreground "tomato")))
-                   (`interrupted (propertize "Interrumpido" 'face `(:foreground "tomato")))
+                   (`running     (propertize "En ejecución" 'face `(:foreground "#040687")))
+                   (`no-checker  (propertize "No existe revisor" 'face `(:foreground "black")))
+                   (`not-checked (propertize "Sin revisar" 'face `(:foreground "black")))
+                   (`errored     (propertize "Error con Flycheck" 'face `(:foreground "#870448")))
+                   (`interrupted (propertize "Interrumpido" 'face `(:foreground "#870448")))
                    (`suspicious  (shackra-faicon-icon "question" "tomato")))))
       (propertize (concat (propertize "!Flyc" 'face 'flycheck-error-list-error) (propertize "{" 'face 'flycheck-error-list-error) text (propertize "}" 'face 'flycheck-error-list-error))
                   'help-echo "Reporte de Flycheck para errores de alta y baja prioridad"
@@ -3698,7 +3698,8 @@ Establece cuales temás son seguros.
     :config
     (load-theme 'zenburn t))
 #+END_SRC
-**** Monokai
+**** CANCELADO Monokai                                         :CANCELADO:
+- State "CANCELADO"  from              [2019-02-27 mié 16:26]
 - State "CANCELADO"  from "CANCELADO"  [2018-03-28 mié 17:25]
 - State "CANCELADO"  from              [2018-03-28 mié 16:55] \\
   desactiva el tema
@@ -3711,3 +3712,9 @@ Establece cuales temás son seguros.
     :config
     (load-theme 'monokai t))
 #+END_SRC
+**** Nimbus
+#+begin_src emacs-lisp
+  (use-package nimbus-theme
+    :config
+    (load-theme 'nimbus t))
+#+end_src

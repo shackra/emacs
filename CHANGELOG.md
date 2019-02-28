@@ -128,6 +128,7 @@ New
 
 Changes
 ~~~~~~~
+- Usa el tema Nimbus. [Jorge Araya Navarro]
 - Despliega nada si no hay entorno virtual de Python activado. [Jorge
   Araya Navarro]
 - Modifica el mode-line de telephone-line. [Jorge Araya Navarro]
