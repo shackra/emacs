@@ -128,6 +128,7 @@ New
 
 Changes
 ~~~~~~~
+- Desactiva algunos paquetes y añade otros. [Jorge Araya Navarro]
 - Usa el tema Nimbus. [Jorge Araya Navarro]
 - Despliega nada si no hay entorno virtual de Python activado. [Jorge
   Araya Navarro]

@@ -736,10 +736,10 @@ Teclas
 - @@html:<kbd>C-x C-f</kbd>@@ :: Visita un archivo
 - @@html:<kbd>C-x b</kbd>@@ :: Cambia de buffer
 #+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'projectile
-    (use-package counsel-projectile
-      :commands (counsel-projectile counsel-projectile-switch-project counsel-projectile-switch-to-buffer)
-      :after (counsel)))
+  (use-package counsel-projectile
+    :after (projectile counsel)
+    :commands (counsel-projectile counsel-projectile-switch-project counsel-projectile-switch-to-buffer))
+
   (use-package counsel
     :after (ivy)
     :commands (counsel-org-tag dired)
@@ -762,6 +762,17 @@ Teclas
 
   (use-package ivy-hydra
     :after (counsel-projectile))
+
+  (use-package ivy-posframe
+    :after (ivy)
+    :init
+    ;;(setq ivy-posframe-width (frame-width))
+    (setq ivy-posframe-parameters
+          '((left-fringe . 10)
+            (right-fringe . 10)))
+    (setq ivy-posframe-hide-minibuffer t)
+    (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
+    :config (ivy-posframe-enable))
 
   (use-package ivy
     :bind (:map global-map
@@ -1664,7 +1675,7 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
                                       (turn-off-auto-fill)
                                       (visual-line-mode 1))))
 #+END_SRC
-*** Weechat                                                     :CANCELADO:
+*** Weechat
 - State "CANCELADO"  from              [2018-03-28 mié 17:36] \\
   desactivado hasta arreglo del bug https://github.com/oneKelvinSmith/monokai-emacs/issues/94 en Monokai theme
 Conexión a Weechat desde Emacs
@@ -1688,7 +1699,9 @@ Conexión a Weechat desde Emacs
       (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
                                          (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain))))))
 #+END_SRC
-*** Slack
+*** CANCELADO Slack                                             :CANCELADO:
+- State "CANCELADO"  from              [2019-03-24 dom 14:09] \\
+  no lo estoy usando ahora mismo
 #+BEGIN_SRC emacs-lisp
   (unless (boundp 'dbus-compiled-version)
     (setf dbus-compiled-version nil))
@@ -1786,7 +1799,9 @@ Conexión a Weechat desde Emacs
     (define-key slack-mode-map (kbd "C-c C-t")
       #'slack-thread-select))
 #+END_SRC
-*** Redmine
+*** CANCELADO Redmine                                           :CANCELADO:
+- State "CANCELADO"  from              [2019-03-24 dom 14:12] \\
+  no lo estoy usando ahora mismo
 #+BEGIN_SRC emacs-lisp
   (with-eval-after-load 'auth-source
     (setf auth-source-save-behavior nil))
@@ -1825,6 +1840,9 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
     (put 'hes-escape-backslash-face 'face-alias 'font-lock-builtin-face)
     (put 'hes-escape-sequence-face 'face-alias 'font-lock-builtin-face))
   (use-package rainbow-mode)
+  (use-package rainbow-delimiters
+    :init
+    (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
   (use-package prog-mode
     :ensure nil
     :init
@@ -1844,7 +1862,7 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
     (bind-key* "C-M-," 'comment-dwim)
     (add-hook 'prog-mode-hook #'shackra-prog-mode))
 #+END_SRC
-*** =org-mode= :nuevo:
+*** =org-mode=
 El modo Org (Org-mode) es un modo de edición del editor de texto Emacs mediante el cual se editan documentos jerárquicos en texto plano.
 
 Su uso encaja con distintas necesidades, como la creación de notas de cosas por hacer, la planificación de proyectos y hasta la escritura de páginas web. Por ejemplo, los elementos to-do (cosas por hacer) pueden disponer de prioridades y fechas de vencimiento, pueden estar subdivididos en subtareas o en listas de verificación, y pueden etiquetarse o dársele propiedades. También puede generarse automáticamente una agenda de las entradas de cosas por hacer. ~[[https://es.wikipedia.org/wiki/Org-mode][org-mode - Wikipedia, la enciclopedia libre]]
@@ -2096,7 +2114,9 @@ Teclas
       (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
                                            :capture-character "P"))))
 #+END_SRC
-*** =org-trello=
+*** CANCELADO =org-trello=                                      :CANCELADO:
+- State "CANCELADO"  from              [2019-03-24 dom 14:44] \\
+  sin uso actualmente
 Sincroniza archivos org-mode y tableros en Trello
 #+BEGIN_SRC emacs-lisp
   (use-package org-trello
@@ -2770,14 +2790,15 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
   (use-package gradle-mode
     :after (kotlin-mode))
 #+END_SRC
-*** Gimp :deshabilitado:
+*** CANCELADO Gimp                                :deshabilitado:CANCELADO:
+- State "CANCELADO"  from              [2019-03-24 dom 14:45] \\
+  sin uso, el código elisp esta desactualizado
 Now you can run the GIMP with `M-x run-gimp'.
 Alternatively, connect to GIMP server with `M-x gimp-cl-connect'.
 
 Type `M-x gimp-help' for help.
 #+BEGIN_SRC emacs-lisp
   (use-package gimp-mode
-    :disabled
     :ensure nil
     :load-path "site-packages/gimp-mode"
     :config
@@ -3131,7 +3152,7 @@ Mover texto a voluntad
   (use-package move-text
     :config (move-text-default-bindings))
 #+END_SRC
-*** Conversion de nombres de variables
+*** Conversión de nombres de variables
 #+BEGIN_SRC emacs-lisp
   (use-package string-inflection
     :bind (:map global-map
@@ -3150,7 +3171,9 @@ Subraya la linea anterior y la siguiente luego de hacer saltar de linea el curso
 #+BEGIN_SRC emacs-lisp
   (use-package mustache-mode)
 #+END_SRC
-*** =fixmee=
+*** CANCELADO =fixmee=                                          :CANCELADO:
+- State "CANCELADO"  from              [2019-03-24 dom 14:21] \\
+  todos los TO DO y FIX ME en código fuente son mostrados en =magit-status=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:49]
 :END:
@@ -3332,11 +3355,13 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 
     (telephone-line-defsegment christian-mark ()
       "🕇")
+    (telephone-line-defsegment nil-segment ()
+      nil)
 
     (setf telephone-line-lhs
           '((accent . (christian-mark shackra-line-buffer-segment))
             (nil .  (shackra-vc-segment shackra-flycheck-status-segment))
-            (accent  . ((lambda () nil)))))
+            (accent  . (nil-segment))))
 
     (setf telephone-line-rhs '((accent . (shackra-venv-segment telephone-line-misc-info-segment telephone-line-major-mode-segment))
                                (nil  . ())))
@@ -3465,18 +3490,21 @@ Modo mayor para editar archivos de servicio systemd.
     :config
     (add-hook 'systemd-mode-hook #'yas-minor-mode-on))
 #+END_SRC
-*** interfaz para AUR
+*** CANCELADO interfaz para AUR                                 :CANCELADO:
+- State "CANCELADO"  from              [2019-03-24 dom 14:22] \\
+  ya tengo pikaur para el trabajo
 #+BEGIN_SRC emacs-lisp
   (use-package aurel
     :init
     (setf aurel-download-directory "~/proyectos/aur/aurel")
     (setf aurel-aur-user-package-info-check t))
 #+END_SRC
-*** =golden-ratio=
+*** CANCELADO =golden-ratio=                                    :CANCELADO:
+- State "CANCELADO"  from              [2019-03-24 dom 14:22] \\
+  no lo estoy usando ahora mismo
 Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de ellas
 #+BEGIN_SRC emacs-lisp
   (use-package golden-ratio
-    :disabled
     :diminish golden-ratio-mode
     :init
     (setf golden-ratio-auto-scale nil)
@@ -3525,7 +3553,9 @@ Eliminación de espacios de manera no obstrusiva
     :config
     (add-hook 'after-init-hook #'ws-butler-global-mode))
 #+END_SRC
-*** Mingus
+*** CANCELADO Mingus                                            :CANCELADO:
+- State "CANCELADO"  from              [2019-03-24 dom 14:30] \\
+  no esta en uso
 Cliente para MPD
 #+BEGIN_SRC emacs-lisp
   (use-package mingus
