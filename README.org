@@ -1885,7 +1885,8 @@ Teclas
     (setq-default org-download-image-dir "~/org/imagenes/"))
 
   (use-package org
-    :ensure org-plus-contrib ;; Funciona solo si el ELPA de Org-mode esta registrado
+    :ensure org-plus-contrib ;; Funciona solo si el ELPA de Org-mode esta
+    ;; registrado
     :bind (:map global-map
                 ("C-c a" . org-agenda)
                 ("<F12>" . org-agenda)
@@ -1900,6 +1901,7 @@ Teclas
     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
+    (add-hook 'org-mode-hook #'yas-minor-mode-on)
     ;; Exclude DONE state tasks from refile targets
     (defun verify-refile-target ()
       "Exclude todo keywords with a done state from refile targets"
