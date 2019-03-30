@@ -2843,6 +2843,13 @@ Type `M-x gimp-help' for help.
     (add-hook 'csharp-mode-hook #'shackra-csharp-config)
     (add-hook 'omnisharp-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) 'company-omnisharp))))
 #+END_SRC
+*** C y C++
+#+begin_src emacs-lisp
+  ;; activa LSP en C y C++
+  (with-eval-after-load "lsp-mode"
+    (dolist (hook '(c-mode-hook c++-mode-hook))
+      (add-hook hook #'lsp)))
+#+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
