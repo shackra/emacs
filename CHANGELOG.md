@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Extiende la configuración de Emacs para C/C++ [Jorge Araya Navarro]
 - Activa LSP para C y C++ [Jorge Araya Navarro]
 - Añade plantilla para documentos de diseño de videojuegos. [Jorge Araya
   Navarro]
