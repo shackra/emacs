@@ -1394,9 +1394,7 @@ Implementación para Emacs del Language Server Protocol.
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
     (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
 
-  (use-package company-lsp
-    :config
-    (push 'company-lsp company-backends))
+  (use-package company-lsp)
 #+END_SRC
 *** smerge
 Un modo menor que facilita la manipulación de la salida de diff3

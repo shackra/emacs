@@ -132,6 +132,11 @@ New
 
 Changes
 ~~~~~~~
+- Simplifica sentencia de use-package. [Jorge Araya Navarro]
+
+  lsp-mode ya se hace cargo de algunas cosas por nosotros
+
+  - https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/eh87y8s/
 - Desactiva algunos paquetes y añade otros. [Jorge Araya Navarro]
 - Usa el tema Nimbus. [Jorge Araya Navarro]
 - Despliega nada si no hay entorno virtual de Python activado. [Jorge
