@@ -816,7 +816,7 @@ Teclas
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :after (windmove winner windresize)
-    :bind (:map global-map (("M-o" . shackra-other-window)
+    :bind (:map global-map (("M-o" . ace-window)
                             ("M-1" . hydra-win/body)))
     :config
     (defface aw-leading-char-face '(:inherit ace-jump-face-foreground :height 2.0) "ace-jump leading character size")
