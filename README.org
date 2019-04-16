@@ -2189,7 +2189,7 @@ Modo mayor para programar en Python
   (use-package pydoc-info)
 
   (use-package blacken
-    :after (python-mode)
+    :after (python)
     :init
     (add-hook 'python-mode-hook #'blacken-mode))
 

@@ -315,6 +315,8 @@ Changes
 
 Fix
 ~~~
+- Corrige símbolo para Python en configuración de Blacken. [Jorge Araya
+  Navarro]
 - Elimina llamada a comando inexistente. [Jorge Araya Navarro]
 - Ajusta el mapeo de teclas para kill-buffer y kill-this-buffer. [Jorge
   Araya Navarro]
