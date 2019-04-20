@@ -3,51 +3,27 @@
   "Tiempo en que Emacs arrancó")
 
 (setq load-prefer-newer t)
-;; Disable package initialize after us.  We either initialize it
-;; anyway in case of interpreted .emacs, or we don't want slow
-;; initialization in case of byte-compiled .emacs.elc.
-(package-initialize nil)
-(setq package-enable-at-startup nil)
-;; Ask package.el to not add (package-initialize) to .emacs.
-(setq package--init-file-ensured t)
 (setf byte-compile-warnings nil)
 
 ;; Resuelve problema en Windows 10 con codificaciones incorrectas
 (define-coding-system-alias 'cp65001 'utf-8)
 
-;; repositorios de paquetes
-(setf package-archives '(("melpa"        . "https://melpa.org/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
-                         ("gnu"          . "https://elpa.gnu.org/packages/")
-                         ("org"          . "https://orgmode.org/elpa/")))
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(setf straight-check-for-modifications '(check-on-save find-when-checking))
 
 (setq inhibit-startup-screen t)
-;; :pin no funciona en use-package por el momento, entonces si deseamos que se
-;; instale un paquete desde el repositorio que queremos debemos especificarlo
-;; aqui antes de que use-package sea inicializado
-(setq package-pinned-packages '((auctex      . "gnu")
-                                (python      . "gnu")))
-
-(setf package-selected-packages '(ace-window ag aggressive-indent alert all-the-icons all-the-icons-dired android-mode auctex auto-yasnippet better-defaults blacken bookmark+ bug-hunter cargo cask-mode chronos cmake-font-lock cmake-ide cmake-mode commander company company-auctex company-childframe company-emoji company-lsp company-quickhelp company-statistics company-tern counsel counsel-notmuch counsel-projectile dash diminish dired-details+ docker docker-compose-mode dockerfile-mode el-pocket el2org elfeed emmet-mode emojify epl exec-path-from-shell expand-region f feature-mode flycheck-cask flycheck-golangci-lint flycheck-gometalinter flycheck-kotlin flycheck-package flyspell-correct-ivy font-lock-studio free-keys gimp-mode git git-gutter-fringe gitconfig-mode gitignore-mode go-eldoc go-fill-struct go-guru go-mode go-playground go-snippets go-tag godoctor golden-ratio golden-ratio-scroll-screen google-c-style gradle-mode hgignore-mode highlight-escape-sequences highlight-indent-guides highlight-numbers hungry-delete iedit imenu-anywhere importmagic indium ivy-hydra ivy-posframe js2-refactor json-mode keyfreq kotlin kotlin-mode langtool lsp-ui magit-gh-pulls magit-todos meghanada monky move-text moz-controller mu4e-alert multi-term multiple-cursors mustache-mode nimbus-theme nlinum noflet notmuch-labeler ob-go omnisharp org-beautify-theme org-bullets org-download org-plus-contrib org-projectile org-trello org-webpage org2web ox-gfm package-build paredit pcre2el pdf-tools php-mode php-refactor-mode pippel pkgbuild-mode pony-mode pretty-mode prodigy py-autopep8 pydoc-info python-environment pyvenv rainbow-delimiters rainbow-mode ranger realgud rjsx-mode s scss-mode secretaria shackle shut-up slime sphinx-doc string-inflection stylus-mode switch-buffer-functions sx systemd telephone-line tern toml-mode traad twittering-mode typescript-mode undo-tree use-package use-package-hydra vimish-fold virtualenvwrapper visual-fill-column vlf vue-mode web-beautify web-mode webpaste weechat windresize ws-butler xref-js2 yaml-mode yasnippet zenburn-theme))
-
-(defun package--save-selected-packages (&optional value)
-  "Set and save `package-selected-packages' to VALUE.
-
-The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabetically."
-  (when value
-    (setq package-selected-packages value))
-  ;; Sort alphabetically all symbols of package-selected-packages
-  (setf package-selected-packages (cl-sort package-selected-packages 'string-lessp))
-  (if after-init-time
-      (let ((save-silently inhibit-message))
-        ;; save the content of package-selected-packages
-        (with-current-buffer (find-file-noselect "~/.emacs.d/init.el")
-          (search-forward "package-selected-packages")
-          (delete-region (point-at-bol) (point-at-eol))
-          (insert (format "(setf package-selected-packages '%s)" package-selected-packages))
-          (save-buffer)
-          (kill-buffer)))
-    (add-hook 'after-init-hook #'package--save-selected-packages)))
 
 (defun my-tangle-section-canceled ()
   "Checks if the previous section header was CANC"
@@ -103,8 +79,6 @@ The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabeti
     (my-tangle-config-org orgfile elfile))
   (progn
     (load-file elfile)
-    ;; Solo al final inicializamos los paquetes
-    (package-initialize)
     (message "Tiempo de inicialización %.2fs" (float-time (time-subtract (current-time) my-start-time)))))
 
 (defun my-tangle-config-org-hook-func ()

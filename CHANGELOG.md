@@ -7,6 +7,15 @@ Changelog
 
 New
 ~~~
+- Usa straight.el en lugar de package.el. [Jorge Araya Navarro]
+
+
+4.0 (2019-04-20)
+----------------
+
+New
+~~~
+- Usa straight.el en lugar de package.el. [Jorge Araya Navarro]
 - Instala paquetes para edición de código en C/C++ [Jorge Araya Navarro]
 - Extiende la configuración de Emacs para C/C++ [Jorge Araya Navarro]
 - Activa LSP para C y C++ [Jorge Araya Navarro]

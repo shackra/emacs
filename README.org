@@ -30,54 +30,24 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
 
   (global-set-key (kbd "C-c I") 'find-config)
 
-  (defun shackra-update-one-package (package)
-    "Actualiza un paquete PACKAGE"
-    (when (package-installed-p package)
-      (let* ((newest-pkg (car-safe (cdr (assq package package-archive-contents))))
-             (new-ver (and newest-pkg (package-desc-version newest-pkg)))
-             (builtin-pkg (cdr (assq package package--builtins)))
-             (installed-pkg (car-safe (cdr (assq package package-alist))))
-             (old-dir (and installed-pkg (package-desc-dir installed-pkg)))
-             (old-ver (or (and installed-pkg (package-desc-version installed-pkg))
-                          (and builtin-pkg (package--bi-desc-version builtin-pkg)))))
-        (when (and new-ver (version-list-< old-ver new-ver))
-          ;; Instalamos la nueva versión de org-mode
-          (condition-case nil
-              ;; en caso de algún error tratando de bajar algún paquete, captura
-              ;; el error para que no interfiera con la inicialización de Emacs
-              (progn (package-install newest-pkg)
-                     (message (format "Paquete «%s» actualizado de la versión %s a la versión %s"
-                                      (package-desc-name newest-pkg) old-ver new-ver))))
-          (when old-dir
-            (delete-directory old-dir t))))))
+  ;; instala `use-package' usando `straight'
+  (straight-use-package 'use-package)
 
-  (unless package-archive-contents
-    (package-refresh-contents))
+  ;; por default instala todos los paquetes usando `straight' si no estan
+  ;; disponibles locamente
+  (setf straight-use-package-by-default t)
 
-  ;; Instala use-package si no esta disponible
-  (when (not (package-installed-p 'use-package))
-    (package-install 'use-package))
+  (use-package use-package-hydra)
 
-  (use-package use-package-hydra :ensure t)
+  (use-package hydra :config (require 'hydra-examples))
 
-  (use-package hydra :ensure t :config (require 'hydra-examples))
+  (use-package diminish)
 
-  (if (not (package-installed-p 'org-plus-contrib))
-      (package-install 'org-plus-contrib)
-    ;; El paquete esta instalado. Actualiza el paquete org-mode.
-    (shackra-update-one-package 'org-plus-contrib))
+  (use-package bind-key)
 
-  (when (not (package-installed-p 'diminish))
-    (package-install 'diminish))
+  (use-package f)
 
-  (when (not (package-installed-p 'bind-key))
-    (package-install 'bind-key))
-
-  (when (not (package-installed-p 'f))
-    (package-install 'f))
-
-  (when (not (package-installed-p 'exec-path-from-shell))
-    (package-install 'exec-path-from-shell))
+  (use-package exec-path-from-shell)
 
   ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
   (when (eq system-type 'darwin)
@@ -95,8 +65,6 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
     (require 'use-package))
   (require 'diminish)
   (require 'bind-key)
-
-  (setf use-package-always-ensure t)
 
   (defun shackra-org-confirm-babel-evaluate (lang body)
     (not (or (string= lang "emacs-lisp"))))
@@ -604,6 +572,33 @@ La mejor solución seria quitar la función de los ganchos temporalmente.
       (add-hook 'after-change-functions #'lsp-on-change nil t)
       (setf shackra--lsp-on-change-exist nil)))
 #+END_SRC
+** CANCELADO Ordena alfabeticamente la lista de paquetes instalados :CANCELADO:
+- State "CANCELADO"  from              [2019-04-20 sáb 13:01] \\
+  este código es incompatible con straight.el
+Una funcion que usaba antes de migrar a straight.el, esta la tenia en mi archivo init.el y se preserva aquí por motivos didácticos.
+
+#+begin_src emacs-lisp
+  (setf package-selected-packages '())
+
+  (defun package--save-selected-packages (&optional value)
+    "Set and save `package-selected-packages' to VALUE.
+
+  The variable is saved on ~/.emacs.d/init.el and its content is ordered alphabetically."
+    (when value
+      (setq package-selected-packages value))
+    ;; Sort alphabetically all symbols of package-selected-packages
+    (setf package-selected-packages (cl-sort package-selected-packages 'string-lessp))
+    (if after-init-time
+        (let ((save-silently inhibit-message))
+          ;; save the content of package-selected-packages
+          (with-current-buffer (find-file-noselect "~/.emacs.d/init.el")
+            (search-forward "package-selected-packages")
+            (delete-region (point-at-bol) (point-at-eol))
+            (insert (format "(setf package-selected-packages '%s)" package-selected-packages))
+            (save-buffer)
+            (kill-buffer)))
+      (add-hook 'after-init-hook #'package--save-selected-packages)))
+#+end_src
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages
@@ -685,7 +680,7 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
 Permite a Emacs manejar archivos enormes. Automáticamente se activa para archivos mayores a =large-file-warning-threshold=.
 #+BEGIN_SRC emacs-lisp
   (use-package vlf-setup
-    :ensure vlf
+    :straight vlf
     :init
     (setf vlf-application 'dont-ask))
 #+END_SRC
@@ -693,8 +688,7 @@ Permite a Emacs manejar archivos enormes. Automáticamente se activa para archiv
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package secreto
-    :ensure nil
-    :load-path "site-packages/secreto.el/"
+    :straight (secreto :type git :host bitbucket :repo "shackra/secreto.el")
     :config
     (load-secretos))
 #+END_SRC
@@ -712,10 +706,9 @@ Escala la altura de la tipografía en todos los buffers de manera temporal
   (use-package switch-buffer-functions
     :commands (switch-buffer-functions-run))
   (use-package font-man
+    :straight (font-man :type git :host bitbucket :repo "shackra/font-man")
     :commands (font-man-mode)
-    :after (switch-buffer-functions)
-    :ensure nil
-    :load-path "site-packages/font-man")
+    :after (switch-buffer-functions))
 #+END_SRC
 *** =swiper= & =ivy=
 :LOGBOOK:
@@ -800,6 +793,8 @@ Teclas
     (add-to-list 'ivy-ignore-buffers ".*-ls")
     (add-to-list 'ivy-ignore-buffers "\\*go-bingo.*")
     (add-to-list 'ivy-ignore-buffers "\\*Flymake log\\*")
+    (add-to-list 'ivy-ignore-buffers "\\*straight-process\\*")
+    (add-to-list 'ivy-ignore-buffers "\\*pushmail-mbsync\\*")
     (with-eval-after-load "projectile"
       (setf projectile-globally-ignored-buffers ivy-ignore-buffers)))
   (ivy-mode 1)
@@ -846,10 +841,8 @@ Teclas
                       ("." winner-redo "Rehacer ultimo cambio")
                       ("SPC" nil "Salir")))
 
-  (use-package windmove
-    :ensure nil)
+  (use-package windmove)
   (use-package winner
-    :ensure nil
     :config
     (winner-mode 1))
   (use-package windresize)
@@ -865,14 +858,9 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
   (use-package ranger
     :init
     (setf ranger-cleanup-eagerly t))
-  (use-package dired+
-    :ensure nil
-    :load-path "site-packages/dired+/"
-    :config
-    (diredp-toggle-find-file-reuse-dir 1))
   ;; -*- lexical-binding: t -*-
   (use-package dired
-    :ensure nil
+    :straight nil
     :bind (:map dired-mode-map
                 ("[" . multi-term)
                 ("," . dired-omit-mode)
@@ -923,6 +911,10 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
         (after dired-after-updating-hook first () activate)
       "Sort dired listings with directories first before adding marks."
       (dired-sort-group-dirs)))
+  (use-package dired+
+    :straight (dired+ :type git :host github :repo "emacsmirror/dired-plus")
+    :config
+    (diredp-toggle-find-file-reuse-dir 1))
 #+END_SRC
 *** =keyfreq=
 :LOGBOOK:
@@ -1060,7 +1052,6 @@ Manejo de archivos de un proyecto.
 Archivos recientes abiertos en Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package recentf
-    :ensure nil
     :init
     (setf recentf-max-saved-items 100)
     :config
@@ -1101,13 +1092,6 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
 :END:
 Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<kbd><f1></kbd>@@
 #+BEGIN_SRC emacs-lisp
-  (use-package counsel-term
-    :after (counsel)
-    :ensure nil
-    :load-path "site-packages/counsel-term"
-    :bind (:map term-mode-map
-                ("C-." . counsel-term-cd)))
-
   (use-package multi-term
     :bind ([f1] . multi-term)
     :init
@@ -1173,10 +1157,6 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
                     (buffer-substring-no-properties (point-min) (point-max))))
         (message "Salida de gitchangelog copiado al portapapeles"))))
 
-  (use-package magit-gh-pulls
-    :after (magit)
-    :config
-    (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
   (use-package magit
     :commands (magit-status)
     :bind (:map magit-mode-map
@@ -1200,8 +1180,14 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
     (setf magit-commit-arguments nil)
     (setf magit-use-overlays nil))
   (use-package magit-todos
+    :after (magit)
     :config
     (add-hook 'magit-status-mode-hook 'magit-todos-mode))
+  (use-package magit-gh-pulls
+    :disabled ;; provoca el siguiente error (void-variable magit-gh-pulls-popup)
+    :after (magit)
+    :config
+    (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
 #+END_SRC
 *** git-gutter-fring
 Muestra información de =git diff= en el fringe.
@@ -1231,7 +1217,6 @@ Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emac
 Muestra en el =área de eco= la firma de la función actual.
 #+BEGIN_SRC emacs-lisp
   (use-package eldoc
-    :ensure nil
     :diminish eldoc-mode
     :init
     (setf eldoc-idle-delay 1.0)
@@ -1245,7 +1230,6 @@ Muestra en el =área de eco= la firma de la función actual.
 Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package autorevert
-    :ensure nil
     :init
     (global-auto-revert-mode))
 #+END_SRC
@@ -1284,13 +1268,11 @@ Crea menús a partir de secciones de documentos. Asociado a @@html:<kbd>C-c i</k
 Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark
-    :ensure nil
     :init
     (setf bookmark-default-file "~/.emacs.d/bookmarks")
     (setf bookmark-save-flag 1))
 
   (use-package bookmark+
-    :ensure nil
     :load-path "site-packages/bookmark+/"
     :init
     (setf bmkp-auto-light-when-set 'all-in-buffer)
@@ -1370,7 +1352,7 @@ Teclas:
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
   (use-package lsp
-    :ensure lsp-mode
+    :straight lsp-mode
     :config
     (require 'lsp-clients)
     (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
@@ -1400,7 +1382,6 @@ Implementación para Emacs del Language Server Protocol.
 Un modo menor que facilita la manipulación de la salida de diff3
 #+begin_src emacs-lisp
   (use-package smerge-mode
-    :ensure nil
     :bind (:map smerge-mode-map ("C-M-'" . hydra-smerge/body))
     :hydra (hydra-smerge (:color pink :hint nil :pre (smerge-mode 1) :post (smerge-auto-leave))
                          "
@@ -1470,14 +1451,12 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
 
   (with-eval-after-load 'org
     (with-eval-after-load 'mu4e
-      (use-package org-mu4e
-        :ensure nil
-        :init
-        (setq org-mu4e-link-query-in-headers-mode nil))))
+      (require 'org-mu4e)
+      (setq org-mu4e-link-query-in-headers-mode nil)))
 
   (use-package mu4e
+    :straight nil
     :commands (mu4e correo mu4e-compose-new mu4e-compose-edit mu4e-compose-resend mu4e-compose-reply)
-    :ensure nil
     :preface
     ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
@@ -1813,7 +1792,7 @@ Conexión a Weechat desde Emacs
 Set de paquetes que me ayudan a escribir paquetes para GNU Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package cask
-    :ensure nil)
+    :straight (cask :type git :host github :repo "cask/cask"))
 
   (use-package cask-mode)
 
@@ -1826,8 +1805,7 @@ Set de paquetes que me ayudan a escribir paquetes para GNU Emacs
    'org-babel-load-languages
    '((emacs-lisp . t)
      (python . t)
-     (shell . t)
-     (go . t)))
+     (shell . t)))
 #+END_SRC
 *** =prog-mode=
 Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.
@@ -1842,7 +1820,7 @@ Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configur
     :init
     (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
   (use-package prog-mode
-    :ensure nil
+    :straight nil
     :init
     (defun shackra-prog-mode ()
       (set (make-local-variable 'fill-column) 79)
@@ -1883,7 +1861,7 @@ Teclas
     (setq-default org-download-image-dir "~/org/imagenes/"))
 
   (use-package org
-    :ensure org-plus-contrib ;; Funciona solo si el ELPA de Org-mode esta
+    :straight org-plus-contrib
     ;; registrado
     :bind (:map global-map
                 ("C-c a" . org-agenda)
@@ -2101,8 +2079,8 @@ Teclas
     :config
     (org-clock-persistence-insinuate))
   (use-package org-indent
+    :straight nil
     :after (org)
-    :ensure nil
     :diminish org-indent-mode)
   (with-eval-after-load 'org
     (use-package org-projectile
@@ -2229,7 +2207,7 @@ Modo mayor para programar en Python
 Paquete extensivo para escribir y formatear documentos TeX
 #+BEGIN_SRC emacs-lisp
   (use-package latex
-    :ensure auctex
+    :straight auctex
     :init
     (setf TeX-auto-save t
           TeX-parse-self t
@@ -2403,7 +2381,6 @@ npm i -g vscode-css-languageserver-bin
 ***** css-mode
 #+BEGIN_SRC emacs-lisp
   (use-package css-mode
-    :ensure nil
     :init
     (setf css-indent-offset shackra-webdev-indent)
     (with-eval-after-load 'lsp-clients
@@ -2572,7 +2549,10 @@ go build golang.org/x/tools/cmd/guru
     (progn
       (flycheck-gometalinter-setup)))
 
-  (use-package ob-go)
+  (use-package ob-go
+    :after (org-mode)
+    :config
+    (org-babel-do-load-languages 'org-babel-load-languages '((go . t))))
 #+END_SRC
 *** javascript
 **** JSON
@@ -2725,7 +2705,6 @@ Instalar estos componentes en el sistema operativo
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
   (use-package sgml-mode
-    :ensure nil
     :init
     (setf sgml-basic-offset shackra-webdev-indent)
     (with-eval-after-load 'lsp-clients
@@ -2758,13 +2737,6 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
     (setf slime-contribs '(slime-fancy))
     (add-hook 'slime-repl-mode-hook #'enable-paredit-mode)
     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit))
-#+END_SRC
-*** Stylus
-#+BEGIN_SRC emacs-lisp
-  (use-package stylus-mode
-    :after (rainbow-mode)
-    :init
-    (add-hook 'stylus-mode-hook 'rainbow-mode))
 #+END_SRC
 *** SCSS
 #+BEGIN_SRC emacs-lisp
@@ -2799,7 +2771,6 @@ Alternatively, connect to GIMP server with `M-x gimp-cl-connect'.
 Type `M-x gimp-help' for help.
 #+BEGIN_SRC emacs-lisp
   (use-package gimp-mode
-    :ensure nil
     :load-path "site-packages/gimp-mode"
     :config
     (load (expand-file-name "site-packages/gimp-mode/gimp-init.el" user-emacs-directory)))
@@ -2898,7 +2869,6 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
   (use-package flyspell
     :if (or (executable-find "ispell") (executable-find "hunspell"))
     :diminish flyspell-mode
-    :ensure nil
     :init
     ;; sacado de http://blog.binchen.org/posts/what-s-the-best-spell-check-set-up-in-emacs.html
     ;; if (aspell installed) { use aspell}
@@ -2979,38 +2949,32 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
     :config
     (add-hook 'text-mode #'text-mode-hook-setup))
 
-  (use-package shackra-ispell-dict-switch
-    :bind (("<f8>" . shackra-ispell-cycle-dict))
-    :no-require t
-    :ensure nil
-    :preface (provide 'shackra-ispell-dict-switch)
-    :config
-    (setf shackra-ispell-dict-list (list "es" "en"))
-    :init
-    (defvar shackra-ispell-dict-list (list) "Lista de diccionarios para cambiar")
+  (global-set-key (kbd "<f8>") #'shackra-ispell-cycle-dict)
+  (setf shackra-ispell-dict-list (list "es" "en"))
+  (defvar shackra-ispell-dict-list (list) "Lista de diccionarios para cambiar")
 
-    (defun shackra--ispell-current-dict ()
-      "Obtiene el diccionario actual o retorna el establecido por defecto"
-      (if ispell-current-dictionary
-          (cl-position ispell-current-dictionary shackra-ispell-dict-list :test 'string=)
-        (if (stringp (getenv "LANG"))
-            (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra-ispell-dict-list :test 'string=)
-          0))) ;; retorna español mientras tanto
+  (defun shackra--ispell-current-dict ()
+    "Obtiene el diccionario actual o retorna el establecido por defecto"
+    (if ispell-current-dictionary
+        (cl-position ispell-current-dictionary shackra-ispell-dict-list :test 'string=)
+      (if (stringp (getenv "LANG"))
+          (cl-position (nth 0 (split-string (getenv "LANG") "_")) shackra-ispell-dict-list :test 'string=)
+        0))) ;; retorna español mientras tanto
 
-    (defun shackra-ispell-cycle-dict ()
-      "Cambia de un diccionario a otro"
-      (interactive)
-      (let ((dict-list-size (- (length shackra-ispell-dict-list) 1))
-            (dict-current-index (shackra--ispell-current-dict)))
-        (if (> (+ dict-current-index 1) dict-list-size)
-            (setf dict-current-index 0)
-          (setf dict-current-index (+ dict-current-index 1)))
-        ;; luego de realizar la matemática, cambiamos el diccionario
-        (ispell-change-dictionary (nth dict-current-index shackra-ispell-dict-list)))
-      ;; Nuevo diccionario, nada de palabras subrayadas
-      (flyspell-delete-all-overlays)
-      ;; Mandamos a revisar la ortografía del párrafo en que estamos
-      (flyspell-region (line-beginning-position) (line-end-position))))
+  (defun shackra-ispell-cycle-dict ()
+    "Cambia de un diccionario a otro"
+    (interactive)
+    (let ((dict-list-size (- (length shackra-ispell-dict-list) 1))
+          (dict-current-index (shackra--ispell-current-dict)))
+      (if (> (+ dict-current-index 1) dict-list-size)
+          (setf dict-current-index 0)
+        (setf dict-current-index (+ dict-current-index 1)))
+      ;; luego de realizar la matemática, cambiamos el diccionario
+      (ispell-change-dictionary (nth dict-current-index shackra-ispell-dict-list)))
+    ;; Nuevo diccionario, nada de palabras subrayadas
+    (flyspell-delete-all-overlays)
+    ;; Mandamos a revisar la ortografía del párrafo en que estamos
+    (flyspell-region (line-beginning-position) (line-end-position)))
 #+END_SRC
 *** =flycheck-mode=
 :LOGBOOK:
@@ -3104,7 +3068,6 @@ Convierte entre sintaxis de expresiones regulares PCRE, Emacs y RX.
 Navegación y edición de /SubPalabras/. Siendo "HolaMundoAdios" una nomenclatura, =subword-mode= permite mover el cursor entre cada subpalabra, deteniéndolo en "Adios", "Mundo" y "Hola" si se mueve el cursor de derecha a izquierda presionando la tecla CTRL. Este modo menor es muy útil, especialmente para aquellos desarrolladores en Java que usan variables con JorobasDeCamello.
 #+BEGIN_SRC emacs-lisp
   (use-package subword
-    :ensure nil
     :diminish subword-mode)
 #+END_SRC
 *** =hungry-delete=
@@ -3152,27 +3115,15 @@ Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configur
   (remove-hook 'text-mode-hook #'turn-on-auto-fill)
   (add-hook 'text-mode-hook #'shackra-text-mode)
 #+END_SRC
-**** Mover el cursos de manera inteligente al inicio de la linea
-He tenido el problema, desde que no uso =auto-indent-mode=, que al presionar M-a el cursor va a la columna 0 en lugar de posicionarse en el primer carácter no-blanco de la linea, que es un comportamiento deseado cuando se esta programando. En [[http://stackoverflow.com/a/145359/2020214][Stackoverflow hay una respuesta]] para el problema :)
-#+BEGIN_SRC emacs-lisp
-  (use-package sbol
-    :no-require t
-    :ensure nil
-    :preface (provide 'sbol)
-    :bind (([home] . smart-beginning-of-line)
-	   ("C-a" . smart-beginning-of-line))
-    :init
-    (defun smart-beginning-of-line ()
-      "Move point to first non-whitespace character or beginning-of-line.
-
-  Move point to the first non-whitespace character on this line.
-  If point was already at that position, move point to beginning of line."
-    (interactive)
-    (let ((oldpos (point)))
-      (back-to-indentation)
-      (and (= oldpos (point))
-	   (beginning-of-line)))))
-#+END_SRC
+**** Mover el cursos de manera inteligente al inicio/fin de la linea
+#+begin_src emacs-lisp
+  (use-package mwim
+    :bind (:map global-map
+                (("C-a" . mwim-beginning)
+                 ("<home>" . mwim-beginning)
+                 ("C-e" . mwim-end)
+                 ("<end>" . mwim-end))))
+#+end_src
 *** paredit
 Un modo menor para la edición de paréntesis. Para aprender qué hace este modo menor y sus posibilidades, ver [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]].
 #+BEGIN_SRC emacs-lisp
@@ -3430,7 +3381,6 @@ Permite a emacs enviar notificaciones por DBus o diferentes medios. En este caso
 Pleguar o desplegar bloques de texto. Asociado a @@html:<kbd>C-c v</kbd>@@.
 #+BEGIN_SRC emacs-lisp
   (use-package vimish-fold
-    :defer 10
     :config
     (bind-keys :prefix-map shackra-vimish-fold-map
                :prefix "C-c v"
@@ -3462,9 +3412,9 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
   ;; configuración adaptada de http://emacs.stackexchange.com/a/5821/690 Gracias
   ;; a http://redd.it/35kbf6
   (use-package appt
+    :straight nil
     :after (alert)
     :if (not (eq system-type 'darwin))
-    :ensure nil
     :init
     (setf appt-message-warning-time 10
           appt-display-interval (1+ appt-message-warning-time)
@@ -3519,7 +3469,7 @@ Appointments me alerta de mis citas o pendientes que tengo por hacer.
 :END:
 #+BEGIN_SRC emacs-lisp
   (use-package uniquify
-    :ensure nil
+    :straight nil
     :init
     (setf uniquify-buffer-name-style 'forward))
 #+END_SRC
@@ -3670,15 +3620,14 @@ Este modo menor no funciona bien con otros modos menores que hacen uso de la pro
 *** Manejador de procesos para el sistema
 #+BEGIN_SRC emacs-lisp
   (use-package proced
-    :ensure nil
     :if (or (string-equal system-type "gnu/linux") (string-equal system-type "gnu/kfreebsd")))
 #+END_SRC
-*** schrute-mode
+*** CANCELADO schrute-mode                                      :CANCELADO:
+- State "CANCELADO"  from              [2019-04-20 sáb 13:04]
 Recuerda al usuario que hay una manera más eficiente de hacer algo
 #+BEGIN_SRC emacs-lisp
   (use-package schrute
     :disabled
-    :ensure nil
     :load-path "site-packages/dwight"
     :init
     (defun shackra-super-next-line ()
