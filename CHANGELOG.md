@@ -316,6 +316,9 @@ Changes
 
 Fix
 ~~~
+- Carga hydra-examples. [Jorge Araya Navarro]
+
+  esto habilita funciones que manipulan la astilla de las ventanas en Emacs
 - Corrige símbolo para Python en configuración de Blacken. [Jorge Araya
   Navarro]
 - Elimina llamada a comando inexistente. [Jorge Araya Navarro]

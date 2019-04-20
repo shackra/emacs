@@ -60,7 +60,7 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
 
   (use-package use-package-hydra :ensure t)
 
-  (use-package hydra :ensure t)
+  (use-package hydra :ensure t :config (require 'hydra-examples))
 
   (if (not (package-installed-p 'org-plus-contrib))
       (package-install 'org-plus-contrib)
