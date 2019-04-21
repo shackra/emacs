@@ -56,3 +56,4 @@ README.el
 !straight
 straight/*
 !straight/versions
+.extension/

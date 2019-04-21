@@ -1378,6 +1378,17 @@ Implementación para Emacs del Language Server Protocol.
 
   (use-package company-lsp)
 #+END_SRC
+*** Debug Adapter Protocol
+Sumario sacado de la pagina del proyecto en Github
+#+begin_quote
+Emacs client/library for [[https://code.visualstudio.com/docs/extensionAPI/api-debugging][Debug Adapter Protocol]] is a wire protocol for communication between client and Debug Server. It’s similar to the LSP but provides integration with debug server.
+#+end_quote
+#+begin_src emacs-lisp
+  (use-package dap-mode
+    :config
+    (dap-mode 1)
+    (dap-ui-mode 1))
+#+end_src
 *** smerge
 Un modo menor que facilita la manipulación de la salida de diff3
 #+begin_src emacs-lisp
@@ -2136,7 +2147,7 @@ Modo mayor para programar en Python
   (defun shackra-python-install-deps ()
     "Instala dependencias básicas dentro de un entorno virtual"
     (interactive)
-    (shell-command "pip install 'python-language-server[rope,pydocstyle,pyflakes]' pyls-mypy black"))
+    (shell-command "pip install 'python-language-server[rope,pydocstyle,pyflakes]' pyls-mypy black 'ptvsd>=4.2'"))
 
   (use-package pony-mode
     :after (python)
@@ -2198,6 +2209,8 @@ Modo mayor para programar en Python
     (add-hook 'python-mode-hook #'shackra-python-mode)
     (with-eval-after-load 'lsp-clients
       (add-hook 'python-mode-hook #'lsp))
+    (with-eval-after-load 'dap-mode
+      (require 'dap-python))
     :config
     ;; re-mapea todas los atajos que hagan referencia a `python-indent-shift-*' con `shackra-python-indent-shift-*'
     (global-set-key [remap python-indent-shift-left] 'shackra-python-indent-shift-left)
@@ -2451,6 +2464,9 @@ go build golang.org/x/tools/cmd/guru
                 ("C-c C-i" . go-goto-imports)
                 ("C-c C-c" . compile))
     :init
+    (with-eval-after-load 'dap-mode
+      (require 'dap-go)
+      (dap-go-setup))
     (setf gofmt-command "goimports")
     (defun shackra-go-update-compile-definition ()
       "Actualiza la definición del comando COMPILE para go-mode"
@@ -2658,7 +2674,11 @@ Instalar estos componentes en el sistema operativo
     :config
     (with-eval-after-load 'lsp-clients
       (add-hook 'js2-mode-hook #'lsp))
-    )
+    (with-eval-after-load 'dap-mode
+      (require 'dap-firefox)
+      (dap-firefox-setup)
+      (require 'dap-chrome)
+      (dap-chrome-setup)))
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript

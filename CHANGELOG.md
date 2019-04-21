@@ -7,7 +7,8 @@ Changelog
 
 New
 ~~~
-- Usa straight.el en lugar de package.el. [Jorge Araya Navarro]
+- Integra Debug Adapter Protocol para Go, Python y Javascript. [Jorge
+  Araya Navarro]
 
 
 4.0 (2019-04-20)
