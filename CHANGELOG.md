@@ -10,6 +10,10 @@ New
 - Integra Debug Adapter Protocol para Go, Python y Javascript. [Jorge
   Araya Navarro]
 
+Changes
+~~~~~~~
+- Elimina realgud por dap-mode. [Jorge Araya Navarro]
+
 
 4.0 (2019-04-20)
 ----------------

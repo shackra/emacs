@@ -3717,12 +3717,6 @@ Utilidades para integrar Emacs y docker
   (use-package dockerfile-mode
     :mode "Dockerfile\\'")
 #+END_SRC
-*** Depuración
-#+BEGIN_SRC emacs-lisp
-  (use-package realgud
-    :init
-    (setf realgud:ipdb-command-name "python -c \"from IPython import start_ipython; from sys import argv; start_ipython(['--simple-prompt', '-i', '-c', '%run -d {}'.format(' '.join(argv[1:]))])\""))
-#+END_SRC
 *** Temas
 Establece cuales temás son seguros.
 #+BEGIN_SRC emacs-lisp
