@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Ignora archivo de dap-mode. [Jorge Araya Navarro]
 - Integra Debug Adapter Protocol para Go, Python y Javascript. [Jorge
   Araya Navarro]
 

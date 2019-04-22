@@ -57,3 +57,4 @@ README.el
 straight/*
 !straight/versions
 .extension/
+/.dap-breakpoints
