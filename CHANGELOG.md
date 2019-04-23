@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- Habilita interfaz más amigable para ivy y mejor sorteo y filtro.
+  [Jorge Araya Navarro]
 - Ignora archivo de dap-mode. [Jorge Araya Navarro]
 - Integra Debug Adapter Protocol para Go, Python y Javascript. [Jorge
   Araya Navarro]
