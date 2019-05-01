@@ -23,6 +23,8 @@
 
 (setf straight-check-for-modifications '(check-on-save find-when-checking))
 
+(straight-use-package 'org-plus-contrib)
+
 (setq inhibit-startup-screen t)
 
 (defun my-tangle-section-canceled ()

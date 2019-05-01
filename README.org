@@ -1306,7 +1306,7 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package moz-controller)
 #+END_SRC
-*** Chrome desde Emacs
+*** CANCELADO Chrome desde Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package kite-mini
     :disabled

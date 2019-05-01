@@ -17,6 +17,10 @@ Changes
 ~~~~~~~
 - Elimina realgud por dap-mode. [Jorge Araya Navarro]
 
+Fix
+~~~
+- Realiza ajustes para Emacs 25. [Jorge Araya Navarro]
+
 
 4.0 (2019-04-20)
 ----------------
