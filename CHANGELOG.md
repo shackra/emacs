@@ -15,6 +15,8 @@ New
 
 Changes
 ~~~~~~~
+- Fuerza blacken a usar un largo de linea de 80 caracteres. [Jorge Araya
+  Navarro]
 - Elimina realgud por dap-mode. [Jorge Araya Navarro]
 
 Fix
