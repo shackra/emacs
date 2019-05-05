@@ -21,6 +21,12 @@ Changes
 
 Fix
 ~~~
+- Fuerza uso de org-plus-contrib en lugar de org. [Jorge Araya Navarro]
+
+  algunos paquetes que dependen de org y en consecuencia org es descargado en lugar de usar
+  org-plus-contrib, este cambio arregla el problema.
+
+  - https://github.com/raxod502/straight.el/issues/352#issuecomment-460069774
 - Quita manipulación en el recolector de basura. [Jorge Araya Navarro]
 - Realiza ajustes para Emacs 25. [Jorge Araya Navarro]
 

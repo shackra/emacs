@@ -23,7 +23,12 @@
 
 (setf straight-check-for-modifications '(check-on-save find-when-checking))
 
-(straight-use-package 'org-plus-contrib)
+(straight-use-package
+ '(org-plus-contrib
+   :repo "https://code.orgmode.org/bzg/org-mode.git"
+   :local-repo "org"
+   :files (:defaults "contrib/lisp/*.el")
+   :includes (org)))
 
 (setq inhibit-startup-screen t)
 
