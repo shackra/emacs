@@ -74,8 +74,7 @@
     ))
 
 (let ((orgfile (concat user-emacs-directory "README.org"))
-      (elfile (concat user-emacs-directory "README.el"))
-      (gc-cons-threshold most-positive-fixnum))
+      (elfile (concat user-emacs-directory "README.el")))
   (when (or (not (file-exists-p elfile))
             (file-newer-than-file-p orgfile elfile))
     (my-tangle-config-org orgfile elfile))

@@ -21,6 +21,7 @@ Changes
 
 Fix
 ~~~
+- Quita manipulación en el recolector de basura. [Jorge Araya Navarro]
 - Realiza ajustes para Emacs 25. [Jorge Araya Navarro]
 
 
