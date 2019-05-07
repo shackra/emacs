@@ -3596,7 +3596,10 @@ Como =display-buffer-alist= pero más sencillo
 Mejor visor de PDFs para Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package pdf-tools
-    :mode ("\\.pdf\\'" . pdf-view-mode))
+    :mode ("\\.pdf\\'" . pdf-view-mode)
+    :bind (:map pdf-view-mode-map
+                ("C-s" . isearch-forward)
+                ("C-r" . isearch-backward)))
 #+END_SRC
 *** Emojify 😏
 Muestra imágenes de emojis en lugar de los caracteres utf-8
