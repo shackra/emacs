@@ -1,6 +1,6 @@
 #+TITLE: Configuración de GNU Emacs
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Seaslug)
-#+EMAIL: jorge@esavara.cr
+#+EMAIL: jorgejavieran@yahoo.com.mx
 #+OPTIONS: toc:5 num:nil ^:nil
 #+STARTUP: overview
 
