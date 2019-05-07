@@ -21,6 +21,7 @@ Changes
 
 Fix
 ~~~
+- Lista paquete de Node.JS faltante. [Jorge Araya Navarro]
 - Fuerza uso de org-plus-contrib en lugar de org. [Jorge Araya Navarro]
 
   algunos paquetes que dependen de org y en consecuencia org es descargado en lugar de usar

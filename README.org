@@ -2594,13 +2594,13 @@ go build golang.org/x/tools/cmd/guru
 **** Dependencias externas
 Instalar estos componentes en el sistema operativo
 #+BEGIN_SRC sh :results silent
-  npm install -g babel-cli babel-preset-react eslint babel-eslint eslint-plugin-react typescript-language-server --save-dev
+  npm install -g babel-cli babel-preset-react eslint babel-eslint eslint-plugin-react typescript typescript-language-server --save-dev
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
   (defun shackra-js-install-deps ()
     "Instala localmente dependencias de JavaScript"
     (interactive)
-    (shell-command "yarn add eslint@3.x babel-eslint@7 eslint-plugin-react --dev"))
+    (shell-command "yarn add eslint@3.x babel-eslint@7 typescript eslint-plugin-react --dev"))
 #+END_SRC
 ***** configuracion eslint
 #+BEGIN_SRC json :tangle ~/.eslintrc
