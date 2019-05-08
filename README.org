@@ -1449,8 +1449,8 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
   (use-package mu4e-alert
     :if (executable-find "mu")
     :init
-    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications)
-    (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+    (add-hook 'emacs-startup-hook #'mu4e-alert-enable-notifications)
+    (add-hook 'emacs-startup-hook #'mu4e-alert-enable-mode-line-display)
     (setf mu4e-compose-forward-as-attachment t)
     (setf mu4e-compose-crypto-reply-encrypted-policy 'sign-and-encrypt)
     (setf mu4e-compose-crypto-reply-plain-policy 'sign)
@@ -1681,10 +1681,16 @@ Conexión a Weechat desde Emacs
       (setf weechat-spelling-dictionaries '(("freenode\\." . "en")
                                             ("irc-hispano\\." . "es")
                                             ("afternet\\." . "en")))
+      (defun shackra-connect-weechat ()
+        "Conecta emacs a weechat.
+
+  Atrapa cualquier error que pueda ocurrir y lo ignora"
+        (when (not (weechat-connected-p))
+          (ignore-errors
+            (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain))))
       :config
       (load-library "weechat-spelling")
-      (add-hook 'after-init-hook (lambda () (when (not (weechat-connected-p))
-                                         (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain))))))
+      (add-hook 'emacs-startup-hook #'shackra-connect-weechat)))
 #+END_SRC
 *** CANCELADO Slack                                             :CANCELADO:
 - State "CANCELADO"  from              [2019-03-24 dom 14:09] \\
