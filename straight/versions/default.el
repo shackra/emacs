@@ -12,7 +12,7 @@
  ("auctex" . "d81f1a0a5b18ecc7668bb9d6469e3d882510a3d7")
  ("auto-complete" . "2e83566ddfa758c69afe50b8a1c62a66f47471e3")
  ("auto-yasnippet" . "624b0d9711222073a2a3f2186e2605eb99fc83c9")
- ("avy" . "4d52b5cb7e1c565ca8dfe9c47b54330fd1a395bc")
+ ("avy" . "0e59474430cbfbe7caf2a41cf7935fc613648c49")
  ("better-defaults" . "0937ac9a813632c48d114cf959768cda9676db3a")
  ("blacken" . "17b48ee432d83517094635f8caaf2db1128d1db1")
  ("bookmark-plus" . "03ec5a4ab6fb0d7ad4c7a4793c1478110da3646c")

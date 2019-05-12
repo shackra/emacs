@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Agrega panel de control y actualiza Avy. [Jorge Araya Navarro]
 - Habilita interfaz más amigable para ivy y mejor sorteo y filtro.
   [Jorge Araya Navarro]
 - Ignora archivo de dap-mode. [Jorge Araya Navarro]
@@ -15,12 +16,17 @@ New
 
 Changes
 ~~~~~~~
+- Ata de vuelta isearch-*ward a C-s y C-r para pdf-view. [=]
 - Fuerza blacken a usar un largo de linea de 80 caracteres. [Jorge Araya
   Navarro]
 - Elimina realgud por dap-mode. [Jorge Araya Navarro]
 
 Fix
 ~~~
+- Permite que el demonio Emacs inicie con normalidad en Mint 19. [=]
+
+  Mueve varias funciones a `emacs-startup-hook`
+- Actualiza mi dirección de correo. [=]
 - Lista paquete de Node.JS faltante. [Jorge Araya Navarro]
 - Fuerza uso de org-plus-contrib en lugar de org. [Jorge Araya Navarro]
 

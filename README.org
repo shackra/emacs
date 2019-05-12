@@ -3176,6 +3176,22 @@ Mover texto a voluntad
                 ("C-c C-u" . string-inflection-all-cycle)))
 #+END_SRC
 ** Otros
+*** dashboard
+Panel de control para Emacs. Aquí se muestra un trigrama IHS que significa /Iesu Hominis Salvator/, que a su vez significa "Jesus, de la raza humana, el salvador".
+#+begin_src emacs-lisp
+  (use-package dashboard
+    :init
+    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+    (setq dashboard-banner-logo-title "Iesu Hominis Salvator")
+    (setq dashboard-startup-banner (expand-file-name "dashboard/JHS.png" user-emacs-directory))
+    (setq dashboard-center-content t)
+    (setq dashboard-items '((agenda . 5)
+                            (recents . 4)
+                            (bookmarks . 4)
+                            (projects . 5)))
+    :config
+    (dashboard-setup-startup-hook))
+#+end_src
 *** golden-ratio-scroll-screen
 Subraya la linea anterior y la siguiente luego de hacer saltar de linea el cursor del mouse
 #+BEGIN_SRC emacs-lisp
