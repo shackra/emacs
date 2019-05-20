@@ -2174,6 +2174,15 @@ Modo mayor para programar en Python
     :config
     (add-hook 'venv-postmkvirtualenv-hook #'shackra-python-install-deps))
 
+  ;; soporte para pyenv dentro de Emacs
+  (use-package pyenv-mode)
+
+  ;; alternativa para virtualenvwrapper (el paquete)
+  (use-package pyvenv
+    :init
+    (add-hook 'pyvenv-post-create-hooks #'shackra-python-install-deps)
+    (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
+
   (use-package pippel)
 
   (use-package sphinx-doc
@@ -3180,6 +3189,7 @@ Mover texto a voluntad
 Panel de control para Emacs. Aquí se muestra un trigrama IHS que significa /Iesu Hominis Salvator/, que a su vez significa "Jesus, de la raza humana, el salvador".
 #+begin_src emacs-lisp
   (use-package dashboard
+    :if (not (version<= "25.2" emacs-version))
     :init
     (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
     (setq dashboard-banner-logo-title "Iesu Hominis Salvator")
