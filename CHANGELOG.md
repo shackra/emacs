@@ -7,6 +7,10 @@ Changelog
 
 New
 ~~~
+- Habilita paquetes adicionales para Python. [=]
+
+  - pyvenv que maneja entornos virtuales
+  - pyenv que integra pyenv para usarlo en Emacs
 - Agrega panel de control y actualiza Avy. [Jorge Araya Navarro]
 - Habilita interfaz más amigable para ivy y mejor sorteo y filtro.
   [Jorge Araya Navarro]
@@ -16,6 +20,7 @@ New
 
 Changes
 ~~~~~~~
+- Actualiza todos los paquetes instalados. [Jorge Araya Navarro]
 - Ata de vuelta isearch-*ward a C-s y C-r para pdf-view. [=]
 - Fuerza blacken a usar un largo de linea de 80 caracteres. [Jorge Araya
   Navarro]
