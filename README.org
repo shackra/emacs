@@ -2616,7 +2616,7 @@ Instalar estos componentes en el sistema operativo
   (defun shackra-js-install-deps ()
     "Instala localmente dependencias de JavaScript"
     (interactive)
-    (shell-command "yarn add eslint@3.x babel-eslint@7 typescript eslint-plugin-react --dev"))
+    (shell-command "yarn add eslint babel-eslint typescript eslint-plugin-react --dev"))
 #+END_SRC
 ***** configuracion eslint
 #+BEGIN_SRC json :tangle ~/.eslintrc
