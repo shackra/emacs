@@ -1447,6 +1447,7 @@ Scripts ejecutables.
 Para una configuración personalizada hay que cambiar =user-mail-address= y =user-full-name= ubicados en [[*Informaci%C3%B3n personal][Información personal]].
 #+BEGIN_SRC emacs-lisp
   (use-package mu4e-alert
+    :after (mu4e)
     :if (executable-find "mu")
     :init
     (add-hook 'emacs-startup-hook #'mu4e-alert-enable-notifications)
@@ -2615,7 +2616,7 @@ Instalar estos componentes en el sistema operativo
   (defun shackra-js-install-deps ()
     "Instala localmente dependencias de JavaScript"
     (interactive)
-    (shell-command "yarn add eslint@3.x babel-eslint@7 typescript eslint-plugin-react --dev"))
+    (shell-command "yarn add eslint babel-eslint typescript eslint-plugin-react --dev"))
 #+END_SRC
 ***** configuracion eslint
 #+BEGIN_SRC json :tangle ~/.eslintrc
