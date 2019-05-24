@@ -20,6 +20,7 @@ New
 
 Changes
 ~~~~~~~
+- Refactoriza hydra para bookmarks. [Jorge Araya Navarro]
 - Desactiva ivy-posframe. [Jorge Araya Navarro]
 - Actualiza el commit de varios paquetes. [Jorge Araya Navarro]
 - Elimina `require` innecesario. [Jorge Araya Navarro]

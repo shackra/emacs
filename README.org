@@ -1269,39 +1269,48 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package bookmark
     :init
-    (setf bookmark-default-file "~/.emacs.d/bookmarks")
+    (setf bookmark-default-file (expand-file-name ".marcadores.emacs" "~"))
     (setf bookmark-save-flag 1))
 
   (use-package bookmark+
-    :load-path "site-packages/bookmark+/"
     :init
     (setf bmkp-auto-light-when-set 'all-in-buffer)
     (setf bmkp-last-as-first-bookmark-file bookmark-default-file)
     :bind (:map global-map ("C-c b" . hydra-bm/body))
+    :hydra (hydra-bm-goto (:color amaranth :hint nil)
+                          "
+  Saltar a...
+
+  En este buffer		En otro sitio
+  _a_: anterior		_<SPC>_ por tipo...
+  _f_: siguiente
+
+  Editar:
+  _e_: nombre y ubicación
+  _E_: anotar _b_: Borrar
+
+  _q_: salir _<DEL>_: regresar
+  "
+                          ("a" bmkp-previous-bookmark-this-buffer)
+                          ("f" bmkp-next-bookmark-this-buffer)
+                          ("e" bmkp-edit-bookmark-name-and-location :color blue)
+                          ("E" bmkp-annotate :color blue)
+                          ("b" bmkp-delete-bookmarks)
+                          ("<SPC>" bmkp-jump-to-type :color blue)
+                          ("<DEL>" hydra-bm/body :color blue)
+                          ("q" nil))
     :hydra (hydra-bm (:color amaranth :hint nil)
                      "
-      Marcadores
+  🔖 Marcadores 🔖
+  _j_: saltar a...	_b_: Nuevo aquí...
+  _l_: mostrar menú
 
-      Cambiar                          Agregar           Editar
-    ╭──────────────────────────────────────────────────────────────────────╯
-     [_j_] Anterior (buffer actual)   [_f_] aquí...   [_e_] aquí...
-     [_l_] Siguiente (buffer actual)  [_F_] archivo
-     [_k_] Saltar a...
-     [_K_] Saltar a... (por tipo)
-     [_i_] Saltar a... (otra vent.)
-    -----------------------------------------------------------------------
+  _q_: salir
   "
-                     ("j" bmkp-previous-bookmark-this-buffer)
-                     ("l" bmkp-next-bookmark-this-buffer)
-                     ("k" bmkp-jump-in-navlist :color blue)
-                     ("K" bmkp-jump-to-type :color blue)
-                     ("i" bmkp-jump-to-type-other-window :color blue)
-                     ("f" bmkp-bookmark-set-confirm-overwrite :color blue)
-                     ("F" bmkp-file-target-set :color blue)
-                     ("e" bmkp-edit-bookmark-name-and-location :color blue)
-                     ("L" bookmark-bmenu-list "Menú de marcadores" :color blue)
-                     ("l" bookmark-load "Cargar otro archivo de marcadores" :color blue)
-                     ("<ESC>" nil "Salir")))
+                     ("j" hydra-bm-goto/body :color blue)
+                     ("b" bookmark-set :color blue)
+                     ("l" bookmark-bmenu-list :color blue)
+                     ("q" nil)))
 #+END_SRC
 *** Firefox desde Emacs
 #+BEGIN_SRC emacs-lisp
