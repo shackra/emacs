@@ -3189,7 +3189,7 @@ Mover texto a voluntad
 Panel de control para Emacs. Aquí se muestra un trigrama IHS que significa /Iesu Hominis Salvator/, que a su vez significa "Jesus, de la raza humana, el salvador".
 #+begin_src emacs-lisp
   (use-package dashboard
-    :if (not (version<= "25.2" emacs-version))
+    :if (not (version<= emacs-version "25.2"))
     :init
     (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
     (setq dashboard-banner-logo-title "Iesu Hominis Salvator")

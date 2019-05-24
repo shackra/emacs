@@ -30,6 +30,7 @@ Changes
 
 Fix
 ~~~
+- Activa dashboard correctamente. [Jorge Araya Navarro]
 - Evita usar versiones fijas de dependencias para JS. [=]
 - Carga extensión solo si mu4e esta disponible. [=]
 - Permite que el demonio Emacs inicie con normalidad en Mint 19. [=]
