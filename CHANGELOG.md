@@ -20,6 +20,7 @@ New
 
 Changes
 ~~~~~~~
+- Elimina `require` innecesario. [Jorge Araya Navarro]
 - Actualiza todos los paquetes instalados. [Jorge Araya Navarro]
 - Ata de vuelta isearch-*ward a C-s y C-r para pdf-view. [=]
 - Fuerza blacken a usar un largo de linea de 80 caracteres. [Jorge Araya

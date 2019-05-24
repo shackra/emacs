@@ -1350,10 +1350,9 @@ Teclas:
 - State "CANCELADO"  from              [2018-12-31 lun 21:20]
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp
+  (use-package lsp-clients
     :straight lsp-mode
     :config
-    (require 'lsp-clients)
     (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
     :init
     (setf lsp-eldoc-render-all nil)
