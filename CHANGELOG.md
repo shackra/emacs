@@ -20,6 +20,7 @@ New
 
 Changes
 ~~~~~~~
+- Actualiza el commit de varios paquetes. [Jorge Araya Navarro]
 - Elimina `require` innecesario. [Jorge Araya Navarro]
 - Actualiza todos los paquetes instalados. [Jorge Araya Navarro]
 - Ata de vuelta isearch-*ward a C-s y C-r para pdf-view. [=]
