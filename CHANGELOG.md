@@ -32,6 +32,7 @@ Changes
 
 Fix
 ~~~
+- Borra marcadores dentro de carpeta de Emacs. [Jorge Araya Navarro]
 - Activa dashboard correctamente. [Jorge Araya Navarro]
 - Evita usar versiones fijas de dependencias para JS. [=]
 - Carga extensión solo si mu4e esta disponible. [=]
