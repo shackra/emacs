@@ -757,6 +757,7 @@ Teclas
     :after (counsel-projectile))
 
   (use-package ivy-posframe
+    :disabled
     :after (ivy)
     :init
     ;;(setq ivy-posframe-width (frame-width))

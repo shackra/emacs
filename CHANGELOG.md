@@ -20,6 +20,7 @@ New
 
 Changes
 ~~~~~~~
+- Desactiva ivy-posframe. [Jorge Araya Navarro]
 - Actualiza el commit de varios paquetes. [Jorge Araya Navarro]
 - Elimina `require` innecesario. [Jorge Araya Navarro]
 - Actualiza todos los paquetes instalados. [Jorge Araya Navarro]
