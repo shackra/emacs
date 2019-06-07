@@ -32,6 +32,7 @@ Changes
 
 Fix
 ~~~
+- Deshabilita flycheck para go-mode. [Jorge Araya Navarro]
 - Usa global-flycheck en lugar de flycheck-mode regular. [Jorge Araya
   Navarro]
 - Borra marcadores dentro de carpeta de Emacs. [Jorge Araya Navarro]

@@ -2489,6 +2489,8 @@ go build golang.org/x/tools/cmd/guru
                 ("C-c C-i" . go-goto-imports)
                 ("C-c C-c" . compile))
     :init
+    ;; FIXME: deshabilita flycheck en go-mode hasta tener una mejor CPU
+    (setf flycheck-global-modes '(not go-mode))
     (with-eval-after-load 'dap-mode
       (require 'dap-go)
       (dap-go-setup))
