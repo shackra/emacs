@@ -7,6 +7,10 @@ Changelog
 
 New
 ~~~
+- Implementa comando interactivo para cambiar el conteo de lineas. [=]
+
+  ajusta entre el conteo relativo y el absoluto para que otros puedan leer con facilidad el conteo de
+  lineas en el buffer actual
 - Habilita paquetes adicionales para Python. [=]
 
   - pyvenv que maneja entornos virtuales
