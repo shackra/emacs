@@ -32,6 +32,8 @@ Changes
 
 Fix
 ~~~
+- Usa global-flycheck en lugar de flycheck-mode regular. [Jorge Araya
+  Navarro]
 - Borra marcadores dentro de carpeta de Emacs. [Jorge Araya Navarro]
 - Activa dashboard correctamente. [Jorge Araya Navarro]
 - Evita usar versiones fijas de dependencias para JS. [=]
