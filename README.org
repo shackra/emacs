@@ -2498,6 +2498,8 @@ go build golang.org/x/tools/cmd/guru
                 ("C-c C-i" . go-goto-imports)
                 ("C-c C-c" . compile))
     :init
+    ;; FIXME: deshabilita flycheck en go-mode hasta tener una mejor CPU
+    (setf flycheck-global-modes '(not go-mode))
     (with-eval-after-load 'dap-mode
       (require 'dap-go)
       (dap-go-setup))
@@ -3044,7 +3046,7 @@ Revisión de errores en el código fuente, al vuelo.
     (setf flycheck-indication-mode 'left-fringe)
     (setf flycheck-display-errors-delay 5.0)
     :config
-    (add-hook 'prog-mode-hook #'flycheck-mode))
+    (add-hook 'emacs-startup-hook #'global-flycheck-mode))
 #+END_SRC
 *** Corrección gramatical
 Corrección gramatical en varios idiomas con =languagetool=.

@@ -7,6 +7,10 @@ Changelog
 
 New
 ~~~
+- Implementa comando interactivo para cambiar el conteo de lineas. [=]
+
+  ajusta entre el conteo relativo y el absoluto para que otros puedan leer con facilidad el conteo de
+  lineas en el buffer actual
 - Habilita paquetes adicionales para Python. [=]
 
   - pyvenv que maneja entornos virtuales
@@ -32,6 +36,9 @@ Changes
 
 Fix
 ~~~
+- Deshabilita flycheck para go-mode. [Jorge Araya Navarro]
+- Usa global-flycheck en lugar de flycheck-mode regular. [Jorge Araya
+  Navarro]
 - Borra marcadores dentro de carpeta de Emacs. [Jorge Araya Navarro]
 - Activa dashboard correctamente. [Jorge Araya Navarro]
 - Evita usar versiones fijas de dependencias para JS. [=]
