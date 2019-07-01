@@ -40,6 +40,7 @@ Changes
 
 Fix
 ~~~
+- Ajustes menores para flycheck y go-mode. [Jorge Araya Navarro]
 - Elimina :commands. [Jorge Araya Navarro]
 - Deshabilita flycheck para go-mode. [Jorge Araya Navarro]
 - Usa global-flycheck en lugar de flycheck-mode regular. [Jorge Araya

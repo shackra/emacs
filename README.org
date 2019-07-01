@@ -2498,7 +2498,6 @@ go build golang.org/x/tools/cmd/guru
                 ("C-c C-c" . compile))
     :init
     ;; FIXME: deshabilita flycheck en go-mode hasta tener una mejor CPU
-    (setf flycheck-global-modes '(not go-mode))
     (with-eval-after-load 'dap-mode
       (require 'dap-go)
       (dap-go-setup))
@@ -2531,6 +2530,7 @@ go build golang.org/x/tools/cmd/guru
     :after (go-mode))
 
   (use-package flycheck-golangci-lint
+    :after (flycheck-mode)
     :if (executable-find "golangci-lint")
     :init
     (add-hook 'flycheck-mode-hook #'flycheck-golangci-lint-setup))
@@ -3041,6 +3041,7 @@ Revisión de errores en el código fuente, al vuelo.
   (use-package flycheck
     :diminish flycheck-mode
     :init
+    (setf flycheck-global-modes '(not go-mode))
     (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc javascript-jshint))
     (setf flycheck-indication-mode 'left-fringe)
     (setf flycheck-display-errors-delay 5.0)
