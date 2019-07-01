@@ -58,3 +58,5 @@ straight/*
 !straight/versions
 .extension/
 /.dap-breakpoints
+/.lsp-session-v1
+/npm-debug.log
