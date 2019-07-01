@@ -2911,6 +2911,12 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
     ((c-mode c++-mode) . google-set-c-style)
     (c-mode-common . google-make-newline-indent))
 #+end_src
+*** Nginx
+#+begin_src emacs-lisp
+  (use-package nginx-mode)
+
+  (use-package company-nginx)
+#+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
@@ -3785,7 +3791,10 @@ Utilidades para integrar Emacs y docker
   (use-package docker-compose-mode)
 
   (use-package dockerfile-mode
-    :mode "Dockerfile\\'")
+    :init (defun shackra/aggresive-indent-mode-off ()
+            (aggressive-indent-mode -1))
+    :mode "Dockerfile\\'"
+    :hook #'shackra/aggresive-indent-mode-off)
 #+END_SRC
 *** Temas
 Establece cuales temás son seguros.
