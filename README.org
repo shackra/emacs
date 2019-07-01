@@ -1485,7 +1485,6 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
 
   (use-package mu4e
     :straight nil
-    :commands (mu4e correo mu4e-compose-new mu4e-compose-edit mu4e-compose-resend mu4e-compose-reply)
     :preface
     ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)

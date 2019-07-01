@@ -24,6 +24,10 @@ New
 
 Changes
 ~~~~~~~
+- Activa rjsx-mode según el contenido de archivos JavaScript. [=]
+
+  - https://emacs.stackexchange.com/a/36150/609
+  - https://jwiegley.github.io/use-package/keywords/#magic-magic-fallback
 - Refactoriza hydra para bookmarks. [Jorge Araya Navarro]
 - Desactiva ivy-posframe. [Jorge Araya Navarro]
 - Actualiza el commit de varios paquetes. [Jorge Araya Navarro]
@@ -36,6 +40,7 @@ Changes
 
 Fix
 ~~~
+- Elimina :commands. [Jorge Araya Navarro]
 - Deshabilita flycheck para go-mode. [Jorge Araya Navarro]
 - Usa global-flycheck en lugar de flycheck-mode regular. [Jorge Araya
   Navarro]
