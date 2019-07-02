@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Agrega ox-revealjs para presentaciones. [=]
 - Implementa comando interactivo para cambiar el conteo de lineas. [=]
 
   ajusta entre el conteo relativo y el absoluto para que otros puedan leer con facilidad el conteo de
@@ -40,6 +41,9 @@ Changes
 
 Fix
 ~~~
+- Utiliza una URL exacta para reveal.js. [Jorge Araya Navarro]
+- Ignora archivos de lsp. [=]
+- Apaga sangrado agresivo para Dockerfile. [=]
 - Ajustes menores para flycheck y go-mode. [Jorge Araya Navarro]
 - Elimina :commands. [Jorge Araya Navarro]
 - Deshabilita flycheck para go-mode. [Jorge Araya Navarro]
