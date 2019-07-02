@@ -2129,7 +2129,7 @@ Teclas
 *** org-reveal
 #+begin_src emacs-lisp
   (use-package ox-reveal
-    :init (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js@3.8.0/js/reveal.min.js"))
+    :init (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js@3.8.0/"))
 #+end_src
 *** CANCELADO =org-trello=                                      :CANCELADO:
 - State "CANCELADO"  from              [2019-03-24 dom 14:44] \\

@@ -41,6 +41,9 @@ Changes
 
 Fix
 ~~~
+- Elimina la ubicación del archivo para reveal.js. [Jorge Araya Navarro]
+
+  el paquete se vale de una ubicación raíz para enlazar todos los archivos que el HTML exportado necesita
 - Utiliza una URL exacta para reveal.js. [Jorge Araya Navarro]
 - Ignora archivos de lsp. [=]
 - Apaga sangrado agresivo para Dockerfile. [=]
