@@ -42,6 +42,7 @@ Changes
 
 Fix
 ~~~
+- Refactoriza configuración de ivy-mode. [Jorge Araya Navarro]
 - Suspende emojify-mode en toml-mode y yaml-mode. [Jorge Araya Navarro]
 - Inserta función en gancho para dockerfile-mode. [Jorge Araya Navarro]
 - Elimina la ubicación del archivo para reveal.js. [Jorge Araya Navarro]

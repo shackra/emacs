@@ -770,9 +770,18 @@ Teclas
             (right-fringe . 10)))
     (setq ivy-posframe-hide-minibuffer t)
     (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
-    :config (ivy-posframe-enable))
+    (add-hook 'emacs-startup-hook #'ivy-posframe-enable))
+
+  (defcustom shackra-ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*"
+                                          "\\*Help\\*" "\\*Compile-Log\\*" "\\*anaconda-mode\\*"
+                                          "\\*prodigy-.*" "\\*godoc .*" "\\*magit-.*" "\\magit-.*"
+                                          "\\*Slack Log.*" "\\*tide" "\\*Flycheck.*" "\\*lsp-.*"
+                                          ".*-ls" "\\*go-bingo.*" "\\*Flymake log\\*" "\\*straight-process\\*"
+                                          "\\*pushmail-mbsync\\*" "\\*vc\\*" "\\*gopls.*" "\\*Disabled Command\\*")
+    "lista de buffers a ignorar en ivy")
 
   (use-package ivy
+    :demand t
     :bind (:map global-map
                 ("C-c C-r" . ivy-resume)
                 :map ctl-x-map
@@ -780,29 +789,13 @@ Teclas
     :init
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
+    (dolist (ignore-this shackra-ivy-ignore-buffers)
+      (add-to-list 'ivy-ignore-buffers ignore-this))
     :config
-    (add-to-list 'ivy-ignore-buffers "\\*weechat-relay")
-    (add-to-list 'ivy-ignore-buffers "\\*Messages\\*")
-    (add-to-list 'ivy-ignore-buffers "\\*elfeed-log\\*")
-    (add-to-list 'ivy-ignore-buffers "\\*Help\\*")
-    (add-to-list 'ivy-ignore-buffers "\\*Compile-Log\\*")
-    (add-to-list 'ivy-ignore-buffers "\\*anaconda-mode\\*")
-    (add-to-list 'ivy-ignore-buffers "\\*prodigy-.*")
-    (add-to-list 'ivy-ignore-buffers "\\*godoc .*")
-    (add-to-list 'ivy-ignore-buffers "\\*magit-.*")
-    (add-to-list 'ivy-ignore-buffers "\\magit-.*")
-    (add-to-list 'ivy-ignore-buffers "\\*Slack Log.*")
-    (add-to-list 'ivy-ignore-buffers "\\*tide")
-    (add-to-list 'ivy-ignore-buffers "\\*Flycheck.*")
-    (add-to-list 'ivy-ignore-buffers "\\*lsp-.*")
-    (add-to-list 'ivy-ignore-buffers ".*-ls")
-    (add-to-list 'ivy-ignore-buffers "\\*go-bingo.*")
-    (add-to-list 'ivy-ignore-buffers "\\*Flymake log\\*")
-    (add-to-list 'ivy-ignore-buffers "\\*straight-process\\*")
-    (add-to-list 'ivy-ignore-buffers "\\*pushmail-mbsync\\*")
+    (add-hook 'emacs-startup-hook #'ivy-mode)
     (with-eval-after-load "projectile"
-      (setf projectile-globally-ignored-buffers ivy-ignore-buffers)))
-  (ivy-mode 1)
+      (dolist (ignore-this ivy-ignore-buffers)
+        (add-to-list 'projectile-globally-ignored-buffers ignore-this))))
 
   (use-package swiper
     :bind (:map global-map
