@@ -789,9 +789,9 @@ Teclas
     :init
     (setf ivy-count-format "(%d/%d) ")
     (setf ivy-height 15)
+    :config
     (dolist (ignore-this shackra-ivy-ignore-buffers)
       (add-to-list 'ivy-ignore-buffers ignore-this))
-    :config
     (add-hook 'emacs-startup-hook #'ivy-mode)
     (with-eval-after-load "projectile"
       (dolist (ignore-this ivy-ignore-buffers)
@@ -3672,6 +3672,7 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
     :bind (:map global-map ("s-i" . emojify-insert-emoji))
     :init
     (add-hook 'after-init-hook #'global-emojify-mode)
+    :config
     (dolist (mode '(toml-mode yaml-mode))
       (add-to-list 'emojify-inhibit-major-modes mode)))
 

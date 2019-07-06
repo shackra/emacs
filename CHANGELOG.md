@@ -42,6 +42,8 @@ Changes
 
 Fix
 ~~~
+- Evita referencia a variables antes que sean cargadas. [Jorge Araya
+  Navarro]
 - Refactoriza configuración de ivy-mode. [Jorge Araya Navarro]
 - Suspende emojify-mode en toml-mode y yaml-mode. [Jorge Araya Navarro]
 - Inserta función en gancho para dockerfile-mode. [Jorge Araya Navarro]
