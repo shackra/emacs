@@ -3676,9 +3676,12 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
     ;; Este paquete sólo funciona si la versión de Emacs es mayor o igual a 24.3
     ;; y Emacs fue compilado con soporte para PNG
     :if (and (version<= "24.3" emacs-version) (image-type-available-p 'png))
-    :bind (:map global-map ("C-!" . emojify-insert-emoji))
+    :bind (:map global-map ("s-i" . emojify-insert-emoji))
     :init
-    (add-hook 'after-init-hook #'global-emojify-mode))
+    (add-hook 'after-init-hook #'global-emojify-mode)
+    (dolist (mode '(toml-mode yaml-mode))
+      (add-to-list 'emojify-inhibit-major-modes mode)))
+
   (use-package company-emoji
     :after (emojify)
     :config (add-hook 'text-mode-hook
