@@ -67,7 +67,7 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
   (require 'bind-key)
 
   (defun shackra-org-confirm-babel-evaluate (lang body)
-    (not (or (string= lang "emacs-lisp"))))
+    (not (or (string= lang "emacs-lisp") (string= lang "ditaa"))))
   (setf org-confirm-babel-evaluate #'shackra-org-confirm-babel-evaluate)
 
   (put 'narrow-to-region 'disabled nil)
@@ -598,6 +598,10 @@ Una funcion que usaba antes de migrar a straight.el, esta la tenia en mi archivo
             (save-buffer)
             (kill-buffer)))
       (add-hook 'after-init-hook #'package--save-selected-packages)))
+#+end_src
+** Ubicación de ditaa
+#+begin_src emacs-lisp
+  (setf org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 #+end_src
 * Macros
 #+BEGIN_SRC emacs-lisp
@@ -1839,7 +1843,8 @@ Set de paquetes que me ayudan a escribir paquetes para GNU Emacs
    'org-babel-load-languages
    '((emacs-lisp . t)
      (python . t)
-     (shell . t)))
+     (shell . t)
+     (ditaa . t)))
 #+END_SRC
 *** =prog-mode=
 Cualquier modo mayor que /herede/ de =prog-mode= sera afectado por esta configuración.

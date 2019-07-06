@@ -25,6 +25,7 @@ New
 
 Changes
 ~~~~~~~
+- Habilita Ditaa para generación de diagramas. [Jorge Araya Navarro]
 - Activa rjsx-mode según el contenido de archivos JavaScript. [=]
 
   - https://emacs.stackexchange.com/a/36150/609
