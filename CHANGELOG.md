@@ -42,6 +42,7 @@ Changes
 
 Fix
 ~~~
+- Inserta función en gancho para dockerfile-mode. [Jorge Araya Navarro]
 - Elimina la ubicación del archivo para reveal.js. [Jorge Araya Navarro]
 
   el paquete se vale de una ubicación raíz para enlazar todos los archivos que el HTML exportado necesita

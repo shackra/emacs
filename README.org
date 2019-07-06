@@ -3796,10 +3796,11 @@ Utilidades para integrar Emacs y docker
   (use-package docker-compose-mode)
 
   (use-package dockerfile-mode
-    :init (defun shackra/aggresive-indent-mode-off ()
-            (aggressive-indent-mode -1))
-    :mode "Dockerfile\\'"
-    :hook #'shackra/aggresive-indent-mode-off)
+    :init
+    (defun shackra/aggresive-indent-mode-off ()
+      (aggressive-indent-mode -1))
+    (add-hook 'dockerfile-mode-hook #'shackra/aggresive-indent-mode-off)
+    :mode "Dockerfile\\'")
 #+END_SRC
 *** Temas
 Establece cuales temás son seguros.
