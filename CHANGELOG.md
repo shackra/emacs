@@ -7,6 +7,8 @@ Changelog
 
 New
 ~~~
+- Agrega paquete para editar diagramas escritos en PlantUML. [Jorge
+  Araya Navarro]
 - Agrega ox-revealjs para presentaciones. [=]
 - Implementa comando interactivo para cambiar el conteo de lineas. [=]
 

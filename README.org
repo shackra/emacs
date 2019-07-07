@@ -2915,6 +2915,12 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
 
   (use-package company-nginx)
 #+end_src
+*** PlantUML
+#+begin_src emacs-lisp
+  (use-package plantuml-mode
+    :init
+    (setf plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar"))
+#+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
