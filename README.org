@@ -1362,7 +1362,7 @@ Teclas:
     (add-hook 'iedit-mode-hook #'shackra-lsp-on-change-modify-hook)
     (add-hook 'iedit-mode-end-hook #'shackra-lsp-on-change-modify-hook))
 #+END_SRC
-*** Language Server Protocol (lsp)
+*** COMMENT Language Server Protocol (lsp)
 - State "CANCELADO"  from              [2018-12-31 lun 21:20]
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
@@ -1385,10 +1385,16 @@ Implementación para Emacs del Language Server Protocol.
     :after (lsp)
     :init
     (setf lsp-ui-sideline-enable nil)
-    (setf lsp-ui-doc-enable nil)
+    (when (require 'xwidget nil 'noerror)
+      (setf lsp-ui-doc-use-webkit nil))
+    (setf lsp-ui-doc-enable t)
+    (setf lsp-ui-doc-position 'at-point)
+    (setf lsp-ui-doc-header t)
+    (setf lsp-ui-doc-include-signature t)
     :config
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
+    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
+    (add-hook 'lsp-after-open-hook #'lsp-ui-mode))
 
   (use-package company-lsp)
 #+END_SRC
@@ -2919,7 +2925,9 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
 #+begin_src emacs-lisp
   (use-package plantuml-mode
     :init
-    (setf plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar"))
+    (setf plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
+    (setf plantuml-default-exec-mode 'server)
+    (setf plantuml-server-url "http://localhost:8020"))
 #+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
