@@ -46,6 +46,8 @@ Changes
 
 Fix
 ~~~
+- Arregla código que filtra y muestra apuntes técnicos. [Jorge Araya
+  Navarro]
 - Evita referencia a variables antes que sean cargadas. [Jorge Araya
   Navarro]
 - Refactoriza configuración de ivy-mode. [Jorge Araya Navarro]

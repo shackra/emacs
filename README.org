@@ -491,11 +491,15 @@ Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 #+END_SRC
 ** Filtro de temas de mi cuaderno de apuntes técnicos
 #+BEGIN_SRC emacs-lisp
+  ;; configuración para apuntes técnicos
+  (defvar shackra-custom-engineer-notebook "~/Documentos/cosas tecnicas/apuntes tecnicos.org"
+    "ubicación del archivo de apuntes técnicos")
+
   (defvar shackra-technotes-search-engine-url "https://duckduckgo.com/?q="
     "Motor de busqueda para encontrar coincidencias sobre determinada frase")
 
-  (defvar shackra-technotes-notebook "~/org/apuntes tecnicos.org"
-    "Documento org-mode donde tengo apuntes de ingeniería")
+  (defvar shackra-technotes-rx-url (rx bol "http" (optional "s") ":" (repeat 2 "/"))
+    "expresión regular para comprobar si una cadena es una URL")
 
   (defun shackra--kill-this-buffer ()
     "Mata el buffer actual y borra la ventana"
@@ -505,19 +509,21 @@ Combinaciones de teclas que no pertenecen a ningún paquete en particular.
 
   (defun shackra--technotes-action (entry)
     "Abre un enlace en `entry' apropiadamente"
-    (progn
-      (org-open-link-from-string (get-text-property 0 'property entry))
-      (with-current-buffer (file-name-nondirectory shackra-technotes-notebook)
-        (org-narrow-to-element)
-        (org-cycle)
-        ;; Cierra el buffer de `shackra-technotes-notebook'
-        (use-local-map (copy-keymap org-mode-map))
-        (local-set-key "q" 'shackra--kill-this-buffer)
-        (read-only-mode))))
+    (let* ((url (get-text-property 0 'property entry)))
+      (progn
+        (org-link-open-from-string url)
+        (unless (string-match-p shackra-technotes-rx-url url)
+          (with-current-buffer (file-name-nondirectory shackra-custom-engineer-notebook)
+            (org-narrow-to-element)
+            (org-cycle)
+            ;; Cierra el buffer de `shackra-custom-engineer-notebook'
+            (use-local-map (copy-keymap org-mode-map))
+            (local-set-key "q" 'shackra--kill-this-buffer)
+            (read-only-mode))))))
 
   (defun shackra--technotes-source (string &optional predicate flag)
     (let ((collection))
-      (with-current-buffer (find-file-noselect shackra-technotes-notebook)
+      (with-current-buffer (find-file-noselect shackra-custom-engineer-notebook)
         (goto-char (point-min))
         ;; Se dirige al primer encabezado
         (goto-char (re-search-forward "^*"))
@@ -2030,7 +2036,7 @@ Teclas
             ("bakabt" . "https://bakabt.me/browse.php?only=0&incomplete=1&bonus=1&c1=1&c2=1&reorder=1&q=%s")
             ("tokyotosho" . "https://www.tokyotosho.info/search.php?terms=%s&type=1&size_min=&size_max=&username=")))
     (setf org-capture-templates
-          '(("t" "Anotacion técnica" entry (file "apuntes tecnicos.org")
+          '(("t" "Anotacion técnica" entry (file shackra-custom-engineer-notebook)
              "* %^{titulo o situación} %^g\n\n%?\n- Enlaces de relacionados:\n" :kill-buffer t :clock-in t :clock-resume t)
             ("p" "Tarea por hacer" entry (file+headline "cosas por hacer.org" "Tareas")
              "* POR-HACER %^{breve descripción} %a %^g\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
