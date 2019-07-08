@@ -27,6 +27,8 @@ New
 
 Changes
 ~~~~~~~
+- Cambia modo de ejecución de PlantUML y agrega GraphQL. [Jorge Araya
+  Navarro]
 - Muestra documentación con lsp-ui-doc. [Jorge Araya Navarro]
 - Congela las versiones de paquetes instalados. [Jorge Araya Navarro]
 - Habilita Ditaa para generación de diagramas. [Jorge Araya Navarro]

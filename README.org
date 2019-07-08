@@ -2931,9 +2931,12 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
 #+begin_src emacs-lisp
   (use-package plantuml-mode
     :init
-    (setf plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
-    (setf plantuml-default-exec-mode 'server)
-    (setf plantuml-server-url "http://localhost:8020"))
+    (setf plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar"))
+#+end_src
+*** GraphQL
+#+begin_src emacs-lisp
+  (use-package graphql-mode)
+  (use-package graphql)
 #+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
