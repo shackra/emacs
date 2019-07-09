@@ -27,6 +27,8 @@ New
 
 Changes
 ~~~~~~~
+- Obtiene ubicación de PlantUML urgando en /usr/bin/plantuml. [Jorge
+  Araya Navarro]
 - Cambia modo de ejecución de PlantUML y agrega GraphQL. [Jorge Araya
   Navarro]
 - Muestra documentación con lsp-ui-doc. [Jorge Araya Navarro]

@@ -2928,12 +2928,21 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
   (use-package company-nginx)
 #+end_src
 *** PlantUML
+Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que siempre esta ubicado en =/usr/bin/plantuml= y se extrae la ubicación del archivo que nos interesa como una cadena de texto.
 #+begin_src emacs-lisp
   (use-package plantuml-mode
     :init
-    (if (file-exists-p "/usr/share/java/plantuml/plantuml.jar")
-        (setf plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
-      (setf plantuml-jar-path "/usr/share/plantuml/plantuml.jar")))
+    (setf plantuml-jar-path (with-temp-buffer
+                              (when (file-exists-p "/usr/bin/plantuml")
+                                (insert-file-contents "/usr/bin/plantuml")
+                                (let ((max)
+                                      (min))
+                                  (goto-char (point-min))
+                                  (search-forward "plantuml.jar")
+                                  (setf max (point))
+                                  (search-backward "/usr")
+                                  (setf min (point))
+                                  (buffer-substring-no-properties min max))))))
 #+end_src
 *** GraphQL
 #+begin_src emacs-lisp
