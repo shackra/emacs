@@ -48,6 +48,8 @@ Changes
 
 Fix
 ~~~
+- Mueve la ventana de documentación de lsp-ui arriba del buffer. [Jorge
+  Araya Navarro]
 - Arregla código que filtra y muestra apuntes técnicos. [Jorge Araya
   Navarro]
 - Evita referencia a variables antes que sean cargadas. [Jorge Araya

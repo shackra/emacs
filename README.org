@@ -1368,7 +1368,7 @@ Teclas:
     (add-hook 'iedit-mode-hook #'shackra-lsp-on-change-modify-hook)
     (add-hook 'iedit-mode-end-hook #'shackra-lsp-on-change-modify-hook))
 #+END_SRC
-*** COMMENT Language Server Protocol (lsp)
+*** Language Server Protocol (lsp)
 - State "CANCELADO"  from              [2018-12-31 lun 21:20]
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
@@ -1394,7 +1394,7 @@ Implementación para Emacs del Language Server Protocol.
     (when (require 'xwidget nil 'noerror)
       (setf lsp-ui-doc-use-webkit nil))
     (setf lsp-ui-doc-enable t)
-    (setf lsp-ui-doc-position 'at-point)
+    (setf lsp-ui-doc-position 'top)
     (setf lsp-ui-doc-header t)
     (setf lsp-ui-doc-include-signature t)
     :config
