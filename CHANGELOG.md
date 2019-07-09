@@ -48,6 +48,10 @@ Changes
 
 Fix
 ~~~
+- Establece una ruta distinta para el .jar de PlantUML. [Jorge Araya
+  Navarro]
+
+  esto en caso de que no este instalado donde se espera
 - Mueve la ventana de documentación de lsp-ui arriba del buffer. [Jorge
   Araya Navarro]
 - Arregla código que filtra y muestra apuntes técnicos. [Jorge Araya

@@ -2931,7 +2931,9 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
 #+begin_src emacs-lisp
   (use-package plantuml-mode
     :init
-    (setf plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar"))
+    (if (file-exists-p "/usr/share/java/plantuml/plantuml.jar")
+        (setf plantuml-jar-path "/usr/share/java/plantuml/plantuml.jar")
+      (setf plantuml-jar-path "/usr/share/plantuml/plantuml.jar")))
 #+end_src
 *** GraphQL
 #+begin_src emacs-lisp
