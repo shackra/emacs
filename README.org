@@ -1448,6 +1448,13 @@ Un modo menor que facilita la manipulación de la salida de diff3
                          ("k" smerge-kill-current)
                          ("q" nil "cancel" :color blue)))
 #+end_src
+*** annotate
+modo menor que permite colocar notas en cualquier archivo sin cambiar el contenido de los mismos.
+
+para agregar una anotacion seleccione una región de interés y presione C-c C-a
+#+begin_src emacs-lisp
+  (use-package annotate)
+#+end_src
 ** Comunicación
 *** Correo electrónico
 =mu4e= se usa para leer y enviar correo electrónico.
