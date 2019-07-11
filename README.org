@@ -2725,6 +2725,8 @@ Instalar estos componentes en el sistema operativo
     :init
     (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
     (setf js2-mode-indent-inhibit-undo t)
+    ;; apaga las alertas sobre punto y comas ausentes
+    (setf js2-strict-missing-semi-warning nil)
     ;; retrasa el procesamiento del contenido de un archivo luego haberle hecho
     ;; algun cambio, esto debería mejorar el rendimiento para archivos grandes.
     (setf js2-dynamic-idle-timer-adjust 2500)
