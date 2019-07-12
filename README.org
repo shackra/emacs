@@ -3264,7 +3264,7 @@ Panel de control para Emacs. Aquí se muestra un trigrama IHS que significa /Ies
     :if (not (version<= emacs-version "25.2"))
     :init
     (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-    (setq dashboard-banner-logo-title "Iesu Hominis Salvator")
+    (setq dashboard-banner-logo-title (propertize "Iesu Hominis Salvator" 'help-echo "Jesús salvador de los hombres"))
     (setq dashboard-startup-banner (expand-file-name "dashboard/JHS.png" user-emacs-directory))
     (setq dashboard-center-content t)
     (setq dashboard-items '((agenda . 5)

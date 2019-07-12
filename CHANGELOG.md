@@ -7,6 +7,9 @@ Changelog
 
 New
 ~~~
+- Coloca texto de ayuda a leyenda en Latín en dashboard. [Jorge Araya
+  Navarro]
+- Integra nuevo paquete para hacer anotaciones en código fuente. [=]
 - Agrega paquete para editar diagramas escritos en PlantUML. [Jorge
   Araya Navarro]
 - Agrega ox-revealjs para presentaciones. [=]
@@ -27,6 +30,7 @@ New
 
 Changes
 ~~~~~~~
+- Desactiva las alertas por punto y coma ausentes en js2-mode. [=]
 - Obtiene ubicación de PlantUML urgando en /usr/bin/plantuml. [Jorge
   Araya Navarro]
 - Cambia modo de ejecución de PlantUML y agrega GraphQL. [Jorge Araya
