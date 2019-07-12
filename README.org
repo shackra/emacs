@@ -3870,9 +3870,19 @@ Establece cuales temás son seguros.
     :config
     (load-theme 'monokai t))
 #+END_SRC
-**** Nimbus
+**** CANCELADO Nimbus                                          :CANCELADO:
+- State "CANCELADO"  from              [2019-07-12 vie 16:30] \\
+  cambiado por doom-themes
 #+begin_src emacs-lisp
   (use-package nimbus-theme
     :config
     (load-theme 'nimbus t))
+#+end_src
+**** doom-themes
+#+begin_src emacs-lisp
+  (use-package doom-themes
+    :config
+    (load-theme 'doom-spacegrey t)
+    (doom-themes-visual-bell-config)
+    (doom-themes-org-config))
 #+end_src
