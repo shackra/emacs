@@ -2724,11 +2724,6 @@ Instalar estos componentes en el sistema operativo
     :init
     (add-hook 'js2-mode-hook (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 
-  (use-package flow-minor-mode
-    :after (js2-mode)
-    :init
-    (add-hook 'js2-mode-hook 'flow-minor-enable-automatically))
-
   (use-package flycheck-flow
     :after (flycheck)
     :config
@@ -2738,6 +2733,9 @@ Instalar estos componentes en el sistema operativo
 
   (use-package js2-mode
     :mode "\\.js\\'"
+    :straight (js2-mode
+               :type git :flavor melpa :host github :repo "mooz/js2-mode"
+               :fork (:host github :repo "shackra/js2-mode" :branch "flow"))
     :init
     (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
     (setf js2-mode-indent-inhibit-undo t)
