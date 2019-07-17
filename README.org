@@ -2757,7 +2757,7 @@ Instalar estos componentes en el sistema operativo
     :config
     (add-hook 'js-mode-hook #'indium-interaction-mode))
 
-  ;; Modo mayor para trabajar con Reactive.JS
+  ;; Modo mayor para trabajar con ReactJS
   (use-package rjsx-mode
     :magic ("import.*react" . rjsx-mode)
     :init
