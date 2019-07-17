@@ -2726,10 +2726,11 @@ Instalar estos componentes en el sistema operativo
     (add-hook 'js2-mode-hook 'flow-minor-enable-automatically))
 
   (use-package flycheck-flow
+    :after (flycheck)
     :init
-    (defun shackra/use-flow-flycheck ()
-      (setf flycheck-checker 'javascript-flow))
-    (add-hook 'flow-minor-mode-hook #'shackra/use-flow-flycheck))
+    (flycheck-add-mode 'javascript-flow 'flow-minor-mode)
+    (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
+    (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
 
   (use-package js2-mode
     :mode "\\.js\\'"
