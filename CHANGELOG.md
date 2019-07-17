@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Agrega soporte para flow. [Jorge Araya Navarro]
 - Cambia tema de Emacs a doom-themes spacegrey. [Jorge Araya Navarro]
 - Coloca texto de ayuda a leyenda en Latín en dashboard. [Jorge Araya
   Navarro]

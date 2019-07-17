@@ -2720,6 +2720,17 @@ Instalar estos componentes en el sistema operativo
     :init
     (add-hook 'js2-mode-hook (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 
+  (use-package flow-minor-mode
+    :after (js2-mode)
+    :init
+    (add-hook 'js2-mode-hook 'flow-minor-enable-automatically))
+
+  (use-package flycheck-flow
+    :init
+    (defun shackra/use-flow-flycheck ()
+      (setf flycheck-checker 'javascript-flow))
+    (add-hook 'flow-minor-mode-hook #'shackra/use-flow-flycheck))
+
   (use-package js2-mode
     :mode "\\.js\\'"
     :init
