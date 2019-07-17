@@ -61,6 +61,10 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
   (when (eq system-type 'darwin)
     (setenv "PATH" "Library/TeX/texbin/:$PATH" t))
 
+  ;; si mu4e esta disponible en el sistema lo agrega a load-path
+  (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
+    (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e"))
+
   (eval-when-compile
     (require 'use-package))
   (require 'diminish)
@@ -2727,7 +2731,7 @@ Instalar estos componentes en el sistema operativo
 
   (use-package flycheck-flow
     :after (flycheck)
-    :init
+    :config
     (flycheck-add-mode 'javascript-flow 'flow-minor-mode)
     (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
     (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
