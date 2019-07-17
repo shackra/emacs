@@ -1102,13 +1102,16 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
                       ("v" avy-goto-char "Ir a la palabra (2)..."))
     :bind (:map global-map ("M-z" . hydra-avy/body)))
 #+END_SRC
-*** =multi-term=
+*** CANCELADO =multi-term=                                      :CANCELADO:
+- State "CANCELADO"  from              [2019-07-17 mié 12:56] \\
+  ya no esta activamente mantenido
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:51]
 :END:
 Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<kbd><f1></kbd>@@
 #+BEGIN_SRC emacs-lisp
   (use-package multi-term
+    :disabled
     :bind ([f1] . multi-term)
     :init
     (defun shackra-maybe-disable-yasnippet ()
@@ -1147,6 +1150,13 @@ Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<k
                                   (display-line-numbers-mode -1))))
     (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
 #+END_SRC
+*** aweshell
+Reemplaza multi-term
+#+begin_src emacs-lisp
+  (use-package aweshell
+    :straight (aweshell :type git :host github :repo "manateelazycat/aweshell")
+    :bind ([f1] . aweshell-new))
+#+end_src
 *** =git=
 #+BEGIN_SRC emacs-lisp
   (use-package gitignore-mode)
@@ -2728,6 +2738,11 @@ Instalar estos componentes en el sistema operativo
     :after (js2-mode)
     :init
     (add-hook 'js2-mode-hook 'flow-minor-enable-automatically))
+
+  (use-package flow-js2-mode
+    :after (flow-minor-mode)
+    :config
+    (add-hook 'flow-minor-mode-hook 'flow-js2-mode))
 
   (use-package flycheck-flow
     :after (flycheck)
