@@ -2668,7 +2668,7 @@ Instalar estos componentes en el sistema operativo
   npm install -g babel-cli babel-preset-react eslint babel-eslint eslint-plugin-react typescript typescript-language-server --save-dev
 #+END_SRC
 #+BEGIN_SRC emacs-lisp
-  (defun shackra-js-install-deps ()
+  (defun shackra-js-local-install-deps ()
     "Instala localmente dependencias de JavaScript"
     (interactive)
     (shell-command "yarn add eslint babel-eslint typescript eslint-plugin-react --dev"))

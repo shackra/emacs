@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Documenta compilación de Emacs en distros basadas en Debian. [=]
 - Agrega soporte para flow. [Jorge Araya Navarro]
 - Cambia tema de Emacs a doom-themes spacegrey. [Jorge Araya Navarro]
 - Coloca texto de ayuda a leyenda en Latín en dashboard. [Jorge Araya
@@ -32,6 +33,15 @@ New
 
 Changes
 ~~~~~~~
+- Cambia el nombre de función. [Jorge Araya Navarro]
+
+  describe mejor que hace la función interactiva
+- Mueve contenido sobre compilación de Emacs a otro archivo. [=]
+- Reemplaza multi-term con aweshell. [=]
+- Usa fork para js2-mode. [=]
+
+  otorga soporte para flow
+- Cambia ajustes para soportar flow. [=]
 - Desactiva las alertas por punto y coma ausentes en js2-mode. [=]
 - Obtiene ubicación de PlantUML urgando en /usr/bin/plantuml. [Jorge
   Araya Navarro]
@@ -56,6 +66,10 @@ Changes
 
 Fix
 ~~~
+- Inserta ubicación de mu4e en load-path. [=]
+
+  si mu4e existe en el sistema es agregado a load-path y asi me evito una alerta cuando inicio Emacs
+  en la PC del trabajo
 - Establece una ruta distinta para el .jar de PlantUML. [Jorge Araya
   Navarro]
 
@@ -97,6 +111,12 @@ Fix
   - https://github.com/raxod502/straight.el/issues/352#issuecomment-460069774
 - Quita manipulación en el recolector de basura. [Jorge Araya Navarro]
 - Realiza ajustes para Emacs 25. [Jorge Araya Navarro]
+
+Other
+~~~~~
+- Revert "chg: Usa fork para js2-mode" [=]
+
+  This reverts commit e7d6cdec72da918d4b96facaafe00785676617fa.
 
 
 4.0 (2019-04-20)
