@@ -33,6 +33,10 @@ New
 
 Changes
 ~~~~~~~
+- Mueve configuración para dap-{firefox,chrome} [Jorge Araya Navarro]
+
+  esta configuración es independiente de cualquier modo mayor usado para trabajar en frontend entonces
+  lo mejor y más lógico era moverlo fuera
 - Usa js-mode en Emacs 27 o superior. [Jorge Araya Navarro]
 - Cambia el nombre de función. [Jorge Araya Navarro]
 
