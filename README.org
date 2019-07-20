@@ -2724,8 +2724,7 @@ Instalar estos componentes en el sistema operativo
     (setf typescript-indent-level shackra-webdev-indent)
     (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . (lambda () (typescript-mode) (rjsx-minor-mode))))
     :config
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'typescript-mode-hook #'lsp)))
+    (add-hook 'typescript-mode-hook #'lsp))
 
   (use-package js2-refactor
     :after (js2-mode)
