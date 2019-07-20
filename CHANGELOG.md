@@ -33,6 +33,7 @@ New
 
 Changes
 ~~~~~~~
+- Usa js-mode en Emacs 27 o superior. [Jorge Araya Navarro]
 - Cambia el nombre de función. [Jorge Araya Navarro]
 
   describe mejor que hace la función interactiva

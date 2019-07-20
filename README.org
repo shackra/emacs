@@ -2735,9 +2735,18 @@ Instalar estos componentes en el sistema operativo
     (add-hook 'js2-mode-hook (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 
   (use-package flow-minor-mode
-    :after (js2-mode)
     :init
-    (add-hook 'js2-mode-hook 'flow-minor-enable-automatically))
+    (defun shackra/set-lsp-flow-server ()
+      "usa el ejecutable de flow para LSP local, si estuviera disponible"
+      (let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
+             (flow-bin (and root (expand-file-name "node_modules/flow-bin/cli.js" root))))
+        (when (and flow-bin (file-executable-p flow-bin))
+          (setq-local lsp-clients-flow-server flow-bin))
+        (message (format "usando flow-bin desde %s" lsp-clients-flow-server))))
+
+    (add-hook 'js2-mode-hook 'flow-minor-enable-automatically)
+    (add-hook 'js-mode-hook 'flow-minor-enable-automatically)
+    (add-hook 'flow-minor-mode-hook #'shackra/set-lsp-flow-server))
 
   (use-package flow-js2-mode
     :after (flow-minor-mode)
@@ -2751,9 +2760,19 @@ Instalar estos componentes en el sistema operativo
     (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
     (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
 
-  (use-package js2-mode
-    :mode "\\.js\\'"
+  (use-package js
+    :after (js2-mode)
+    :straight nil
     :init
+    (add-hook 'js-mode-hook 'js2-minor-mode)
+    (add-hook 'js-mode-hook #'lsp))
+
+  (use-package js2-mode
+    :init
+    (when (version<= emacs-version "26")
+      ;; usa js2-mode para editar archivos JavaScript si no estamos corriendo en
+      ;; Emacs 27
+      (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode)))
     (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
     (setf js2-mode-indent-inhibit-undo t)
     ;; apaga las alertas sobre punto y comas ausentes
@@ -2762,13 +2781,7 @@ Instalar estos componentes en el sistema operativo
     ;; algun cambio, esto debería mejorar el rendimiento para archivos grandes.
     (setf js2-dynamic-idle-timer-adjust 2500)
     :config
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'js2-mode-hook #'lsp))
-    (with-eval-after-load 'dap-mode
-      (require 'dap-firefox)
-      (dap-firefox-setup)
-      (require 'dap-chrome)
-      (dap-chrome-setup)))
+    (add-hook 'js2-mode-hook #'lsp))
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript
@@ -2777,22 +2790,23 @@ Instalar estos componentes en el sistema operativo
     (add-hook 'js-mode-hook #'indium-interaction-mode))
 
   ;; Modo mayor para trabajar con ReactJS
-  (use-package rjsx-mode
-    :magic ("import.*react" . rjsx-mode)
-    :init
-    (add-hook 'rjsx-mode-hook (lambda () (flyspell-mode-off)))
-    :config
-    ;; tomado de https://emacs.stackexchange.com/a/33544/690 mejora el sangrado
-    ;; de lineas
-    (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
-      "Workaround sgml-mode and follow airbnb component style."
-      (save-excursion
-        (beginning-of-line)
-        (if (looking-at-p "^ +\/?> *$")
-            (delete-char sgml-basic-offset))))
-    (with-eval-after-load 'lsp-clients
-      (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript"))
-      (add-hook 'rjsx-mode-hook #'lsp)))
+  (when (version< emacs-version "27")
+    (use-package rjsx-mode
+      :magic ("import.*react" . rjsx-mode)
+      :init
+      (add-hook 'rjsx-mode-hook (lambda () (flyspell-mode-off)))
+      :config
+      ;; tomado de https://emacs.stackexchange.com/a/33544/690 mejora el sangrado
+      ;; de lineas
+      (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
+        "Workaround sgml-mode and follow airbnb component style."
+        (save-excursion
+          (beginning-of-line)
+          (if (looking-at-p "^ +\/?> *$")
+              (delete-char sgml-basic-offset))))
+      (with-eval-after-load 'lsp-clients
+        (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript"))
+        (add-hook 'rjsx-mode-hook #'lsp))))
 
   (with-eval-after-load 'flycheck
     ;; tomado de https://jamiecollinson.com/blog/my-emacs-config/ hace que
