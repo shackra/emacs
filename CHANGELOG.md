@@ -33,6 +33,9 @@ New
 
 Changes
 ~~~~~~~
+- Desactiva weechat.el. [Jorge Araya Navarro]
+
+  - https://github.com/the-kenny/weechat.el/issues/77
 - Mueve configuración para dap-{firefox,chrome} [Jorge Araya Navarro]
 
   esta configuración es independiente de cualquier modo mayor usado para trabajar en frontend entonces
