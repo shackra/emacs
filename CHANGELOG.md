@@ -33,6 +33,10 @@ New
 
 Changes
 ~~~~~~~
+- Usa el valor de `user-mail-address` en funciones de mu4e. [Jorge Araya
+  Navarro]
+
+  a veces el valor de `msg` puede ser un valor nulo
 - Desactiva weechat.el. [Jorge Araya Navarro]
 
   - https://github.com/the-kenny/weechat.el/issues/77
