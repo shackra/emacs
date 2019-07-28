@@ -1100,7 +1100,7 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
                       ("x" avy-goto-word-1 "Ir a la palabra...")
                       ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
                       ("v" avy-goto-char "Ir a la palabra (2)..."))
-    :bind (:map global-map ("M-z" . hydra-avy/body)))
+    :bind (:map global-map ("C-z" . hydra-avy/body)))
 #+END_SRC
 *** CANCELADO =multi-term=                                      :CANCELADO:
 - State "CANCELADO"  from              [2019-07-17 mié 12:56] \\

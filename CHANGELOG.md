@@ -33,6 +33,7 @@ New
 
 Changes
 ~~~~~~~
+- Cambia atajo de teclado para hydra-avy. [Jorge Araya Navarro]
 - Actualiza versiones de paquetes. [Jorge Araya Navarro]
 - Usa el valor de `user-mail-address` en funciones de mu4e. [Jorge Araya
   Navarro]
