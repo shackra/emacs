@@ -7,6 +7,7 @@ Changelog
 
 New
 ~~~
+- Cambia C-x o como atajo para ace-window. [Jorge Araya Navarro]
 - Documenta compilación de Emacs en distros basadas en Debian. [=]
 - Agrega soporte para flow. [Jorge Araya Navarro]
 - Cambia tema de Emacs a doom-themes spacegrey. [Jorge Araya Navarro]
