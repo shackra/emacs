@@ -81,6 +81,8 @@ Changes
 
 Fix
 ~~~
+- Apaga js2-minor-mode y arregla sangrado en js-jsx. [Jorge Araya
+  Navarro]
 - Inserta ubicación de mu4e en load-path. [=]
 
   si mu4e existe en el sistema es agregado a load-path y asi me evito una alerta cuando inicio Emacs

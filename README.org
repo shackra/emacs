@@ -2771,10 +2771,10 @@ Instalar estos componentes en el sistema operativo
     (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
 
   (use-package js
-    :after (js2-mode)
     :straight nil
     :init
-    (add-hook 'js-mode-hook 'js2-minor-mode)
+    (setf js-indent-level shackra-webdev-indent)
+    (setf js-jsx-indent-level shackra-webdev-indent)
     (add-hook 'js-mode-hook #'lsp))
 
   (use-package js2-mode
