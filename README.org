@@ -1604,7 +1604,16 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
                   ;; si el email es de otra carpeta no concebida aquí, mueve el
                   ;; email al archivero de Yahoo
                   (t (format-time-string "/yahoo/Archive/%Y" (mu4e-message-field msg :date))))))
-    (setf message-send-mail-function 'smtpmail-send-it)
+    ;; indica a mu4e que usemos smtp para enviar el correo
+    (setf message-send-mail-function 'message-send-mail-with-sendmail)
+    (setf send-mail-function 'smtpmail-send-it)
+    ;; establecemos el programa de sendmail a msmtp
+    (setf sendmail-program "/usr/bin/msmtp")
+    ;; eliminamos el nombre de usuario del mensaje de Emacs
+    (setf message-sendmail-f-is-evil t)
+    ;; con esto indicamos a msmtp que lea el remitente indicado en el mensaje y
+    ;; así use la configuración asociada
+    (setf message-sendmail-extra-arguments '("--read-envelope-from"))
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?u)
             ("flag:flagged" "Marcados como importantes" ?f)
@@ -1617,6 +1626,28 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-headers-mode-map)
     (bind-key "C-c c" 'org-mu4e-store-and-capture mu4e-view-mode-map))
 #+END_SRC
+**** configuración del sistema para enviar correo a través de otro programa
+desde que cambié a Yahoo como proveedor de correo electrónico me ha sido imposible enviar algún mensaje a través de mu4e, parece que la mejor opción es usar un cliente SMTP y decirle a mu4e que relegue la acción a ese cliente.
+
+Instalamos =msmtp=.
+#+begin_src sh :dir /sudo::
+  pacman -Sy msmtp
+#+end_src
+copia el archivo ubicado en =/usr/share/doc/msmtp/msmtprc-user.example= a =~/.msmtprc=. Para evitar tener contraseñas en la configuración puede colocar =passwordeval=.
+
+por ultimo hay que hace unos ajustes en mu4e para que =msmtp= entre en uso.
+#+begin_example
+;; indica a mu4e que usemos smtp para enviar el correo
+(setf message-send-mail-function 'message-send-mail-with-sendmail)
+(setf send-mail-function 'smtpmail-send-it)
+;; establecemos el programa de sendmail a msmtp
+(setf sendmail-program "/usr/bin/msmtp")
+;; eliminamos el nombre de usuario del mensaje de Emacs
+(setf message-sendmail-f-is-evil t)
+;; con esto indicamos a msmtp que lea el remitente indicado en el mensaje y
+;; así use la configuración asociada
+(setf message-sendmail-extra-arguments '("--read-envelope-from"))
+#+end_example
 *** =twittering-mode=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:53]
