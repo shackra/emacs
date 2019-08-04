@@ -34,6 +34,8 @@ New
 
 Changes
 ~~~~~~~
+- Función establece estilo de código C según proyecto. [Jorge Araya
+  Navarro]
 - Usa msmtp para enviar correo en mu4e. [Jorge Araya Navarro]
 - Cambia atajo de teclado para hydra-avy. [Jorge Araya Navarro]
 - Actualiza versiones de paquetes. [Jorge Araya Navarro]

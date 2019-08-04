@@ -2979,6 +2979,21 @@ Type `M-x gimp-help' for help.
 *** C y C++
 Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/][TIP: How to use a stable and fast environment to develop in C++]].
 #+begin_src emacs-lisp
+  (defvar shackra/c-styles-alist '(("/gnu/emacs" . "gnu")
+                                   (nil . "gnu")) "lista de ubicaciones de proyectos asociados a un estilo de escribir código C")
+
+  (defun shackra/c--style-p (patron ubicacion)
+    (or (not patron)
+        (and (stringp ubicacion)
+             (string-match patron ubicacion))))
+
+  (defun shackra/c-guess-c-style ()
+    "asocia un estilo C según el proyecto o ubicación"
+    (let ((style (assoc-default buffer-file-name shackra/c-styles-alist 'shackra/c--style-p)))
+      (c-set-style style)))
+
+  (add-hook 'c-mode-hook #'shackra/c-guess-c-style)
+
   ;; activa LSP en C y C++
   (with-eval-after-load "lsp-mode"
     (dolist (hook '(c-mode-hook c++-mode-hook))
@@ -3010,11 +3025,6 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
     :bind ([remap comment-region] . cmake-ide-compile)
     :init (cmake-ide-setup)
     :config (advice-add 'cmake-ide-compile :after #'my/switch-to-compilation-window))
-
-  (use-package google-c-style
-    :hook
-    ((c-mode c++-mode) . google-set-c-style)
-    (c-mode-common . google-make-newline-indent))
 #+end_src
 *** Nginx
 #+begin_src emacs-lisp
