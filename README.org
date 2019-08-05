@@ -2778,12 +2778,12 @@ Instalar estos componentes en el sistema operativo
               ;; `script' nombra el archivo ejecutable, normalmente el archivo
               ;; tiene el mismo nombre que la carpeta que lo contiene, excepto
               ;; para el caso de flow
-              (script (if (string= module "flow-bin") "flow" module)))
-          (when (file-directory-p sub-node-module)
+              (script (if (string= module "flow-bin") "cli.js" (concat "bin/" module ".js"))))
+          (when (and (file-directory-p sub-node-module) (symbolp executable-var))
             ;; establece por buffer el valor de la variable en `executable-var'
-            (set (make-local-variable executable-var)
-                 (expand-file-name (concat "bin/" script ".js") sub-node-module))
-            (message (format "para %s usando %s" checker (expand-file-name (concat "bin/" script ".js") sub-node-module))))))))
+            (add-to-list 'newvals (set (make-local-variable executable-var)
+                                       (expand-file-name script sub-node-module)) t))))
+      newvals))
 
   (with-eval-after-load 'flycheck
     (dolist (mode '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook))
