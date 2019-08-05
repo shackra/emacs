@@ -2769,7 +2769,8 @@ Instalar estos componentes en el sistema operativo
   (defun shackra/set-flycheck-javascript-checkers ()
     "establece el script de varios revisores de Flycheck para Javascript con los disponibles localmente"
     (let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
-           (node-modules (expand-file-name "node_modules" root)))
+           (node-modules (expand-file-name "node_modules" root))
+           (newvals ()))
       ;; establece el script para cada uno de los revisores en `shackra/flycheck-javascript-checkers-alist'
       (pcase-dolist (`(,checker . ,module) shackra/flycheck-javascript-checkers-alist)
         (let ((sub-node-module (expand-file-name module node-modules))
