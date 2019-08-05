@@ -2760,12 +2760,12 @@ Instalar estos componentes en el sistema operativo
   ;; cambia el script de eslint al que venga instalado en node_modules
   (defun shackra/flycheck-set-eslint-script ()
     "establece el script de ESLint que haya sido instalado por yarn/npm en el proyecto"
-    ((let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
-            (eslint-bin (and root (expand-file-name "node_modules/eslint/bin/eslint.js" root)))
-            (executable-var (flycheck-checker-executable-variable 'javascript-eslint)))
-       (when (and eslint-bin (file-executable-p eslint-bin))
-         (setf (make-local-variable executable-var) eslint-bin)
-         (message (format "usando eslint de %s" eslint-bin))))))
+    (let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
+           (eslint-bin (and root (expand-file-name "node_modules/eslint/bin/eslint.js" root)))
+           (executable-var (flycheck-checker-executable-variable 'javascript-eslint)))
+      (when (and eslint-bin (file-executable-p eslint-bin))
+        (setf (make-local-variable executable-var) eslint-bin)
+        (message (format "usando eslint de %s" eslint-bin)))))
 
   (with-eval-after-load 'flycheck
     (dolist (mode '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook))
