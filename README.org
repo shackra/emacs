@@ -2592,6 +2592,7 @@ go build golang.org/x/tools/cmd/guru
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
     (add-hook 'go-mode-hook (lambda ()
+                              (make-local-variable 'flycheck-disabled-checkers)
                               (add-to-list 'flycheck-disabled-checkers 'lsp-ui)
                               (setf flycheck-checker 'golangci-lint)))
     (with-eval-after-load 'lsp-clients
@@ -2785,7 +2786,11 @@ Instalar estos componentes en el sistema operativo
 
   (with-eval-after-load 'flycheck
     (dolist (mode '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook))
-      (add-hook mode #'shackra/set-flycheck-javascript-checkers)))
+      (add-hook mode #'shackra/set-flycheck-javascript-checkers)
+      (add-hook mode (lambda ()
+                       (make-local-variable 'flycheck-disabled-checkers)
+                       ;; desactiva el revisor lsp-ui para cualquier cosa Javascript
+                       (add-to-list 'flycheck-disabled-checkers 'lsp-ui)))))
 
   (use-package typescript-mode
     :init
@@ -3203,7 +3208,7 @@ Revisión de errores en el código fuente, al vuelo.
     :diminish flycheck-mode
     :init
     (setf flycheck-global-modes '(not go-mode))
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc javascript-jshint))
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
     (setf flycheck-indication-mode 'left-fringe)
     (setf flycheck-display-errors-delay 5.0)
     :config
