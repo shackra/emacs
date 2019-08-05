@@ -2757,19 +2757,35 @@ Instalar estos componentes en el sistema operativo
 #+BEGIN_SRC emacs-lisp
   (setq-default js-indent-level shackra-webdev-indent)
 
+  (defvar shackra/flycheck-javascript-checkers-alist '((javascript-eslint        . "eslint")
+                                                       (javascript-jshint        . "jshint")
+                                                       (javascript-jscs          . "jscs")
+                                                       (javascript-flow          . "flow-bin")
+                                                       (javascript-flow-coverage . "flow-bin"))
+    "lista de revisores de flycheck para Javascript")
+
   ;; cambia el script de eslint al que venga instalado en node_modules
-  (defun shackra/flycheck-set-eslint-script ()
-    "establece el script de ESLint que haya sido instalado por yarn/npm en el proyecto"
+  (defun shackra/set-flycheck-javascript-checkers ()
+    "establece el script de varios revisores de Flycheck para Javascript con los disponibles localmente"
     (let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
-           (eslint-bin (and root (expand-file-name "node_modules/eslint/bin/eslint.js" root)))
-           (executable-var (flycheck-checker-executable-variable 'javascript-eslint)))
-      (when (and eslint-bin (file-executable-p eslint-bin))
-        (setf (make-local-variable executable-var) eslint-bin)
-        (message (format "usando eslint de %s" eslint-bin)))))
+           (node-modules (expand-file-name "node_modules" root)))
+      ;; establece el script para cada uno de los revisores en `shackra/flycheck-javascript-checkers-alist'
+      (pcase-dolist (`(,checker . ,module) shackra/flycheck-javascript-checkers-alist)
+        (let ((sub-node-module (expand-file-name module node-modules))
+              (executable-var (flycheck-checker-executable-variable checker))
+              ;; `script' nombra el archivo ejecutable, normalmente el archivo
+              ;; tiene el mismo nombre que la carpeta que lo contiene, excepto
+              ;; para el caso de flow
+              (script (if (string= module "flow-bin") "flow" module)))
+          (when (file-directory-p sub-node-module)
+            ;; establece por buffer el valor de la variable en `executable-var'
+            (set (make-local-variable executable-var)
+                 (expand-file-name (concat "bin/" script ".js") sub-node-module))
+            (message (format "para %s usando %s" checker (expand-file-name (concat "bin/" script ".js") sub-node-module))))))))
 
   (with-eval-after-load 'flycheck
     (dolist (mode '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook))
-      (add-hook mode #'shackra/flycheck-set-eslint-script)))
+      (add-hook mode #'shackra/set-flycheck-javascript-checkers)))
 
   (use-package typescript-mode
     :init
