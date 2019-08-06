@@ -613,6 +613,12 @@ Una funcion que usaba antes de migrar a straight.el, esta la tenia en mi archivo
 #+begin_src emacs-lisp
   (setf org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 #+end_src
+** Desactivar lsp-ui de Flycheck
+algunos modos mayores puede que deseen desactivar lsp-ui
+#+begin_src emacs-lisp
+  (defun shackra/flycheck-disable-lsp-ui-here ()
+    (add-to-list (make-local-variable 'flycheck-disabled-checkers) 'lsp-ui))
+#+end_src
 * Macros
 #+BEGIN_SRC emacs-lisp
   (fset 'untangle-use-packages
@@ -2591,10 +2597,7 @@ go build golang.org/x/tools/cmd/guru
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
-    (add-hook 'go-mode-hook (lambda ()
-                              (make-local-variable 'flycheck-disabled-checkers)
-                              (add-to-list 'flycheck-disabled-checkers 'lsp-ui)
-                              (setf flycheck-checker 'golangci-lint)))
+    (add-hook 'go-mode-hook #'shackra/flycheck-disable-lsp-ui-here)
     (with-eval-after-load 'lsp-clients
       (setf lsp-clients-go-server "go-langserver")
       (add-hook 'go-mode-hook #'lsp))
@@ -2788,10 +2791,10 @@ Instalar estos componentes en el sistema operativo
   (with-eval-after-load 'flycheck
     (dolist (mode '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook))
       (add-hook mode #'shackra/set-flycheck-javascript-checkers)
+      (add-hook mode #'shackra/flycheck-disable-lsp-ui-here)
       (add-hook mode (lambda ()
-                       (make-local-variable 'flycheck-disabled-checkers)
-                       ;; desactiva el revisor lsp-ui para cualquier cosa Javascript
-                       (add-to-list 'flycheck-disabled-checkers 'lsp-ui)))))
+                       ;; cuando se hace grep, omite los archivos source map de Javascript
+                       (add-to-list (make-local-variable 'grep-find-ignored-files) "*.map.*.js")))))
 
   (use-package typescript-mode
     :init
