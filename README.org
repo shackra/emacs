@@ -1480,6 +1480,11 @@ para agregar una anotacion seleccione una región de interés y presione C-c C-a
 #+begin_src emacs-lisp
   (use-package annotate)
 #+end_src
+*** Escribir en el navegador usando Emacs
+este paquete permite escribir en un área editable del navegador usando Emacs. El navegador necesita un complemento instalado, mas información en https://github.com/stsquad/emacs_chrome
+ #+begin_src emacs-lisp
+   (use-package edit-server)
+ #+end_src
 ** Comunicación
 *** Correo electrónico
 =mu4e= se usa para leer y enviar correo electrónico.
