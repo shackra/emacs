@@ -2801,6 +2801,18 @@ Instalar estos componentes en el sistema operativo
                        ;; cuando se hace grep, omite los archivos source map de Javascript
                        (add-to-list (make-local-variable 'grep-find-ignored-files) "*.map.*.js")))))
 
+  (use-package prettier-js
+    :init
+    (setf prettier-js-args '(
+                             "--trailing-comma" "all"
+                             "--bracket-spacing" "true"
+                             "--no-semi"
+                             ))
+    :config
+    (dolist (hook '(js-mode-hook js2-mode-hook))
+      (add-hook hook 'prettier-js-mode)
+      (add-hook hook (lambda () (setq-local electric-indent-inhibit t)))))
+
   (use-package typescript-mode
     :init
     (setf typescript-indent-level shackra-webdev-indent)
