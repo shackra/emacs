@@ -34,6 +34,17 @@ New
 
 Changes
 ~~~~~~~
+- Inicia edit-server luego que Emacs haya arrancado. [Jorge Araya
+  Navarro]
+- Incluye nuevo paquete para editar en el navegador desde Emacs. [=]
+- Generaliza la configuración de desactivación de lsp-ui. [=]
+- Inserta nueva variable dentro de let* [=]
+
+  newvals se usa para listar los nuevos valores de las variables de flycheck para cada checker
+- Ajusta revisores de Flycheck. [=]
+- Elimina código establecía script para javascript-eslint. [=]
+- Establece el script para cada linter de Javascript en Flycheck. [=]
+- Usa script de eslint instalado en el proyecto. [=]
 - Función establece estilo de código C según proyecto. [Jorge Araya
   Navarro]
 - Usa msmtp para enviar correo en mu4e. [Jorge Araya Navarro]
@@ -84,6 +95,8 @@ Changes
 
 Fix
 ~~~
+- Aplica condición especial para flow. [=]
+- Elimina parentesis adicional. [=]
 - Apaga js2-minor-mode y arregla sangrado en js-jsx. [Jorge Araya
   Navarro]
 - Inserta ubicación de mu4e en load-path. [=]
