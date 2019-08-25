@@ -2569,7 +2569,7 @@ go get -u gopkg.in/alecthomas/gometalinter.v1
 
 También estas otras bibliotecas
 #+BEGIN_EXAMPLE
-go get -u github.com/sourcegraph/go-langserver # reemplaza a gocode ya que estamos usando lsp-mode
+go get golang.org/x/tools/gopls # reemplaza a gocode ya que estamos usando lsp-mode
 go get github.com/godoctor/godoctor
 go install github.com/godoctor/godoctor
 go get golang.org/x/tools/cmd/guru # Como usar Go Guru http://golang.org/s/using-guru
@@ -2599,7 +2599,7 @@ go build golang.org/x/tools/cmd/guru
       (when (eq major-mode 'go-mode)
         (if (string-suffix-p "_test.go" (buffer-name))
             (set (make-local-variable 'compile-command) "go test -bench=. -v")
-          (set (make-local-variable 'compile-command) (format "go build && ./%s" (f-base (f-dirname (f-full (buffer-name)))))))))
+          (set (make-local-variable 'compile-command) (format "go build" (f-base (f-dirname (f-full (buffer-name)))))))))
     :config
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
@@ -2609,11 +2609,6 @@ go build golang.org/x/tools/cmd/guru
       (setf lsp-clients-go-server "go-langserver")
       (add-hook 'go-mode-hook #'lsp))
     (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
-
-  (use-package go-eldoc
-    :after (go-mode)
-    :config
-    (add-hook 'go-mode-hook 'go-eldoc-setup))
 
   (use-package go-snippets
     :after (go-mode))
@@ -2671,23 +2666,6 @@ go build golang.org/x/tools/cmd/guru
     :config
     (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
     (add-hook 'projectile-mode-hook #'shackra-go-mode-set-scope))
-
-  (use-package flycheck-gometalinter
-    :if (or (executable-find "gometalinter.v1") (executable-find "gometalinter"))
-    :after (flycheck-mode go-mode)
-    :init
-    (if (executable-find "gometalinter.v1")
-        (setf flycheck-gometalinter-executable "gometalinter.v1")
-      (setf flycheck-gometalinter-executable "gometalinter"))
-    (setf flycheck-gometalinter-vendor t)
-    (setf flycheck-gometalinter-test t)
-    (setf flycheck-gometalinter-fast t)
-    (setf flycheck-gometalinter-enable-linters '("unused"))
-    (setf flycheck-gometalinter-disable-linters '("gotype"))
-    (setq flycheck-gometalinter-deadline "5s")
-    :config
-    (progn
-      (flycheck-gometalinter-setup)))
 
   (use-package ob-go
     :after (org-mode)
