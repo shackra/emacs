@@ -2617,8 +2617,14 @@ go build golang.org/x/tools/cmd/guru
     :after (flycheck)
     :if (executable-find "golangci-lint")
     :init
-    (add-hook 'go-mode-hook #'flycheck-golangci-lint-setup)
-    (add-hook 'go-mode-hook (lambda () (flycheck-select-checker 'golangci-lint))))
+    (add-hook 'flycheck-mode-hook #'flycheck-golangci-lint-setup)
+    ;; Este arreglo permite sobreescribir el valor de `flycheck-checker' luego que
+    ;; `lsp-ui-flycheck-enable' lo establece. Este arreglo es necesario porque a la
+    ;; fecha no hay forma de deshabilitar esa funcionalidad de `lsp-ui'
+    (add-hook 'lsp-after-open-hook
+              (lambda ()
+                (when (eq major-mode 'go-mode)
+                  (setq-local flycheck-checker 'golangci-lint))) t))
 
   (use-package go-fill-struct
     :if (executable-find "fillstruct"))
