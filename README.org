@@ -2617,8 +2617,7 @@ go build golang.org/x/tools/cmd/guru
     :after (flycheck)
     :if (executable-find "golangci-lint")
     :init
-    (add-hook 'go-mode #'flycheck-golangci-lint-setup)
-    (add-hook 'go-mode (lambda (flycheck-select-checker 'golangci-lint))))
+    (add-hook 'go-mode-hook #'flycheck-golangci-lint-setup))
 
   (use-package go-fill-struct
     :if (executable-find "fillstruct"))
