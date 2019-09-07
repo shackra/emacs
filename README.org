@@ -2863,7 +2863,7 @@ Instalar estos componentes en el sistema operativo
     (setf js2-strict-missing-semi-warning nil)
     ;; retrasa el procesamiento del contenido de un archivo luego haberle hecho
     ;; algun cambio, esto debería mejorar el rendimiento para archivos grandes.
-    (setf js2-dynamic-idle-timer-adjust 2500)
+    (setf js2-dynamic-idle-timer-adjust 2)
     :config
     (add-hook 'js2-mode-hook #'lsp))
 
