@@ -2604,7 +2604,6 @@ go build golang.org/x/tools/cmd/guru
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
-    (add-hook 'go-mode-hook #'shackra/flycheck-disable-lsp-ui-here)
     (with-eval-after-load 'lsp-clients
       (setf lsp-clients-go-server "go-langserver")
       (add-hook 'go-mode-hook #'lsp))
@@ -2783,7 +2782,6 @@ Instalar estos componentes en el sistema operativo
   (with-eval-after-load 'flycheck
     (dolist (mode '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook))
       (add-hook mode #'shackra/set-flycheck-javascript-checkers)
-      (add-hook mode #'shackra/flycheck-disable-lsp-ui-here)
       (add-hook mode (lambda ()
                        ;; cuando se hace grep, omite los archivos source map de Javascript
                        (add-to-list (make-local-variable 'grep-find-ignored-files) "*.map.*.js")))))
