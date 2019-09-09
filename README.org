@@ -2480,7 +2480,8 @@ Un modo mayor para editar paginas web
   (use-package emmet-mode
     :config
     (add-hook 'sgml-mode-hook 'emmet-mode)
-    (add-hook 'web-mode-hook 'emmet-mode))
+    (add-hook 'web-mode-hook 'emmet-mode)
+    (add-hook 'js-jsx-mode-hook 'emmet-mode))
 
   (use-package web-mode
     :preface
