@@ -1401,7 +1401,7 @@ Implementación para Emacs del Language Server Protocol.
     (setf lsp-eldoc-render-all nil)
     (setq lsp-inhibit-message t)
     (setq lsp-message-project-root-warning t)
-    (setf lsp-prefer-flymake nil)
+    (setf lsp-prefer-flymake t)
     ;; arreglo rápido; hay que correr `yarn global add
     ;; typescript-language-server'
     ;; https://github.com/emacs-lsp/lsp-mode/issues/588
@@ -1413,7 +1413,7 @@ Implementación para Emacs del Language Server Protocol.
     :init
     (setf lsp-ui-sideline-enable nil)
     (when (require 'xwidget nil 'noerror)
-      (setf lsp-ui-doc-use-webkit nil))
+      (setf lsp-ui-doc-use-webkit t))
     (setf lsp-ui-doc-enable t)
     (setf lsp-ui-doc-position 'top)
     (setf lsp-ui-doc-header t)
@@ -1914,9 +1914,6 @@ Set de paquetes que me ayudan a escribir paquetes para GNU Emacs
     :straight (cask :type git :host github :repo "cask/cask"))
 
   (use-package cask-mode)
-
-  (use-package flycheck-cask
-    :after (flycheck))
 #+END_SRC
 *** org-babel
 #+BEGIN_SRC emacs-lisp
@@ -2308,7 +2305,7 @@ Modo mayor para programar en Python
 
   (use-package python
     :if (executable-find "python")
-    :hydra (hydra-py (:color red :pre (flycheck-mode -1) :post (progn (deactivate-mark) (flycheck-mode 1)))
+    :hydra (hydra-py (:color red :post (progn (deactivate-mark)))
                      "Sangrado de bloques"
                      ("," python-indent-shift-left "← Disminuir")
                      ("." python-indent-shift-right "→ Aumentar"))
@@ -2612,19 +2609,6 @@ go build golang.org/x/tools/cmd/guru
   (use-package go-snippets
     :after (go-mode))
 
-  (use-package flycheck-golangci-lint
-    :after (flycheck)
-    :if (executable-find "golangci-lint")
-    :init
-    (add-hook 'flycheck-mode-hook #'flycheck-golangci-lint-setup)
-    ;; Este arreglo permite sobreescribir el valor de `flycheck-checker' luego que
-    ;; `lsp-ui-flycheck-enable' lo establece. Este arreglo es necesario porque a la
-    ;; fecha no hay forma de deshabilitar esa funcionalidad de `lsp-ui'
-    (add-hook 'lsp-after-open-hook
-              (lambda ()
-                (when (eq major-mode 'go-mode)
-                  (setq-local flycheck-checker 'golangci-lint))) t))
-
   (use-package go-fill-struct
     :if (executable-find "fillstruct"))
 
@@ -2759,8 +2743,11 @@ Instalar estos componentes en el sistema operativo
                                                        (javascript-flow-coverage . "flow-bin"))
     "lista de revisores de flycheck para Javascript")
 
+  (defvar shackra/js-modes '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook)
+    "lista de modos mayores que tratan JavaScript")
+
   ;; cambia el script de eslint al que venga instalado en node_modules
-  (defun shackra/set-flycheck-javascript-checkers ()
+  (defun shackra/set-checker-javascript-checkers ()
     "establece el script de varios revisores de Flycheck para Javascript con los disponibles localmente"
     (let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
            (node-modules (expand-file-name "node_modules" root))
@@ -2779,12 +2766,19 @@ Instalar estos componentes en el sistema operativo
                                        (expand-file-name script sub-node-module)) t))))
       newvals))
 
+  (dolist (mode shackra/js-modes)
+    (add-hook mode (lambda ()
+                     ;; cuando se hace grep, omite los archivos source map de Javascript
+                     (add-to-list (make-local-variable 'grep-find-ignored-files) "*.map.*.js"))))
+
   (with-eval-after-load 'flycheck
-    (dolist (mode '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook))
-      (add-hook mode #'shackra/set-flycheck-javascript-checkers)
-      (add-hook mode (lambda ()
-                       ;; cuando se hace grep, omite los archivos source map de Javascript
-                       (add-to-list (make-local-variable 'grep-find-ignored-files) "*.map.*.js")))))
+    (dolist (mode shackra/js-modes)
+      (add-hook mode #'shackra/set-checker-javascript-checkers)))
+
+  (use-package flymake-eslint
+    :config
+    (dolist (mode shackra/js-modes)
+      (add-hook mode #'flymake-eslint-enable)))
 
   (use-package prettier-js
     :init
@@ -2835,19 +2829,14 @@ Instalar estos componentes en el sistema operativo
     :config
     (add-hook 'flow-minor-mode-hook 'flow-js2-mode))
 
-  (use-package flycheck-flow
-    :after (flycheck)
-    :config
-    (flycheck-add-mode 'javascript-flow 'flow-minor-mode)
-    (flycheck-add-mode 'javascript-eslint 'flow-minor-mode)
-    (flycheck-add-next-checker 'javascript-flow 'javascript-eslint))
-
   (use-package js
     :straight nil
     :init
     (setf js-indent-level shackra-webdev-indent)
     (setf js-jsx-indent-level shackra-webdev-indent)
-    (add-hook 'js-mode-hook #'lsp))
+    (add-hook 'js-mode-hook #'lsp)
+    :config
+    (add-hook 'js-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "build"))))
 
   (use-package js2-mode
     :init
@@ -2944,9 +2933,6 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
   (use-package kotlin-mode
     :if (executable-find "kotlin"))
 
-  (use-package flycheck-kotlin
-    :after (kotlin-mode))
-
   (use-package gradle-mode
     :after (kotlin-mode))
 #+END_SRC
@@ -2965,15 +2951,7 @@ Type `M-x gimp-help' for help.
 #+END_SRC
 *** Java
 #+BEGIN_SRC emacs-lisp
-  (use-package meghanada
-    :config
-    (add-hook 'java-mode-hook
-              (lambda ()
-                ;; meghanada-mode on
-                (meghanada-mode t)
-                (setq c-basic-offset 2)
-                ;; use code format
-                (add-hook 'before-save-hook 'meghanada-code-beautify-before-save))))
+
 #+END_SRC
 *** VueJS
 #+BEGIN_SRC emacs-lisp
@@ -2982,23 +2960,6 @@ Type `M-x gimp-help' for help.
     (setq mmm-submode-decoration-level 2)
     (with-eval-after-load 'lsp-clients
       (add-hook 'vue-mode-hook #'lsp)))
-#+END_SRC
-*** C#
-#+BEGIN_SRC emacs-lisp
-  (use-package omnisharp
-    :bind ((("C-c r r" . omnisharp-run-code-action-refactoring)
-            ("C-c C-c" . recompile)))
-    :init
-    (defun shackra-csharp-config ()
-      (setq indent-tabs-mode nil)
-      (setq c-syntactic-indentation t)
-      (c-set-style "ellemtel")
-      (setq c-basic-offset 4)
-      (setq tab-width 4))
-    :config
-    (add-hook 'csharp-mode-hook 'omnisharp-mode)
-    (add-hook 'csharp-mode-hook #'shackra-csharp-config)
-    (add-hook 'omnisharp-mode-hook (lambda () (add-to-list (make-local-variable 'company-backends) 'company-omnisharp))))
 #+END_SRC
 *** C y C++
 Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/][TIP: How to use a stable and fast environment to develop in C++]].
@@ -3202,23 +3163,6 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
     ;; Mandamos a revisar la ortografía del párrafo en que estamos
     (flyspell-region (line-beginning-position) (line-end-position)))
 #+END_SRC
-*** =flycheck-mode=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:56]
-- Refiled on [2015-11-12 jue 16:51]
-:END:
-Revisión de errores en el código fuente, al vuelo.
-#+BEGIN_SRC emacs-lisp
-  (use-package flycheck-package :after (flycheck))
-  (use-package flycheck
-    :diminish flycheck-mode
-    :init
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-    (setf flycheck-indication-mode 'left-fringe)
-    (setf flycheck-display-errors-delay 5.0)
-    :config
-    (add-hook 'emacs-startup-hook #'global-flycheck-mode))
-#+END_SRC
 *** Corrección gramatical
 Corrección gramatical en varios idiomas con =languagetool=.
 
@@ -3350,7 +3294,9 @@ Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configur
                  ("C-e" . mwim-end)
                  ("<end>" . mwim-end))))
 #+end_src
-*** paredit
+*** CANCELADO paredit                                           :CANCELADO:
+- State "CANCELADO"  from              [2019-09-21 sáb 15:30] \\
+  reemplazado por Lispy
 Un modo menor para la edición de paréntesis. Para aprender qué hace este modo menor y sus posibilidades, ver [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]].
 #+BEGIN_SRC emacs-lisp
   (use-package paredit
@@ -3363,6 +3309,20 @@ Un modo menor para la edición de paréntesis. Para aprender qué hace este modo
     (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
     (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
 #+END_SRC
+*** Lispy
+Un modo menor para la edición de parentesis. Se usa [[https://github.com/itsjeyd/lispy-mnemonic][lispy-mnemonic]] porque no se nada de edición modal estilo Vim
+#+begin_src emacs-lisp
+  (use-package lispy)
+
+  (use-package lispy-mnemonic
+    :init
+    (add-hook 'emacs-lisp-mode-hook 'lispy-mnemonic-mode)
+    (add-hook 'lisp-mode-hook 'lispy-mnemonic-mode)
+    (add-hook 'lisp-interaction-mode-hook 'lispy-mnemonic-mode)
+    (add-hook 'eval-expression-minibuffer-setup-hook 'lispy-mnemonic-mode)
+    (add-hook 'ielm-mode-hook 'lispy-mnemonic-mode)
+    (add-hook 'scheme-mode-hook 'lispy-mnemonic-mode))
+#+end_src
 *** Move-text
 Mover texto a voluntad
 #+BEGIN_SRC emacs-lisp
@@ -3463,7 +3423,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 
   (defun shackra-flycheck-errors ()
     "Retorna una cadena con errores y warnings de Flycheck"
-    (if flycheck-current-errors
+    (if (and (boundp 'flycheck-current-errors) flycheck-current-errors)
         (let* ((count (flycheck-count-errors flycheck-current-errors))
                (warns (let-alist count
                         (or .warning 0)))
@@ -3526,18 +3486,19 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 
   (defun shackra-flycheck-status ()
     "Estado de Flycheck"
-    (let* ((text (pcase flycheck-last-status-change
-                   (`finished (shackra-flycheck-errors))
-                   (`running     (propertize "En ejecución" 'face `(:foreground "#040687")))
-                   (`no-checker  (propertize "No existe revisor" 'face `(:foreground "black")))
-                   (`not-checked (propertize "Sin revisar" 'face `(:foreground "black")))
-                   (`errored     (propertize "Error con Flycheck" 'face `(:foreground "#870448")))
-                   (`interrupted (propertize "Interrumpido" 'face `(:foreground "#870448")))
-                   (`suspicious  (shackra-faicon-icon "question" "tomato")))))
-      (propertize (concat (propertize "!Flyc" 'face 'flycheck-error-list-error) (propertize "{" 'face 'flycheck-error-list-error) text (propertize "}" 'face 'flycheck-error-list-error))
-                  'help-echo "Reporte de Flycheck para errores de alta y baja prioridad"
-                  'local-map (make-mode-line-mouse-map
-                              'mouse-1 (lambda () (interactive) (flycheck-list-errors))))))
+    (when (fboundp 'flycheck-last-status-change)
+      (let* ((text (pcase flycheck-last-status-change
+                     (`finished (shackra-flycheck-errors))
+                     (`running     (propertize "En ejecución" 'face `(:foreground "#040687")))
+                     (`no-checker  (propertize "No existe revisor" 'face `(:foreground "black")))
+                     (`not-checked (propertize "Sin revisar" 'face `(:foreground "black")))
+                     (`errored     (propertize "Error con Flycheck" 'face `(:foreground "#870448")))
+                     (`interrupted (propertize "Interrumpido" 'face `(:foreground "#870448")))
+                     (`suspicious  (shackra-faicon-icon "question" "tomato")))))
+        (propertize (concat (propertize "!Flyc" 'face 'flycheck-error-list-error) (propertize "{" 'face 'flycheck-error-list-error) text (propertize "}" 'face 'flycheck-error-list-error))
+                    'help-echo "Reporte de Flycheck para errores de alta y baja prioridad"
+                    'local-map (make-mode-line-mouse-map
+                                'mouse-1 (lambda () (interactive) (flycheck-list-errors)))))))
 
   (defun shackra-virtualenv-name ()
     (when (boundp 'venv-current-name)
