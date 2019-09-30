@@ -2748,6 +2748,10 @@ go build golang.org/x/tools/cmd/guru
   ;; cuando se hace grep, omite los archivos source map de Javascript
   (add-to-list 'grep-find-ignored-files "*.map.*.js")
 
+  ;; desactiva la identacion eléctrica
+  (dolist (mode shackra/js-modes)
+    (add-hook mode (lambda () (electric-indent-local-mode -1))))
+
   (with-eval-after-load 'flycheck
     (dolist (mode shackra/js-modes)
       (add-hook mode #'shackra/set-checker-javascript-checkers)))
