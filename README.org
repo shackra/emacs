@@ -2812,6 +2812,7 @@ go build golang.org/x/tools/cmd/guru
     :straight nil
     :init
     (setf js-indent-level shackra-webdev-indent)
+    (setf js-switch-indent-offset shackra-webdev-indent)
     (setf js-jsx-indent-level shackra-webdev-indent)
     (add-hook 'js-mode-hook #'lsp)
     :config
