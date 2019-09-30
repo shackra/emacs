@@ -2752,7 +2752,8 @@ go build golang.org/x/tools/cmd/guru
   (dolist (mode shackra/js-modes)
     (add-hook mode (lambda ()
                      (electric-indent-local-mode -1)
-                     (local-set-key (kbd "C-j") #'newline-and-indent))))
+                     (local-set-key (kbd "C-j") #'newline-and-indent)
+                     (setq-local indent-line-function (remove indent-line-function 'js-indent-line)))))
 
   (with-eval-after-load 'flycheck
     (dolist (mode shackra/js-modes)
