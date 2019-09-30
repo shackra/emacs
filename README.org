@@ -2756,12 +2756,13 @@ go build golang.org/x/tools/cmd/guru
     (dolist (mode shackra/js-modes)
       (add-hook mode #'shackra/set-checker-javascript-checkers)))
 
-  (use-package flymake-eslint
+  (use-package flymake-eslint-easy
+    :straight (flymake-eslint-easy :type git :host gitlab :repo "shackra/flymake-eslint-easy")
     :config
     (dolist (mode shackra/js-modes)
       (add-hook mode (lambda ()
-                       (setq-local flymake-eslint-executable-name (shackra/js-search-node-modules-bin "eslint"))
-                       (flymake-eslint-enable)))))
+                       (setq-local flymake-eslint-easy-executable (shackra/js-search-node-modules-bin "eslint"))
+                       (flymake-eslint-easy-load)))))
 
   (use-package prettier-js
     :init
