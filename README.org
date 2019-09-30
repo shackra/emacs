@@ -2750,7 +2750,9 @@ go build golang.org/x/tools/cmd/guru
 
   ;; desactiva la identacion eléctrica
   (dolist (mode shackra/js-modes)
-    (add-hook mode (lambda () (electric-indent-local-mode -1))))
+    (add-hook mode (lambda ()
+                     (electric-indent-local-mode -1)
+                     (local-set-key (kbd "C-j" #'newline-and-indent)))))
 
   (with-eval-after-load 'flycheck
     (dolist (mode shackra/js-modes)
