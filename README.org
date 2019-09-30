@@ -2701,55 +2701,6 @@ go build golang.org/x/tools/cmd/guru
   (use-package flymake-json
     :hook (json-mode . flymake-json-load))
 #+END_SRC
-**** Dependencias externas
-Instalar estos componentes en el sistema operativo
-#+BEGIN_SRC sh :results silent
-  npm install -g babel-cli babel-preset-react eslint babel-eslint eslint-plugin-react typescript typescript-language-server --save-dev
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
-  (defun shackra-js-local-install-deps ()
-    "Instala localmente dependencias de JavaScript"
-    (interactive)
-    (shell-command "yarn add eslint babel-eslint typescript eslint-plugin-react jsonlint --dev"))
-#+END_SRC
-***** configuracion eslint
-#+BEGIN_SRC json :tangle ~/.eslintrc
-  {
-    "parser": "babel-eslint",
-    "plugins": [ "react" ],
-    "env": {
-      "browser": true,
-      "es6": true,
-      "node": true
-    },
-    "ecmaFeatures": {
-      "arrowFunctions": true,
-      "blockBindings": true,
-      "classes": true,
-      "defaultParams": true,
-      "destructuring": true,
-      "forOf": true,
-      "generators": true,
-      "modules": true,
-      "spread": true,
-      "templateStrings": true,
-      "jsx": true
-    },
-    "rules": {
-      "consistent-return": [0],
-      "key-spacing": [0],
-      "quotes": [0],
-      "new-cap": [0],
-      "no-multi-spaces": [0],
-      "no-shadow": [0],
-      "no-unused-vars": [1],
-      "no-use-before-define": [2, "nofunc"],
-      "react/jsx-no-undef": 1,
-      "react/jsx-uses-react": 1,
-      "react/jsx-uses-vars": 1
-    }
-  }
-#+END_SRC
 **** Paquetes para editar JavaScript
 #+BEGIN_SRC emacs-lisp
   (setq-default js-indent-level shackra-webdev-indent)
@@ -2767,27 +2718,35 @@ Instalar estos componentes en el sistema operativo
   ;; cambia el script de eslint al que venga instalado en node_modules
   (defun shackra/set-checker-javascript-checkers ()
     "establece el script de varios revisores de Flycheck para Javascript con los disponibles localmente"
+    (pcase-dolist (`(,checker . ,module) shackra/flycheck-javascript-checkers-alist)
+      (let ((bin (shackra/js-search-node-modules-bin module))
+            (newvals))
+        (when (and bin (symbolp 'executable-var))
+          ;; establece por buffer el valor de la variable en `executable-var'
+          (add-to-list 'newvals (set (make-local-variable executable-var) bin) t))
+        newvals)))
+
+  (defun shackra/js-search-node-modules-bin (module)
+    "busca por el ejecutable de un modulo dentro de node_modules.
+
+  Nos valemos de la información en package.json para descubrir cual es el binario del sub module MODULE"
     (let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
            (node-modules (expand-file-name "node_modules" root))
-           (newvals ()))
-      ;; establece el script para cada uno de los revisores en `shackra/flycheck-javascript-checkers-alist'
-      (pcase-dolist (`(,checker . ,module) shackra/flycheck-javascript-checkers-alist)
-        (let ((sub-node-module (expand-file-name module node-modules))
-              (executable-var (flycheck-checker-executable-variable checker))
-              ;; `script' nombra el archivo ejecutable, normalmente el archivo
-              ;; tiene el mismo nombre que la carpeta que lo contiene, excepto
-              ;; para el caso de flow
-              (script (if (string= module "flow-bin") "cli.js" (concat "bin/" module ".js"))))
-          (when (and (file-directory-p sub-node-module) (symbolp executable-var))
-            ;; establece por buffer el valor de la variable en `executable-var'
-            (add-to-list 'newvals (set (make-local-variable executable-var)
-                                       (expand-file-name script sub-node-module)) t))))
-      newvals))
+           (sub-node-module (expand-file-name module node-modules))
+           (package-json (expand-file-name "package.json" sub-node-module))
+           (parsed-object nil)
+           (bin-path-list nil)
+           (bin nil))
+      (when (file-exists-p package-json)
+        (with-temp-buffer
+          (insert-file package-json)
+          (setf parsed-object (json-parse-buffer))
+          (setf bin-path-list (hash-table-values (gethash "bin" parsed-object)))
+          (setf bin (expand-file-name (car bin-path-list) sub-node-module))))
+      bin))
 
-  (dolist (mode shackra/js-modes)
-    (add-hook mode (lambda ()
-                     ;; cuando se hace grep, omite los archivos source map de Javascript
-                     (add-to-list (make-local-variable 'grep-find-ignored-files) "*.map.*.js"))))
+  ;; cuando se hace grep, omite los archivos source map de Javascript
+  (add-to-list 'grep-find-ignored-files "*.map.*.js")
 
   (with-eval-after-load 'flycheck
     (dolist (mode shackra/js-modes)
@@ -2796,7 +2755,9 @@ Instalar estos componentes en el sistema operativo
   (use-package flymake-eslint
     :config
     (dolist (mode shackra/js-modes)
-      (add-hook mode #'flymake-eslint-enable)))
+      (add-hook mode (lambda ()
+                       (setq-local flymake-eslint-executable-name (shackra/js-search-node-modules-bin "eslint"))
+                       (flymake-eslint-enable)))))
 
   (use-package prettier-js
     :init
@@ -2832,14 +2793,10 @@ Instalar estos componentes en el sistema operativo
     :init
     (defun shackra/set-lsp-flow-server ()
       "usa el ejecutable de flow para LSP local, si estuviera disponible"
-      (let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
-             (flow-bin (and root (expand-file-name "node_modules/flow-bin/cli.js" root))))
-        (when (and flow-bin (file-executable-p flow-bin))
-          (setq-local lsp-clients-flow-server flow-bin))
-        (message (format "usando flow-bin desde %s" lsp-clients-flow-server))))
+      (setq-local lsp-clients-flow-server (shackra/js-search-node-modules-bin "flow-bin")))
 
-    (add-hook 'js2-mode-hook 'flow-minor-enable-automatically)
-    (add-hook 'js-mode-hook 'flow-minor-enable-automatically)
+    (add-hook 'js2-mode-hook 'flow-minor-enable-automatically -100)
+    (add-hook 'js-mode-hook 'flow-minor-enable-automatically -100)
     (add-hook 'flow-minor-mode-hook #'shackra/set-lsp-flow-server))
 
   (use-package flow-js2-mode
