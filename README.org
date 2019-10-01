@@ -1412,8 +1412,6 @@ Implementación para Emacs del Language Server Protocol.
     :after (lsp)
     :init
     (setf lsp-ui-sideline-enable nil)
-    (when (require 'xwidget nil 'noerror)
-      (setf lsp-ui-doc-use-webkit t))
     (setf lsp-ui-doc-enable t)
     (setf lsp-ui-doc-position 'top)
     (setf lsp-ui-doc-header t)
@@ -2752,8 +2750,8 @@ go build golang.org/x/tools/cmd/guru
   (dolist (mode shackra/js-modes)
     (add-hook mode (lambda ()
                      (electric-indent-local-mode -1)
-                     (local-set-key (kbd "C-j") #'newline-and-indent)
-                     (setq-local indent-line-function (remove indent-line-function 'js-indent-line)))))
+                     (local-set-key (kbd "C-j") #'newline-and-indent))
+              100))
 
   (with-eval-after-load 'flycheck
     (dolist (mode shackra/js-modes)
@@ -2797,28 +2795,15 @@ go build golang.org/x/tools/cmd/guru
     :init
     (add-hook 'js2-mode-hook (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
 
-  (use-package flow-minor-mode
-    :init
-    (defun shackra/set-lsp-flow-server ()
-      "usa el ejecutable de flow para LSP local, si estuviera disponible"
-      (setq-local lsp-clients-flow-server (shackra/js-search-node-modules-bin "flow-bin")))
-
-    (add-hook 'js2-mode-hook 'flow-minor-enable-automatically -100)
-    (add-hook 'js-mode-hook 'flow-minor-enable-automatically -100)
-    (add-hook 'flow-minor-mode-hook #'shackra/set-lsp-flow-server))
-
-  (use-package flow-js2-mode
-    :after (flow-minor-mode)
-    :config
-    (add-hook 'flow-minor-mode-hook 'flow-js2-mode))
-
   (use-package js
     :straight nil
     :init
     (setf js-indent-level shackra-webdev-indent)
     (setf js-switch-indent-offset shackra-webdev-indent)
     (setf js-jsx-indent-level shackra-webdev-indent)
-    (add-hook 'js-mode-hook #'lsp)
+    (add-hook 'js-mode-hook (lambda ()
+                              (setq-local lsp-clients-flow-server (shackra/js-search-node-modules-bin "flow-bin"))
+                              (lsp)))
     :config
     (add-hook 'js-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "build"))))
 
