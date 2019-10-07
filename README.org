@@ -1989,7 +1989,10 @@ Teclas
                 ("C-c c" . org-capture)
                 :map org-mode-map
                 ("C-<F12>" . shackra-time-at-point-to-hours))
+    :hook (org-src-mode . shackra/disable-flymake-in-org-src-block)
     :init
+    (defun shackra/disable-flymake-in-org-src-block ()
+      (remove-hook 'flymake-diagnostic-functions 'package-lint-flymake))
     (setf org-directory (expand-file-name "org" (getenv "HOME")))
     (setf org-default-notes-file (expand-file-name  "diario.org" org-directory))
     (setf org-agenda-files `(,(expand-file-name "cosas por hacer.org" org-directory)))
