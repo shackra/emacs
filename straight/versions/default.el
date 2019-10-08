@@ -177,7 +177,7 @@
  ("s.el" . "03410e6a7a2b11e47e1fea3b7d9899c7df26435e")
  ("scss-mode" . "cf58dbec5394280503eb5502938f3b5445d1b53d")
  ("secretaria" . "40f2df829c8b858922559cd1dfbf13a9f78db3e8")
- ("secreto.el" . "ad3c521607a928a63d7b26e02fe5e5db83222f32")
+ ("secreto" . "550443de5be784fa0d736483552e2c1f09a0a87f")
  ("seq" . "095fb15a3baa082079799dd36b6caccdb062cb90")
  ("shackle" . "842a90b3ca04d9d886543f14ca5f04e8bd2a3d06")
  ("shut-up" . "081d6b01e3ba0e60326558e545c4019219e046ce")
