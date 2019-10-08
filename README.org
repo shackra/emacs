@@ -708,7 +708,7 @@ Permite a Emacs manejar archivos enormes. Automáticamente se activa para archiv
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package secreto
-    :straight (secreto :type git :host bitbucket :repo "shackra/secreto.el")
+    :straight (secreto :type git :host gitlab :repo "shackra/secreto")
     :config
     (load-secretos))
 #+END_SRC
