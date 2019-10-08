@@ -708,9 +708,8 @@ Permite a Emacs manejar archivos enormes. Automáticamente se activa para archiv
 Saca cualquier rastro de tus archivos y datos privados de tu configuración de Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package secreto
-    :straight (secreto :type git :host gitlab :repo "shackra/secreto")
-    :config
-    (load-secretos))
+    :hook (emacs-startup . secreto-load)
+    :straight (secreto :type git :host gitlab :repo "shackra/secreto"))
 #+END_SRC
 *** secretaria
 Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
