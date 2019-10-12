@@ -876,18 +876,13 @@ Manejador de archivos de serie para Emacs.
 
 Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-default-file-manager-1-introduction/][Dired as Default File Manager - Introduction]].
 #+BEGIN_SRC emacs-lisp
-  (use-package ranger
-    :init
-    (setf ranger-cleanup-eagerly t))
   ;; -*- lexical-binding: t -*-
   (use-package dired
     :straight nil
     :bind (:map dired-mode-map
-                ("[" . multi-term)
                 ("," . dired-omit-mode)
                 ("e" . ora-ediff-files)
-                ("c" . dired-do-compress-to) ;; Necesita Emacs 25.x
-                )
+                ("c" . dired-do-compress-to))
     :init
     (setq-default dired-omit-mode t)
     (setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.")
@@ -932,6 +927,7 @@ Algunas mejoras fueron sacadas de [[https://truongtx.me/2013/04/24/dired-as-defa
         (after dired-after-updating-hook first () activate)
       "Sort dired listings with directories first before adding marks."
       (dired-sort-group-dirs)))
+
   (use-package dired+
     :straight (dired+ :type git :host github :repo "emacsmirror/dired-plus")
     :config
@@ -1108,60 +1104,55 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
                       ("v" avy-goto-char "Ir a la palabra (2)..."))
     :bind (:map global-map ("C-z" . hydra-avy/body)))
 #+END_SRC
-*** CANCELADO =multi-term=                                      :CANCELADO:
-- State "CANCELADO"  from              [2019-07-17 mié 12:56] \\
-  ya no esta activamente mantenido
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:51]
-:END:
-Ofrece un excelente emulador de terminal *dentro* de Emacs. Asociado a @@html:<kbd><f1></kbd>@@
-#+BEGIN_SRC emacs-lisp
-  (use-package multi-term
-    :disabled
-    :bind ([f1] . multi-term)
-    :init
-    (defun shackra-maybe-disable-yasnippet ()
-      "Desactiva yasnippet a pedido"
-      (if (fboundp 'yas-minor-mode)
-          (yas-minor-mode -1)))
-    (defun shackra-term-line-or-char-mode ()
-      "Cambia entre `term-line-mode' y `term-char-mode'"
-      (interactive)
-      (when (derived-mode-p 'term-mode)
-        (if (term-in-char-mode)
-            (term-line-mode)
-          (term-char-mode))))
+*** comint
+modo mayor para interactuar con interpretes inferiores
+#+begin_src emacs-lisp
+  ;; sacado de
+  ;; https://emacs.stackexchange.com/questions/2883/any-way-to-make-prompts-and-previous-output-uneditable-in-shell-term-mode#comment50064_2897
+  (use-package comint
+    :straight (comint :type built-in)
+    :demand t
     :config
-    (setf multi-term-buffer-name "term-"
-          multi-term-program "/usr/bin/zsh"
-          multi-term-program-switches "--login")
-    (add-to-list 'term-bind-key-alist '("C-c C-c"   . term-interrupt-subjob))
-    (add-to-list 'term-bind-key-alist '("C-p"       . previous-line))
-    (add-to-list 'term-bind-key-alist '("C-n"       . next-line))
-    (add-to-list 'term-bind-key-alist '("M-f"       . term-send-forward-word))
-    (add-to-list 'term-bind-key-alist '("M-b"       . term-send-backward-word))
-    (add-to-list 'term-bind-key-alist '("C-,"       . shackra-term-line-or-char-mode))
-    (add-to-list 'term-bind-key-alist '("C-DEL"     . term-send-backward-kill-word))
-    (add-to-list 'term-bind-key-alist '("M-d"       . term-send-forward-kill-word))
-    (add-to-list 'term-bind-key-alist '("<C-left>"  . term-send-backward-word))
-    (add-to-list 'term-bind-key-alist '("<C-right>" . term-send-forward-word))
-    (add-to-list 'term-bind-key-alist '("C-r"       . term-send-reverse-search-history))
-    (add-to-list 'term-bind-key-alist '("M-p"       . term-send-raw-meta))
-    (add-to-list 'term-bind-key-alist '("M-y"       . term-send-raw-meta))
-    (add-to-list 'term-bind-key-alist '("C-y"       . term-paste))
-
-    (add-hook 'term-mode-hook #'shackra-maybe-disable-yasnippet)
-    (add-hook 'term-mode-hook (lambda ()
-                                (when (fboundp 'display-line-numbers-mode)
-                                  (display-line-numbers-mode -1))))
-    (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on))
-#+END_SRC
+    ;; Make processes’ outputs read-only. The prompt is easy.
+    (setq comint-prompt-read-only t)
+    ;; Outputs. Now you cannot delete them, but they still can be interleaved with some other text.
+    (add-hook 'comint-preoutput-filter-functions
+              (lambda (text)
+                (propertize text 'read-only t)))
+    ;; So we need tackle rear-nonsticky:
+    (defadvice comint-output-filter (after michalrus/comint-output-read-only activate)
+      (let* ((start-marker comint-last-output-start)
+             (proc (get-buffer-process (current-buffer)))
+             (end-marker (if proc (process-mark proc) (point-max-marker))))
+        (when (< start-marker end-marker) ;; Account for some of the IELM’s wilderness.
+          (let ((inhibit-read-only t))
+            ;; Disallow interleaving.
+            (remove-text-properties start-marker (1- end-marker) '(rear-nonsticky))
+            ;; Make sure that at `max-point' you can always append.
+            ;; Important for bad REPLs that keep writing after giving us prompt (e.g. sbt).
+            (add-text-properties (1- end-marker) end-marker '(rear-nonsticky t))
+            ;; Protect fence (newline of input, just before output).
+            (when (eq (char-before start-marker) ?\n)
+              (remove-text-properties (1- start-marker) start-marker '(rear-nonsticky))
+              (add-text-properties    (1- start-marker) start-marker '(read-only t))))))))
+#+end_src
 *** aweshell
 Reemplaza multi-term
 #+begin_src emacs-lisp
   (use-package aweshell
+    :after (eshell)
     :straight (aweshell :type git :host github :repo "manateelazycat/aweshell")
-    :bind ([f1] . aweshell-new))
+    :bind (:map eshell-mode-map :prefix-map aweshell-dedicated-prefix-map :prefix "C-c b"
+                ("b" . aweshell-switch-buffer)
+                ("x" . aweshell-dedicated-close))
+    :bind (:map eshell-mode-map
+                ("C-c n"   . aweshell-next)
+                ("C-c p"   . aweshell-prev)
+                ("C-c c"   . aweshell-clear-buffer)
+                ("C-c s"   . aweshell-sudo-toggle))
+    :bind (:map dired-mode-map
+                ("[" . aweshell-dedicated-open))
+    :bind ("C-c t" . aweshell-dedicated-open))
 #+end_src
 *** =git=
 #+BEGIN_SRC emacs-lisp
@@ -3316,6 +3307,11 @@ Mover texto a voluntad
                 ("C-c C-u" . string-inflection-all-cycle)))
 #+END_SRC
 ** Otros
+*** presentation
+Escala el texto en pantalla para presentaciones
+#+begin_src emacs-lisp
+  (use-package presentation)
+#+end_src
 *** dashboard
 Panel de control para Emacs. Aquí se muestra un trigrama IHS que significa /Iesu Hominis Salvator/, que a su vez significa "Jesus, de la raza humana, el salvador".
 #+begin_src emacs-lisp
