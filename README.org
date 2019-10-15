@@ -1008,19 +1008,32 @@ Muestra el numero de lineas al margen del buffer.
 :END:
 Un mejor motor de autocompletado comparado con [[https://github.com/auto-complete/auto-complete][auto-complete/auto-complete]].
 #+BEGIN_SRC emacs-lisp
+  (defun company-mode-backend-with-yas (backend)
+    "Update BACKEND with YaSnippet."
+    (if (or (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  (defun company-mode-update-backends-with-yasnippet ()
+    "Update the backends of company and turn on YaSnippet."
+    (yas-minor-mode-on)
+    (setf company-backends (mapcar #'company-mode-backend-with-yas company-backends)))
+
   (use-package company
+    :hook (company-mode . company-mode-update-backends-with-yasnippet)
     :diminish company-mode
     :init
     (setf company-backends '((company-files
                               company-keywords
-                              company-capf
-                              company-yasnippet)
+                              company-capf)
                              (company-abbrev company-dabbrev)))
     (setf company-idle-delay 0.5)
     (setf company-tooltip-limit 10)
     (setf company-minimum-prefix-length 2)
     (setq company-dabbrev-downcase 0)
     (setf company-auto-complete nil)
+    (setf company-global-modes '(not eshell-mode))
     (add-hook 'after-init-hook #'global-company-mode))
 #+END_SRC
 =company-posframe= permite a company usar child-frame como menu de candidatos
@@ -3854,21 +3867,6 @@ Recuerda al usuario que hay una manera más eficiente de hacer algo
                                        (shackra-super-forward-word  . (forward-word))
                                        (shackra-super-backward-word . (backward-word))))
     (add-hook 'after-init-hook #'schrute-mode))
-#+END_SRC
-*** Yasnippet en todos los backends de Company :especial:
-Company-mode siempre escogerá *un* backend a la vez, la única forma de hacer que muestre candidatos de auto-completado y candidatos yasnippet es agrupando los backends
-#+BEGIN_SRC emacs-lisp
-  ;; http://emacs.stackexchange.com/questions/10431/get-company-to-show-suggestions-for-yasnippet-names
-  ;; Add yasnippet support for all company backends
-  ;; https://github.com/syl20bnr/spacemacs/pull/179
-
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (and (listp backend) (member 'company-yasnippet backend)))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-
-  (add-hook 'after-init-hook (lambda () (setf company-backends (mapcar #'company-mode/backend-with-yas company-backends))) t)
 #+END_SRC
 *** =webpaste=
 Pega regiones o buffers completos en servicios como pastebin
