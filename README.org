@@ -719,16 +719,6 @@ Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
     (setf secretaria-clocked-task-save-file "~/.secretaria-tarea")
     (add-hook 'after-init-hook #'secretaria-unknown-time-always-remind-me))
 #+END_SRC
-*** =font-man=
-Escala la altura de la tipografía en todos los buffers de manera temporal
-#+BEGIN_SRC emacs-lisp
-  (use-package switch-buffer-functions
-    :commands (switch-buffer-functions-run))
-  (use-package font-man
-    :straight (font-man :type git :host bitbucket :repo "shackra/font-man")
-    :commands (font-man-mode)
-    :after (switch-buffer-functions))
-#+END_SRC
 *** =swiper= & =ivy=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:46]
