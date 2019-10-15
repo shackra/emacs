@@ -3325,10 +3325,8 @@ Panel de control para Emacs. Aquí se muestra un trigrama IHS que significa /Ies
     (setq dashboard-banner-logo-title (propertize "Iesu Hominis Salvator" 'help-echo "Jesús salvador de los hombres"))
     (setq dashboard-startup-banner (expand-file-name "dashboard/JHS.png" user-emacs-directory))
     (setq dashboard-center-content t)
-    (setq dashboard-items '((agenda . 5)
-                            (recents . 4)
-                            (bookmarks . 4)
-                            (projects . 5)))
+    (setq dashboard-items '((agenda    . 5)
+                            (bookmarks . 5)))
     :config
     (dashboard-setup-startup-hook))
 #+end_src
