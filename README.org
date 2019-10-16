@@ -1269,14 +1269,12 @@ Revierte el contenido de un buffer de manera automática cuando el contenido de 
       (yas-reload-all)
       (remove-hook 'after-init-hook 'shackra-yas-reload))
     :config
-    (setq yas-snippet-dirs (append yas-snippet-dirs (list (expand-file-name "plantillas" user-emacs-directory))))
-    (add-hook 'prog-mode-hook #'yas-minor-mode-on)
+    (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" user-emacs-directory) nil)
     (add-hook 'after-init-hook #'shackra-yas-reload))
 
   (use-package auto-yasnippet
-    :config
-    (global-set-key (kbd "s-j") #'aya-create)
-    (global-set-key (kbd "s-k") #'aya-expand))
+    :bind (("s-k" . aya-create)
+           ("s-j" . aya-expand)))
 #+END_SRC
 *** imenu-anywhere
 Crea menús a partir de secciones de documentos. Asociado a @@html:<kbd>C-c i</kbd>@@
