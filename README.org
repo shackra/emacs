@@ -1023,7 +1023,6 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     (setf company-minimum-prefix-length 2)
     (setq company-dabbrev-downcase 0)
     (setf company-auto-complete nil)
-    (setf company-global-modes '(not eshell-mode))
     (add-hook 'after-init-hook #'global-company-mode))
 #+END_SRC
 =company-posframe= permite a company usar child-frame como menu de candidatos
@@ -1145,6 +1144,7 @@ Reemplaza multi-term
   (use-package aweshell
     :after (eshell)
     :straight (aweshell :type git :host github :repo "manateelazycat/aweshell")
+    :hook (eshell-mode . (lambda (company-mode -1)))
     :bind (:map eshell-mode-map :prefix-map aweshell-dedicated-prefix-map :prefix "C-c b"
                 ("b" . aweshell-switch-buffer)
                 ("x" . aweshell-dedicated-close))
