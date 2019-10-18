@@ -3311,7 +3311,10 @@ Mover texto a voluntad
 *** presentation
 Escala el texto en pantalla para presentaciones
 #+begin_src emacs-lisp
-  (use-package presentation)
+  (use-package presentation
+    :bind (([f8] . presentation-mode))
+    :config
+    (defalias 'pm presentation-mode))
 #+end_src
 *** dashboard
 Panel de control para Emacs. Aquí se muestra un trigrama IHS que significa /Iesu Hominis Salvator/, que a su vez significa "Jesus, de la raza humana, el salvador".
