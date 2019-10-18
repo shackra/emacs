@@ -2861,14 +2861,6 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
     (add-hook 'slime-repl-mode-hook #'enable-paredit-mode)
     (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit))
 #+END_SRC
-*** SCSS
-#+BEGIN_SRC emacs-lisp
-  (use-package scss-mode
-    :init (setf scss-compile-at-save nil)
-    :config
-    (when (fboundp 'lsp-scss-enable)
-      (add-hook 'scss-mode-hook 'lsp-scss-enable)))
-#+END_SRC
 *** Gherkin
 #+BEGIN_SRC emacs-lisp
   (use-package feature-mode
