@@ -729,6 +729,11 @@ Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
     (setf secretaria-clocked-task-save-file "~/.secretaria-tarea")
     (add-hook 'after-init-hook #'secretaria-unknown-time-always-remind-me))
 #+END_SRC
+*** Flymake
+#+begin_src emacs-lisp
+  (use-package flymake
+    :straight (flymake :type built-in))
+#+end_src
 *** =swiper= & =ivy=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:46]
