@@ -613,11 +613,21 @@ Una funcion que usaba antes de migrar a straight.el, esta la tenia en mi archivo
 #+begin_src emacs-lisp
   (setf org-ditaa-jar-path "/usr/share/java/ditaa/ditaa-0.11.jar")
 #+end_src
-** Desactivar lsp-ui de Flycheck
-algunos modos mayores puede que deseen desactivar lsp-ui
+** Ayudante para modificar =eglot-server-programs=
 #+begin_src emacs-lisp
-  (defun shackra/flycheck-disable-lsp-ui-here ()
-    (add-to-list (make-local-variable 'flycheck-disabled-checkers) 'lsp-ui))
+  (defun shackra-modify-eglot-apply (major-mode symbol &rest params)
+    "Retorna un cons sea SYMBOL o una combinacion de `(car symbol)' y PARAMS si SYMBOL coincide con MAJOR-MODE."
+    (let* ((head (car symbol)))
+      (if (or (and (listp head) (memq major-mode head))
+              (eq head major-mode))
+          (progn (dolist (param params)
+                   (setf head (cons head param)))
+                 head)
+        symbol)))
+
+  (defun shackra-modify-eglot (major-mode &rest params)
+    "Modifica `eglot-server-programs' con una nueva lista de parametros dados por PARAMS para el modo mayor MAJOR-MODE."
+    (mapcar (lambda (element) (funcall #'shackra-modify-eglot-apply major-mode element params)) eglot-server-programs))
 #+end_src
 * Macros
 #+BEGIN_SRC emacs-lisp
@@ -1385,35 +1395,7 @@ Teclas:
 - State "CANCELADO"  from              [2018-12-31 lun 21:20]
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
-  (use-package lsp-clients
-    :straight lsp-mode
-    :config
-    (add-hook 'lsp-after-open-hook 'lsp-enable-imenu)
-    :init
-    (setf lsp-eldoc-render-all nil)
-    (setq lsp-inhibit-message t)
-    (setq lsp-message-project-root-warning t)
-    (setf lsp-prefer-flymake t)
-    ;; arreglo rápido; hay que correr `yarn global add
-    ;; typescript-language-server'
-    ;; https://github.com/emacs-lsp/lsp-mode/issues/588
-    (setq lsp-clients-typescript-server "typescript-language-server"
-          lsp-clients-typescript-server-args '("--stdio")))
-
-  (use-package lsp-ui
-    :after (lsp)
-    :init
-    (setf lsp-ui-sideline-enable nil)
-    (setf lsp-ui-doc-enable t)
-    (setf lsp-ui-doc-position 'top)
-    (setf lsp-ui-doc-header t)
-    (setf lsp-ui-doc-include-signature t)
-    :config
-    (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
-    (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references)
-    (add-hook 'lsp-after-open-hook #'lsp-ui-mode))
-
-  (use-package company-lsp)
+  (use-package eglot)
 #+END_SRC
 *** Debug Adapter Protocol
 Sumario sacado de la pagina del proyecto en Github
@@ -2324,10 +2306,8 @@ Modo mayor para programar en Python
 
     (setf python-shell-interpreter "python")
     (add-hook 'python-mode-hook #'shackra-python-mode)
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'python-mode-hook #'lsp))
-    (with-eval-after-load 'dap-mode
-      (require 'dap-python))
+    (with-eval-after-load 'eglot
+      (add-hook 'python-mode-hook #'eglot-ensure))
     :config
     ;; re-mapea todas los atajos que hagan referencia a `python-indent-shift-*' con `shackra-python-indent-shift-*'
     (global-set-key [remap python-indent-shift-left] 'shackra-python-indent-shift-left)
@@ -2390,8 +2370,8 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
     :init
     (setq rust-format-on-save t)
     :config
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'rust-mode-hook #'lsp)))
+    (with-eval-after-load 'eglot
+      (add-hook 'rust-mode-hook #'eglot-ensure)))
 #+END_SRC
 *** emacs-traad
 Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
@@ -2496,8 +2476,6 @@ Un modo mayor para editar paginas web
     (setf web-mode-sql-indent-offset shackra-webdev-indent)
     (setf web-mode-markup-indent-offset shackra-webdev-indent)
     :config
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'web-mode-hook #'lsp))
     (add-hook 'after-save-hook #'shackra-webdev-refresh-page-on-save)
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
@@ -2519,8 +2497,8 @@ npm i -g vscode-css-languageserver-bin
   (use-package css-mode
     :init
     (setf css-indent-offset shackra-webdev-indent)
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'css-mode-hook #'lsp)))
+    (with-eval-after-load 'eglot
+      (add-hook 'css-mode-hook #'eglot-ensure)))
 
   (use-package flymake-css
     :hook (css-mode . flymake-css-load))
@@ -2549,8 +2527,8 @@ Y esta es la configuración.
 
   (use-package php-mode
     :config
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'php-mode-hook #'lsp)))
+    (with-eval-after-load 'eglot
+      (add-hook 'php-mode-hook #'eglot-ensure)))
 #+END_SRC
 *** golang
 Modo mayor para editar archivos Golang.
@@ -2605,9 +2583,8 @@ go build golang.org/x/tools/cmd/guru
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
-    (with-eval-after-load 'lsp-clients
-      (setf lsp-clients-go-server "go-langserver")
-      (add-hook 'go-mode-hook #'lsp))
+    (with-eval-after-load 'eglot
+      (add-hook 'go-mode-hook #'eglot-ensure))
     (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
 
   (use-package flymake-golangci
@@ -2775,9 +2752,9 @@ go build golang.org/x/tools/cmd/guru
   (use-package typescript-mode
     :init
     (setf typescript-indent-level shackra-webdev-indent)
-    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . (lambda () (typescript-mode) (rjsx-minor-mode))))
+    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
     :config
-    (add-hook 'typescript-mode-hook #'lsp))
+    (add-hook 'typescript-mode-hook #'eglot-ensure))
 
   (use-package js2-refactor
     :after (js2-mode)
@@ -2797,8 +2774,8 @@ go build golang.org/x/tools/cmd/guru
     (setf js-switch-indent-offset shackra-webdev-indent)
     (setf js-jsx-indent-level shackra-webdev-indent)
     (add-hook 'js-mode-hook (lambda ()
-                              (setq-local lsp-clients-flow-server (shackra/js-search-node-modules-bin "flow-bin"))
-                              (lsp)))
+                              (setq-local eglot-server-programs (shackra-modify-eglot 'js-mode (shackra/js-search-node-modules-bin "flow-bin") "lsp"))
+                              (eglot-ensure)))
     :config
     (add-hook 'js-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "build"))))
 
@@ -2816,7 +2793,7 @@ go build golang.org/x/tools/cmd/guru
     ;; algun cambio, esto debería mejorar el rendimiento para archivos grandes.
     (setf js2-dynamic-idle-timer-adjust 2)
     :config
-    (add-hook 'js2-mode-hook #'lsp))
+    (add-hook 'js2-mode-hook #'eglot-ensure))
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript
@@ -2839,19 +2816,19 @@ go build golang.org/x/tools/cmd/guru
           (beginning-of-line)
           (if (looking-at-p "^ +\/?> *$")
               (delete-char sgml-basic-offset))))
-      (with-eval-after-load 'lsp-clients
-        (add-to-list 'lsp-language-id-configuration '(rjsx-mode . "javascript"))
-        (add-hook 'rjsx-mode-hook #'lsp))))
+      (with-eval-after-load 'eglot
+        (add-to-list 'eglot-server-programs '(rjsx-mode . (shackra/js-search-node-modules-bin "javascript-typescript-stdio")))
+        (add-hook 'rjsx-mode-hook #'eglot-ensure))))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
   (use-package sgml-mode
     :init
     (setf sgml-basic-offset shackra-webdev-indent)
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'html-mode-hook #'lsp)))
+    (with-eval-after-load 'eglot
+      (add-hook 'html-mode-hook #'eglot-ensure)))
 #+END_SRC
-**** HTML con LSP-mode
+**** HTML con eglot
 ***** dependencias externas
 #+BEGIN_SRC sh :results silent
 npm i -g vscode-html-languageserver-bin
@@ -2895,7 +2872,8 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 *** kotlin
 #+BEGIN_SRC emacs-lisp
   (use-package kotlin-mode
-    :if (executable-find "kotlin"))
+    :if (executable-find "kotlin")
+    :hook (kotlin-mode . eglot-ensure))
 
   (use-package gradle-mode
     :after (kotlin-mode))
@@ -2925,8 +2903,8 @@ Type `M-x gimp-help' for help.
   (use-package vue-mode
     :init
     (setq mmm-submode-decoration-level 2)
-    (with-eval-after-load 'lsp-clients
-      (add-hook 'vue-mode-hook #'lsp)))
+    (with-eval-after-load 'eglot
+      (add-hook 'vue-mode-hook #'eglot-ensure)))
 #+END_SRC
 *** C y C++
 Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/][TIP: How to use a stable and fast environment to develop in C++]].
@@ -2947,9 +2925,9 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
   (add-hook 'c-mode-hook #'shackra/c-guess-c-style)
 
   ;; activa LSP en C y C++
-  (with-eval-after-load "lsp-mode"
+  (with-eval-after-load 'eglot
     (dolist (hook '(c-mode-hook c++-mode-hook))
-      (add-hook hook #'lsp)))
+      (add-hook hook #'eglot-ensure)))
 
   (use-package cmake-mode
     :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
