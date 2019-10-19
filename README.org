@@ -1113,13 +1113,14 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
 #+BEGIN_SRC emacs-lisp
   (use-package avy
     :demand t
-    :hydra (hydra-avy (:color blue :columns 2)
+    :hydra (hydra-avy (:color blue)
                       "avy jump"
-                      ("z" avy-goto-line "Ir a la linea...")
-                      ("x" avy-goto-word-1 "Ir a la palabra...")
-                      ("c" avy-goto-char-in-line "Ir a la letra en la linea actual...")
-                      ("v" avy-goto-char "Ir a la palabra (2)..."))
-    :bind (:map global-map ("C-z" . hydra-avy/body)))
+                      ("f" avy-goto-word-1 "Ir a la palabra...")
+                      ("d" avy-goto-line "Ir a la linea...")
+                      ("s" avy-goto-char-in-line "Ir a la letra en la linea actual...")
+                      ("a" avy-goto-char "Ir a la palabra (2)..."))
+    :bind (:map global-map ("s-f" . hydra-avy/body))
+    :config (avy-setup-default))
 #+END_SRC
 *** comint
 modo mayor para interactuar con interpretes inferiores
