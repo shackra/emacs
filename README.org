@@ -1195,7 +1195,7 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
              (output-fmt "commonmark"))
         (kill-new (with-temp-buffer ;; copiado de pandoc.el
                     (insert body)
-                    (apply 'call-process-region (point-min) (point-max) "pandoc" t t nil '("-f" "rst" "-t" output-fmt))
+                    (apply 'call-process-region (point-min) (point-max) "pandoc" t t nil `("-f" "rst" "-t" ,output-fmt))
                     (buffer-substring-no-properties (point-min) (point-max))))
         (message "Salida de gitchangelog copiado al portapapeles"))))
 
