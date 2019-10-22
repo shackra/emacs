@@ -1401,7 +1401,8 @@ Teclas:
 - State "CANCELADO"  from              [2018-12-31 lun 21:20]
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
-  (use-package eglot)
+  (use-package eglot
+    :init (setf eglot-stay-out-of '(company flymake)))
 #+END_SRC
 *** Debug Adapter Protocol
 Sumario sacado de la pagina del proyecto en Github
