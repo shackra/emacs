@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: JS Doc @author
+# key: @author
+# --
+@author $1 <$2>$0

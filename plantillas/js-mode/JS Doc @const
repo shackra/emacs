@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: JS Doc @const
+# key: @const
+# --
+@const {$1}$0

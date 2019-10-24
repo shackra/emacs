@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: JS Doc @augments
+# key: @augments
+# --
+@augments $1$0
