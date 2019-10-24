@@ -2999,6 +2999,14 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
 #+BEGIN_SRC emacs-lisp
   (setf flyspell-issue-message-flag nil)
 
+  (defun flyspell-ignore-js-import ()
+    "Función usada para `flyspell-generic-check-word-predicate' que ignora cadenas usadas en la importación en Javascript."
+    (save-excursion
+      (widen)
+      (search-backward "from" (line-beginning-position) t)))
+
+  (put 'js-mode 'flyspell-mode-predicate #'flyspell-ignore-js-import)
+
   (with-eval-after-load 'flyspell
     (use-package flyspell-correct-ivy
       :after (ivy-mode)
