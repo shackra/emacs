@@ -2827,6 +2827,12 @@ go build golang.org/x/tools/cmd/guru
       (with-eval-after-load 'eglot
         (add-to-list 'eglot-server-programs '(rjsx-mode . (shackra/js-search-node-modules-bin "javascript-typescript-stdio")))
         (add-hook 'rjsx-mode-hook #'eglot-ensure))))
+
+  (use-package js-doc
+    :straight (js-doc :type git :host github :repo "pickardjoe/js-doc")
+    :bind (:map js-mode-map
+                ("C-c o" . js-doc-insert-function-doc)
+                ("@" . js-doc-insert-tag)))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
