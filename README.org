@@ -2780,7 +2780,7 @@ go build golang.org/x/tools/cmd/guru
     (setf js-indent-level shackra-webdev-indent)
     (setf js-switch-indent-offset shackra-webdev-indent)
     (setf js-jsx-indent-level shackra-webdev-indent)
-    (add-to-list 'ispell-skip-region-alist `("importaciones" ,(rx bol "import" (zero-or-more not-newline) eol)))
+    (add-to-list 'ispell-skip-region-alist `(,(rx bol "import") . ,(rx (zero-or-more not-newline) eol)))
     (add-hook 'js-mode-hook (lambda ()
                               (setq-local eglot-server-programs (shackra-modify-eglot 'js-mode (shackra/js-search-node-modules-bin "flow-bin") "lsp"))
                               (eglot-ensure)))
