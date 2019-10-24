@@ -2997,6 +2997,8 @@ Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que s
 :END:
 Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd><f8></kbd>@@ cambia el idioma de Español a Inglés y viceversa.
 #+BEGIN_SRC emacs-lisp
+  (setf flyspell-issue-message-flag nil)
+
   (with-eval-after-load 'flyspell
     (use-package flyspell-correct-ivy
       :after (ivy-mode)
