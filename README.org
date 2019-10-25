@@ -1171,7 +1171,12 @@ Reemplaza multi-term
                 ("C-c s"   . aweshell-sudo-toggle))
     :bind (:map dired-mode-map
                 ("[" . aweshell-dedicated-open))
-    :bind ("C-c t" . aweshell-dedicated-open))
+    :bind ("C-c t" . aweshell-dedicated-open)
+    :config
+    (setf eshell-prompt-regexp (rx (zero-or-more not-newline) blank (or "#" "$") blank))
+    (setf eshell-prompt-function
+          (lambda ()
+            (concat (replace-regexp-in-string (expand-file-name "~") "~" (eshell/pwd)) " " (if (= eshell-last-command-status 0) "🤣" ":sob:") (if (= (user-uid) 0) " # " " $ ")))))
 #+end_src
 *** =git=
 #+BEGIN_SRC emacs-lisp
