@@ -1161,7 +1161,7 @@ Reemplaza multi-term
     :after (eshell)
     :straight (aweshell :type git :host github :repo "manateelazycat/aweshell")
     :hook (eshell-mode . (lambda () (company-mode -1)))
-    :bind (:map eshell-mode-map :prefix-map aweshell-dedicated-prefix-map :prefix "C-c b"
+    :bind (:map eshell-mode-map :prefix-map aweshell-dedicated-prefix-map :prefix "C-c t"
                 ("b" . aweshell-switch-buffer)
                 ("x" . aweshell-dedicated-close))
     :bind (:map eshell-mode-map
