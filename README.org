@@ -797,7 +797,8 @@ Teclas
                                           "\\*prodigy-.*" "\\*godoc .*" "\\*magit-.*" "\\magit-.*"
                                           "\\*Slack Log.*" "\\*tide" "\\*Flycheck.*" "\\*lsp-.*"
                                           ".*-ls" "\\*go-bingo.*" "\\*Flymake log\\*" "\\*straight-process\\*"
-                                          "\\*pushmail-mbsync\\*" "\\*vc\\*" "\\*gopls.*" "\\*Disabled Command\\*")
+                                          "\\*pushmail-mbsync\\*" "\\*vc\\*" "\\*gopls.*" "\\*Disabled Command\\*"
+                                          "\\*EGLOT ")
     "lista de buffers a ignorar en ivy")
 
   (use-package ivy
