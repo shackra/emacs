@@ -999,7 +999,7 @@ Muestra el numero de lineas al margen del buffer.
           (setf display-line-numbers t)
         (setf display-line-numbers 'relative)))
 
-    (define-key global-map (kbd "<f9>") #'shackra-display-lines-change-type)
+    (define-key global-map (kbd "M-<f9>") #'shackra-display-lines-change-type)
 
     (setf display-line-numbers-type 'relative)
     (defun shackra--display-line-numbers-better-width ()
@@ -2767,7 +2767,8 @@ go build golang.org/x/tools/cmd/guru
     (setf typescript-indent-level shackra-webdev-indent)
     (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
     :config
-    (add-hook 'typescript-mode-hook #'eglot-ensure))
+    (add-hook 'typescript-mode-hook #'eglot-ensure)
+    (add-hook 'typescript-mode-hook (lambda () (js2-minor-mode -1))))
 
   (use-package js2-refactor
     :after (js2-mode)
@@ -2816,23 +2817,22 @@ go build golang.org/x/tools/cmd/guru
     (add-hook 'js-mode-hook #'indium-interaction-mode))
 
   ;; Modo mayor para trabajar con ReactJS
-  (when (version< emacs-version "27")
-    (use-package rjsx-mode
-      :magic ("import.*react" . rjsx-mode)
-      :init
-      (add-hook 'rjsx-mode-hook (lambda () (flyspell-mode-off)))
-      :config
-      ;; tomado de https://emacs.stackexchange.com/a/33544/690 mejora el sangrado
-      ;; de lineas
-      (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
-        "Workaround sgml-mode and follow airbnb component style."
-        (save-excursion
-          (beginning-of-line)
-          (if (looking-at-p "^ +\/?> *$")
-              (delete-char sgml-basic-offset))))
-      (with-eval-after-load 'eglot
-        (add-to-list 'eglot-server-programs '(rjsx-mode . (shackra/js-search-node-modules-bin "javascript-typescript-stdio")))
-        (add-hook 'rjsx-mode-hook #'eglot-ensure))))
+  (use-package rjsx-mode
+    :hook (typescript-mode . rjsx-minor-mode)
+    :init
+    (add-hook 'rjsx-mode-hook (lambda () (flyspell-mode-off)))
+    :config
+    ;; tomado de https://emacs.stackexchange.com/a/33544/690 mejora el sangrado
+    ;; de lineas
+    (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
+      "Workaround sgml-mode and follow airbnb component style."
+      (save-excursion
+        (beginning-of-line)
+        (if (looking-at-p "^ +\/?> *$")
+            (delete-char sgml-basic-offset))))
+    (with-eval-after-load 'eglot
+      (add-to-list 'eglot-server-programs `(rjsx-mode . ,(shackra/js-search-node-modules-bin "javascript-typescript-stdio")))
+      (add-hook 'rjsx-mode-hook #'eglot-ensure)))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
