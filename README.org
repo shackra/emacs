@@ -696,15 +696,15 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
         t
       nil))
 
-  (add-to-list 'default-frame-alist '(font . "Fira Code-12"))
-  (add-to-list 'initial-frame-alist '(font . "Fira Code-12"))
+  ;; tipografia por defecto
+  (cond ((font-exists-p "Fira Code")
+         (set-face-attribute 'default nil :font "Fira Code-12")))
 
-  ;; Para NS/Cocoa
-  (when (eq system-type 'darwin)
-    (set-fontset-font t 'unicode (font-spec :family "Apple Color Emoji") nil 'prepend))
-  ;; Para todos los demas sistemas operativos
-  (when (not (eq system-type 'darwin))
-    (set-fontset-font t 'unicode (font-spec :size 20 :name "Symbola") nil 'prepend))
+  ;; tipografia para los demas caracteres unicode
+  (cond ((font-exists-p "Apple Color Emoji")
+         (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend))
+        ((font-exists-p "Symbola")
+         (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") nil 'prepend)))
 #+END_SRC
 *** View large files
 Permite a Emacs manejar archivos enormes. Automáticamente se activa para archivos mayores a =large-file-warning-threshold=.
