@@ -3451,7 +3451,7 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 
   (defun shackra-vc-info-slice (branch)
     "Recorta el nombre de la rama si es muy larga"
-    (let ((size (length "issue-000"))
+    (let ((size (length "xx00000/xxxx"))
           (branch (format "%s" branch)))
       (if (> (length branch) size)
           (concat (substring branch 0 size) "…")
