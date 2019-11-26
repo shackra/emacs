@@ -696,15 +696,22 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
         t
       nil))
 
-  ;; tipografia por defecto
-  (cond ((font-exists-p "Fira Code")
-         (set-face-attribute 'default nil :font "Fira Code-12")))
+  (defun font-pt-to-height (pt)
+    "Transforma una altura en puntos (pt) a altura de face-attribute."
+    ;; el valor es de 1/10pt, por tanto 100 seria equivalente a 10pt, etc.
+    (* pt 10))
 
-  ;; tipografia para los demas caracteres unicode
-  (cond ((font-exists-p "Apple Color Emoji")
-         (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") nil 'prepend))
-        ((font-exists-p "Symbola")
-         (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") nil 'prepend)))
+  (defun font-setup (frame)
+    ;; tipografia por defecto
+    (cond ((font-exists-p "Fira Code")
+           (set-face-attribute 'default frame :family "Monospace" :height (font-pt-to-height 13) :font "Fira Code")))
+    (cond ((font-exists-p "Apple Color Emoji")
+           (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
+          ((font-exists-p "Symbola")
+           (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend))))
+
+  (add-hook 'after-make-frame-functions #'font-setup t)
+  (add-hook 'emacs-startup-hook (lambda () (font-setup nil)))
 #+END_SRC
 *** View large files
 Permite a Emacs manejar archivos enormes. Automáticamente se activa para archivos mayores a =large-file-warning-threshold=.
