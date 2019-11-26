@@ -2763,6 +2763,7 @@ go build golang.org/x/tools/cmd/guru
       (add-hook hook (lambda () (setq-local electric-indent-inhibit t)))))
 
   (use-package typescript-mode
+    :hook (typescript-mode . (lambda () (aggressive-indent-mode -1) (prettier-js-mode)))
     :init
     (setf typescript-indent-level shackra-webdev-indent)
     (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
