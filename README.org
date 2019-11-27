@@ -690,28 +690,43 @@ configuración sana de ciertas opciones en Emacs
 **** Tipografía
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
 #+BEGIN_SRC emacs-lisp
+  (defun fc-list ()
+    "Genera una lista de tipografías disponibles usando fc-list"
+    (if (executable-find "fc-list")
+        (split-string (shell-command-to-string "fc-list --format='%{family[0]}\n' | sort | uniq") "\n")
+      (progn
+        (warn "fc-list no disponible en $PATH")
+        nil)))
+
   (defun font-exists-p (font)
-    "Comprueba si una tipografía existe. Sacado de https://redd.it/1xe7vr"
-    (if (member font (font-family-list))
-        t
-      nil))
+    "Comprueba si una tipografía existe. Código parcialmente sacado de https://redd.it/1xe7vr"
+    (let ((font-list (or (font-family-list) (fc-list))))
+      (if (member font font-list)
+          t
+        nil)))
 
   (defun font-pt-to-height (pt)
     "Transforma una altura en puntos (pt) a altura de face-attribute."
     ;; el valor es de 1/10pt, por tanto 100 seria equivalente a 10pt, etc.
     (* pt 10))
 
-  (defun font-setup (frame)
-    ;; tipografia por defecto
+  (defun font-setup (&optional frame)
     (cond ((font-exists-p "Fira Code")
-           (set-face-attribute 'default frame :family "Monospace" :height (font-pt-to-height 13) :font "Fira Code")))
+           (set-face-attribute 'default frame :height (font-pt-to-height 13) :font "Fira Code")))
     (cond ((font-exists-p "Apple Color Emoji")
            (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
           ((font-exists-p "Symbola")
            (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend))))
 
-  (add-hook 'after-make-frame-functions #'font-setup t)
-  (add-hook 'emacs-startup-hook (lambda () (font-setup nil)))
+  (defun font-setup-frame (frame)
+    "configura la tipografía por cada nuevo marco FRAME creado."
+    (select-frame frame)
+    (when (display-graphic-p)
+      (font-setup frame)))
+
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions #'font-setup-frame)
+    (font-setup))
 #+END_SRC
 *** View large files
 Permite a Emacs manejar archivos enormes. Automáticamente se activa para archivos mayores a =large-file-warning-threshold=.
