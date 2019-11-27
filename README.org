@@ -827,8 +827,8 @@ Teclas
 
   (use-package swiper
     :bind (:map global-map
-                ("C-s" . swiper)
-                ("C-r" . swiper)))
+                ("C-s" . swiper-isearch)
+                ("C-r" . swiper-isearch)))
 #+END_SRC
 **** interfaz más amigable
 Con este paquete hacemos que la interfaz de ivy sea más amigable para algunos comandos.
