@@ -2381,7 +2381,21 @@ Modo mayor para programar en Python
     :after (python)
     :init
     (setf blacken-line-length 80) ;; mantengamos el estándar
-    (add-hook 'python-mode-hook #'blacken-mode))
+    (defvar shackra-blacken-except-directory '()
+      "lista de prefijos de directorios a ignorar por blacken")
+    (defun shackra-blacken-buffer ()
+      (interactive)
+      (when (eq major-mode 'python-mode)
+        (let* ((buffer-dir (buffer-file-name))
+               (ignore nil))
+          (dolist (dir shackra-blacken-except-directory)
+            (unless ignore
+              (setf ignore (string-prefix-p dir buffer-dir))))
+          (unless ignore
+            (when (or (not blacken-only-if-project-is-blackened)
+                      (blacken-project-is-blackened))
+              (blacken-buffer))))))
+    (add-hook 'before-save-hook #'shackra-blacken-buffer))
 
   (use-package python
     :if (executable-find "python")
