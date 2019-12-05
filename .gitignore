@@ -8,7 +8,6 @@ image-dired/*
 semanticdb/*
 url/*
 .python-env*
-*/.git/*
 */.bzr/*
 gerson-emacs.d.tar.xz
 vieja\ configuración/*
