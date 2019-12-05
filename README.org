@@ -2353,21 +2353,11 @@ Modo mayor para programar en Python
 
   (use-package virtualenvwrapper
     :after (python)
-    :commands (venv-workon venv-deactivate venv-initialize-interactive-shells venv-initialize-eshell)
     :init
     (venv-initialize-interactive-shells)
     (venv-initialize-eshell)
     :config
     (add-hook 'venv-postmkvirtualenv-hook #'shackra-python-install-deps))
-
-  ;; soporte para pyenv dentro de Emacs
-  (use-package pyenv-mode)
-
-  ;; alternativa para virtualenvwrapper (el paquete)
-  (use-package pyvenv
-    :init
-    (add-hook 'pyvenv-post-create-hooks #'shackra-python-install-deps)
-    (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python))
 
   (use-package pippel)
 
