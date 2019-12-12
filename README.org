@@ -1561,6 +1561,19 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
      :config
      (add-hook 'emacs-startup-hook #'edit-server-start))
  #+end_src
+*** =neo-tree= árbol de directorios
+#+begin_src emacs-lisp
+  (use-package treemacs)
+
+  (use-package treemacs-projectile
+    :after (treemacs))
+
+  (use-package treemacs-magit
+    :after (treemacs))
+
+  (use-package treemacs-icons-dired
+    :after (treemacs))
+#+end_src
 ** Comunicación
 *** Correo electrónico
 =mu4e= se usa para leer y enviar correo electrónico.
