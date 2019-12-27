@@ -123,7 +123,7 @@
  ("lispy" . "52a40bbfcabbd41bdd7fe23874be1f40384d7e1f")
  ("lispy-mnemonic" . "b7680a7a6cdc602645bc55d3793c89dc748b6cc1")
  ("log4e" . "c69424e407be0d9d0e54b427d8b18b1ac5a607e2")
- ("lsp-mode" . "b4cd7a8a6cc5ce1f5b84bab907d79210c70695d4")
+ ("lsp-mode" . "5c8addac9d57dff268d2f6e825522fd5353e5e3e")
  ("lsp-ui" . "c8fa40c0f9c65877d1cabe1739e5f787adb24898")
  ("macrostep" . "424e3734a1ee526a1bd7b5c3cd1d3ef19d184267")
  ("magit" . "1b9995238fe3136217c40b8836311bc98b12897c")
