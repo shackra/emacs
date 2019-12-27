@@ -1496,8 +1496,8 @@ Teclas:
 - State "CANCELADO"  from              [2018-12-31 lun 21:20]
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
-  (use-package eglot
-    :init (setf eglot-stay-out-of '(company flymake)))
+  (use-package lsp-mode
+    :hook (prog-mode . lsp))
 #+END_SRC
 *** Debug Adapter Protocol
 Sumario sacado de la pagina del proyecto en Github
@@ -2422,8 +2422,6 @@ Modo mayor para programar en Python
 
     (setf python-shell-interpreter "python")
     (add-hook 'python-mode-hook #'shackra-python-mode)
-    (with-eval-after-load 'eglot
-      (add-hook 'python-mode-hook #'eglot-ensure))
     :config
     ;; re-mapea todas los atajos que hagan referencia a `python-indent-shift-*' con `shackra-python-indent-shift-*'
     (global-set-key [remap python-indent-shift-left] 'shackra-python-indent-shift-left)
@@ -2484,10 +2482,7 @@ Modo mayor para editar código fuente en Rust. Rust es es un lenguaje de program
   (use-package rust-mode
     :if (executable-find "rustc")
     :init
-    (setq rust-format-on-save t)
-    :config
-    (with-eval-after-load 'eglot
-      (add-hook 'rust-mode-hook #'eglot-ensure)))
+    (setq rust-format-on-save t))
 #+END_SRC
 *** emacs-traad
 Una aproximación cliente servidor para usar la librería de refactorización [[https://github.com/python-rope/rope][rope]].
@@ -2612,9 +2607,7 @@ npm i -g vscode-css-languageserver-bin
 #+BEGIN_SRC emacs-lisp
   (use-package css-mode
     :init
-    (setf css-indent-offset shackra-webdev-indent)
-    (with-eval-after-load 'eglot
-      (add-hook 'css-mode-hook #'eglot-ensure)))
+    (setf css-indent-offset shackra-webdev-indent))
 
   (use-package flymake-css
     :hook (css-mode . flymake-css-load))
@@ -2641,10 +2634,7 @@ Y esta es la configuración.
     :config
     (add-hook 'php-mode-hook 'php-refactor-mode))
 
-  (use-package php-mode
-    :config
-    (with-eval-after-load 'eglot
-      (add-hook 'php-mode-hook #'eglot-ensure)))
+  (use-package php-mode)
 #+END_SRC
 *** golang
 Modo mayor para editar archivos Golang.
@@ -2699,8 +2689,6 @@ go build golang.org/x/tools/cmd/guru
     (add-hook 'before-save-hook 'gofmt-before-save)
     (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
     (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
-    (with-eval-after-load 'eglot
-      (add-hook 'go-mode-hook #'eglot-ensure))
     (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
 
   (use-package flymake-golangci
@@ -2871,7 +2859,6 @@ go build golang.org/x/tools/cmd/guru
     (setf typescript-indent-level shackra-webdev-indent)
     (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
     :config
-    (add-hook 'typescript-mode-hook #'eglot-ensure)
     (add-hook 'typescript-mode-hook (lambda () (js2-minor-mode -1))))
 
   (use-package js2-refactor
@@ -2910,9 +2897,7 @@ go build golang.org/x/tools/cmd/guru
     (setf js2-strict-missing-semi-warning nil)
     ;; retrasa el procesamiento del contenido de un archivo luego haberle hecho
     ;; algun cambio, esto debería mejorar el rendimiento para archivos grandes.
-    (setf js2-dynamic-idle-timer-adjust 2)
-    :config
-    (add-hook 'js2-mode-hook #'eglot-ensure))
+    (setf js2-dynamic-idle-timer-adjust 2))
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript
@@ -2933,20 +2918,15 @@ go build golang.org/x/tools/cmd/guru
       (save-excursion
         (beginning-of-line)
         (if (looking-at-p "^ +\/?> *$")
-            (delete-char sgml-basic-offset))))
-    (with-eval-after-load 'eglot
-      (add-to-list 'eglot-server-programs `(rjsx-mode . ,(shackra/js-search-node-modules-bin "javascript-typescript-stdio")))
-      (add-hook 'rjsx-mode-hook #'eglot-ensure)))
+            (delete-char sgml-basic-offset)))))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
   (use-package sgml-mode
     :init
-    (setf sgml-basic-offset shackra-webdev-indent)
-    (with-eval-after-load 'eglot
-      (add-hook 'html-mode-hook #'eglot-ensure)))
+    (setf sgml-basic-offset shackra-webdev-indent))
 #+END_SRC
-**** HTML con eglot
+**** HTML con LSP
 ***** dependencias externas
 #+BEGIN_SRC sh :results silent
 npm i -g vscode-html-languageserver-bin
@@ -2982,8 +2962,7 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 *** kotlin
 #+BEGIN_SRC emacs-lisp
   (use-package kotlin-mode
-    :if (executable-find "kotlin")
-    :hook (kotlin-mode . eglot-ensure))
+    :if (executable-find "kotlin"))
 
   (use-package gradle-mode
     :after (kotlin-mode))
@@ -3012,9 +2991,7 @@ Type `M-x gimp-help' for help.
 #+BEGIN_SRC emacs-lisp
   (use-package vue-mode
     :init
-    (setq mmm-submode-decoration-level 2)
-    (with-eval-after-load 'eglot
-      (add-hook 'vue-mode-hook #'eglot-ensure)))
+    (setq mmm-submode-decoration-level 2))
 #+END_SRC
 *** C y C++
 Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/][TIP: How to use a stable and fast environment to develop in C++]].
@@ -3033,11 +3010,6 @@ Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comment
       (c-set-style style)))
 
   (add-hook 'c-mode-hook #'shackra/c-guess-c-style)
-
-  ;; activa LSP en C y C++
-  (with-eval-after-load 'eglot
-    (dolist (hook '(c-mode-hook c++-mode-hook))
-      (add-hook hook #'eglot-ensure)))
 
   (use-package cmake-mode
     :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
