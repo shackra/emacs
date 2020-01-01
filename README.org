@@ -1607,8 +1607,7 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
 
   (use-package mu4e
     :straight nil
-    :preface
-    ;;; message view action
+    :preface ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
       "Ver el cuerpo del mensaje HTML en el navegador web"
       (interactive)
@@ -1690,8 +1689,7 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     (setf message-sendmail-extra-arguments '("--read-envelope-from"))
     (setf mu4e-bookmarks
           '(("flag:unread" "No leido" ?u)
-            ("flag:flagged" "Marcados como importantes" ?f)
-            ("maildir:/personal/Drafts OR maildir:/personal/Borradores OR maildir:/yahoo/Drafts OR maildir:/kue/Draft" "Borradores" ?b)))
+            ("flag:flagged" "Marcados como importantes" ?f)))
     :config
     (require 'mu4e-contrib)
     (defalias 'correo 'mu4e)
