@@ -1655,42 +1655,29 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     (setf message-kill-buffer-on-exit t)
     (setf mu4e-attachment-dir  "~/Descargas")
     (setf mu4e-maildir "~/Mail")
+    (setq mu4e-sent-messages-behavior 'delete)
+    (setf shackra/mu4e-maildir-dirs '("yahoo" "kue" "gmail"))
+    (defun shackra-mu4e-get-maildir (maildir place)
+      "Retorna ubicación para mover el mensaje por MAILDIR a otro lugar PLACE."
+      (let ((maildir-path))
+        (dolist (dir shackra/mu4e-maildir-dirs)
+          (when (string-match-p (concat "^/" dir) maildir)
+            (setf maildir-path (concat "/" dir "/" place))))
+        (unless maildir-path
+          (setf maildir-path (mu4e-ask-maildir-check-exists "Mover el mensaje al maildir: ")))
+        maildir-path))
     (setf mu4e-sent-folder ;; carpeta de enviados
           (lambda (msg)
-            (if msg
-                (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
-                       "/yahoo/Sent")
-                      ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
-                       "/kue/Sent"))
-              (cond ((string-match-p "yahoo" user-mail-address) "/yahoo/Sent")
-                    ((string-match-p "kue-cr" user-mail-address) "/kue/Sent")
-                    (t "/Sent")))))
+            (shackra-mu4e-get-maildir (or (mu4e-message-field msg :maildir) "") "Sent")))
     (setf mu4e-drafts-folder ;; carpeta de borradores
           (lambda (msg)
-            (if msg
-                (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
-                       "/yahoo/Draft")
-                      ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
-                       "/kue/Drafts"))
-              (cond ((string-match-p "yahoo" user-mail-address) "/yahoo/Draft")
-                    ((string-match-p "kue-cr" user-mail-address) "/kue/Drafts")
-                    (t "/Drafts")))))
+            (shackra-mu4e-get-maildir (or (mu4e-message-field msg :maildir) "") "Drafts")))
     (setf mu4e-trash-folder ;; carpeta de correo borrado
           (lambda (msg)
-            (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
-                   "/yahoo/Trash")
-                  ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
-                   "/kue/Trash")
-                  (t "/yahoo/Trash"))))
+            (shackra-mu4e-get-maildir (or (mu4e-message-field msg :maildir) "") "Trash")))
     (setf mu4e-refile-folder ;; carpeta de correo salvado
           (lambda (msg)
-            (cond ((string-match-p "^/yahoo" (mu4e-message-field msg :maildir))
-                   (format-time-string "/yahoo/Archive/%Y" (mu4e-message-field msg :date)))
-                  ((string-match-p "^/kue" (mu4e-message-field msg :maildir))
-                   (format-time-string "/kue/Archive/%Y" (mu4e-message-field msg :date)))
-                  ;; si el email es de otra carpeta no concebida aquí, mueve el
-                  ;; email al archivero de Yahoo
-                  (t (format-time-string "/yahoo/Archive/%Y" (mu4e-message-field msg :date))))))
+            (shackra-mu4e-get-maildir (or (mu4e-message-field msg :maildir) "") "Archive")))
     ;; indica a mu4e que usemos smtp para enviar el correo
     (setf message-send-mail-function 'message-send-mail-with-sendmail)
     (setf send-mail-function 'smtpmail-send-it)
