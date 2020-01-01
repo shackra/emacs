@@ -1,6 +1,6 @@
 #+TITLE: Configuración de GNU Emacs
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Seaslug)
-#+EMAIL: jorgejavieran@yahoo.com.mx
+#+EMAIL: jorge@esavara.cr
 #+OPTIONS: toc:5 num:nil ^:nil
 #+STARTUP: overview
 
@@ -81,7 +81,7 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
 La ubicación geográfica usada es la de San José, Costa Rica siendo tan pequeño hace innecesario especificar nuestra ubicación geográfica exacta.
 #+BEGIN_SRC emacs-lisp
   (setf user-full-name "Jorge Javier Araya Navarro"
-        user-mail-address "jorgejavieran@yahoo.com.mx"
+        user-mail-address "jorge@esavara.cr"
         calendar-location-name "Siquirres, CR"
         calendar-latitude 9.935607
         calendar-longitude -84.1833856
