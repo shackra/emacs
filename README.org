@@ -1744,6 +1744,12 @@ Teclas
       (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
                                            :capture-character "P"))))
 #+END_SRC
+*** CANCELADO Hyperbole                                         :CANCELADO:
+- State "CANCELADO"  from              [2020-01-28 mar 18:08] \\
+  hasta no resolver problema https://www.reddit.com/r/emacs/comments/ev9tcc/super_quick_introduction_to_hyperbole_with/ffv5sdp?utm_source=share&utm_medium=web2x
+#+begin_src emacs-lisp
+  (use-package hyperbole)
+#+end_src
 *** org-reveal
 #+begin_src emacs-lisp
   (use-package ox-reveal
