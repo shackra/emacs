@@ -87,7 +87,7 @@
  ("font-man" . "eb0ced779967030d59cbdf3ee079fe08d3fd83c7")
  ("free-keys" . "edfd69dc369b2647447b7c28c7c1163b1ddf45b4")
  ("fringe-helper.el" . "ef4a9c023bae18ec1ddd7265f1f2d6d2e775efdd")
- ("git-modes" . "33c6a116a5b298e20eb39ebb154a51c4dd37c06d")
+ ("git-modes" . "55468314a5f6b77d2c96be62c7005ac94545e217")
  ("gntp.el" . "767571135e2c0985944017dc59b0be79af222ef5")
  ("gnu-elpa-mirror" . "01001b660cd3677228e25a6f544d579b56845c37")
  ("go-fill-struct" . "a613d0b378473eef39e8fd5724abe790aea84321")
