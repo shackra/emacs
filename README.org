@@ -794,9 +794,6 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
     :after (magit)
     :config
     (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
-
-  (use-package forge
-    :after (magit))
 #+END_SRC
 *** git-gutter-fring
 Muestra información de =git diff= en el fringe.
@@ -3250,7 +3247,9 @@ Lector de RSS feed dentro de Emacs
                                   :entry-title "Video"
                                   :remove 'unread)))
 #+END_SRC
-*** =ws-butler=
+*** CANCELADO =ws-butler=                                       :CANCELADO:
+- State "CANCELADO"  from              [2020-01-30 jue 12:05] \\
+  el commit =52321b99be69aa1b661da7743c4421a30d8b6bcb= esta causando problemas con Magit
 Eliminación de espacios de manera no obstrusiva
 #+BEGIN_SRC emacs-lisp
   (use-package ws-butler
