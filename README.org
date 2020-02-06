@@ -2118,7 +2118,6 @@ go build golang.org/x/tools/cmd/guru
     :after (f)
     :if (executable-find "go")
     :bind (:map go-mode-map
-                ("M-." . godef-jump)
                 ("C-c C-a" . go-import-add)
                 ("C-c C-r" . go-remove-unused-imports)
                 ("C-c C-i" . go-goto-imports)
