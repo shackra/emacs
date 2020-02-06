@@ -2168,34 +2168,6 @@ go build golang.org/x/tools/cmd/guru
                            ("d" godoctor-toggle "Cambia declaración de variable")
                            ("f" godoctor-godoc "Crea esqueleto de documentación")))
 
-  (use-package go-guru
-    :after (go-mode)
-    :if (executable-find "guru")
-    :demand t
-    :init
-    (defun shackra-go-mode-set-scope ()
-      (when (eq major-mode 'go-mode)
-        (set (make-local-variable 'go-guru-scope)
-             (concat (projectile-project-root) "..."))))
-    :bind (:map go-mode-map
-                ("M-." . go-guru-definition)
-                ("C-M-g" . hydra-go-guru/body))
-    :hydra (hydra-go-guru (:color blue :columns 2)
-                          "Contesta preguntas sobre código fuente escrito en Go"
-                          ("a" go-guru-callees "Receptores de llamada, función bajo punto actual")
-                          ("s" go-guru-callers "Llamadores, función bajo punto actual")
-                          ("d" go-guru-callstack "Muestra grafo de llamadas desde una raíz, función bajo punto actual")
-                          ("f" go-guru-describe "Describe la sintaxis seleccionada, su tipo y métodos")
-                          ("g" go-guru-freevars "Enumera las variables libres, marca actual")
-                          ("h" go-guru-referrers "Enumera referencias al objeto, identificador marcado")
-                          ("j" go-guru-peers "Enumera un set de remitentes/destinatarios para las operaciones enviar/recibir de este canal")
-                          ("k" go-guru-pointsto "Muestra lo que apunta, expresión marcada")
-                          ("l" go-guru-implements "Describe la relación de implementación para tipos en un paquete conteniendo el cursor")
-                          ("ñ" go-guru-whicherrs "Muestra globales, constantes y tipos, expresión marcada (de tipo 'error')"))
-    :config
-    (add-hook 'go-mode-hook #'go-guru-hl-identifier-mode)
-    (add-hook 'projectile-mode-hook #'shackra-go-mode-set-scope))
-
   (use-package ob-go
     :after (org-mode)
     :config
