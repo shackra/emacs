@@ -3273,9 +3273,10 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
     :bind (:map global-map ("s-i" . emojify-insert-emoji))
     :init
     (add-hook 'after-init-hook #'global-emojify-mode)
+    (setf emojify-company-tooltips-p t)
+    (setf emojify-point-entered-behaviour 'uncover)
     :config
-    (dolist (mode '(toml-mode yaml-mode))
-      (add-to-list 'emojify-inhibit-major-modes mode)))
+    (emojify-set-emoji-styles '(unicode github)))
 
   (use-package company-emoji
     :after (emojify)
