@@ -3000,53 +3000,24 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
                   mode-line-modes
                   mode-line-misc-info))
 #+END_SRC
-*** =telephone-line=
+*** =doom-modeline=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:50]
 :END:
-"/Soy como =powerline=, pero mejor/"
+mode-line minimalista, reemplazo para =telephone-line=.
 #+BEGIN_SRC emacs-lisp
-  (use-package telephone-line
+  (use-package doom-modeline
+    :hook (after-init . doom-modeline-mode)
     :init
-    ;; define una nueva cara
-    (defface shackra-orange '((t (:foreground "black" :background "orange"))) "")
-    ;; Cambia el estilo de los separadores
-    (setq telephone-line-primary-left-separator 'telephone-line-cubed-left
-          telephone-line-secondary-left-separator 'telephone-line-cubed-hollow-left
-          telephone-line-primary-right-separator 'telephone-line-cubed-right
-          telephone-line-secondary-right-separator 'telephone-line-cubed-hollow-right)
-    (setf telephone-line-height 40)
-    :config
-    ;; Informa a telephone-line sobre la existencia de la nueva cara, llamada `orange'
-    (add-to-list 'telephone-line-faces '(accent-orange . (shackra-orange . telephone-line-accent-inactive)))
-
-    (telephone-line-defsegment shackra-line-buffer-segment ()
-      (telephone-line-raw mode-line-buffer-identification))
-
-    (telephone-line-defsegment shackra-vc-segment ()
-      (if (shackra-vc-info)
-          (telephone-line-raw (concat (shackra-buffer-vc-modified) "  " (shackra-vc-info)))
-        (telephone-line-raw (shackra-buffer-vc-modified))))
-
-    (telephone-line-defsegment shackra-flycheck-status-segment ()
-      (telephone-line-raw (shackra-flycheck-status)))
-
-    (telephone-line-defsegment shackra-venv-segment ()
-      (shackra-virtualenv-name))
-
-    (telephone-line-defsegment christian-mark ()
-      "🕇")
-    (telephone-line-defsegment nil-segment ()
-      nil)
-
-    (setf telephone-line-lhs
-          '((accent . (christian-mark shackra-line-buffer-segment))
-            (nil .  (shackra-vc-segment shackra-flycheck-status-segment))
-            (accent  . (nil-segment))))
-
-    (setf telephone-line-rhs '((accent . (shackra-venv-segment telephone-line-misc-info-segment telephone-line-major-mode-segment))
-                               (nil  . ())))
-    (telephone-line-mode 1))
+    (setq doom-modeline-height 44)
+    (setq doom-modeline-bar-width 7)
+    (if (daemonp)
+        (setq doom-modeline-icon t)
+      (setq doom-modeline-icon (display-graphic-p)))
+    (setq doom-modeline-checker-simple-format nil)
+    (setq doom-modeline-vcs-max-length (length "chxxxxx/xxxxx"))
+    (setq doom-modeline-modal-icon nil)
+    (setq doom-modeline-mu4e (fboundp 'mu4e)))
 #+END_SRC
 *** =visual-line-mode=
 :LOGBOOK:
