@@ -93,10 +93,10 @@ Desde la versión 24 Emacs permite la instalación de paquetes de la misma maner
 
 El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información. Para ver qué paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-packages=
 * Custom.el
- El archivo customize es completamente innecesario y todas las variables modificadas usando =Customize= fueron migradas. Cualquier cambio que se haga con =Customize= no será preservado *pase lo que pase*.
+ El archivo customize es completamente innecesario y todas las variables modificadas usando =Customize= fueron migradas. Cualquier cambio que se haga con =Customize= no será preservado *pase lo que pase*. Para permitir que decisiones sobre variables de archivos o directorios sean conservados se asigna un archivo en la carpeta temporal del sistema para preservar temporalmente lo que se guarde ahí.
 
 #+BEGIN_SRC emacs-lisp
-  (setf custom-file null-device)
+  (setf custom-file (expand-file-name (format "custom-%s.el" (format-time-string "%s")) (temporary-file-directory)))
 #+END_SRC
 ** Código adicional
 Evalúa código elisp adicional.
@@ -1795,13 +1795,6 @@ Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquet
 *** =python=
 Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
-  (defun python-template ()
-    (interactive)
-    (insert "#!/usr/bin/env python\n# -*- coding: utf-8 -*-\n\n"))
-
-  (add-hook 'python-mode-hook
-            '(lambda () (when (eq (buffer-size) 0) (python-template))))
-
   (defun shackra-python-install-deps ()
     "Instala dependencias básicas dentro de un entorno virtual"
     (interactive)
@@ -1825,8 +1818,6 @@ Modo mayor para programar en Python
     (venv-initialize-eshell)
     :config
     (add-hook 'venv-postmkvirtualenv-hook #'shackra-python-install-deps))
-
-  (use-package pippel)
 
   (use-package sphinx-doc
     :after (python)
