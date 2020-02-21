@@ -132,10 +132,14 @@ configuración sana de ciertas opciones en Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package better-defaults
     :init
+    (setf shackra-gc-cons-treshold (* 100 1024 1024))
+    (setf shackra-read-process-output-max (* 4 1024 1024))
+    (setf gc-cons-threshold shackra-gc-cons-treshold)
+    (setf read-process-output-max shackra-read-process-output-max)
     (defun my-minibuffer-setup-hook ()
       (setq gc-cons-threshold most-positive-fixnum))
     (defun my-minibuffer-exit-hook ()
-      (setq gc-cons-threshold 800000))
+      (setq gc-cons-threshold shackra-gc-cons-treshold))
     :config
     ;; Se cargan otras modificaciones para mejorar el comportamiento de Emacs
     (load-file (expand-file-name "sane.el" user-emacs-directory))
@@ -966,7 +970,8 @@ Teclas:
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
-    :hook (prog-mode . lsp))
+    :hook (prog-mode . lsp)
+    :init (setf lsp-idle-delay 0.5))
 
   (use-package lsp-ui
     :after (lsp-mode)
