@@ -53,6 +53,7 @@
  ("emacs-deferred" . #("2239671d94b38d92e9b28d4e12fd79814cfb9c16" 0 40 (fontified nil)))
  ("emacs-doom-themes" . #("0760079dbda01cb02987f5df04ad925cf4b9e1c5" 0 40 (fontified nil)))
  ("emacs-emojify" . #("4c84ef9502988b52b1e296630bcee7f7c62cfc02" 0 40 (fontified nil)))
+ ("emacs-gdscript-mode" . #("60ee1a62bc065a4bdb172548dc84deec297b6590" 0 40 (fontified nil)))
  ("emacs-git-gutter" . #("00c05264af046b5ce248e5b0bc42f117d9c27a09" 0 40 (fontified nil)))
  ("emacs-git-gutter-fringe" . #("16226caab44174301f1659f7bf8cc67a76153445" 0 40 (fontified nil)))
  ("emacs-go-tag" . #("59b243f2fa079d9de9d56f6e2d94397e9560310a" 0 40 (fontified nil)))

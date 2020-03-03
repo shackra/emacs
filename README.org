@@ -2487,6 +2487,16 @@ Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que s
   (use-package flymake-shell
     :hook (sh-set-shell . flymake-shell-load))
 #+end_src
+*** Godot Engine
+Modo mayor para editar archivos GDScript y =.tscn=
+#+begin_src emacs-lisp
+  (use-package gdscript-mode
+    :straight (gdscript-mode
+               :type git
+               :host github
+               :repo "GDQuest/emacs-gdscript-mode"
+               :files ("*.el" "data/*.txt")))
+#+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
