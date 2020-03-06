@@ -190,6 +190,7 @@
  ("transient" . #("a269614c69ad8b2703e6e5093d0017d6afad6cca" 0 40 (fontified nil)))
  ("treemacs" . #("1dc27668326e95474fa85734cff8595e2cc5425d" 0 40 (fontified nil)))
  ("twittering-mode" . #("114891e8fdb4f06b1326a6cf795e49c205cf9e29" 0 40 (fontified nil)))
+ ("typescript.el" . #("a8b7e76e85c1f8b4e353498e3e2d52f1dbcfb6d9" 0 40 (fontified nil)))
  ("undo-tree" . #("5b6df03781495d8a25695d846b0cce496d3d3058" 0 40 (fontified nil)))
  ("use-package" . #("42db6b3d90ee57d0f5947d3b0bf4b0010bdf7b40" 0 40 (fontified nil)))
  ("use-package-hydra" . #("8cd55a1128fbdf6327bb38a199d206225896d146" 0 40 (fontified nil)))
