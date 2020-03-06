@@ -2235,7 +2235,7 @@ go build golang.org/x/tools/cmd/guru
   (use-package js-mode
     :ensure js
     :straight nil
-    :mode (rx "." (or (seq "js" (? "x")) (seq "ts" (? "x"))) string-end)
+    :mode (rx "." (or "j" "t") "s" (? "x") string-end)
     :init
     (setf js-indent-level shackra-webdev-indent)
     (setf js-switch-indent-offset shackra-webdev-indent)
