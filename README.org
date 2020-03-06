@@ -2198,7 +2198,7 @@ go build golang.org/x/tools/cmd/guru
 #+BEGIN_SRC emacs-lisp
   (setq-default js-indent-level shackra-webdev-indent)
 
-  (defvar shackra/js-modes '(js-mode-hook)
+  (defvar shackra/js-modes '(js-mode-hook typescript-mode-hook)
     "lista de modos mayores que tratan JavaScript")
 
   ;; cuando se hace grep, omite los archivos source map de Javascript
@@ -2234,14 +2234,19 @@ go build golang.org/x/tools/cmd/guru
   ;; asume que (>= emacs-major-version 27)
   (use-package js-mode
     :ensure js
+    :hook (js-mode . (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "build")))
     :straight nil
-    :mode (rx "." (or "j" "t") "s" (? "x") string-end)
+    :mode (rx ".js" (? "x") string-end)
     :init
     (setf js-indent-level shackra-webdev-indent)
     (setf js-switch-indent-offset shackra-webdev-indent)
-    (setf js-jsx-indent-level shackra-webdev-indent)
-    :config
-    (add-hook 'js-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "build"))))
+    (setf js-jsx-indent-level shackra-webdev-indent))
+
+  (use-package typescript-mode
+    :hook (typescript-mode . (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "build")))
+    :mode (rx ".ts" (? "x") string-end)
+    :init
+    (setf typescript-indent-level shackra-webdev-indent))
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript
