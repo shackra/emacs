@@ -2198,45 +2198,8 @@ go build golang.org/x/tools/cmd/guru
 #+BEGIN_SRC emacs-lisp
   (setq-default js-indent-level shackra-webdev-indent)
 
-  (defvar shackra/flycheck-javascript-checkers-alist '((javascript-eslint        . "eslint")
-                                                       (javascript-jshint        . "jshint")
-                                                       (javascript-jscs          . "jscs")
-                                                       (javascript-flow          . "flow-bin")
-                                                       (javascript-flow-coverage . "flow-bin"))
-    "lista de revisores de flycheck para Javascript")
-
-  (defvar shackra/js-modes '(js-mode-hook js2-mode-hook typescript-mode-hook flow-minor-mode-hook)
+  (defvar shackra/js-modes '(js-mode-hook)
     "lista de modos mayores que tratan JavaScript")
-
-  ;; cambia el script de eslint al que venga instalado en node_modules
-  (defun shackra/set-checker-javascript-checkers ()
-    "establece el script de varios revisores de Flycheck para Javascript con los disponibles localmente"
-    (pcase-dolist (`(,checker . ,module) shackra/flycheck-javascript-checkers-alist)
-      (let ((bin (shackra/js-search-node-modules-bin module))
-            (newvals))
-        (when (and bin (symbolp 'executable-var))
-          ;; establece por buffer el valor de la variable en `executable-var'
-          (add-to-list 'newvals (set (make-local-variable executable-var) bin) t))
-        newvals)))
-
-  (defun shackra/js-search-node-modules-bin (module)
-    "busca por el ejecutable de un modulo dentro de node_modules.
-
-  Nos valemos de la información en package.json para descubrir cual es el binario del sub module MODULE"
-    (let* ((root (locate-dominating-file (or (buffer-file-name) default-directory) "node_modules"))
-           (node-modules (expand-file-name "node_modules" root))
-           (sub-node-module (expand-file-name module node-modules))
-           (package-json (expand-file-name "package.json" sub-node-module))
-           (parsed-object nil)
-           (bin-path-list nil)
-           (bin nil))
-      (when (file-exists-p package-json)
-        (with-temp-buffer
-          (insert-file package-json)
-          (setf parsed-object (json-parse-buffer))
-          (setf bin-path-list (hash-table-values (gethash "bin" parsed-object)))
-          (setf bin (expand-file-name (car bin-path-list) sub-node-module))))
-      bin))
 
   ;; cuando se hace grep, omite los archivos source map de Javascript
   (add-to-list 'grep-find-ignored-files "*.map.*.js")
@@ -2247,10 +2210,6 @@ go build golang.org/x/tools/cmd/guru
                      (electric-indent-local-mode -1)
                      (local-set-key (kbd "C-j") #'newline-and-indent))
               100))
-
-  (with-eval-after-load 'flycheck
-    (dolist (mode shackra/js-modes)
-      (add-hook mode #'shackra/set-checker-javascript-checkers)))
 
   (use-package flymake-eslint-easy
     :straight (flymake-eslint-easy :type git :host gitlab :repo "shackra/flymake-eslint-easy")
@@ -2268,73 +2227,26 @@ go build golang.org/x/tools/cmd/guru
                              "--no-semi"
                              ))
     :config
-    (dolist (hook '(js-mode-hook js2-mode-hook))
+    (dolist (hook shackra/js-modes)
       (add-hook hook 'prettier-js-mode)
       (add-hook hook (lambda () (setq-local electric-indent-inhibit t)))))
 
-  (use-package typescript-mode
-    :hook (typescript-mode . (lambda () (aggressive-indent-mode -1) (prettier-js-mode)))
-    :init
-    (setf typescript-indent-level shackra-webdev-indent)
-    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
-    :config
-    (add-hook 'typescript-mode-hook (lambda () (js2-minor-mode -1))))
-
-  (use-package js2-refactor
-    :after (js2-mode)
-    :config
-    (add-hook 'js2-mode-hook #'js2-refactor-mode)
-    (js2r-add-keybindings-with-prefix "C-c C-m"))
-
-  (use-package xref-js2
-    :after (js2-mode)
-    :init
-    (add-hook 'js2-mode-hook (lambda () (add-hook 'xref-backend-functions #'xref-js2-xref-backend nil t))))
-
-  (use-package js
+  (use-package js-mode
+    :ensure js
     :straight nil
+    :mode (rx "." (or (seq "js" (? "x")) (seq "ts" (? "x"))) string-end)
     :init
     (setf js-indent-level shackra-webdev-indent)
     (setf js-switch-indent-offset shackra-webdev-indent)
     (setf js-jsx-indent-level shackra-webdev-indent)
-    (add-to-list 'ispell-skip-region-alist `(,(rx bol "import") . ,(rx (zero-or-more not-newline) eol)))
     :config
     (add-hook 'js-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "build"))))
-
-  (use-package js2-mode
-    :init
-    (when (version<= emacs-version "26")
-      ;; usa js2-mode para editar archivos JavaScript si no estamos corriendo en
-      ;; Emacs 27
-      (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode)))
-    (add-hook 'js2-mode-hook #'js2-imenu-extras-mode)
-    (setf js2-mode-indent-inhibit-undo t)
-    ;; apaga las alertas sobre punto y comas ausentes
-    (setf js2-strict-missing-semi-warning nil)
-    ;; retrasa el procesamiento del contenido de un archivo luego haberle hecho
-    ;; algun cambio, esto debería mejorar el rendimiento para archivos grandes.
-    (setf js2-dynamic-idle-timer-adjust 2))
 
   ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
   ;; y provee varias características para el desarrollo en JavaScript
   (use-package indium ;; https://indium.readthedocs.io/en/latest/setup.html
     :config
     (add-hook 'js-mode-hook #'indium-interaction-mode))
-
-  ;; Modo mayor para trabajar con ReactJS
-  (use-package rjsx-mode
-    :hook (typescript-mode . rjsx-minor-mode)
-    :init
-    (add-hook 'rjsx-mode-hook (lambda () (flyspell-mode-off)))
-    :config
-    ;; tomado de https://emacs.stackexchange.com/a/33544/690 mejora el sangrado
-    ;; de lineas
-    (defadvice js-jsx-indent-line (after js-jsx-indent-line-after-hack activate)
-      "Workaround sgml-mode and follow airbnb component style."
-      (save-excursion
-        (beginning-of-line)
-        (if (looking-at-p "^ +\/?> *$")
-            (delete-char sgml-basic-offset)))))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
