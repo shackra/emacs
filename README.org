@@ -2231,6 +2231,7 @@ go build golang.org/x/tools/cmd/guru
       (add-hook hook 'prettier-js-mode)
       (add-hook hook (lambda () (setq-local electric-indent-inhibit t)))))
 
+  ;; asume que (>= emacs-major-version 27)
   (use-package js-mode
     :ensure js
     :straight nil
