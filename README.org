@@ -2055,7 +2055,7 @@ npm i -g vscode-css-languageserver-bin
 #+BEGIN_SRC emacs-lisp
   (use-package css-mode
     :init
-    (setf css-indent-offset shackra-webdev-indent))
+    (setf css-indent-offset (* shackra-webdev-indent 2)))
 
   (use-package flymake-css
     :hook (css-mode . flymake-css-load))
@@ -2216,7 +2216,6 @@ go build golang.org/x/tools/cmd/guru
     :config
     (dolist (mode shackra/js-modes)
       (add-hook mode (lambda ()
-                       (setq-local flymake-eslint-easy-executable (or (shackra/js-search-node-modules-bin "eslint") "eslint"))
                        (flymake-eslint-easy-load)))))
 
   (use-package prettier-js
@@ -2243,7 +2242,12 @@ go build golang.org/x/tools/cmd/guru
     (setf js-jsx-indent-level shackra-webdev-indent))
 
   (use-package typescript-mode
-    :hook (typescript-mode . (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "build")))
+    :hook (typescript-mode .
+                           (lambda ()
+                             (add-to-list
+                              (make-local-variable
+                               'grep-find-ignored-directories) "build")
+                             (electric-indent-mode -1)))
     :mode (rx ".ts" (? "x") string-end)
     :init
     (setf typescript-indent-level shackra-webdev-indent))
