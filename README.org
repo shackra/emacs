@@ -1082,6 +1082,7 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
       (setq org-mu4e-link-query-in-headers-mode nil)))
 
   (use-package mu4e
+    :if (file-exists-p "/usr/share/emacs/site-lisp/mu4e/mu4e.el")
     :straight nil
     :preface ;;; message view action
     (defun mu4e-msgv-action-view-in-browser (msg)
