@@ -1607,8 +1607,10 @@ Teclas
 
     ;; evita dividir una linea con M-RET
     (setf org-M-RET-may-split-line '((default . nil)))
-    (setf org-default-notes-file (expand-file-name "notas.org" org-directory)
-          org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)))
+    (if (file-exists-p (expand-file-name "cosas por hacer.org" org-directory))
+        (setf org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)))
+      (warn "no se añadió archivo 'cosas por hacer.org' porque no existe"))
+    (setf org-default-notes-file (expand-file-name "notas.org" org-directory))
     (setf org-todo-keywords
           '((sequence "POR-HACER(p)" "SIGNT(s)" "|" "TERMINADO(t)")
             (sequence "ESPERA(e@/!)" "RETENER(r@/!)" "|" "CANCELADO(c@/!)")))
@@ -1747,7 +1749,9 @@ Teclas
       :init
       (setq org-confirm-elisp-link-function nil)
       :config
-      (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+      (if (file-exists-p org-projectile-projects-file)
+          (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
+        (warn "no se añadió archivo porque no existe: %s" org-projectile-projects-file))
       (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
                                            :capture-character "P"))))
 #+END_SRC
