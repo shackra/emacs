@@ -3177,7 +3177,7 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
     (setf emojify-company-tooltips-p t)
     (setf emojify-point-entered-behaviour 'uncover)
     :config
-    (emojify-set-emoji-styles '(unicode github)))
+    (emojify-set-emoji-styles '(unicode)))
 
   (use-package company-emoji
     :after (emojify)
