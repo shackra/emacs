@@ -3178,15 +3178,14 @@ Muestra imágenes de emojis en lugar de los caracteres utf-8
     :config
     (emojify-set-emoji-styles '(unicode)))
 
-  (unless (eq system-type 'darwin)
-    (use-package company-emoji
-      :after (emojify)
-      :init
-      (setf emojify-company-tooltips-p t)
-      :config (add-hook 'text-mode-hook
-                        (lambda ()
-                          (add-to-list
-                           (make-local-variable 'company-backends) '(company-emoji :with company-yasnippet))))))
+  (use-package company-emoji
+    :after (emojify)
+    :init
+    (setf emojify-company-tooltips-p t)
+    :config (add-hook 'text-mode-hook
+                      (lambda ()
+                        (add-to-list
+                          (make-local-variable 'company-backends) '(company-emoji :with company-yasnippet)))))
 #+END_SRC
 *** free-keys
 Muestra cuales combinaciones de teclas están libres para asignar. Asociado @@html:<kbd>C-h C-k</kbd>@@.
