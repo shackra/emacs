@@ -2358,6 +2358,10 @@ Modo mayor para editar archivos GDScript y =.tscn=
                :repo "GDQuest/emacs-gdscript-mode"
                :files ("*.el" "data/*.txt")))
 #+end_src
+*** gRPC
+#+begin_src emacs-lisp
+  (use-package protobuf-mode)
+#+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
