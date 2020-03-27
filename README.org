@@ -706,14 +706,12 @@ modo mayor para interactuar con interpretes inferiores
               (remove-text-properties (1- start-marker) start-marker '(rear-nonsticky))
               (add-text-properties    (1- start-marker) start-marker '(read-only t))))))))
 #+end_src
-*** aweshell
-Reemplaza multi-term
+*** Shell
+terminal dentro de Emacs
 #+begin_src emacs-lisp
-  (use-package aweshell
-    :straight (aweshell :type git :host github :repo "manateelazycat/aweshell")
-    :bind ("C-c t" . aweshell-dedicated-open)
-    :bind (:map dired-mode-map
-                ("[" . aweshell-dedicated-open)))
+  (use-package tortuga
+    :bind ("C-c t" . tortuga-first-open)
+    :straight (tortuga :type git :host gitlab :repo "shackra/tortuga"))
 
   (use-package eshell-mode
     :straight (eshell-mode :type built-in)
