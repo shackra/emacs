@@ -1107,7 +1107,7 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
 
     (defadvice mu4e-quit (after mu4e-close-and-push activate)
       "Despues de salir de mu4e ejecutamos un script para subir los cambios al buzon de correo y para también restaurar la disposición de ventanas"
-      (start-process "pushmail" "*pushmail-mbsync*" "mbsync" "-a" "-V" "--push" "-c" "/home/jorge/.mbsyncrc.private")
+      (start-process "pushmail" "*pushmail-offlineimap*" "offlineimap")
       (when (get-register :mu4e-fullscreen)
         (jump-to-register :mu4e-fullscreen)))
     :init
@@ -1130,15 +1130,16 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     (setf mu4e-hide-index-messages t)
     (setf message-kill-buffer-on-exit t)
     (setf mu4e-attachment-dir  "~/Descargas")
-    (setf mu4e-maildir "~/Mail")
     (setq mu4e-sent-messages-behavior 'delete)
-    (setf shackra/mu4e-maildir-dirs '("yahoo" "kue" "gmail"))
+    (setf shackra/mu4e-maildir-dirs '("yahoo" "kue" "gsuite"))
     (defun shackra-mu4e-get-maildir (maildir place)
       "Retorna ubicación para mover el mensaje por MAILDIR a otro lugar PLACE."
       (let ((maildir-path))
         (dolist (dir shackra/mu4e-maildir-dirs)
           (when (string-match-p (concat "^/" dir) maildir)
-            (setf maildir-path (concat "/" dir "/" place))))
+            (if (string= dir "gsuite")
+                (setf maildir-path (concat "/" dir "/Entrada/" place))
+              (setf maildir-path (concat "/" dir "/" place)))))
         (unless maildir-path
           (setf maildir-path (mu4e-ask-maildir-check-exists "Mover el mensaje al maildir: ")))
         maildir-path))
@@ -1168,7 +1169,6 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
           '(("flag:unread" "No leido" ?u)
             ("flag:flagged" "Marcados como importantes" ?f)))
     :config
-    (require 'mu4e-contrib)
     (defalias 'correo 'mu4e)
     (add-to-list 'mu4e-view-actions
                  '("navegador web" . mu4e-msgv-action-view-in-browser) t)
