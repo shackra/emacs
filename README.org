@@ -1166,7 +1166,7 @@ Para una configuración personalizada hay que cambiar =user-mail-address= y =use
     ;; así use la configuración asociada
     (setf message-sendmail-extra-arguments '("--read-envelope-from"))
     (setf mu4e-bookmarks
-          '((:name "Sin leer" :key ?u :query "NOT flag:seen AND NOT list:list AND NOT maildir:/gsuite/Entrada/spam AND NOT maildir:/gsuite/Entrada/Trash")
+          '((:name "Sin leer" :key ?u :query "NOT flag:seen AND NOT list:emacs-devel.gnu.org AND NOT maildir:/gsuite/Entrada/spam AND NOT maildir:/gsuite/Entrada/Trash")
             (:name "Sin leer (lista de correo emacs-devel)" :key ?l :query "NOT flag:seen AND NOT maildir:/gsuite/Entrada/Trash")
             (:name "Bandeja de entrada" :key ?e :query "maildir:/gsuite/inbox AND NOT flag:list")
             (:name "Imporantes" :key ?f :query "flag:flagged")
