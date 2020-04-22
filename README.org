@@ -2365,6 +2365,15 @@ Modo mayor para editar archivos GDScript y =.tscn=
   (use-package protobuf-mode
     :hook (protobuf-mode . (lambda () (setf c-basic-offset 4))))
 #+end_src
+*** COBOL
+Quizás este loco.
+#+begin_src emacs-lisp
+  (use-package cobol-mode
+    :hook (cobol-mode . (lambda () (aggressive-indent-mode -1)))
+    :mode (("\\.cbl\\'" . cobol-mode)
+           ("\\.cob\\'" . cobol-mode)
+           ("\\.cpy\\'" . cobol-mode)))
+#+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
