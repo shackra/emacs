@@ -786,11 +786,8 @@ Git en Emacs. A decir verdad, amo Mercurial y odio Git. Usar @@html:<kbd>C-c p v
     :config
     (add-hook 'magit-status-mode-hook 'magit-todos-mode))
 
-  (use-package magit-gh-pulls
-    :disabled ;; provoca el siguiente error (void-variable magit-gh-pulls-popup)
-    :after (magit)
-    :config
-    (add-hook 'magit-mode-hook 'turn-on-magit-gh-pulls))
+  (use-package forge
+    :after magit)
 #+END_SRC
 *** git-gutter-fring
 Muestra información de =git diff= en el fringe.

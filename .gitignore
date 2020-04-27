@@ -56,3 +56,4 @@ README.el
 /.dap-breakpoints
 /.lsp-session-v1
 /npm-debug.log
+/forge-database.sqlite
