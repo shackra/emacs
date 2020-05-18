@@ -1879,7 +1879,8 @@ Modo mayor para programar en Python
     (defun shackra-python-mode ()
       "Cosas que deseo activar/desactivar cuando voy a programar en Python"
       (shackra-electric-indent-mode-off)
-      (aggressive-indent-mode -1))
+      (when (fboundp 'aggressive-indent-mode)
+        (aggressive-indent-mode -1)))
 
     (setf python-shell-interpreter "python")
     (add-hook 'python-mode-hook #'shackra-python-mode)
@@ -2373,7 +2374,7 @@ Modo mayor para editar archivos GDScript y =.tscn=
 Quizás este loco.
 #+begin_src emacs-lisp
   (use-package cobol-mode
-    :hook (cobol-mode . (lambda () (aggressive-indent-mode -1)))
+    :hook (cobol-mode . (lambda () (when (fboundp 'aggressive-indent-mode) (aggressive-indent-mode -1))))
     :mode (("\\.cbl\\'" . cobol-mode)
            ("\\.cob\\'" . cobol-mode)
            ("\\.cpy\\'" . cobol-mode)))
@@ -2604,7 +2605,9 @@ Borra espacios en blanco consecutivos con sólo presionar =backspace= una vez :)
     :config
     (global-hungry-delete-mode))
 #+END_SRC
-*** =aggressive-indent-mode=
+*** CANCELADO =aggressive-indent-mode=                          :CANCELADO:
+- State "CANCELADO"  from              [2020-05-18 lun 05:01] \\
+  desactivado hasta que https://github.com/Malabarba/aggressive-indent-mode/issues/138 sea arreglado
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:58]
 - Refiled on [2015-11-12 jue 16:53]
@@ -3236,7 +3239,8 @@ Utilidades para integrar Emacs y docker
   (use-package dockerfile-mode
     :init
     (defun shackra/aggresive-indent-mode-off ()
-      (aggressive-indent-mode -1))
+      (when (fboundp 'aggressive-indent-mode)
+        (aggressive-indent-mode -1)))
     (add-hook 'dockerfile-mode-hook #'shackra/aggresive-indent-mode-off)
     :mode "Dockerfile\\'")
 #+END_SRC
