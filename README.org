@@ -710,8 +710,15 @@ modo mayor para interactuar con interpretes inferiores
 terminal dentro de Emacs
 #+begin_src emacs-lisp
   (use-package tortuga
-    :bind ("C-c t" . tortuga-first-open)
     :straight (tortuga :type git :host gitlab :repo "shackra/tortuga"))
+
+  (use-package shell-pop
+    :custom
+    (shell-pop-universal-key "C-t")
+    (shell-pop-full-span t)
+    (shell-pop-autocd-to-working-dir t)
+    (shell-pop-restore-window-configuration t)
+    (shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell)))))
 
   (use-package eshell-mode
     :straight (eshell-mode :type built-in)
