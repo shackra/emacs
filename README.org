@@ -3244,6 +3244,16 @@ Utilidades para integrar Emacs y docker
     (add-hook 'dockerfile-mode-hook #'shackra/aggresive-indent-mode-off)
     :mode "Dockerfile\\'")
 #+END_SRC
+*** explain-pause-mode
+reporta y explica porque Emacs esta lento
+#+begin_src emacs-lisp
+  (use-package explain-pause-mode
+    :straight (explain-pause-mode :type git :host github :repo "lastquestion/explain-pause-mode")
+    :hook (after-init . explain-pause-mode)
+    :custom
+    (explain-pause-blocking-too-long-ms 100)
+    (explain-pause-alert-via-message nil))
+#+end_src
 *** Temas
 Establece cuales temás son seguros.
 #+BEGIN_SRC emacs-lisp
