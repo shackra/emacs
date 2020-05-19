@@ -2690,6 +2690,13 @@ Mover texto a voluntad
     :bind (:map global-map
                 ("C-c C-u" . string-inflection-all-cycle)))
 #+END_SRC
+*** Escritura de guiones
+- [[https://fountain.io/syntax][Sintaxis (inglés)]]
+- [[https://fountain.io/howto][Ayuda rápida (inglés)]]
+  el formato de archivo debe ser =.fountain=.
+#+begin_src emacs-lisp
+  (use-package fountain-mode)
+#+end_src
 ** Otros
 *** presentation
 Escala el texto en pantalla para presentaciones
