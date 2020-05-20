@@ -8,6 +8,10 @@
 ;; Resuelve problema en Windows 10 con codificaciones incorrectas
 (define-coding-system-alias 'cp65001 'utf-8)
 
+;; para MacOS
+(when (eq window-system 'ns)
+  (setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling")))
+
 (setf straight-use-package-by-default t
       straight-repository-branch "develop")
 
