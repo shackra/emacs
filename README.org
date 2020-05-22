@@ -968,7 +968,9 @@ Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :hook (prog-mode . lsp)
-    :init (setf lsp-idle-delay 0.5))
+    :init
+    (setf lsp-idle-delay 0.5)
+    (setf lsp-signature-auto-activate nil))
 
   (use-package lsp-ui
     :after (lsp-mode)
