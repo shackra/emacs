@@ -3257,6 +3257,7 @@ Utilidades para integrar Emacs y docker
 reporta y explica porque Emacs esta lento
 #+begin_src emacs-lisp
   (use-package explain-pause-mode
+    :disabled
     :straight (explain-pause-mode :type git :host github :repo "lastquestion/explain-pause-mode")
     :hook (after-init . explain-pause-mode)
     :custom
