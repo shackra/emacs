@@ -975,6 +975,10 @@ Implementación para Emacs del Language Server Protocol.
   (use-package lsp-ui
     :after (lsp-mode)
     :hook (lsp-mode . lsp-ui-mode)
+    :custom
+    (lsp-ui-doc-enable t)
+    (lsp-eldoc-hook nil)
+    (lsp-ui-doc-delay 2)
     :config
     (define-key lsp-ui-mode-map [remap xref-find-definitions] #'lsp-ui-peek-find-definitions)
     (define-key lsp-ui-mode-map [remap xref-find-references] #'lsp-ui-peek-find-references))
