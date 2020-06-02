@@ -716,7 +716,7 @@ terminal dentro de Emacs
     :custom
     (shell-pop-universal-key "C-t")
     (shell-pop-full-span t)
-    (shell-pop-autocd-to-working-dir t)
+    (shell-pop-autocd-to-working-dir nil)
     (shell-pop-restore-window-configuration t)
     (shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell)))))
 
