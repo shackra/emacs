@@ -712,13 +712,8 @@ terminal dentro de Emacs
   (use-package tortuga
     :straight (tortuga :type git :host gitlab :repo "shackra/tortuga"))
 
-  (use-package shell-pop
-    :custom
-    (shell-pop-universal-key "C-t")
-    (shell-pop-full-span t)
-    (shell-pop-autocd-to-working-dir nil)
-    (shell-pop-restore-window-configuration t)
-    (shell-pop-shell-type '("eshell" "*eshell*" (lambda () (eshell)))))
+  (use-package aweshell
+    :straight (aweshell :type git :host github :repo "manateelazycat/aweshell"))
 
   (use-package eshell-mode
     :straight (eshell-mode :type built-in)
@@ -727,15 +722,17 @@ terminal dentro de Emacs
     (setf eshell-prompt-regexp (rx (zero-or-more not-newline) blank (or "#" "$") blank))
     (setf eshell-prompt-function
           (lambda ()
-            (concat (replace-regexp-in-string (expand-file-name "~") "~" (eshell/pwd)) " " (if (= eshell-last-command-status 0) "🤣" ":sob:") (if (= (user-uid) 0) " # " " $ "))))
-    :bind (:map eshell-mode-map
-                ("C-c n"   . aweshell-next)
-                ("C-c p"   . aweshell-prev)
-                ("C-c c"   . aweshell-clear-buffer)
-                ("C-c s"   . aweshell-sudo-toggle))
-    :bind (:map eshell-mode-map :prefix-map aweshell-dedicated-prefix-map :prefix "C-c t"
-                ("b" . aweshell-switch-buffer)
-                ("x" . aweshell-dedicated-close)))
+            (concat (replace-regexp-in-string (expand-file-name "~") "~" (eshell/pwd)) " " (if (= eshell-last-command-status 0) "🔥" "🐛") (if (= (user-uid) 0) " # " " $ "))))
+    :hydra (hydra-aweshell (:color blue :columns 2)
+                           ("b" aweshell-switch-buffer)
+                           ("x" aweshell-dedicated-close)
+                           ("n" aweshell-next)
+                           ("p" aweshell-prev)
+                           ("c" aweshell-clear-buffer)
+                           ("s" aweshell-sudo-toggle))
+    :bind (:map global-map
+                ("C-t" . aweshell-dedicated-open))
+    :bind (:map eshell-mode-map ("C-t" . hydra-aweshell/body)))
 #+end_src
 *** =git=
 #+BEGIN_SRC emacs-lisp
