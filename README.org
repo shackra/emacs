@@ -713,25 +713,24 @@ terminal dentro de Emacs
     :straight (tortuga :type git :host gitlab :repo "shackra/tortuga"))
 
   (use-package aweshell
-    :straight (aweshell :type git :host github :repo "manateelazycat/aweshell"))
+    :straight (aweshell :type git :host github :repo "manateelazycat/aweshell")
+    :hook (eshell-mode . (lambda () (company-mode -1))))
 
-  (use-package eshell-mode
-    :straight (eshell-mode :type built-in)
-    :hook (eshell-mode . (lambda () (company-mode -1)))
+  (use-package esh-mode
+    :straight (esh-mode :type built-in)
     :init
     (setf eshell-prompt-regexp (rx (zero-or-more not-newline) blank (or "#" "$") blank))
     (setf eshell-prompt-function
           (lambda ()
             (concat (replace-regexp-in-string (expand-file-name "~") "~" (eshell/pwd)) " " (if (= eshell-last-command-status 0) "🔥" "🐛") (if (= (user-uid) 0) " # " " $ "))))
-    :hydra (hydra-aweshell (:color blue :columns 2)
-                           ("b" aweshell-switch-buffer)
-                           ("x" aweshell-dedicated-close)
-                           ("n" aweshell-next)
-                           ("p" aweshell-prev)
-                           ("c" aweshell-clear-buffer)
-                           ("s" aweshell-sudo-toggle))
-    :bind (:map global-map
-                ("C-t" . aweshell-dedicated-open))
+    :hydra (hydra-aweshell (:color blue :columns 3)
+                           ("b" aweshell-switch-buffer "switch term")
+                           ("x" aweshell-dedicated-close "close window")
+                           ("n" aweshell-next "next term")
+                           ("p" aweshell-prev "prev term")
+                           ("c" aweshell-clear-buffer "clear buffer")
+                           ("s" aweshell-sudo-toggle "toggle sudo"))
+    :bind (:map global-map ("C-t" . aweshell-dedicated-open))
     :bind (:map eshell-mode-map ("C-t" . hydra-aweshell/body)))
 #+end_src
 *** =git=
