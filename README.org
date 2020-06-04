@@ -1044,6 +1044,42 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
      :config
      (add-hook 'emacs-startup-hook #'edit-server-start))
  #+end_src
+*** pesp-mode
+provee múltiples espacios de trabajo nombrados para Emacs, similar a múltiples escritorios en un Desktop Manager.
+#+begin_src emacs-lisp
+  (use-package persp-mode
+    :init
+    (with-eval-after-load "ivy"
+      (add-hook 'ivy-ignore-buffers
+                #'(lambda (b)
+                    (when persp-mode
+                      (let ((persp (get-current-persp)))
+                        (if persp
+                            (not (persp-contain-buffer-p b persp))
+                          nil)))))
+
+      (setq ivy-sort-functions-alist
+            (append ivy-sort-functions-alist
+                    '((persp-kill-buffer   . nil)
+                      (persp-remove-buffer . nil)
+                      (persp-add-buffer    . nil)
+                      (persp-switch        . nil)
+                      (persp-window-switch . nil)
+                      (persp-frame-switch  . nil)))))
+    :custom
+    (wg-morph-on nil)
+    (persp-autokill-buffer-on-remove 'kill-weak)
+    :hook
+    (after-init . (lambda () (persp-mode 1))))
+
+  (use-package persp-mode-projectile-bridge
+    :straight (persp-mode-projectile-bridge :type git :host github :repo "Bad-ptr/persp-mode-projectile-bridge.el")
+    :init
+    :hook ((persp-mode-projectile-bridge-mode . (lambda () (if persp-mode-projectile-bridge-mode
+                                                            (persp-mode-projectile-bridge-find-perspectives-for-all-buffers)
+                                                          (persp-mode-projectile-bridge-kill-perspectives))))
+           (after-init . (lambda () (persp-mode-projectile-bridge-mode 1)))))
+#+end_src
 ** Comunicación
 *** Correo electrónico
 =mu4e= se usa para leer y enviar correo electrónico.
