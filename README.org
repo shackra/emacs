@@ -1047,37 +1047,157 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
 *** pesp-mode
 provee múltiples espacios de trabajo nombrados para Emacs, similar a múltiples escritorios en un Desktop Manager.
 #+begin_src emacs-lisp
+  ;; parte de esta configuracion fue extraida de
+  ;; https://pastebin.com/raw/Q1hK8cwi
+  ;; fuente: https://www.reddit.com/r/emacs/comments/d66s8r/how_to_get_the_most_from_perspectiveel/f0r42ch/
   (use-package persp-mode
     :after (ivy)
+    :custom
+    (ivy-sort-functions-alist
+     (append ivy-sort-functions-alist
+             '((persp-kill-buffer . nil)
+               (persp-remove-buffer . nil)
+               (persp-add-buffer . nil)
+               (persp-switch . nil)
+               (persp-window-switch . nil)
+               (persp-frame-switch . nil))))
+    (wg-morph-on nil)
+    (persp-autokill-buffer-on-remove 'kill-weak)
+    (persp-keymap-prefix nil)
+    :bind (:map global-map ("C-x x" . hydra-persp/body))
     :hook
     (after-init . (lambda () (persp-mode 1)))
     :init
-    (add-hook 'ivy-ignore-buffers
-              #'(lambda (b)
-                  (when persp-mode
-                    (let ((persp (get-current-persp)))
-                      (if persp
-                          (not (persp-contain-buffer-p b persp))
-                        nil)))))
-    (setq ivy-sort-functions-alist
-          (append ivy-sort-functions-alist
-                  '((persp-kill-buffer . nil)
-                    (persp-remove-buffer . nil)
-                    (persp-add-buffer . nil)
-                    (persp-switch . nil)
-                    (persp-window-switch . nil)
-                    (persp-frame-switch . nil))))
-    :custom
-    (wg-morph-on nil)
-    (persp-autokill-buffer-on-remove 'kill-weak)
-    (persp-keymap-prefix (kbd "C-x x")))
+    (add-hook 'ivy-ignore-buffers  #'(lambda (b)
+                                       (when persp-mode
+                                         (let ((persp (get-current-persp)))
+                                           (if persp
+                                               (not (persp-contain-buffer-p b persp))
+                                             nil)))))
+    (defmacro hfj-make-tab (name &rest body)
+      "Select an existing tab, or create one and configure it."
+      `(cond
+        ((persp-with-name-exists-p ,name)
+         (persp-switch ,name))
+        (t
+         (persp-switch ,name)
+         ,@body)))
+
+    (defun hfj-make-tab-f (name setup-actions)
+      "Select an existing tab, or create one and configure it."
+      (cond
+       ((persp-with-name-exists-p name)
+        (persp-switch name))
+       (t
+        (persp-switch name)
+        (funcall setup-actions))))
+
+    (defun define-layout-inner (name f)
+      "Add layout config to hfj-predefined-layouts"
+      (setq hfj-predefined-layouts
+            (delete-if (lambda (a) (string-equal (car a) name))
+                       hfj-predefined-layouts))
+      (push (list* name (cons name f)) hfj-predefined-layouts)
+      (setq hfj-predefined-layouts
+            (sort hfj-predefined-layouts
+                  (lambda (a b) (string< (car a) (car b))))))
+
+    (defmacro hfj-define-layout (name &rest body)
+      "Add layout config to hfj-predefined-layouts"
+      `(define-layout-inner ,name (lambda () ,@body)))
+
+    (defun hfj-pick-layout ()
+      "Switch to a new or existing layout."
+      (interactive)
+      (let* ((names (persp-names))
+             (name (completing-read "Cambiar a maqueta: " names))
+             (exists (persp-with-name-exists-p name)))
+        (persp-switch name)
+        (unless exists
+          (switch-to-buffer "*scratch*"))))
+
+    (defvar hfj-predefined-layouts '())
+
+    (defun hfj-pick-predefined-layout ()
+      "Create a predefined layout to be selectable from list."
+      (interactive)
+      (when (null hfj-predefined-layouts)
+        (error "No hay maquetas configuradas."))
+
+      (let ((layout-name-and-actions (ivy-read :prompt "Seleccionar maqueta predefinida: " :collection hfj-predefined-layouts :require-match t)))
+
+        (when layout-name-and-actions
+          (hfj-make-tab-f (car layout-name-and-actions) (cdr layout-name-and-actions)))))
+
+    (defun hfj-persp-kill-current ()
+      (interactive)
+      (let ((persp (get-current-persp)))
+        (cond ((null persp) (error "No se puede matar la maqueta por defecto"))
+              (t (persp-kill (persp-name persp))))))
+
+    (defun hfj-persp-switch-to-n (n)
+      (let ((names (persp-names-current-frame-fast-ordered))
+            (count 1))
+        (dolist (name names)
+          (when (= count n)
+            (persp-switch name))
+          (cl-incf count))))
+    (defun hfj-persp-switch-to-1 () (interactive) (hfj-persp-switch-to-n 1))
+    (defun hfj-persp-switch-to-2 () (interactive) (hfj-persp-switch-to-n 2))
+    (defun hfj-persp-switch-to-3 () (interactive) (hfj-persp-switch-to-n 3))
+    (defun hfj-persp-switch-to-4 () (interactive) (hfj-persp-switch-to-n 4))
+    (defun hfj-persp-switch-to-5 () (interactive) (hfj-persp-switch-to-n 5))
+    (defun hfj-persp-switch-to-6 () (interactive) (hfj-persp-switch-to-n 6))
+    (defun hfj-persp-switch-to-7 () (interactive) (hfj-persp-switch-to-n 7))
+    (defun hfj-persp-switch-to-8 () (interactive) (hfj-persp-switch-to-n 8))
+    (defun hfj-persp-switch-to-9 () (interactive) (hfj-persp-switch-to-n 9))
+    (defun hfj-persp-switch-to-10 () (interactive) (hfj-persp-switch-to-n 10))
+
+    (defun hydra-perse-names ()
+      (let ((names (persp-names-current-frame-fast-ordered))
+            (current-name (safe-persp-name (get-current-persp)))
+            (parts '())
+            (count 1))
+        (dolist (name names (s-join " | " (nreverse parts)))
+          (cond ((eq name current-name)
+                 (push (format "[%d:%s]" count name) parts))
+                (t
+                 (push (format "%d:%s" count name) parts)))
+          (cl-incf count))))
+    :hydra (hydra-persp (:hint nil)
+                        "
+  Maquetas %s(hydra-perse-names)
+
+  ^Navegación^      ^Selección^       ^Acciones^       ^Buffers^
+  ^-^---------------^-^---------------^-^--------------^-^------------
+  _n_: sig.         _l_: escoger       _d_: borrar     _a_: agregar buffer
+  _p_: prev.        _L_: predefinido   _r_: renombrar
+  "
+                        ("q" nil)
+                        ("a" persp-add-buffer :exit t)
+                        ("d" hfj-persp-kill-current)
+                        ("l" hfj-pick-layout :exit t)
+                        ("L" hfj-pick-predefined-layout :exit t)
+                        ("r" persp-rename :exit t)
+                        ("n" persp-next)
+                        ("p" persp-prev)
+                        ("1" hfj-persp-switch-to-1 :exit t)
+                        ("2" hfj-persp-switch-to-2 :exit t)
+                        ("3" hfj-persp-switch-to-3 :exit t)
+                        ("4" hfj-persp-switch-to-4 :exit t)
+                        ("5" hfj-persp-switch-to-5 :exit t)
+                        ("6" hfj-persp-switch-to-6 :exit t)
+                        ("7" hfj-persp-switch-to-7 :exit t)
+                        ("8" hfj-persp-switch-to-8 :exit t)
+                        ("9" hfj-persp-switch-to-9 :exit t)
+                        ("0" hfj-persp-switch-to-10 :exit t)))
 
   (use-package persp-mode-projectile-bridge
     :straight (persp-mode-projectile-bridge :type git :host github :repo "Bad-ptr/persp-mode-projectile-bridge.el")
     :init
     :hook ((persp-mode-projectile-bridge-mode . (lambda () (if persp-mode-projectile-bridge-mode
-                                                            (persp-mode-projectile-bridge-find-perspectives-for-all-buffers)
-                                                          (persp-mode-projectile-bridge-kill-perspectives))))
+                                                          (persp-mode-projectile-bridge-find-perspectives-for-all-buffers)
+                                                        (persp-mode-projectile-bridge-kill-perspectives))))
            (after-init . (lambda () (persp-mode-projectile-bridge-mode 1)))))
 #+end_src
 ** Comunicación
