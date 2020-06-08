@@ -1200,6 +1200,21 @@ provee múltiples espacios de trabajo nombrados para Emacs, similar a múltiples
                                                         (persp-mode-projectile-bridge-kill-perspectives))))
            (after-init . (lambda () (persp-mode-projectile-bridge-mode 1)))))
 #+end_src
+** tree-sitter
+#+begin_src emacs-lisp
+  (use-package tree-sitter
+    :straight (tree-sitter :host github
+                           :repo "ubolonton/emacs-tree-sitter"
+                           :files ("lisp/*.el" "src" "Cargo.toml" "Cargo.lock"))
+    :hook ((after-init . global-tree-sitter-mode)
+           ((go-mode python-mode js-mode typescript-mode) . tree-sitter-hl-mode)))
+
+  (use-package tree-sitter-langs
+    :straight (tree-sitter-langs :host github
+                                 :repo "ubolonton/emacs-tree-sitter"
+                                 :files ("langs/*.el" "langs/queries"))
+    :hook (after-init . (lambda () (tree-sitter-langs-install-grammars t))))
+#+end_src
 ** Comunicación
 *** Correo electrónico
 =mu4e= se usa para leer y enviar correo electrónico.
