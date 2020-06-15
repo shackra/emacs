@@ -3430,7 +3430,7 @@ reporta y explica porque Emacs esta lento
     :straight (explain-pause-mode :type git :host github :repo "lastquestion/explain-pause-mode")
     :hook (after-init . explain-pause-mode)
     :custom
-    (explain-pause-blocking-too-long-ms 100)
+    (explain-pause-blocking-too-long-ms (* 1000 2))
     (explain-pause-alert-via-message nil))
 #+end_src
 *** Temas
