@@ -994,8 +994,7 @@ Emacs client/library for [[https://code.visualstudio.com/docs/extensionAPI/api-d
     (dap-firefox-setup)
     (require 'dap-chrome)
     (dap-chrome-setup)
-    (require 'dap-python)
-    (add-hook 'dap-stopped-hook (lambda (arg) (call-interactively #'dap-hydra))))
+    (require 'dap-python))
 #+end_src
 *** smerge
 Un modo menor que facilita la manipulación de la salida de diff3
@@ -1018,7 +1017,6 @@ Un modo menor que facilita la manipulación de la salida de diff3
                          ("u" smerge-keep-upper)
                          ("l" smerge-keep-lower)
                          ("a" smerge-keep-all)
-                         ("RET" smerge-keep-current)
                          ("\C-m" smerge-keep-current)
                          ("<" smerge-diff-base-upper)
                          ("=" smerge-diff-upper-lower)
