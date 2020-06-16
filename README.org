@@ -1009,7 +1009,7 @@ Un modo menor que facilita la manipulación de la salida de diff3
   _p_rev       _u_pper              _=_: upper/lower       _r_esolve
   ^^           _l_ower              _>_: base/lower        _k_ill current
   ^^           _a_ll                _R_efine
-  ^^           _RET_: current       _E_diff
+  ^^           _C-RET_: current     _E_diff
   "
                          ("n" smerge-next)
                          ("p" smerge-prev)
@@ -1017,7 +1017,7 @@ Un modo menor que facilita la manipulación de la salida de diff3
                          ("u" smerge-keep-upper)
                          ("l" smerge-keep-lower)
                          ("a" smerge-keep-all)
-                         ("\C-m" smerge-keep-current)
+                         ("C-RET" smerge-keep-current)
                          ("<" smerge-diff-base-upper)
                          ("=" smerge-diff-upper-lower)
                          (">" smerge-diff-base-lower)
