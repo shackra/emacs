@@ -392,29 +392,31 @@ Con este paquete hacemos que la interfaz de ivy sea más amigable para algunos c
     (defface aw-leading-char-face '(:inherit ace-jump-face-foreground :height 2.0) "ace-jump leading character size")
     (setf aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
     (define-key global-map [remap other-window] 'ace-window)
-    :hydra (hydra-win (:columns 2 :color amaranth)
+    :hydra (hydra-win (:columns 3 :color amaranth)
                       "Manejo de ventanas"
-                      ("<up>" windmove-up "Cursor ↑")
-                      ("<left>" windmove-left "Cursor ←")
-                      ("<down>" windmove-down "Cursor ↓")
-                      ("<right>" windmove-right "Cursor →")
-                      ("C-<up>" hydra-move-splitter-up "Astilla ↑")
-                      ("C-<left>" hydra-move-splitter-left "Astilla ←")
-                      ("C-<down>" hydra-move-splitter-down "Astilla ↓")
-                      ("C-<right>" hydra-move-splitter-right "Astilla →")
-                      ("b" switch-to-buffer "Cambiar buffer")
-                      ("f" find-file "Visitar/Crear archivo")
+                      ("p" windmove-up "Cursor ↑")
+                      ("b" windmove-left "Cursor ←")
+                      ("n" windmove-down "Cursor ↓")
+                      ("f" windmove-right "Cursor →")
+                      ("C-p" hydra-move-splitter-up "Astilla ↑")
+                      ("C-b" hydra-move-splitter-left "Astilla ←")
+                      ("C-n" hydra-move-splitter-down "Astilla ↓")
+                      ("C-f" hydra-move-splitter-right "Astilla →")
+                      ("M-b" switch-to-buffer "Cambiar buffer")
+                      ("M-f" find-file "Visitar/Crear archivo")
                       ("z" (lambda () (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Mover cursor a otra ventana")
                       ("2" (lambda () (interactive) (split-window-right) (windmove-right)) "Dividir |")
                       ("3" (lambda () (interactive) (split-window-below) (windmove-down)) "Dividir -")
                       ("c" (lambda () (interactive) (ace-window 4) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Intercambiar buffer de ventana")
-                      ("s" save-buffer "Guardar buffer")
+                      ("g" save-buffer "Guardar buffer")
                       ("x" delete-window "Borrar ventana")
+                      ("s" (lambda () (interactive) (eshell t)) "inicia eshell")
+                      ("r" rename-buffer "cambiar nombre del buffer")
                       ("X" (lambda () (interactive) (ace-window 16) (add-hook 'ace-window-end-once-hook 'hydra-win/body)) "Borrar esta/otra ventana")
                       ("1" ace-maximize-window "Maximizar esta ventana")
                       ("," (progn (winner-undo) (setf this-command 'winner-undo)) "Deshacer ultimo cambio")
                       ("." winner-redo "Rehacer ultimo cambio")
-                      ("SPC" nil "Salir")))
+                      ("q" nil "salir")))
 
   (use-package windmove)
   (use-package winner
@@ -1977,7 +1979,7 @@ Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquet
 #+BEGIN_SRC sh
   sudo pacman -S emacs-pkgbuild-mode
 #+END_SRC
-*** =python=
+*** COMMENT =python=
 Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
   (defun shackra-python-install-deps ()
@@ -2001,8 +2003,14 @@ Modo mayor para programar en Python
     :init
     (venv-initialize-interactive-shells)
     (venv-initialize-eshell)
+    (defun shackra-lsp-before-initialize-python ()
+      (when (eq major-mode 'python-mode)
+        (unless venv-current-name
+          (call-interactively (venv-workon)))))
+    :hook ((venv-postmkvirtualenv-hook . shackra-python-install-deps))
     :config
-    (add-hook 'venv-postmkvirtualenv-hook #'shackra-python-install-deps))
+    (with-eval-after-load 'lsp-mode
+      (add-hook 'lsp-before-initialize-hook #'shackra-lsp-before-initialize-python)))
 
   (use-package sphinx-doc
     :after (python)
