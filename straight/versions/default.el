@@ -131,7 +131,7 @@
  ("lsp-treemacs" . #("fc47d96897272b333224e1190eddbeb29acda3b1" 0 40 (fontified nil)))
  ("lsp-ui" . #("840620f8f5a86440c1ce29e66910dcbcdcd7d815" 0 40 (fontified nil)))
  ("macrostep" . #("424e3734a1ee526a1bd7b5c3cd1d3ef19d184267" 0 40 (fontified nil)))
- ("magit" . #("9e35f9892ca3987d979a6212ff79b23ddbb42103" 0 40 (fontified nil)))
+ ("magit" . #("485ee181564655d21c0770a4e021f7b805f4d643" 0 40 (fontified nil)))
  ("magit-todos" . #("a0e5d1f3c7dfcb4f18c1b0d57f1746a4872df5c6" 0 40 (fontified nil)))
  ("markdown-mode" . #("399df42755ccf31cecb61c9f5d8ad72bc30d7e4b" 0 40 (fontified nil)))
  ("melpa" . #("12b434e4c78b3428ee144559cb57ea41df8fb4c5" 0 40 (fontified nil)))
