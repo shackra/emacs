@@ -2934,7 +2934,7 @@ mode-line minimalista, reemplazo para =telephone-line=.
     :config
     (doom-modeline-def-modeline 'personal
       '(bar matches buffer-info vcs checker buffer-position selection-info)
-      '(lsp misc-info minor-modes debug buffer-encoding major-mode))
+      '(misc-info minor-modes debug buffer-encoding major-mode))
     (defun shackra-default-doom-modeline-format ()
       (doom-modeline-set-modeline 'personal 'default))
     :custom
