@@ -197,7 +197,7 @@ código para configurar ligaduras en Fira Code
 
   (define-minor-mode fira-code-mode
     "Fira Code ligatures minor mode"
-    :lighter " Fira Code"
+    :lighter " 🔥"
     (setq-local prettify-symbols-unprettify-at-point 'right-edge)
     (if fira-code-mode
         (fira-code-mode--enable)
@@ -577,6 +577,7 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     (setf company-backends (mapcar #'company-mode-backend-with-yas company-backends)))
 
   (use-package company-box
+    :diminish company-box-mode
     :hook (company-mode . company-box-mode))
 
   (use-package company
@@ -597,9 +598,10 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
 =company-posframe= permite a company usar child-frame como menu de candidatos
 #+BEGIN_SRC emacs-lisp
   (when (not (version< emacs-version "26.0"))
-  (use-package company-posframe
-    :config
-    (company-posframe-mode 1)))
+    (use-package company-posframe
+      :diminish company-posframe-mode
+      :config
+      (company-posframe-mode 1)))
 #+END_SRC
 *** company-auctex
 backend para [[*=company=][Company]] que provee auto completado para AUCTeX
@@ -2923,17 +2925,26 @@ Los caracteres en el mode-line de Emacs pueden ser modificados ¿No es genial? (
 mode-line minimalista, reemplazo para =telephone-line=.
 #+BEGIN_SRC emacs-lisp
   (use-package doom-modeline
-    :hook (after-init . doom-modeline-mode)
+    :hook ((after-init . doom-modeline-mode)
+           (doom-modeline-mode . shackra-default-doom-modeline-format))
     :init
-    (setq doom-modeline-height 44)
-    (setq doom-modeline-bar-width 7)
     (if (daemonp)
         (setq doom-modeline-icon t)
       (setq doom-modeline-icon (display-graphic-p)))
-    (setq doom-modeline-checker-simple-format nil)
-    (setq doom-modeline-vcs-max-length (length "chxxxxx/xxxxx"))
-    (setq doom-modeline-modal-icon nil)
-    (setq doom-modeline-mu4e (fboundp 'mu4e)))
+    :config
+    (doom-modeline-def-modeline 'personal
+      '(bar matches buffer-info vcs checker buffer-position selection-info)
+      '(lsp misc-info minor-modes debug buffer-encoding major-mode))
+    (defun shackra-default-doom-modeline-format ()
+      (doom-modeline-set-modeline 'personal 'default))
+    :custom
+    (doom-modeline-height 44)
+    (doom-modeline-bar-width 7)
+    (doom-modeline-checker-simple-format nil)
+    (doom-modeline-vcs-max-length (length "chxxxxx/xxxxx"))
+    (doom-modeline-modal-icon nil)
+    (doom-modeline-mu4e (fboundp 'mu4e))
+    (doom-modeline-minor-modes t))
 #+END_SRC
 *** =visual-line-mode=
 :LOGBOOK:
@@ -3279,6 +3290,7 @@ Utilidades para integrar Emacs y docker
 reporta y explica porque Emacs esta lento
 #+begin_src emacs-lisp
   (use-package explain-pause-mode
+    :diminish explain-pause-mode
     :straight (explain-pause-mode :type git :host github :repo "lastquestion/explain-pause-mode")
     :hook (after-init . explain-pause-mode)
     :custom
