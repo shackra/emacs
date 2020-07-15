@@ -127,7 +127,7 @@ Transparent Remote Access, Multiple Protocols: paquete para editar archivos remo
 #+BEGIN_SRC emacs-lisp
   (use-package bug-hunter)
 #+END_SRC
-*** =better-defaults=
+*** Configuración sana para GNU Emacs
 configuración sana de ciertas opciones en Emacs
 #+BEGIN_SRC emacs-lisp
   (use-package better-defaults
