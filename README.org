@@ -163,6 +163,8 @@ configuración sana de ciertas opciones en Emacs
     (buffer-file-coding-system 'utf-8)
     (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
     :config
+    ;; apaga transient-mark-mode
+    (transient-mark-mode -1)
     (blink-cursor-mode)
     (ido-mode nil)
     (tooltip-mode -1)
