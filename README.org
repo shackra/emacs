@@ -136,7 +136,7 @@ configuración sana de ciertas opciones en Emacs
     (set-default 'indicate-empty-lines t)
     (setq-default truncate-lines t)
     (if (boundp 'buffer-file-coding-system)
-        (setq-default buffer-file-coding-system 'utf-8)
+	(setq-default buffer-file-coding-system 'utf-8)
       (setf buffer-file-coding-system 'utf-8))
     :custom
     (blink-cursor-blinks 0)
@@ -180,9 +180,7 @@ configuración sana de ciertas opciones en Emacs
     (set-default-coding-systems 'utf-8)
     (set-terminal-coding-system 'utf-8)
     (set-keyboard-coding-system 'utf-8)
-    (add-to-list 'default-frame-alist '(tty-color-mode . -1))
-    (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
-      (flet ((process-list ())) ad-do-it)))
+    (add-to-list 'default-frame-alist '(tty-color-mode . -1)))
 #+END_SRC
 **** Tipografía
 ***** Fira Code simbolos
