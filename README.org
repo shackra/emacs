@@ -656,19 +656,18 @@ Manejo de archivos de un proyecto.
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
     :diminish projectile-mode
-    :init
-    (setf projectile-completion-system 'ivy
-          projectile-switch-project-action 'counsel-projectile-find-file)
-    (setf
-     projectile-file-exists-remote-cache-expire (* 10 60)
-     projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
+    :hook ((text-mode prog-mode) . projectile-mode)
+    :custom
+    (projectile-completion-system 'ivy)
+    (projectile-switch-project-action 'counsel-projectile-find-file)
+    (projectile-file-exists-remote-cache-expire (* 10 60))
+    (projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
                                          "*.o" "*.pyc" "*.elc" "*.exe"
                                          "*.zip" "*.tar.*" "*.rar" "*.7z"))
+    (projectile-switch-project-action 'magit-status)
     :config
     (add-to-list 'projectile-globally-ignored-directories "node_modules")
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-    (add-hook 'text-mode-hook #'projectile-mode)
-    (add-hook 'prog-mode-hook #'projectile-mode))
+    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
   (use-package ag)
 #+END_SRC
