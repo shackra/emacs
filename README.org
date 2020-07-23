@@ -1088,13 +1088,12 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
                            :repo "ubolonton/emacs-tree-sitter"
                            :files ("lisp/*.el" "src" "Cargo.toml" "Cargo.lock"))
     :hook ((after-init . global-tree-sitter-mode)
-           ((go-mode python-mode js-mode typescript-mode) . tree-sitter-hl-mode)))
+           ((go-mode python-mode js-mode typescript-mode rust-mode) . tree-sitter-hl-mode)))
 
   (use-package tree-sitter-langs
     :straight (tree-sitter-langs :host github
                                  :repo "ubolonton/emacs-tree-sitter"
-                                 :files ("langs/*.el" "langs/queries"))
-    :hook (after-init . (lambda () (tree-sitter-langs-install-grammars t))))
+                                 :files ("langs/*.el" "langs/queries")))
 #+end_src
 ** Comunicación
 *** Correo electrónico
