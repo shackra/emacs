@@ -749,13 +749,16 @@ modo mayor para interactuar con interpretes inferiores
 terminal dentro de Emacs
 #+begin_src emacs-lisp
   (use-package tortuga
+    :disabled
     :straight (tortuga :type git :host gitlab :repo "shackra/tortuga"))
 
   (use-package aweshell
+    :disabled
     :straight (aweshell :type git :host github :repo "manateelazycat/aweshell")
     :hook (eshell-mode . (lambda () (company-mode -1))))
 
   (use-package esh-mode
+    :disabled
     :straight (esh-mode :type built-in)
     :init
     (setf eshell-prompt-regexp (rx (zero-or-more not-newline) blank (or "#" "$") blank))
