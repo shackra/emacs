@@ -1086,7 +1086,8 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
  #+end_src
 ** tree-sitter
 #+begin_src emacs-lisp
-  (use-package tree-sitter
+  (unless (string-equal system-type "darwin")
+    (use-package tree-sitter
     :straight (tree-sitter :host github
                            :repo "ubolonton/emacs-tree-sitter"
                            :files ("lisp/*.el" "src" "Cargo.toml" "Cargo.lock"))
@@ -1096,7 +1097,7 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
   (use-package tree-sitter-langs
     :straight (tree-sitter-langs :host github
                                  :repo "ubolonton/emacs-tree-sitter"
-                                 :files ("langs/*.el" "langs/queries")))
+                                 :files ("langs/*.el" "langs/queries"))))
 #+end_src
 ** Comunicación
 *** Correo electrónico
