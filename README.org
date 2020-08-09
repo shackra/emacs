@@ -2417,6 +2417,11 @@ Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que s
 #+end_src
 *** shell
 #+begin_src emacs-lisp
+  (when (and (eq system-type "windows-nt")
+             (fboundp 'module-load))
+    ;; instala vterm
+    (use-package vterm))
+
   (use-package flymake-shell
     :hook (sh-set-shell . flymake-shell-load))
 #+end_src
