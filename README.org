@@ -745,37 +745,6 @@ modo mayor para interactuar con interpretes inferiores
               (remove-text-properties (1- start-marker) start-marker '(rear-nonsticky))
               (add-text-properties    (1- start-marker) start-marker '(read-only t))))))))
 #+end_src
-*** Shell
-terminal dentro de Emacs
-#+begin_src emacs-lisp
-  (use-package tortuga
-    :disabled
-    :straight (tortuga :type git :host gitlab :repo "shackra/tortuga"))
-
-  (use-package aweshell
-    :disabled
-    :straight (aweshell :type git :host github :repo "manateelazycat/aweshell")
-    :hook (eshell-mode . (lambda () (company-mode -1))))
-
-  (use-package esh-mode
-    :disabled
-    :straight (esh-mode :type built-in)
-    :init
-    (setf eshell-prompt-regexp (rx (zero-or-more not-newline) blank (or "#" "$") blank))
-    (setf eshell-prompt-function
-          (lambda ()
-            (concat (replace-regexp-in-string (expand-file-name "~") "~" (eshell/pwd)) " " (if (= eshell-last-command-status 0) "🔥" "🐛") (if (= (user-uid) 0) " # " " $ "))))
-    :hydra (hydra-aweshell (:color blue :columns 3)
-                           ("w" aweshell-new "new term")
-                           ("x" aweshell-dedicated-close "close window")
-                           ("b" aweshell-switch-buffer "switch term")
-                           ("n" aweshell-next "next term")
-                           ("p" aweshell-prev "prev term")
-                           ("c" aweshell-clear-buffer "clear buffer")
-                           ("s" aweshell-sudo-toggle "toggle sudo"))
-    :bind (:map global-map ("C-t" . aweshell-dedicated-open))
-    :bind (:map eshell-mode-map ("C-t" . hydra-aweshell/body)))
-#+end_src
 *** =git=
 #+BEGIN_SRC emacs-lisp
   (use-package gitignore-mode)
