@@ -2420,7 +2420,22 @@ Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que s
   (when (and (eq system-type "windows-nt")
              (fboundp 'module-load))
     ;; instala vterm
-    (use-package vterm))
+    (use-package vterm
+      :init
+      (defun vterm-counsel-yank-pop-action (orig-fun &rest args)
+        (if (equal major-mode 'vterm-mode)
+            (let ((inhibit-read-only t)
+                  (yank-undo-function (lambda (_start _end) (vterm-undo))))
+              (cl-letf (((symbol-function 'insert-for-yank)
+                         (lambda (str) (vterm-send-string str t))))
+                (apply orig-fun args)))
+          (apply orig-fun args)))
+      :config
+      (advice-add 'counsel-yank-pop-action :around #'vterm-counsel-yank-pop-action)
+      :custom
+      (vterm-kill-buffer-on-exit t)))
+
+  (use-package multi-vterm)
 
   (use-package flymake-shell
     :hook (sh-set-shell . flymake-shell-load))
