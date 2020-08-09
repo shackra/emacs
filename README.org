@@ -1036,7 +1036,8 @@ Emacs client/library for [[https://code.visualstudio.com/docs/extensionAPI/api-d
     (dap-firefox-setup)
     (require 'dap-chrome)
     (dap-chrome-setup)
-    (require 'dap-python))
+    (require 'dap-python)
+    (dap-ui-controls-mode 1))
 #+end_src
 *** smerge
 Un modo menor que facilita la manipulación de la salida de diff3
