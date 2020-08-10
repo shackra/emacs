@@ -619,17 +619,17 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
   (use-package company
     :hook (company-mode . company-mode-update-backends-with-yasnippet)
     :diminish company-mode
-    :init
-    (setf company-backends '((company-files
-                              company-keywords
-                              company-capf)
-                             (company-abbrev company-dabbrev)))
-    (setf company-idle-delay 0.5)
-    (setf company-tooltip-limit 10)
-    (setf company-minimum-prefix-length 2)
-    (setq company-dabbrev-downcase 0)
-    (setf company-auto-complete nil)
-    (add-hook 'after-init-hook #'global-company-mode))
+    :config
+    (add-hook 'after-init-hook #'global-company-mode)
+    :custom
+    (company-backends '((company-files
+                         company-keywords)
+                        (company-abbrev company-dabbrev)))
+    (company-idle-delay 1)
+    (company-tooltip-limit 12)
+    (company-minimum-prefix-length 1)
+    (company-dabbrev-downcase nil)
+    (company-auto-complete t))
 #+END_SRC
 =company-posframe= permite a company usar child-frame como menu de candidatos
 #+BEGIN_SRC emacs-lisp
@@ -976,9 +976,14 @@ Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :hook (prog-mode . lsp)
-    :init
-    (setf lsp-idle-delay 0.5)
-    (setf lsp-signature-auto-activate nil))
+    :custom
+    (lsp-idle-delay 0.5)
+    (lsp-signature-auto-activate nil)
+    (lsp-symbol-highlighting-skip-current t)
+    (lsp-clients-go-format-tool "goimports")
+    (lsp-clients-go-max-parallelism 4)
+    (lsp-clients-go-server "gopls")
+    (lsp-gopls-hover-kind "FullDocumentation"))
 
   (use-package lsp-ui
     :after (lsp-mode)
