@@ -1875,8 +1875,6 @@ Modo mayor para programar en Python
     :after (python)
     :init (add-hook 'python-mode-hook #'sphinx-doc-mode))
 
-  (use-package pydoc-info)
-
   (use-package blacken
     :after (python)
     :init
