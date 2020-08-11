@@ -58,3 +58,5 @@ README.el
 /npm-debug.log
 /forge-database.sqlite
 /persp-confs/
+straight/
+!straight/versions/default.el
