@@ -1003,14 +1003,16 @@ Emacs client/library for [[https://code.visualstudio.com/docs/extensionAPI/api-d
 #+end_quote
 #+begin_src emacs-lisp
   (use-package dap-mode
+    :straight (dap-mode :type git :host github :repo "emacs-lsp/dap-mode"
+                        :fork (:host github :repo "cxb811201/dap-mode" :branch "patch-1"))
     :config
     (dap-mode 1)
     (dap-ui-mode 1)
     (require 'dap-firefox)
-    (dap-firefox-setup)
     (require 'dap-chrome)
-    (dap-chrome-setup)
     (require 'dap-python)
+    (dap-firefox-setup)
+    (dap-chrome-setup)
     (dap-ui-controls-mode 1))
 #+end_src
 *** smerge
