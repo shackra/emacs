@@ -2413,7 +2413,7 @@ Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que s
     :bind (:map global-map ("C-t" . multi-vterm-dedicated-open))
     :bind (:map vterm-mode-map ("C-t" . hydra-multi-vterm/body))
     :custom
-    (multi-vterm-dedicated-window-height 12))
+    (multi-vterm-dedicated-window-height 20))
 
   (use-package flymake-shell
     :hook (sh-set-shell . flymake-shell-load))
