@@ -60,3 +60,4 @@ README.el
 /persp-confs/
 straight/
 !straight/versions/default.el
+init.el
