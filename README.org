@@ -19,6 +19,40 @@ La configuración se hospeda en [[https://gitlab.com/shackra/emacs/][GitLab]], l
 Mi configuración utiliza =use-package= para mantener una separación sana entre porciones de código Elisp. Para conocer que /keywords/ pueden usarse con use-package puede visitar el enlace [[https://jwiegley.github.io/use-package/keywords/][keywords]].
 
 #+BEGIN_SRC emacs-lisp
+  ;; Resuelve problema en Windows 10 con codificaciones incorrectas
+  (define-coding-system-alias 'cp65001 'utf-8)
+
+  ;; para MacOS
+  (when (eq window-system 'ns)
+    (setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling")))
+
+  (setf straight-use-package-by-default t
+        straight-repository-branch "develop")
+
+  (defvar bootstrap-version)
+  (let ((bootstrap-file
+         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+        (bootstrap-version 5))
+    (unless (file-exists-p bootstrap-file)
+      (with-current-buffer
+          (url-retrieve-synchronously
+           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+           'silent 'inhibit-cookies)
+        (goto-char (point-max))
+        (eval-print-last-sexp)))
+    (load bootstrap-file nil 'nomessage))
+
+  (setf straight-check-for-modifications '(check-on-save find-when-checking))
+
+  (straight-use-package
+   '(org-plus-contrib
+     :repo "https://code.orgmode.org/bzg/org-mode.git"
+     :local-repo "org"
+     :files (:defaults "contrib/lisp/*.el")
+     :includes (org)))
+
+  (setq inhibit-startup-screen t)
+
   ;; sombrero de aluminio, le bajamos una rayita
   (setq network-security-level 'medium)
 
@@ -88,10 +122,6 @@ La ubicación geográfica usada es la de San José, Costa Rica siendo tan peque�
         calendar-christian-all-holidays-flag t
         calendar-date-style 'european)
 #+END_SRC
-* Repositorio de paquetes
-Desde la versión 24 Emacs permite la instalación de paquetes de la misma manera como se realiza en distribuciones de GNU/Linux.
-
-El sistema de paquetes de Emacs no es perfecto, para que algunos paquetes funcionen como deben aun debes poner algunas cosas en tu configuración de Emacs y tal. Revisa la descripción de cualquier paquetes que vayas a instalar para tener más información. Para ver qué paquetes hay disponibles, y cuales desea instalar, puede hacer uso del comando =M-x package-list-packages=
 * Custom.el
  El archivo customize es completamente innecesario y todas las variables modificadas usando =Customize= fueron migradas. Cualquier cambio que se haga con =Customize= no será preservado *pase lo que pase*. Para permitir que decisiones sobre variables de archivos o directorios sean conservados se asigna un archivo en la carpeta temporal del sistema para preservar temporalmente lo que se guarde ahí.
 
@@ -103,13 +133,6 @@ Evalúa código elisp adicional.
 #+begin_src emacs-lisp
   (load-file (expand-file-name "codigo elisp adicional.el" user-emacs-directory))
 #+end_src
-* Aliases
-Nombres más cortos para comandos usados frecuentemente
-#+BEGIN_SRC emacs-lisp
-  (defalias 'eb 'eval-buffer)
-  (defalias 'er 'eval-region)
-  (defalias 'ed 'eval-defun)
-#+END_SRC
 * Paquetes de extensiones
 ** Utilidades
 *** noflet
@@ -713,38 +736,6 @@ El cursor salta en cualquier parte del buffer según un /árbol de decisiones/ b
     :bind (:map global-map ("s-f" . hydra-avy/body))
     :config (avy-setup-default))
 #+END_SRC
-*** comint
-modo mayor para interactuar con interpretes inferiores
-#+begin_src emacs-lisp
-  ;; sacado de
-  ;; https://emacs.stackexchange.com/questions/2883/any-way-to-make-prompts-and-previous-output-uneditable-in-shell-term-mode#comment50064_2897
-  (use-package comint
-    :straight (comint :type built-in)
-    :demand t
-    :config
-    ;; Make processes’ outputs read-only. The prompt is easy.
-    (setq comint-prompt-read-only t)
-    ;; Outputs. Now you cannot delete them, but they still can be interleaved with some other text.
-    (add-hook 'comint-preoutput-filter-functions
-              (lambda (text)
-                (propertize text 'read-only t)))
-    ;; So we need tackle rear-nonsticky:
-    (defadvice comint-output-filter (after michalrus/comint-output-read-only activate)
-      (let* ((start-marker comint-last-output-start)
-             (proc (get-buffer-process (current-buffer)))
-             (end-marker (if proc (process-mark proc) (point-max-marker))))
-        (when (< start-marker end-marker) ;; Account for some of the IELM’s wilderness.
-          (let ((inhibit-read-only t))
-            ;; Disallow interleaving.
-            (remove-text-properties start-marker (1- end-marker) '(rear-nonsticky))
-            ;; Make sure that at `max-point' you can always append.
-            ;; Important for bad REPLs that keep writing after giving us prompt (e.g. sbt).
-            (add-text-properties (1- end-marker) end-marker '(rear-nonsticky t))
-            ;; Protect fence (newline of input, just before output).
-            (when (eq (char-before start-marker) ?\n)
-              (remove-text-properties (1- start-marker) start-marker '(rear-nonsticky))
-              (add-text-properties    (1- start-marker) start-marker '(read-only t))))))))
-#+end_src
 *** =git=
 #+BEGIN_SRC emacs-lisp
   (use-package gitignore-mode)
@@ -811,22 +802,6 @@ Muestra información de =git diff= en el fringe.
     :diminish git-gutter-mode
     :config
     (global-git-gutter-mode t))
-#+END_SRC
-*** =monky=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:51]
-:END:
-Mercurial en Emacs. Amo Mercurial ;). Asociado a @@html:<kbd><C-f12></kbd>@@
-
-Ver opciones más actualizadas para Mercurial en [[https://www.reddit.com/r/emacs/comments/3nzp7a/best_way_to_use_mercurial_with_emacs/][Best way to use Mercurial with Emacs? : emacs]]
-#+BEGIN_SRC emacs-lisp
-  (use-package monky
-    :defer t
-    :bind ([C-f12] . monky-status)
-    :init
-    (setf monky-process-type 'cmdserver))
-
-  (use-package hgignore-mode)
 #+END_SRC
 *** eldoc
 Muestra en el =área de eco= la firma de la función actual.
@@ -926,30 +901,6 @@ Marcadores para varias cosas en Emacs, asociado a @@html:<kbd>M-p</kbd>@@
                      ("l" bookmark-bmenu-list :color blue)
                      ("q" nil)))
 #+END_SRC
-*** Firefox desde Emacs
-#+BEGIN_SRC emacs-lisp
-  (use-package moz-controller)
-#+END_SRC
-*** CANCELADO Chrome desde Emacs
-#+BEGIN_SRC emacs-lisp
-  (use-package kite-mini
-    :disabled
-    :after (simple-httpd)
-    :init
-    (defun shackra-webdev-refresh-page-on-save-chrome ()
-      "Refresca la pagina en Chrome para ver los cambios realizados"
-      (interactive)
-      (let* ((currentfiledir (file-name-directory (buffer-file-name)))
-             (inrootdir (string-suffix-p httpd-root currentfiledir)))
-        (when (and (derived-mode-p 'sgml-mode 'css-mode 'web-mode) inrootdir)
-          (kite-mini-reload))
-        (when (and (derived-mode-p 'js-mode 'js2-mode) inrootdir)
-          (kite-mini-update))))
-    (add-hook 'js2-mode-hook (lambda () (kite-mini-mode t)))
-    (add-hook 'css-mode-hook (lambda () (kite-mini-mode t)))
-    (add-hook 'sgml-mode-hook (lambda () (kite-mini-mode t)))
-    (add-hook 'after-save-hook #'shackra-webdev-refresh-page-on-save-chrome))
-#+END_SRC
 *** iedit
 Edita varias ocurrencias de un texto en el buffer.
 
@@ -1047,13 +998,6 @@ Un modo menor que facilita la manipulación de la salida de diff3
                          ("k" smerge-kill-current)
                          ("q" nil "cancel" :color blue)))
 #+end_src
-*** annotate
-modo menor que permite colocar notas en cualquier archivo sin cambiar el contenido de los mismos.
-
-para agregar una anotacion seleccione una región de interés y presione C-c C-a
-#+begin_src emacs-lisp
-  (use-package annotate)
-#+end_src
 *** Escribir en el navegador usando Emacs
 este paquete permite escribir en un área editable del navegador usando Emacs. El navegador necesita un complemento instalado, mas información en https://github.com/stsquad/emacs_chrome
  #+begin_src emacs-lisp
@@ -1061,7 +1005,7 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
      :config
      (add-hook 'emacs-startup-hook #'edit-server-start))
  #+end_src
-** tree-sitter
+*** tree-sitter
 #+begin_src emacs-lisp
   (unless (string-equal system-type "darwin")
     (use-package tree-sitter
@@ -1267,15 +1211,6 @@ Twitter desde Emacs
     (add-hook 'twittering-edit-mode-hook #'ispell-minor-mode)
     (add-hook 'twittering-edit-mode-hook #'flyspell-mode))
 #+END_SRC
-*** =sx=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:53]
-:END:
-Acceso a Stackoverflow y subsitios desde Emacs.
-#+BEGIN_SRC emacs-lisp
-  (use-package sx
-    :defer 10)
-#+END_SRC
 *** org2web
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:57]
@@ -1341,149 +1276,6 @@ Interfaz para editar paginas en instancias de Mediawiki desde Emacs. [[http://wi
     (add-hook 'mediawiki-mode-hook '(lambda ()
                                       (turn-off-auto-fill)
                                       (visual-line-mode 1))))
-#+END_SRC
-*** CANCELADO Weechat                                           :CANCELADO:
-- State "CANCELADO"  from              [2019-07-21 dom 16:13] \\
-  esperando que arreglen el bug https://github.com/the-kenny/weechat.el/issues/77
-- State "CANCELADO"  from              [2018-03-28 mié 17:36] \\
-  desactivado hasta arreglo del bug https://github.com/oneKelvinSmith/monokai-emacs/issues/94 en Monokai theme
-Conexión a Weechat desde Emacs
-#+BEGIN_SRC emacs-lisp
-  (when (executable-find "weechat")
-    (use-package weechat
-      :init
-      (defun shackra-weechat-buffer-goodies ()
-        "Activa y desactiva cosas"
-        (when (fboundp 'linum-mode)
-          (linum-mode -1))
-        (when (fboundp 'display-line-numbers-mode)
-          (display-line-numbers-mode -1))
-        (visual-line-mode 1))
-      (add-hook 'weechat-mode-hook #'shackra-weechat-buffer-goodies)
-      (setf weechat-spelling-dictionaries '(("freenode\\." . "en")
-                                            ("irc-hispano\\." . "es")
-                                            ("afternet\\." . "en")))
-      (defun shackra-connect-weechat ()
-        "Conecta emacs a weechat.
-
-  Atrapa cualquier error que pueda ocurrir y lo ignora"
-        (when (not (weechat-connected-p))
-          (ignore-errors
-            (weechat-connect weechat-host-default weechat-port-default "xxx" 'plain))))
-      :config
-      (load-library "weechat-spelling")
-      (add-hook 'emacs-startup-hook #'shackra-connect-weechat)))
-#+END_SRC
-*** CANCELADO Slack                                             :CANCELADO:
-- State "CANCELADO"  from              [2019-03-24 dom 14:09] \\
-  no lo estoy usando ahora mismo
-#+BEGIN_SRC emacs-lisp
-  (unless (boundp 'dbus-compiled-version)
-    (setf dbus-compiled-version nil))
-  (use-package color)
-  (use-package slack
-    :after color
-    :init
-    (setq slack-buffer-emojify t)
-    (setq slack-prefer-current-team t)
-    ;; Big QOL changes. took from
-    ;; http://endlessparentheses.com/keep-your-slack-distractions-under-control-with-emacs.html
-    (setq slack-completing-read-function
-          #'ivy-completing-read)
-    (setq slack-buffer-function #'switch-to-buffer)
-    (setq slack-display-team-name nil)
-    (setq slack-buffer-create-on-notify t)
-
-    (with-eval-after-load 'tracking
-      (define-key tracking-mode-map [f11]
-        #'tracking-next-buffer))
-
-    ;; Channels
-    (setq slack-message-notification-title-format-function
-          (lambda (_team room threadp)
-            (concat (if threadp "Thread in #%s") room)))
-
-    (defun endless/-cleanup-room-name (room-name)
-      "Make group-chat names a bit more human-readable."
-      (replace-regexp-in-string
-       "--" " "
-       (replace-regexp-in-string "#mpdm-" "" room-name)))
-
-    ;; Private messages and group chats
-    (setq
-     slack-message-im-notification-title-format-function
-     (lambda (_team room threadp)
-       (concat (if threadp "Thread in %s")
-               (endless/-cleanup-room-name room))))
-
-    (defun endless/-author-at (pos)
-      (replace-regexp-in-string
-       (rx "\n" (* anything)) ""
-       (or (get-text-property pos 'lui-raw-text) "")))
-
-    (defun endless/-remove-slack-author ()
-      "Remove author here if it's the same as above."
-      (let ((author-here (endless/-author-at (point)))
-            (author-above (endless/-author-at (1- (point)))))
-        (when (and (looking-at-p (regexp-quote author-here))
-                   (equal author-here author-above))
-          (delete-region (1- (point))
-                         (1+ (line-end-position))))))
-
-    (defun endless/remove-slack-author-hook ()
-      "For usage in `lui-pre-output-hook'."
-      (when (derived-mode-p 'slack-mode)
-        (save-excursion
-          (goto-char (point-min))
-          (save-restriction
-            (widen)
-            (endless/-remove-slack-author)))))
-
-    (add-hook 'lui-pre-output-hook
-              #'endless/remove-slack-author-hook)
-
-    ;; Go to any channel with `C-x j'.
-    (define-key ctl-x-map "j" #'slack-select-rooms)
-    ;; Apaga la numeración de lineas en un buffer de slack
-    (add-hook 'slack-mode-hook (lambda () (display-line-numbers-mode -1)))
-    (add-hook 'slack-mode-hook 'flyspell-mode)
-    (add-hook 'slack-mode-hook #'emojify-mode)
-    :config
-    ;; Quick 'n dirty way of opening the most recent link
-    ;; in the current chat room.
-    (define-key slack-mode-map (kbd "M-o")
-      (kbd "<backtab> RET M->"))
-    ;; I thumbs-up a lot. Don't judge me.
-    (define-key slack-mode-map (kbd "C-;") ":+1:")
-    (define-key slack-mode-map (kbd "C-:") ":thinking:")
-    ;; Bring up the mentions menu with `@', and insert a
-    ;; space afterwards.
-    (define-key slack-mode-map "@"
-      (defun endless/slack-message-embed-mention ()
-        (interactive)
-        (call-interactively #'slack-message-embed-mention)
-        (insert " ")))
-
-    ;; Pretty straightforward.
-    (define-key slack-mode-map (kbd "C-c C-d")
-      #'slack-message-delete)
-    (define-key slack-mode-map (kbd "C-c C-e")
-      #'slack-message-edit)
-    (define-key slack-mode-map (kbd "C-c C-k")
-      #'slack-channel-leave)
-    (define-key slack-mode-map (kbd "C-c C-t")
-      #'slack-thread-select))
-#+END_SRC
-*** CANCELADO Redmine                                           :CANCELADO:
-- State "CANCELADO"  from              [2019-03-24 dom 14:12] \\
-  no lo estoy usando ahora mismo
-#+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'auth-source
-    (setf auth-source-save-behavior nil))
-  (when (boundp 'auth-sources)
-    (use-package org-redmine
-      :init
-      (setq org-redmine-auth-netrc-use t)))
 #+END_SRC
 ** Desarrollo de software
 *** Desarrollo de paquetes para Emacs
@@ -1809,26 +1601,6 @@ Teclas
   (use-package ox-reveal
     :init (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js@3.8.0/"))
 #+end_src
-*** CANCELADO =org-trello=                                      :CANCELADO:
-- State "CANCELADO"  from              [2019-03-24 dom 14:44] \\
-  sin uso actualmente
-Sincroniza archivos org-mode y tableros en Trello
-#+BEGIN_SRC emacs-lisp
-  (use-package org-trello
-    :disabled
-    :after (org)
-    :init
-    (custom-set-variables '(org-trello-files '("/home/jorge/go/src/bitbucket.org/capslockdev/betsy/proyecto.org"
-                                               "/home/jorge/Kartelo/clientes/Design Soft/Selore POS/proyecto.org"
-                                               "/home/jorge/go/src/bitbucket.org/shackra-4hoa/proyecto.org")))
-    (defun shackra-org-trello-sync-after-save ()
-      "Sincroniza el contenido del archivo org después de salvar"
-      (interactive)
-      (when (and (eq major-mode 'org-mode)
-               (member buffer-file-name org-trello-files))
-        (org-trello-sync-buffer)))
-    (add-hook 'after-save-hook #'shackra-org-trello-sync-after-save))
-#+END_SRC
 *** =pkgbuild-mode=
 Un modo mayor de Emacs para la edición de archivos =PKGBUILD=
 #+BEGIN_SRC emacs-lisp
@@ -1840,7 +1612,7 @@ Si estas en Arch Linux o Parabola GNU/Linux-libre, tienes que instalar el paquet
 #+BEGIN_SRC sh
   sudo pacman -S emacs-pkgbuild-mode
 #+END_SRC
-*** COMMENT =python=
+*** =python=
 Modo mayor para programar en Python
 #+BEGIN_SRC emacs-lisp
   (defun shackra-python-install-deps ()
@@ -2045,30 +1817,6 @@ npm i -g vscode-css-languageserver-bin
   (use-package flymake-css
     :hook (css-mode . flymake-css-load))
 #+END_SRC
-*** PHP
-modo mayor para editar código PHP
-**** dependencias externas
-Composer debe estar configurado con al menos la siguientes lineas, este cambio afecta globalmente todos los paquetes de PHP por lo cual hay que ser cauteloso.
-#+BEGIN_SRC json :tangle ~/.config/composer/composer.json
-  {
-    "minimum-stability": "dev",
-    "prefer-stable": true
-  }
-#+END_SRC
-Se instala el paquete externo mediante =composer=
-#+BEGIN_SRC sh :results silent
-  composer global require felixfbecker/language-server
-  composer global run-script --working-dir=~/.config/composer/vendor/felixfbecker/language-server parse-stubs
-#+END_SRC
-Y esta es la configuración.
-#+BEGIN_SRC emacs-lisp
-  (use-package php-refactor-mode
-    :after (php-mode)
-    :config
-    (add-hook 'php-mode-hook 'php-refactor-mode))
-
-  (use-package php-mode)
-#+END_SRC
 *** golang
 Modo mayor para editar archivos Golang.
 
@@ -2187,7 +1935,8 @@ go build golang.org/x/tools/cmd/guru
     "lista de modos mayores que tratan JavaScript")
 
   ;; cuando se hace grep, omite los archivos source map de Javascript
-  (add-to-list 'grep-find-ignored-files "*.map.*.js")
+  (with-eval-after-load "grep"
+    (add-to-list 'grep-find-ignored-files "*.map.*.js"))
 
   ;; desactiva la identacion eléctrica
   (dolist (mode shackra/js-modes)
@@ -2254,13 +2003,6 @@ go build golang.org/x/tools/cmd/guru
 #+BEGIN_SRC sh :results silent
 npm i -g vscode-html-languageserver-bin
 #+END_SRC
-*** Android
-Desarrollo de aplicaciones para Android desde GNU Emacs
-#+BEGIN_SRC emacs-lisp
-  (use-package android-mode
-    :init
-    (setf android-mode-sdk-dir "~/opt/android"))
-#+END_SRC
 *** SLIME
 SLIME is the Superior Lisp Interaction Mode for Emacs.
 #+BEGIN_SRC emacs-lisp
@@ -2293,74 +2035,6 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
   (use-package flymake-ktlint
     :hook (kotlin-mode . flymake-ktlint-setup))
 #+END_SRC
-*** CANCELADO Gimp                                :deshabilitado:CANCELADO:
-- State "CANCELADO"  from              [2019-03-24 dom 14:45] \\
-  sin uso, el código elisp esta desactualizado
-Now you can run the GIMP with `M-x run-gimp'.
-Alternatively, connect to GIMP server with `M-x gimp-cl-connect'.
-
-Type `M-x gimp-help' for help.
-#+BEGIN_SRC emacs-lisp
-  (use-package gimp-mode
-    :load-path "site-packages/gimp-mode"
-    :config
-    (load (expand-file-name "site-packages/gimp-mode/gimp-init.el" user-emacs-directory)))
-#+END_SRC
-*** Java
-#+BEGIN_SRC emacs-lisp
-
-#+END_SRC
-*** VueJS
-#+BEGIN_SRC emacs-lisp
-  (use-package vue-mode
-    :init
-    (setq mmm-submode-decoration-level 2))
-#+END_SRC
-*** C y C++
-Configuración parcialmente extraida de [[https://www.reddit.com/r/emacs/comments/audffp/tip_how_to_use_a_stable_and_fast_environment_to/][TIP: How to use a stable and fast environment to develop in C++]].
-#+begin_src emacs-lisp
-  (defvar shackra/c-styles-alist '(("/gnu/emacs" . "gnu")
-                                   (nil . "gnu")) "lista de ubicaciones de proyectos asociados a un estilo de escribir código C")
-
-  (defun shackra/c--style-p (patron ubicacion)
-    (or (not patron)
-        (and (stringp ubicacion)
-             (string-match patron ubicacion))))
-
-  (defun shackra/c-guess-c-style ()
-    "asocia un estilo C según el proyecto o ubicación"
-    (let ((style (assoc-default buffer-file-name shackra/c-styles-alist 'shackra/c--style-p)))
-      (c-set-style style)))
-
-  (add-hook 'c-mode-hook #'shackra/c-guess-c-style)
-
-  (use-package cmake-mode
-    :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
-
-  (use-package cmake-font-lock
-    :after (cmake-mode)
-    :hook (cmake-mode . cmake-font-lock-activate))
-
-  (use-package cmake-ide
-    :after projectile
-    :hook (c++-mode . my/cmake-ide-find-project)
-    :preface
-    (defun my/cmake-ide-find-project ()
-      "Finds the directory of the project for cmake-ide."
-      (with-eval-after-load 'projectile
-        (setq cmake-ide-project-dir (projectile-project-root))
-        (setq cmake-ide-build-dir (concat cmake-ide-project-dir "build")))
-      (setq cmake-ide-compile-command
-            (concat "cd " cmake-ide-build-dir " && cmake .. && make"))
-      (cmake-ide-load-db))
-
-    (defun my/switch-to-compilation-window ()
-      "Switches to the *compilation* buffer after compilation."
-      (other-window 1))
-    :bind ([remap comment-region] . cmake-ide-compile)
-    :init (cmake-ide-setup)
-    :config (advice-add 'cmake-ide-compile :after #'my/switch-to-compilation-window))
-#+end_src
 *** Nginx
 #+begin_src emacs-lisp
   (use-package nginx-mode)
@@ -2387,7 +2061,6 @@ Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que s
 *** GraphQL
 #+begin_src emacs-lisp
   (use-package graphql-mode)
-  (use-package graphql)
 #+end_src
 *** shell
 #+begin_src emacs-lisp
@@ -2434,15 +2107,6 @@ Modo mayor para editar archivos GDScript y =.tscn=
 #+begin_src emacs-lisp
   (use-package protobuf-mode
     :hook (protobuf-mode . (lambda () (setf c-basic-offset 4))))
-#+end_src
-*** COBOL
-Quizás este loco.
-#+begin_src emacs-lisp
-  (use-package cobol-mode
-    :hook (cobol-mode . (lambda () (when (fboundp 'aggressive-indent-mode) (aggressive-indent-mode -1))))
-    :mode (("\\.cbl\\'" . cobol-mode)
-           ("\\.cob\\'" . cobol-mode)
-           ("\\.cpy\\'" . cobol-mode)))
 #+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
@@ -2581,19 +2245,6 @@ Revisión ortográfica al vuelo. Asociado a @@html:<kbd>C-.</kbd>@@. @@html:<kbd
     ;; Mandamos a revisar la ortografía del párrafo en que estamos
     (flyspell-region (line-beginning-position) (line-end-position)))
 #+END_SRC
-*** Corrección gramatical
-Corrección gramatical en varios idiomas con =languagetool=.
-
-Configuración adecuada para Arch Linux gracias a la siguiente [[https://www.reddit.com/r/emacs/comments/2zqetc/languagetool_exited_abnormally_with_code_1/ctapph0][corrección desde Reddit]].
-#+BEGIN_SRC emacs-lisp
-  (use-package langtool
-    :init
-    (if (not (member system-type '(ms-dos windows-nt cygwin)))
-        (setq langtool-java-classpath "/usr/share/languagetool:/usr/share/java/languagetool/*")
-      (setf langtool-language-tool-jar "d:/languagetool/4.1/languagetool-commandline.jar"))
-    (defalias 'lt-check 'langtool-check)
-    (defalias 'lt-correct 'langtool-correct-buffer))
-#+END_SRC
 *** =multiple-cursors=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:56]
@@ -2670,27 +2321,6 @@ Borra espacios en blanco consecutivos con sólo presionar =backspace= una vez :)
     :config
     (global-hungry-delete-mode))
 #+END_SRC
-*** CANCELADO =aggressive-indent-mode=                          :CANCELADO:
-- State "CANCELADO"  from              [2020-05-18 lun 05:01] \\
-  desactivado hasta que https://github.com/Malabarba/aggressive-indent-mode/issues/138 sea arreglado
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:58]
-- Refiled on [2015-11-12 jue 16:53]
-:END:
-Porque =electric-indent-mode= no es lo suficientemente bueno.
-#+BEGIN_SRC emacs-lisp
-  (use-package aggressive-indent
-    :diminish aggressive-indent-mode
-    :config
-    (add-to-list
-     'aggressive-indent-dont-indent-if
-     '(and (derived-mode-p 'c++-mode)
-           (null (string-match "\\([;{}]\\|\\b\\(if\\|for\\|while\\)\\b\\)"
-                               (thing-at-point 'line)))))
-    (global-aggressive-indent-mode 1)
-    (add-to-list 'aggressive-indent-excluded-modes 'html-mode)
-    (add-to-list 'aggressive-indent-excluded-modes 'rjsx-mode))
-#+END_SRC
 *** =text-mode=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 17:00]
@@ -2714,21 +2344,6 @@ Cualquier modo mayor que /herede/ de =text-mode= sera afectado por esta configur
                  ("C-e" . mwim-end)
                  ("<end>" . mwim-end))))
 #+end_src
-*** CANCELADO paredit                                           :CANCELADO:
-- State "CANCELADO"  from              [2019-09-21 sáb 15:30] \\
-  reemplazado por Lispy
-Un modo menor para la edición de paréntesis. Para aprender qué hace este modo menor y sus posibilidades, ver [[http://danmidwood.com/content/2014/11/21/animated-paredit.html][The Animated Guide to Paredit]].
-#+BEGIN_SRC emacs-lisp
-  (use-package paredit
-    :diminish paredit-mode
-    :config
-    (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-    (add-hook 'lisp-mode-hook 'enable-paredit-mode)
-    (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
-    (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-    (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-    (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
-#+END_SRC
 *** Lispy
 Un modo menor para la edición de parentesis. Se usa [[https://github.com/itsjeyd/lispy-mnemonic][lispy-mnemonic]] porque no se nada de edición modal estilo Vim
 #+begin_src emacs-lisp
@@ -2755,7 +2370,7 @@ Mover texto a voluntad
     :bind (:map global-map
                 ("C-c C-u" . string-inflection-all-cycle)))
 #+END_SRC
-*** Escritura de guiones
+*** Escritura de guiones cinematográficos
 - [[https://fountain.io/syntax][Sintaxis (inglés)]]
 - [[https://fountain.io/howto][Ayuda rápida (inglés)]]
   el formato de archivo debe ser =.fountain=.
@@ -2804,24 +2419,6 @@ Sorteo y filtrado simple.
   (use-package company-prescient
     :config (company-prescient-mode 1))
 #+end_src
-*** mustache
-#+BEGIN_SRC emacs-lisp
-  (use-package mustache-mode)
-#+END_SRC
-*** CANCELADO =fixmee=                                          :CANCELADO:
-- State "CANCELADO"  from              [2019-03-24 dom 14:21] \\
-  todos los TO DO y FIX ME en código fuente son mostrados en =magit-status=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:49]
-:END:
-Subraya cualquier termino "TODO" en cualquier modo mayor de programación.
-#+BEGIN_SRC emacs-lisp
-  (use-package fixmee
-    :diminish fixmee-mode
-    :defer 5
-    :config
-    (add-hook 'prog-mode #'fixmee-mode))
-#+END_SRC
 *** all-the-icons
 Paquete de utilidades para formatear varios fuentes de iconos dentro de Emacs
 #+BEGIN_SRC emacs-lisp
@@ -3001,27 +2598,6 @@ Permite a emacs enviar notificaciones por DBus o diferentes medios. En este caso
 #+BEGIN_SRC emacs-lisp
   (setf notify-method 'notify-via-libnotify)
 #+END_SRC
-*** =vimish-fold=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:53]
-:END:
-Pleguar o desplegar bloques de texto. Asociado a @@html:<kbd>C-c v</kbd>@@.
-#+BEGIN_SRC emacs-lisp
-  (use-package vimish-fold
-    :config
-    (bind-keys :prefix-map shackra-vimish-fold-map
-               :prefix "C-c v"
-               ("v" . vimish-fold-toggle)
-               ("V" . vimish-fold-toggle-all)
-               ("f" . vimish-fold)
-               ("u" . vimish-fold-unfold)
-               ("u" . vimish-fold-unfold-all)
-               ("d" . vimish-fold-delete)
-               ("D" . vimish-fold-delete-all)
-               ("n" . vimish-fold-next-fold)
-               ("p" . vimish-fold-previous-fold))
-    (add-hook 'prog-mode #'vimish-fold-mode))
-#+END_SRC
 *** alert
 #+BEGIN_SRC emacs-lisp
   (use-package alert
@@ -3107,27 +2683,6 @@ Modo mayor para editar archivos de servicio systemd.
     :config
     (add-hook 'systemd-mode-hook #'yas-minor-mode-on))
 #+END_SRC
-*** CANCELADO interfaz para AUR                                 :CANCELADO:
-- State "CANCELADO"  from              [2019-03-24 dom 14:22] \\
-  ya tengo pikaur para el trabajo
-#+BEGIN_SRC emacs-lisp
-  (use-package aurel
-    :init
-    (setf aurel-download-directory "~/proyectos/aur/aurel")
-    (setf aurel-aur-user-package-info-check t))
-#+END_SRC
-*** CANCELADO =golden-ratio=                                    :CANCELADO:
-- State "CANCELADO"  from              [2019-03-24 dom 14:22] \\
-  no lo estoy usando ahora mismo
-Redimensiona las ventanas para hacer más cómoda la edición en cualquiera de ellas
-#+BEGIN_SRC emacs-lisp
-  (use-package golden-ratio
-    :diminish golden-ratio-mode
-    :init
-    (setf golden-ratio-auto-scale nil)
-    :config
-    (golden-ratio-mode 1))
-#+END_SRC
 *** RSS feed
 Lector de RSS feed dentro de Emacs
 #+BEGIN_SRC emacs-lisp
@@ -3161,24 +2716,6 @@ Lector de RSS feed dentro de Emacs
               (elfeed-make-tagger :feed-url "\\.crhoy\\.com"
                                   :entry-title "Video"
                                   :remove 'unread)))
-#+END_SRC
-*** CANCELADO =ws-butler=                                       :CANCELADO:
-- State "CANCELADO"  from              [2020-01-30 jue 12:05] \\
-  el commit =52321b99be69aa1b661da7743c4421a30d8b6bcb= esta causando problemas con Magit
-Eliminación de espacios de manera no obstrusiva
-#+BEGIN_SRC emacs-lisp
-  (use-package ws-butler
-    :diminish ws-butler-mode
-    :config
-    (add-hook 'after-init-hook #'ws-butler-global-mode))
-#+END_SRC
-*** CANCELADO Mingus                                            :CANCELADO:
-- State "CANCELADO"  from              [2019-03-24 dom 14:30] \\
-  no esta en uso
-Cliente para MPD
-#+BEGIN_SRC emacs-lisp
-  (use-package mingus
-    :if (executable-find "mpd"))
 #+END_SRC
 *** Shackle
 Como =display-buffer-alist= pero más sencillo
@@ -3230,20 +2767,6 @@ Muestra cuales combinaciones de teclas están libres para asignar. Asociado @@ht
     :bind (:map help-map
                 ("C-k" . free-keys)))
 #+END_SRC
-*** Pocket
-#+BEGIN_SRC emacs-lisp
-  (use-package el-pocket
-    :preface (require 'thingatpt)
-    :bind (:map notmuch-show-mode-map ("l" . el-pocket-add-url-at-point))
-    :init (defun el-pocket-add-url-at-point ()
-            "Add URL at point to Pocket"
-            (interactive)
-            (let* ((url-shr (get-text-property (point) 'shr-url))
-                   (url-at-point (thing-at-point 'url))
-                   (url (or url-shr url-at-point)))
-              (el-pocket-add-url url)))
-    :config (el-pocket-load-auth))
-#+END_SRC
 *** highlight-indent-guides
 Modo menor que subraya los niveles de identación en el buffer usando font-lock. Los anchos de identación son descubiertos de manera dinámica.
 #+BEGIN_SRC emacs-lisp
@@ -3259,42 +2782,6 @@ Este modo menor no funciona bien con otros modos menores que hacen uso de la pro
 #+BEGIN_SRC emacs-lisp
   (use-package proced
     :if (or (string-equal system-type "gnu/linux") (string-equal system-type "gnu/kfreebsd")))
-#+END_SRC
-*** CANCELADO schrute-mode                                      :CANCELADO:
-- State "CANCELADO"  from              [2019-04-20 sáb 13:04]
-Recuerda al usuario que hay una manera más eficiente de hacer algo
-#+BEGIN_SRC emacs-lisp
-  (use-package schrute
-    :disabled
-    :load-path "site-packages/dwight"
-    :init
-    (defun shackra-super-next-line ()
-      (interactive)
-      (ignore-errors (forward-line 3)))
-    (defun shackra-super-previous-line ()
-      (interactive)
-      (ignore-errors (forward-line -3)))
-    (defun shackra-super-left-char ()
-      (interactive)
-      (ignore-errors (left-char 3)))
-    (defun shackra-super-right-char ()
-      (interactive)
-      (ignore-errors (right-char 3)))
-    (defun shackra-super-forward-word ()
-      (interactive)
-      (ignore-errors (forward-word 3)))
-    (defun shackra-super-backward-word ()
-      (interactive)
-      (ignore-errors (backward-word 3)))
-    (setf schrute-command-repetitions 1)
-    (setf schrute-lighter " 🐻 ")
-    (setf schrute-shortcuts-commands '((shackra-super-next-line     . (next-line))
-                                       (shackra-super-previous-line . (previous-line))
-                                       (shackra-super-left-char     . (left-char))
-                                       (shackra-super-right-char    . (right-char))
-                                       (shackra-super-forward-word  . (forward-word))
-                                       (shackra-super-backward-word . (backward-word))))
-    (add-hook 'after-init-hook #'schrute-mode))
 #+END_SRC
 *** =webpaste=
 Pega regiones o buffers completos en servicios como pastebin
@@ -3341,37 +2828,6 @@ Establece cuales temás son seguros.
 #+BEGIN_SRC emacs-lisp
   (setf custom-safe-themes '("f1a6cbc40528dbee63390fc81da426f1b00b4fc09a60fe35752f5838b12fbe0a" "51867fa64534ff7ca87fdc1537fbfffc168fa4673e3980850436dc87e31ef426" "3119b66b441eaa36acad473952dfdf901a5924b1fbc995b58477f031e12547c4" "f0b0710b7e1260ead8f7808b3ee13c3bb38d45564e369cbe15fc6d312f0cd7a0" "a27c00821ccfd5a78b01e4f35dc056706dd9ede09a8b90c6955ae6a390eb1c1e" "8aebf25556399b58091e533e455dd50a6a9cba958cc4ebb0aab175863c25b9a4" "d677ef584c6dfc0697901a44b885cc18e206f05114c8a3b7fde674fce6180879" "a8245b7cc985a0610d71f9852e9f2767ad1b852c2bdea6f4aadc12cce9c4d6d0" "3c83b3676d796422704082049fc38b6966bcad960f896669dfc21a7a37a748fa" "c74e83f8aa4c78a121b52146eadb792c9facc5b1f02c917e3dbb454fca931223" "134f38000f413a88743764983c751ac34edbec75a602065e2ae3b87fcf26c451" "930a202ae41cb4417a89bc3a6f969ebb7fcea5ffa9df6e7313df4f7a2a631434" "c5a044ba03d43a725bd79700087dea813abcb6beb6be08c7eb3303ed90782482" "9dae95cdbed1505d45322ef8b5aa90ccb6cb59e0ff26fef0b8f411dfc416c552" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" default))
 #+END_SRC
-**** CANCELADO zenburn                                         :CANCELADO:
-- State "CANCELADO"  from              [2018-03-28 mié 02:06] \\
-  desactiva el tema
-#+BEGIN_SRC emacs-lisp
-  (use-package zenburn-theme
-    :disabled
-    :config
-    (load-theme 'zenburn t))
-#+END_SRC
-**** CANCELADO Monokai                                         :CANCELADO:
-- State "CANCELADO"  from              [2019-02-27 mié 16:26]
-- State "CANCELADO"  from "CANCELADO"  [2018-03-28 mié 17:25]
-- State "CANCELADO"  from              [2018-03-28 mié 16:55] \\
-  desactiva el tema
-#+BEGIN_SRC emacs-lisp
-  (use-package monokai-theme
-    :init
-    ;; FIX: Arregla tipografia erronea en org-mode en Windows
-    (when (and (eq system-type 'windows-nt) (> emacs-major-version 24))
-      (add-hook 'window-setup-hook '(lambda () (load-theme 'monokai t))))
-    :config
-    (load-theme 'monokai t))
-#+END_SRC
-**** CANCELADO Nimbus                                          :CANCELADO:
-- State "CANCELADO"  from              [2019-07-12 vie 16:30] \\
-  cambiado por doom-themes
-#+begin_src emacs-lisp
-  (use-package nimbus-theme
-    :config
-    (load-theme 'nimbus t))
-#+end_src
 **** doom-themes
 #+begin_src emacs-lisp
   (use-package doom-themes
