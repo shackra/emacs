@@ -936,6 +936,29 @@ Implementación para Emacs del Language Server Protocol.
     (lsp-clients-go-server "gopls")
     (lsp-gopls-hover-kind "FullDocumentation"))
 
+  (use-package treemacs
+    :bind (:map global-map
+           ("C-c x x" . treemacs-select-window)
+           ("C-c x 1"   . treemacs-delete-other-windows)
+           ("C-c x t"   . treemacs)
+           ("C-c x B"   . treemacs-bookmark)
+           ("C-c x C-t" . treemacs-find-file)
+           ("C-c x M-t" . treemacs-find-tag)))
+
+  (use-package treemacs-projectile
+    :after treemacs projectile)
+
+  (use-package treemacs-icons-dired
+    :after treemacs dired
+    :config (treemacs-icons-dired-mode))
+
+  (use-package treemacs-magit
+    :after treemacs magit)
+
+  (use-package lsp-treemacs
+    :after (lsp-mode)
+    :config (lsp-treemacs-sync-mode 1))
+
   (use-package lsp-ui
     :after (lsp-mode)
     :hook (lsp-mode . lsp-ui-mode)
