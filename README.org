@@ -1985,12 +1985,6 @@ go build golang.org/x/tools/cmd/guru
     :mode (rx ".ts" (? "x") string-end)
     :init
     (setf typescript-indent-level shackra-webdev-indent))
-
-  ;; Indium se conecta con una pestaña del navegador web o un proceso de NodeJS
-  ;; y provee varias características para el desarrollo en JavaScript
-  (use-package indium ;; https://indium.readthedocs.io/en/latest/setup.html
-    :config
-    (add-hook 'js-mode-hook #'indium-interaction-mode))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
