@@ -50,7 +50,7 @@
  ("emacs-noflet" . #("7ae84dc3257637af7334101456dafe1759c6b68a" 0 40 (fontified nil)))
  ("emacs-presentation-mode" . #("f53f67aeab97e8eea6d1f12df5f7ce3b1b03b879" 0 40 (fontified nil)))
  ("emacs-request" . #("216d570a58d05ef1307edb63d2539bafa5f688c6" 0 40 (fontified nil)))
- ("emacs-tree-sitter" . #("ec3e63bb5135f02ba4848b3135ef97a67da882e3" 0 40 (fontified nil)))
+ ("emacs-tree-sitter" . #("527badcd0e859d121c93c9272e2e5cdc547244cb" 0 40 (fontified nil)))
  ("emacs-web-server" . #("22ce66ea43e0eadb9ec1d691a35d9695fc29cee6" 0 40 (fontified nil)))
  ("emacs_chrome" . #("43f180809fcbc7e104f96f95608a97c4c2a2c8b3" 0 40 (fontified nil)))
  ("emacsmirror-mirror" . #("59b23cc3b17708e4975bcea451ccb415f8d06040" 0 40 (fontified nil)))
