@@ -59,7 +59,7 @@
  ("epl" . #("78ab7a85c08222cd15582a298a364774e3282ce6" 0 40 (fontified nil)))
  ("exec-path-from-shell" . #("9365c94ef18a2d58e73d47e0fe878c7d5007a827" 0 40 (fontified nil)))
  ("expand-region.el" . #("ea6b4cbb9985ddae532bd2faf9bb00570c9f2781" 0 40 (fontified nil)))
- ("explain-pause-mode" . #("5398439abe1f075f43bea1dfad6c56f8412d681a" 0 40 (fontified nil)))
+ ("explain-pause-mode" . #("2356c8c3639cbeeb9751744dbe737267849b4b51" 0 40 (fontified nil)))
  ("f.el" . #("1814209e2ff43cf2e6d38c4cd476218915f550fb" 0 40 (fontified nil)))
  ("flymake-css" . #("de090163ba289910ceeb61b13368ce42d0f2dfd8" 0 40 (fontified nil)))
  ("flymake-easy" . #("de41ea49503f71f997e5c359a2ad08df696c0147" 0 40 (fontified nil)))
