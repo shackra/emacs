@@ -1613,9 +1613,10 @@ Teclas
       (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
                                            :capture-character "P"))))
 #+END_SRC
-*** CANCELADO Hyperbole                                         :CANCELADO:
+*** Hyperbole
 - State "CANCELADO"  from              [2020-01-28 mar 18:08] \\
   hasta no resolver problema https://www.reddit.com/r/emacs/comments/ev9tcc/super_quick_introduction_to_hyperbole_with/ffv5sdp?utm_source=share&utm_medium=web2x
+  {C-h h d d} muestra la demostración interactiva de Hyperbole
 #+begin_src emacs-lisp
   (use-package hyperbole)
 #+end_src
@@ -2040,17 +2041,6 @@ SLIME is the Superior Lisp Interaction Mode for Emacs.
 #+BEGIN_SRC emacs-lisp
   (use-package feature-mode
     :mode ("\\.feature$" . feature-mode))
-#+END_SRC
-*** kotlin
-#+BEGIN_SRC emacs-lisp
-  (use-package kotlin-mode
-    :if (executable-find "kotlin"))
-
-  (use-package gradle-mode
-    :after (kotlin-mode))
-
-  (use-package flymake-ktlint
-    :hook (kotlin-mode . flymake-ktlint-setup))
 #+END_SRC
 *** Nginx
 #+begin_src emacs-lisp
