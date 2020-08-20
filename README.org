@@ -159,24 +159,24 @@ configuración sana de ciertas opciones en Emacs
     (set-default 'indicate-empty-lines t)
     (setq-default truncate-lines t)
     (if (boundp 'buffer-file-coding-system)
-	(setq-default buffer-file-coding-system 'utf-8)
+        (setq-default buffer-file-coding-system 'utf-8)
       (setf buffer-file-coding-system 'utf-8))
     :custom
-    (blink-cursor-blinks 0)
-    (blink-cursor-interval 0.1)
+    (blink-cursor-blinks 1)
+    (blink-cursor-interval 1)
     (x-underline-at-descent-line t)
     (save-interprogram-paste-before-kill t)
     (bookmark-save-flag 1)
     (inhibit-startup-message t )
     (initial-scratch-message nil)
-    (line-spacing 1)
+    (line-spacing 0)
     (make-backup-files nil)
     (global-auto-revert-non-file-buffers t)
     (auto-revert-verbose nil)
     (echo-keystrokes 0.1)
     (shift-select-mode nil)
     (fill-column 80)
-    (blink-matching-paren nil)
+    (blink-matching-paren t)
     (history-length 1000)
     (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
     (enable-recursive-minibuffers t)
@@ -186,8 +186,8 @@ configuración sana de ciertas opciones en Emacs
     (buffer-file-coding-system 'utf-8)
     (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
     :config
-    ;; apaga transient-mark-mode
-    (transient-mark-mode -1)
+    ;; activa transient-mark-mode
+    (transient-mark-mode 1)
     (blink-cursor-mode)
     (ido-mode nil)
     (tooltip-mode -1)
@@ -362,10 +362,12 @@ Teclas
 #+BEGIN_SRC emacs-lisp
   (use-package counsel-projectile
     :after (projectile counsel)
-    :commands (counsel-projectile counsel-projectile-switch-project counsel-projectile-switch-to-buffer))
+    :commands (counsel-projectile
+               counsel-projectile-switch-project
+               counsel-projectile-switch-to-buffer))
 
   (use-package counsel
-    :after (ivy)
+    :after (ivy org)
     :commands (counsel-org-tag dired)
     :bind (:map global-map
                 ("M-x" . counsel-M-x)
@@ -377,27 +379,29 @@ Teclas
                 :map ctl-x-map
                 ("8 RET" . counsel-unicode-char)
                 ("l" . counsel-locate)
-                ("f" . counsel-recentf))
-    :init
-    (setf ivy-use-virtual-buffers nil)
+                ("f" . counsel-recentf)
+                ("b" . counsel-switch-buffer))
     :config
-    (with-eval-after-load 'org
-      (global-set-key [remap org-set-tags-command] #'counsel-org-tag)))
+    (global-set-key [remap org-set-tags-command] #'counsel-org-tag))
 
   (use-package ivy-hydra
     :after (counsel-projectile))
 
   (use-package ivy-posframe
-    :disabled
+    :diminish ivy-posframe-mode
     :after (ivy)
-    :init
-    ;;(setq ivy-posframe-width (frame-width))
-    (setq ivy-posframe-parameters
-          '((left-fringe . 10)
-            (right-fringe . 10)))
-    (setq ivy-posframe-hide-minibuffer t)
-    (setq ivy-display-function #'ivy-posframe-display-at-frame-center)
-    (add-hook 'emacs-startup-hook #'ivy-posframe-enable))
+    :hook (emacs-startup . ivy-posframe-mode)
+    :custom
+    (ivy-posframe-display-functions-alist
+     '((swiper          . ivy-display-function-fallback)
+       (swiper-isearch  . ivy-display-function-fallback)
+       (complete-symbol . ivy-posframe-display-at-point)
+       (counsel-M-x     . ivy-posframe-display-at-frame-center)
+       (t               . ivy-posframe-display-at-frame-center)))
+    (ivy-posframe-parameters
+     '((left-fringe . 10)
+       (right-fringe . 10)))
+    (ivy-posframe-hide-minibuffer t))
 
   (defcustom shackra-ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*"
                                           "\\*Help\\*" "\\*Compile-Log\\*" "\\*anaconda-mode\\*"
@@ -406,17 +410,16 @@ Teclas
                                           ".*-ls" "\\*go-bingo.*" "\\*Flymake log\\*" "\\*straight-process\\*"
                                           "\\*pushmail-mbsync\\*" "\\*vc\\*" "\\*gopls.*" "\\*Disabled Command\\*"
                                           "\\*EGLOT ")
-    "lista de buffers a ignorar en ivy")
+    "Lista de buffers a ignorar en ivy.")
 
   (use-package ivy
     :demand t
     :bind (:map global-map
-                ("C-c C-r" . ivy-resume)
-                :map ctl-x-map
-                ("b" . ivy-switch-buffer))
-    :init
-    (setf ivy-count-format "(%d/%d) ")
-    (setf ivy-height 15)
+                ("C-c C-r" . ivy-resume))
+    :custom
+    (ivy-use-virtual-buffers nil)
+    (ivy-count-format "(%d/%d) ")
+    (ivy-height 20)
     :config
     (dolist (ignore-this shackra-ivy-ignore-buffers)
       (add-to-list 'ivy-ignore-buffers ignore-this))
@@ -434,8 +437,17 @@ Teclas
 Con este paquete hacemos que la interfaz de ivy sea más amigable para algunos comandos.
 #+begin_src emacs-lisp
   (use-package ivy-rich
-    :init (setf ivy-format-function #'ivy-format-function-line)
-    :config (ivy-rich-mode 1))
+    :after all-the-icons-ivy-rich
+    :custom
+    (ivy-format-function #'ivy-format-function-line)
+    (ivy-rich-path-style 'abbrev)
+    :config
+    (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
+    (ivy-rich-mode 1)
+
+  (use-package all-the-icons-ivy-rich
+    :after ivy
+    :config (all-the-icons-ivy-rich-mode 1))
 #+end_src
 *** Manipulación de ventanas
 :LOGBOOK:
@@ -639,6 +651,11 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     :diminish company-box-mode
     :hook (company-mode . company-box-mode))
 
+  (use-package company-auctex
+    :after (company tex-site)
+    :config
+    (company-auctex-init))
+
   (use-package company
     :hook (company-mode . company-mode-update-backends-with-yasnippet)
     :diminish company-mode
@@ -661,38 +678,6 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
       :diminish company-posframe-mode
       :config
       (company-posframe-mode 1)))
-#+END_SRC
-*** company-auctex
-backend para [[*=company=][Company]] que provee auto completado para AUCTeX
-#+BEGIN_SRC emacs-lisp
-  (with-eval-after-load 'tex-site
-    (use-package company-auctex
-      :after (company)
-      :config
-      (company-auctex-init)))
-#+END_SRC
-*** =projectile=
-:LOGBOOK:
-- Refiled on [2015-11-12 jue 16:50]
-:END:
-Manejo de archivos de un proyecto.
-#+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :diminish projectile-mode
-    :hook ((text-mode prog-mode) . projectile-mode)
-    :custom
-    (projectile-completion-system 'ivy)
-    (projectile-switch-project-action 'counsel-projectile-find-file)
-    (projectile-file-exists-remote-cache-expire (* 10 60))
-    (projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
-                                         "*.o" "*.pyc" "*.elc" "*.exe"
-                                         "*.zip" "*.tar.*" "*.rar" "*.7z"))
-    (projectile-switch-project-action 'magit-status)
-    :config
-    (add-to-list 'projectile-globally-ignored-directories "node_modules")
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
-
-  (use-package ag)
 #+END_SRC
 *** =recentf=
 :LOGBOOK:
@@ -808,13 +793,7 @@ Muestra en el =área de eco= la firma de la función actual.
 #+BEGIN_SRC emacs-lisp
   (use-package eldoc
     :diminish eldoc-mode
-    :init
-    (setf eldoc-idle-delay 1.0)
-    :config
-    (with-eval-after-load 'paredit
-      (eldoc-add-command
-       'paredit-backward-delete
-       'paredit-close-round)))
+    :custom (eldoc-idle-delay 1.0))
 #+END_SRC
 *** =auto-revert-mode=
 Revierte el contenido de un buffer de manera automática cuando el contenido de un archivo a cambiado fuera de Emacs
