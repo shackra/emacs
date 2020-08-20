@@ -401,7 +401,8 @@ Teclas
     (ivy-posframe-parameters
      '((left-fringe . 10)
        (right-fringe . 10)))
-    (ivy-posframe-hide-minibuffer t))
+    (ivy-posframe-hide-minibuffer t)
+    (posframe-mouse-banish t))
 
   (defcustom shackra-ivy-ignore-buffers '("\\*weechat-relay" "\\*Messages\\*" "\\*elfeed-log\\*"
                                           "\\*Help\\*" "\\*Compile-Log\\*" "\\*anaconda-mode\\*"
