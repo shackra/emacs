@@ -2263,6 +2263,39 @@ Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
     :init
     (add-hook 'multiple-cursors-mode-hook #'shackra-lsp-on-change-modify-hook)
     :bind (:map global-map (("C-c n" . hydra-multiple-cursors/body)))
+    :custom
+    (mc/cmds-to-run-once
+     '(ace-window
+       dap-tooltip-mouse-motion
+       find-file
+       golden-ratio-scroll-screen-up
+       hydra-multiple-cursors/ignore
+       hydra-multiple-cursors/mc/add-cursor-on-click
+       hydra-multiple-cursors/mc/edit-lines-and-exit
+       hydra-multiple-cursors/mc/insert-numbers-and-exit
+       hydra-multiple-cursors/mc/mark-next-like-this
+       ignore
+       counsel-M-x
+       indent-for-tab-command
+       special-hydra-lispy-mark/body
+       special-lispy-occur
+       undo-tree-visualize))
+    (mc/cmds-to-run-for-all
+     '(TeX-insert-backslash
+       electric-pair-delete-pair
+       hungry-delete-backward
+       hungry-delete-forward
+       lispy-delete-backward
+       lispy-move-beginning-of-line
+       lispy-move-end-of-line
+       lispy-parens
+       mwim-beginning
+       mwim-end
+       org-self-insert-command
+       special-lispy-flow
+       special-lispy-left
+       yaml-electric-backspace
+       yaml-electric-dash-and-dot))
     :hydra (hydra-multiple-cursors (:hint nil)
                                    "
    Arriba^^         Abajo^^          Varios            % 2(mc/num-cursors) cursor%s(if (> (mc/num-cursors) 1) \"s\" \"\")
@@ -2270,7 +2303,7 @@ Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
    [_p_]   Sigu.    [_n_]   Sigu.    [_l_] Editar lineas  [_0_] Insertar números
    [_P_]   Omitir   [_N_]   Omitir   [_a_] Marcar todo    [_A_] Insertar letras
    [_M-p_] Desmarc. [_M-n_] Desmarc. [_s_] Buscar
-   [Clic] Cursor en punto        [_q_] Salir"
+   [_<mouse-1>_] Cursor en punto     [_q_] Salir"
                                    ("l" mc/edit-lines :exit t)
                                    ("a" mc/mark-all-like-this :exit t)
                                    ("n" mc/mark-next-like-this)
