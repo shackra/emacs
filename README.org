@@ -1018,6 +1018,30 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
                                  :repo "ubolonton/emacs-tree-sitter"
                                  :files ("langs/*.el" "langs/queries"))))
 #+end_src
+**-*** =projectile=
+:LOGBOOK:
+- Refiled on [2015-11-12 jue 16:50]
+:END:
+Manejo de archivos de un proyecto.
+#+BEGIN_SRC emacs-lisp
+  (use-package projectile
+    :diminish projectile-mode
+    :hook ((text-mode prog-mode) . projectile-mode)
+    :bind (:map projectile-mode-map
+                ("C-c p" . projectile-command-map))
+    :custom
+    (projectile-completion-system 'ivy)
+    (projectile-switch-project-action 'counsel-projectile-find-file)
+    (projectile-file-exists-remote-cache-expire (* 10 60))
+    (projectile-globally-ignored-files '("TAGS" "\#*\#" "*~" "*.la"
+                                         "*.o" "*.pyc" "*.elc" "*.exe"
+                                         "*.zip" "*.tar.*" "*.rar" "*.7z"))
+    (projectile-switch-project-action 'magit-status)
+    :config
+    (add-to-list 'projectile-globally-ignored-directories "node_modules"))
+
+  (use-package ag)
+#+END_SRC
 ** Comunicación
 *** Correo electrónico
 =mu4e= se usa para leer y enviar correo electrónico.
