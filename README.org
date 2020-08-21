@@ -1018,7 +1018,7 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
                                  :repo "ubolonton/emacs-tree-sitter"
                                  :files ("langs/*.el" "langs/queries")))
 #+end_src
-**-*** =projectile=
+***** =projectile=
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:50]
 :END:
