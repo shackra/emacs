@@ -124,7 +124,7 @@
  ("mwim.el" . #("b4f3edb4c0fb8f8b71cecbf8095c2c25a8ffbf85" 0 40 (fontified nil)))
  ("nginx-mode" . #("a2bab83c2eb233d57d76b236e7c141c2ccc97005" 0 40 (fontified nil)))
  ("ob-go" . #("2067ed55f4c1d33a43cb3f6948609d240a8915f5" 0 40 (fontified nil)))
- ("org" . #("bfc4569ae326a40ac77ea89dffdbfdfaabc6ec0d" 0 40 (fontified nil)))
+ ("org" . #("312a646fb8f60735aea1992654e4d06cf37daf3f" 0 40 (fontified nil)))
  ("org-bullets" . #("767f55feb58b840a5a04eabfc3fbbf0d257c4792" 0 40 (fontified nil)))
  ("org-download" . #("d248fcb8f2592a40507682e91eed9a31ead4e4a6" 0 40 (fontified nil)))
  ("org-projectile" . #("96a57a43555e24e5e0d81e79f0fbb47001c41bac" 0 40 (fontified nil)))
