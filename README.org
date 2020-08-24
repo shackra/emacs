@@ -2093,6 +2093,7 @@ Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que s
 
   (use-package multi-vterm
     :bind (:map global-map ("C-t" . multi-vterm-dedicated-toggle))
+    :bind (:map vterm-mode-map ("C-t" . multi-vterm-dedicated-toggle))
     :custom
     (multi-vterm-dedicated-window-height 18))
 
