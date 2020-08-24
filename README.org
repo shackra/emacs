@@ -917,13 +917,16 @@ Implementación para Emacs del Language Server Protocol.
     (lsp-gopls-hover-kind "FullDocumentation"))
 
   (use-package treemacs
+    :custom
+    (treemacs-indentation-string (propertize " ⫶ " 'face 'font-lock-comment-face))
+    (treemacs-indentation 1)
     :bind (:map global-map
-           ("C-c x x" . treemacs-select-window)
-           ("C-c x 1"   . treemacs-delete-other-windows)
-           ("C-c x t"   . treemacs)
-           ("C-c x B"   . treemacs-bookmark)
-           ("C-c x C-t" . treemacs-find-file)
-           ("C-c x M-t" . treemacs-find-tag)))
+                ("M-0"       . treemacs-select-window)
+                ("C-x t 1"   . treemacs-delete-other-windows)
+                ("C-x t t"   . treemacs)
+                ("C-x t B"   . treemacs-bookmark)
+                ("C-x t C-t" . treemacs-find-file)
+                ("C-x t M-t" . treemacs-find-tag)))
 
   (use-package treemacs-projectile
     :after treemacs projectile)
@@ -2089,12 +2092,9 @@ Para ubicar el archivo JAR en diferentes sistemas se inspecciona el script que s
       (vterm-kill-buffer-on-exit t)))
 
   (use-package multi-vterm
-    :hydra (hydra-multi-vterm (:color blue :columns 2)
-                              ("x" multi-vterm-dedicated-close "cerrar"))
-    :bind (:map global-map ("C-t" . multi-vterm-dedicated-open))
-    :bind (:map vterm-mode-map ("C-t" . hydra-multi-vterm/body))
+    :bind (:map global-map ("C-t" . multi-vterm-dedicated-toggle))
     :custom
-    (multi-vterm-dedicated-window-height 20))
+    (multi-vterm-dedicated-window-height 18))
 
   (use-package flymake-shell
     :hook (sh-set-shell . flymake-shell-load))
