@@ -20,7 +20,6 @@
  ("closql" . #("c1a9b816eced2abbcba0dd645830c72d93767b72" 0 40 (fontified nil)))
  ("company-auctex" . #("9400a2ec7459dde8cbf1a5d50dfee4e300ed7e18" 0 40 (fontified nil)))
  ("company-box" . #("39e36715e64480a5815450935d681ac7b0905bc7" 0 40 (fontified nil)))
- ("company-emoji" . #("fc45b56f3e2081d794f243bce705e77d4e29fc06" 0 40 (fontified nil)))
  ("company-mode" . #("4462e7d399c3d2e1ea1f5d018f4537f1f3d5acfc" 0 40 (fontified nil)))
  ("company-nginx" . #("3074a5d322562f36867ef67bffeb25f1c0d8aca9" 0 40 (fontified nil)))
  ("company-posframe" . #("4bfb8bccef4b64479f4147de6bf6fbd05df2a67e" 0 40 (fontified nil)))
