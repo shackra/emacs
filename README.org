@@ -664,10 +664,12 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     (add-hook 'after-init-hook #'global-company-mode)
     :custom
     (company-backends '((company-files
-                         company-keywords)
-                        (company-abbrev company-dabbrev)))
-    (company-idle-delay 1)
-    (company-tooltip-limit 12)
+                         company-keywords
+                         company-abbrev
+                         company-dabbrev)))
+    (company-idle-delay 0)
+    (company-tooltip-limit 6)
+    (company-selection-wrap-around t)
     (company-minimum-prefix-length 1)
     (company-dabbrev-downcase nil)
     (company-auto-complete nil))
