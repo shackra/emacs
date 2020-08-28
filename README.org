@@ -1316,8 +1316,7 @@ Set de paquetes que me ayudan a escribir paquetes para GNU Emacs
 
   (use-package cask-mode)
 
-  (use-package package-lint-flymake
-    :hook (emacs-lisp-mode . package-lint-setup-flymake))
+  (use-package package-lint-flymake)
 #+END_SRC
 *** org-babel
 #+BEGIN_SRC emacs-lisp
