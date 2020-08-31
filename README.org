@@ -206,65 +206,42 @@ configuración sana de ciertas opciones en Emacs
     (add-to-list 'default-frame-alist '(tty-color-mode . -1)))
 #+END_SRC
 **** Tipografía
-***** Fira Code simbolos
-código para configurar ligaduras en Fira Code
+***** Ligaduras
 #+begin_src emacs-lisp
-  (defun fira-code-mode--make-alist (list)
-    "Generate prettify-symbols alist from LIST."
-    (let ((idx -1))
-      (mapcar
-       (lambda (s)
-         (setq idx (1+ idx))
-         (let* ((code (+ #Xe100 idx))
-                (width (string-width s))
-                (prefix ())
-                (suffix '(?\s (Br . Br)))
-                (n 1))
-           (while (< n width)
-             (setq prefix (append prefix '(?\s (Br . Bl))))
-             (setq n (1+ n)))
-           (cons s (append prefix suffix (list (decode-char 'ucs code))))))
-       list)))
+  (use-package ligature
+    :straight (ligature :type git :host github :repo "mickeynp/ligature.el")
+    :config
+    (ligature-set-ligatures 'prog-mode '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\"
+                                        "{-" "[]" "::" ":::" ":=" "!!" "!=" "!==" "-}"
+                                        "--" "---" "-->" "->" "->>" "-<" "-<<" "-~"
+                                        "#{" "#[" "##" "###" "####" "#(" "#?" "#_" "#_("
+                                        ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*"
+                                        "/**" "/=" "/==" "/>" "//" "///" "&&" "||" "||="
+                                        "|=" "|>" "^=" "$>" "++" "+++" "+>" "=:=" "=="
+                                        "===" "==>" "=>" "=>>" "<=" "=<<" "=/=" ">-" ">="
+                                        ">=>" ">>" ">>-" ">>=" ">>>" "<*" "<*>" "<|" "<|>"
+                                        "<$" "<$>" "<!--" "<-" "<--" "<->" "<+" "<+>" "<="
+                                        "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~"
+                                        "<~~" "</" "</>" "~@" "~-" "~=" "~>" "~~" "~~>" "%%"
+                                        "x" ":" "+" "+" "*"))
+    (global-ligature-mode t))
+#+end_src
+***** Configura tipografías unicode
+aconsejado por https://www.masteringemacs.org/article/unicode-ligatures-color-emoji para obtener emojis coloridos
+#+begin_notes
+Hay que instalar algunas tipografías antes.
 
-  (defconst fira-code-mode--ligatures
-    '("www" "**" "***" "**/" "*>" "*/" "\\\\" "\\\\\\"
-      "{-" "[]" "::" ":::" ":=" "!!" "!=" "!==" "-}"
-      "--" "---" "-->" "->" "->>" "-<" "-<<" "-~"
-      "#{" "#[" "##" "###" "####" "#(" "#?" "#_" "#_("
-      ".-" ".=" ".." "..<" "..." "?=" "??" ";;" "/*"
-      "/**" "/=" "/==" "/>" "//" "///" "&&" "||" "||="
-      "|=" "|>" "^=" "$>" "++" "+++" "+>" "=:=" "=="
-      "===" "==>" "=>" "=>>" "<=" "=<<" "=/=" ">-" ">="
-      ">=>" ">>" ">>-" ">>=" ">>>" "<*" "<*>" "<|" "<|>"
-      "<$" "<$>" "<!--" "<-" "<--" "<->" "<+" "<+>" "<="
-      "<==" "<=>" "<=<" "<>" "<<" "<<-" "<<=" "<<<" "<~"
-      "<~~" "</" "</>" "~@" "~-" "~=" "~>" "~~" "~~>" "%%"
-      "x" ":" "+" "+" "*"))
+sudo pacman -S noto-fonts noto-fonts-emoji ttf-symbola
 
-  (defvar fira-code-mode--old-prettify-alist)
+Y por ultimo descargar esta tipografía:
 
-  (defun fira-code-mode--enable ()
-    "Enable Fira Code ligatures in current buffer."
-    (setq-local fira-code-mode--old-prettify-alist prettify-symbols-alist)
-    (setq-local prettify-symbols-alist (append (fira-code-mode--make-alist fira-code-mode--ligatures) fira-code-mode--old-prettify-alist))
-    (prettify-symbols-mode t))
-
-  (defun fira-code-mode--disable ()
-    "Disable Fira Code ligatures in current buffer."
-    (setq-local prettify-symbols-alist fira-code-mode--old-prettify-alist)
-    (prettify-symbols-mode -1))
-
-  (define-minor-mode fira-code-mode
-    "Fira Code ligatures minor mode"
-    :lighter " 🔥"
-    (setq-local prettify-symbols-unprettify-at-point 'right-edge)
-    (if fira-code-mode
-        (fira-code-mode--enable)
-      (fira-code-mode--disable)))
-
-  (defun fira-code-mode--setup ()
-    "Setup Fira Code Symbols"
-    (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol"))
+http://www.quivira-font.com/files/Quivira.ttf ; o Quivira.otf
+#+end_notes
+#+begin_src emacs-lisp
+  (use-package unicode-fonts
+    :config
+    (load-file (expand-file-name "unicode-fonts-custom.el" user-emacs-directory))
+    (unicode-fonts-setup))
 #+end_src
 ***** configuración de tipografías en uso
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
@@ -293,15 +270,7 @@ Función que comprueba disponibilidad de tipografías en el sistema, además de 
 
   (defun font-setup (&optional frame)
     (cond ((font-exists-p "Fira Code")
-           (set-face-attribute 'default frame :height (font-pt-to-height 13) :font "Fira Code")
-           (if (font-exists-p "Fira Code Symbol")
-               (fira-code-mode--setup)
-             (warn "ligaduras no disponibles, tipografía Fira Code Symbol no encontrada en el sistema"))
-           (add-hook 'prog-mode-hook #'fira-code-mode)))
-    (cond ((font-exists-p "Apple Color Emoji")
-           (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend))
-          ((font-exists-p "Symbola")
-           (set-fontset-font t 'symbol (font-spec :size 20 :name "Symbola") frame 'prepend))))
+           (set-face-attribute 'default frame :height (font-pt-to-height 13) :font "Fira Code"))))
 
   (defun font-setup-frame (frame)
     "configura la tipografía por cada nuevo marco FRAME creado."
@@ -2781,8 +2750,14 @@ Mejor visor de PDFs para Emacs
                 ("C-s" . isearch-forward)
                 ("C-r" . isearch-backward)))
 #+END_SRC
-*** Emojify 😏
-Muestra imágenes de emojis en lugar de los caracteres utf-8
+*** CANCELADO Emojify 😏                                        :CANCELADO:
+- State "CANCELADO"  from              [2020-08-31 lun 12:42] \\
+  paquete obsoleto, ver nota.
+Muestra imágenes de emojis en lugar de los caracteres utf-8.
+
+#+begin_notes
+Gracias a [[*Configura tipografías unicode][Configura tipografías unicode]] en Emacs 27 podemos mostrar emojis coloridos en lugar de imagenes, haciendo obsoleto este paquete.
+#+end_notes
 #+BEGIN_SRC emacs-lisp
   (use-package emojify
     ;; Este paquete sólo funciona si la versión de Emacs es mayor o igual a 24.3
