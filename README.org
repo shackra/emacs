@@ -1853,6 +1853,10 @@ go build golang.org/x/tools/cmd/guru
                 ("C-c C-r" . go-remove-unused-imports)
                 ("C-c C-i" . go-goto-imports)
                 ("C-c C-c" . compile))
+    :hook (((go-mode after-save) . shackra-go-update-compile-definition)
+           (go-mode              . (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
+           (before-save          . gofmt-before-save)
+           (go-mode              . shackra-go-mode-insert-package-directive))
     :init
     (with-eval-after-load 'dap-mode
       (require 'dap-go)
@@ -1865,11 +1869,12 @@ go build golang.org/x/tools/cmd/guru
         (if (string-suffix-p "_test.go" (buffer-name))
             (set (make-local-variable 'compile-command) "go test -bench=. -v")
           (set (make-local-variable 'compile-command) (format "go build" (f-base (f-dirname (f-full (buffer-name)))))))))
-    :config
-    (add-hook 'before-save-hook 'gofmt-before-save)
-    (add-hook 'go-mode-hook (lambda () (add-to-list (make-local-variable 'grep-find-ignored-directories) "vendor")))
-    (add-hook 'go-mode-hook 'shackra-go-update-compile-definition)
-    (add-hook 'after-save-hook 'shackra-go-update-compile-definition))
+    (defun shackra-go-mode-insert-package-directive ()
+      (interactive)
+      (when (and (= (length (buffer-substring-no-properties (point) (point-max))) 0) buffer-file-name)
+        (let ((package (f-filename (f-dirname buffer-file-name))))
+          (insert (concat "package " package))
+          (save-buffer)))))
 
   (use-package flymake-golangci
     :straight (flymake-golangci :type git :host gitlab :repo "shackra/flymake-golangci")
