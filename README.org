@@ -257,7 +257,7 @@ http://www.quivira-font.com/files/Quivira.ttf ; o Quivira.otf
     (progn
       ;; Inserta Noto Color Emoji despues de Apple Color Emoji para que los
       ;; emojis se muestren correctamente en Emacs 27.x en sistemas que no sean Apple. 
-      (setf unicode-fonts-block-font-mapping (shackra-unicode-fonts-transform-block-font-mapping "Apple Color Emoji" "Noto Color Emoji"))
+      (setf unicode-fonts-block-font-mapping (shackra-transform-unicode-fonts-block-font-mapping "Apple Color Emoji" "Noto Color Emoji"))
       (unicode-fonts-setup)))
 #+end_src
 ***** configuración de tipografías en uso
