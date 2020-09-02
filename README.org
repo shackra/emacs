@@ -239,26 +239,26 @@ Y por ultimo descargar esta tipografía:
 http://www.quivira-font.com/files/Quivira.ttf ; o Quivira.otf
 #+end_notes
 #+begin_src emacs-lisp
+  ;; codigo via https://emacs.stackexchange.com/a/60461/690
+  (defun shackra-transform-unicode-fonts-block-font-mapping (lead-font follow-font font-mapping)
+    (mapcar
+     (lambda (l)
+       (list (car l)
+             (mapcan
+              (lambda (x)
+                (if (string= x lead-font)
+                    (list x follow-font)
+                  (list x)))
+              (cadr l))))
+     font-mapping))
+
   (use-package unicode-fonts
-    :init
-    ;; codigo via https://emacs.stackexchange.com/a/60461/690
-    (defun shackra-transform-unicode-fonts-block-font-mapping (lead-font follow-font)
-      (mapcar
-       (lambda (l)
-         (list (car l)
-               (mapcan
-                (lambda (x)
-                  (if (string= x lead-font)
-                      (list x follow-font)
-                    (list x)))
-                (cadr l))))
-       unicode-fonts-block-font-mapping))
     :config
-    (progn
-      ;; Inserta Noto Color Emoji despues de Apple Color Emoji para que los
-      ;; emojis se muestren correctamente en Emacs 27.x en sistemas que no sean Apple. 
-      (setf unicode-fonts-block-font-mapping (shackra-transform-unicode-fonts-block-font-mapping "Apple Color Emoji" "Noto Color Emoji"))
-      (unicode-fonts-setup)))
+    (setf unicode-fonts-block-font-mapping
+          (shackra-transform-unicode-fonts-block-font-mapping
+           "Apple Color Emoji" "Noto Color Emoji" unicode-fonts-block-font-mapping))
+    (add-hook 'after-make-frame-functions (lambda (frame) (unicode-fonts-setup)))
+    (unicode-fonts-setup))
 #+end_src
 ***** configuración de tipografías en uso
 Función que comprueba disponibilidad de tipografías en el sistema, además de establecer la tipografía.
