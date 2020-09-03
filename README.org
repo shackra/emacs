@@ -257,7 +257,8 @@ http://www.quivira-font.com/files/Quivira.ttf ; o Quivira.otf
     (setf unicode-fonts-block-font-mapping
           (shackra-transform-unicode-fonts-block-font-mapping
            "Apple Color Emoji" "Noto Color Emoji" unicode-fonts-block-font-mapping))
-    (add-hook 'after-make-frame-functions (lambda (frame) (unicode-fonts-setup)))
+    (when (daemonp)
+      (add-hook 'after-make-frame-functions (lambda (frame) (unicode-fonts-setup))))
     (unicode-fonts-setup))
 #+end_src
 ***** configuración de tipografías en uso
