@@ -162,7 +162,7 @@
  ("slime" . "221518f0d3d224403743e6690f6bb66c42d9dec9")
  ("sphinx-doc.el" . "f39da2e6cae55d5d7c7ce887e69755b7529bcd67")
  ("spinner" . "2daa167bec1c7566d662d48613a94453536b524a")
- ("straight.el" . "4e9eb90afe068d356e2b6e90eccc1891216a0669")
+ ("straight.el" . "65e0f71b6fb15c9fba651bd083ece813802b8941")
  ("string-inflection" . "1937db7513db570606ea8798916180b7dd75d3b1")
  ("swiper" . "9bb68419f1088ee4d8f2b76f84995fa02bceeed3")
  ("systemd-mode" . "51c148e09a129ddf33d95276aa0e89d4ef6f8dd2")
