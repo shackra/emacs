@@ -39,7 +39,7 @@
  ("elfeed" . "af31f80552f7d081b985d729143a804ad47c0734")
  ("emacs-async" . "86aef2c38e7d35e8509b7feeee3e989d825eba91")
  ("emacs-dashboard" . "bf38867ae80902d58207974b4a2bba4249324599")
- ("emacs-doom-themes" . "95463eac68fe88535d9342c7b4c2cbaae3c80950")
+ ("emacs-doom-themes" . "d6ee47dc8ed2cf9e585f62243214af03ba5b1687")
  ("emacs-gdscript-mode" . "b6e1f9a512c44e965d209e7e66acb98d560197b7")
  ("emacs-go-tag" . "59b243f2fa079d9de9d56f6e2d94397e9560310a")
  ("emacs-htmlize" . "86f22f211e9230857197c42a9823d3f05381deed")
