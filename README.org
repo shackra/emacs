@@ -44,13 +44,6 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
 
   (setf straight-check-for-modifications '(check-on-save find-when-checking))
 
-  (straight-use-package
-   '(org-plus-contrib
-     :repo "https://code.orgmode.org/bzg/org-mode.git"
-     :local-repo "org"
-     :files (:defaults "contrib/lisp/*.el")
-     :includes (org)))
-
   (setq inhibit-startup-screen t)
 
   ;; sombrero de aluminio, le bajamos una rayita
@@ -1355,39 +1348,133 @@ Teclas
 - @@html:<kbd>C-c a</kbd>@@ :: Abre la agenda
 - @@html:<kbd>C-c c</kbd>@@ :: Capturar algo
 #+BEGIN_SRC emacs-lisp
-  (use-package org-beautify-theme
-    :disabled
-    :after org)
-
   (use-package org-bullets
     :after org
-    :init (add-hook 'org-mode-hook 'org-bullets-mode))
+    :hook (org-mode . org-bullets-mode))
 
   (use-package org-download
-    :init
-    (setq-default org-download-image-dir "~/org/imagenes/"))
+    :hook (dired-mode . org-download-enable))
 
   (use-package org
-    :straight org-plus-contrib
+    :straight (org-plus-contrib
+               :repo "https://code.orgmode.org/bzg/org-mode.git"
+               :local-repo "org"
+               :files (:defaults "contrib/lisp/*.el")
+               :includes (org))
     ;; registrado
     :bind (:map global-map
                 ("C-c a" . org-agenda)
                 ("<F12>" . org-agenda)
                 ("C-c l" . org-store-link)
-                ("C-c c" . org-capture)
-                :map org-mode-map
-                ("C-<F12>" . shackra-time-at-point-to-hours))
-    :hook (org-src-mode . shackra/disable-flymake-in-org-src-block)
+                ("C-c c" . org-capture))
+    :mode ("\\.orgcaptmpl\\'" . org-mode)
+    :hook (org-mode . yas-minor-mode-on)
+    :custom
+    (org-directory (expand-file-name "org" (getenv "HOME")))
+    (org-default-notes-file (expand-file-name  "notas.org" org-directory))
+    (org-refile-targets `((nil :maxlevel . 9)
+                          (org-agenda-files :maxlevel . 9)
+                          (org-default-notes-file :maxlevel . 9)
+                          (,(expand-file-name "notas.org" org-directory) :maxlevel . 9)
+                          (,(expand-file-name "quizas.org" org-directory) :maxlevel . 9)))
+    (org-use-property-inheritance t)
+    (org-refile-use-outline-path 'file)
+    (org-outline-path-complete-in-steps t)
+    (org-refile-allow-creating-parent-nodes 'confirm)
+    (org-M-RET-may-split-line '((default . nil)))
+    (org-default-notes-file (expand-file-name "notas.org" org-directory))
+    (org-todo-keywords
+     '((sequence "POR-HACER(p)" "SIGNT(s)" "|" "TERMINADO(t)")
+       (sequence "ESPERA(e@/!)" "RETENER(r@/!)" "|" "CANCELADO(c@/!)")))
+    (org-todo-keyword-faces
+     '(("POR-HACER" :foreground "red" :weight bold)
+       ("SIGNT" :foreground "blue" :weight bold)
+       ("TERMINADO" :foreground "forest green" :weight bold)
+       ("ESPERA" :foreground "orange" :weight bold)
+       ("RETENER" :foreground "magenta" :weight bold)
+       ("CANCELADO" :foreground "forest green" :weight bold)))
+    (org-catch-invisible-edits 'show)
+    (org-clock-persist 'history)
+    (org-ctrl-k-protect-subtree t)
+    (org-export-backends '(ascii html icalendar latex md texinfo))
+    (org-fontify-quote-and-verse-blocks t)
+    (org-footnote-auto-adjust t)
+    (org-habit-graph-column 55)
+    (org-imenu-depth 5)
+    (org-log-done 'time)
+    (org-modules '(org-bbdb org-bibtex org-crypt org-docview org-gnus org-habit org-id org-info org-irc org-mhe org-rmail org-w3m org-protocol))
+    (org-special-ctrl-k t)
+    (org-startup-folded nil)
+    (org-startup-indented t)
+    (org-use-fast-todo-selection t)
+    (org-treat-S-cursor-todo-selection-as-state-change nil)
+    (org-todo-state-tags-triggers
+     '(("CANCELADO" ("CANCELADO"        . t))
+       ("ESPERA" ("ESPERA"              . t))
+       ("RETENER" ("ESPERA") ("RETENER" . t))
+       (done ("ESPERA") ("RETENER"))
+       ("POR-HACER" ("ESPERA") ("CANCELADO") ("RETENER"))
+       ("SIGNT" ("ESPERA") ("CANCELADO") ("RETENER"))
+       ("TERMINADO" ("ESPERA") ("CANCELADO") ("RETENER"))))
+    ;; según http://orgmode.org/manual/Link-abbreviations.html#Link-abbreviations
+    (org-link-abbrev-alist
+     '(("rarbg"      . "https://rarbg.to/torrents.php?search=%s&category%5B%5D=17&category%5B%5D=18")
+       ("nyaa"       . "https://www.nyaa.se/?page=search&cats=1_0&filter=0&term=%s")
+       ("bakabt"     . "https://bakabt.me/browse.php?only=0&incomplete=1&bonus=1&c1=1&c2=1&reorder=1&q=%s")
+       ("tokyotosho" . "https://www.tokyotosho.info/search.php?terms=%s&type=1&size_min=&size_max=&username=")))
+    (org-agenda-dim-blocked-tasks nil)
+    (org-agenda-compact-blocks nil)
+    (org-agenda-custom-commands
+     '(("a" "Agenda"
+        ((tags "PRIORITY=\"A\""
+               ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                (org-agenda-overriding-header "Tareas de alta prioridad por terminar:")))
+         (agenda ""
+                 ((org-agenda-span 'day)
+                  (org-agenda-overriding-header "Hoy:")
+                  (org-agenda-show-all-dates nil)))
+         (agenda ""
+                 ((org-agenda-span 'week)
+                  (org-agenda-start-day "+1d") ;; A partir de mañana
+                  (org-agenda-overriding-header "Semana:")
+                  (org-agenda-show-all-dates nil)))
+         (agenda ""
+                 ((org-agenda-span 'month)
+                  ;; A partir de la siguiente semana
+                  (org-agenda-start-day "+1w")
+                  (org-agenda-overriding-header "Mes:")
+                  (org-agenda-show-all-dates nil)))
+         (alltodo ""
+                  ((org-agenda-skip-function
+                    '(or (air-org-skip-subtree-if-habit)
+                         (air-org-skip-subtree-if-priority ?A)
+                         (org-agenda-skip-if nil '(scheduled deadline))))
+                   (org-agenda-overriding-header "Todas las tareas de prioridad normal:")))))))
+    (org-archive-location (expand-file-name "~/org-archivos/archivado.org::* Entradas viejas y archivadas"))
+    (org-footnote-auto-adjust t)
+    (org-outline-path-complete-in-steps nil)
+    (org-refile-use-outline-path t)
+    (org-html-htmlize-output-type 'css)
+    (org-html-htmlize-font-prefix "org-")
+    (org-habit-graph-column 55)
+    (org-special-ctrl-k t)
+    (org-ctrl-k-protect-subtree t) ;; al usar C-k, evitamos perder todo el subarbol
+    (org-catch-invisible-edits 'show)
+    (org-return-follow-link t)
+    (org-startup-indented t)
+    (org-startup-folded nil)
+    (org-log-done nil)
+    (org-log-reschedule 'note)
+    (org-log-redeadline 'note)
+    (org-log-note-clock-out nil)
+    (org-log-refile nil)
+    (org-log-into-drawer nil)
+    (org-clock-persist 'history)
+    (org-plantillas-directory (expand-file-name "org-plantillas" user-emacs-directory))
     :init
-    (defun shackra/disable-flymake-in-org-src-block ()
-      (remove-hook 'flymake-diagnostic-functions 'package-lint-flymake))
-    (setf org-directory (expand-file-name "org" (getenv "HOME")))
-    (setf org-default-notes-file (expand-file-name  "diario.org" org-directory))
-    (setf org-agenda-files `(,(expand-file-name "cosas por hacer.org" org-directory)))
     (add-to-list 'ispell-skip-region-alist '(":\\(PROPERTIES\\|LOGBOOK\\):" . ":END:"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_SRC" . "#\\+END_SRC"))
     (add-to-list 'ispell-skip-region-alist '("#\\+BEGIN_EXAMPLE" . "#\\+END_EXAMPLE"))
-    (add-hook 'org-mode-hook #'yas-minor-mode-on)
     ;; Exclude DONE state tasks from refile targets
     (defun verify-refile-target ()
       "Exclude todo keywords with a done state from refile targets"
@@ -1409,202 +1496,60 @@ Teclas
         (if (string= (org-entry-get nil "STYLE") "habit")
             subtree-end
           nil)))
-    (defun shackra-org-clocktable-formatter (ipos tables params)
-      "Extrae el titulo de enlaces y elimina TODO keywords"
-      (cl-loop for tbl in tables
-               for entries = (nth 2 tbl)
-               do (cl-loop for entry in entries
-                           for headline = (nth 1 entry)
-                           do (setq headline (replace-regexp-in-string (shackra--org-clocktable-regexp) "" headline))
-                           do (when (string-match-p "\\[\\[.*\\]\\[\\(.*\\)\\]\\]" headline) (setf headline (replace-regexp-in-string "\\[\\[.*\\]\\[\\(.*\\)\\]\\]" "\\1" headline)))
-                           do (setcar (nthcdr 1 entry) headline)))
-      (org-clocktable-write-default ipos tables params))
-
-    (defun shackra--org-clocktable-regexp ()
-      "Genera una expresion regular a partir de la variable `org-todo-keywords'"
-      (let ((regexp)
-            (flat (shackra--flatten org-todo-keywords)))
-        (dolist (e flat)
-          (when (and (stringp e) (not (string-match-p "|" e)) (not (string-empty-p e)))
-            (append regexp (replace-regexp-in-string "(.*)" " " e))))
-        (string-join regexp "\\|")))
-
-    (defun shackra--flatten (mylist)
-      "Flat an array
-
-  Taken from https://rosettacode.org/wiki/Flatten_a_list#Emacs_Lisp"
-      (cond
-       ((null mylist) nil)
-       ((atom mylist) (list mylist))
-       (t
-        (append (shackra--flatten (car mylist)) (shackra--flatten (cdr mylist))))))
-
-    (setf org-clock-clocktable-formatter 'shackra-org-clocktable-formatter)
-    ;; Targets include this file and any file contributing to the agenda - up to
-    ;; 9 levels deep
-    (setf org-refile-targets `((nil :maxlevel . 9)
-                               (org-agenda-files :maxlevel . 9)
-                               (org-default-notes-file :maxlevel . 9)
-                               (,(expand-file-name "notas.org" org-directory) :maxlevel . 9)
-                               (,(expand-file-name "quizas.org" org-directory) :maxlevel . 9)))
-    (setf org-use-property-inheritance t)
-    ;; Use full outline paths for refile targets
-    (setq org-refile-use-outline-path 'file)
-
-    (setq org-outline-path-complete-in-steps t)
-
-    ;; Allow refile to create parent tasks with confirmation
-    (setq org-refile-allow-creating-parent-nodes 'confirm)
-
-    ;; evita dividir una linea con M-RET
-    (setf org-M-RET-may-split-line '((default . nil)))
-    (if (file-exists-p (expand-file-name "cosas por hacer.org" org-directory))
-        (setf org-agenda-files (list (expand-file-name "cosas por hacer.org" org-directory)))
-      (warn "no se añadió archivo 'cosas por hacer.org' porque no existe"))
-    (setf org-default-notes-file (expand-file-name "notas.org" org-directory))
-    (setf org-todo-keywords
-          '((sequence "POR-HACER(p)" "SIGNT(s)" "|" "TERMINADO(t)")
-            (sequence "ESPERA(e@/!)" "RETENER(r@/!)" "|" "CANCELADO(c@/!)")))
-    (setf org-todo-keyword-faces
-          '(("POR-HACER" :foreground "red" :weight bold)
-            ("SIGNT" :foreground "blue" :weight bold)
-            ("TERMINADO" :foreground "forest green" :weight bold)
-            ("ESPERA" :foreground "orange" :weight bold)
-            ("RETENER" :foreground "magenta" :weight bold)
-            ("CANCELADO" :foreground "forest green" :weight bold)))
-    (setf org-catch-invisible-edits 'show)
-    (setf org-clock-persist 'history)
-    (setf org-ctrl-k-protect-subtree t)
-    (setf org-export-backends '(ascii html icalendar latex md texinfo))
-    (setf org-fontify-quote-and-verse-blocks t)
-    (setf org-footnote-auto-adjust t)
-    (setf org-habit-graph-column 55)
-    (setf org-imenu-depth 5)
-    (setf org-log-done 'time)
-    (setf org-modules '(org-bbdb org-bibtex org-crypt org-docview
-                                 org-gnus org-habit org-id org-info
-                                 org-irc org-mhe org-rmail org-w3m))
-    (setf org-special-ctrl-k t)
-    (setf org-startup-folded nil)
-    (setf org-startup-indented t)
-    (setf org-use-fast-todo-selection t)
-    (setf org-treat-S-cursor-todo-selection-as-state-change nil)
-    (setf org-todo-state-tags-triggers
-          '(("CANCELADO" ("CANCELADO" . t))
-            ("ESPERA" ("ESPERA" . t))
-            ("RETENER" ("ESPERA") ("RETENER" . t))
-            (done ("ESPERA") ("RETENER"))
-            ("POR-HACER" ("ESPERA") ("CANCELADO") ("RETENER"))
-            ("SIGNT" ("ESPERA") ("CANCELADO") ("RETENER"))
-            ("TERMINADO" ("ESPERA") ("CANCELADO") ("RETENER"))))
-    ;; según http://orgmode.org/manual/Link-abbreviations.html#Link-abbreviations
-    (setf org-link-abbrev-alist
-          '(("rarbg" . "https://rarbg.to/torrents.php?search=%s&category%5B%5D=17&category%5B%5D=18")
-            ("nyaa" . "https://www.nyaa.se/?page=search&cats=1_0&filter=0&term=%s")
-            ("bakabt" . "https://bakabt.me/browse.php?only=0&incomplete=1&bonus=1&c1=1&c2=1&reorder=1&q=%s")
-            ("tokyotosho" . "https://www.tokyotosho.info/search.php?terms=%s&type=1&size_min=&size_max=&username=")))
-    (setf org-capture-templates
-          '(("t" "Anotacion técnica" entry (file shackra-custom-engineer-notebook)
-             "* %^{titulo o situación} %^g\n\n%?\n- Enlaces de relacionados:\n" :kill-buffer t :clock-in t :clock-resume t)
-            ("p" "Tarea por hacer" entry (file "cosas por hacer.org")
-             "* POR-HACER %^{breve descripción} %a %^g\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("n" "Notas" entry (file+headline org-default-notes-file "Reorganizar")
-             "* %^{breve descripción}\n:PROPERTIES:\n:CREATED:%U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("f" "Fechas o eventos" entry (file+headline "cosas por hacer.org" "Fechas")
-             "* POR-HACER %^{Nombre del evento} %^g\nSCHEDULED: %^T%?\n:PROPERTIES:%(if (yes-or-no-p \"¿Es esto un cumpleaños?\") (format \"\n:NACIMIENTO: %s\" (with-temp-buffer (org-time-stamp nil t) (buffer-string))) \"\")\n:CREATED: %U\n:END:" :kill-buffer t :clock-in t :clock-resume t)
-            ("d" "Escribir una nota en el diario" entry (file+olp+datetree "diario.org")
-             "* %^{Querido diario...}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :empty-lines 1 :kill-buffer t :clock-in t :clock-resume t)
-            ("r" "Receta de cocina" entry (file "recetas.org")
-             "* %^{Nombre de la receta}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?\n%(call-interactively 'org-download-image)\n- Sacado de: %^a\n** Ingredientes\n** Procedimiento"
-             :kill-buffer t :clock-in t :clock-resume t)
-
-            ("b" "Bitácora de pendientes")
-
-            ("bp" "Tarea" entry (file+headline "quizas.org" "Cosas por hacer")
-             "* %^{breve descripcion}\n:PROPERTIES:\n:CREATED: %U\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("bt" "Aprender" entry (file+headline "quizas.org" "Cosas por hacer")
-             "* Aprender sobre %^{cosa}\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("bl" "Libro" entry (file+headline "quizas.org" "Libros")
-             "* Leer /%^{Titulo}/ por %^{Autor}\n:PROPERTIES:\n:CREATED: %T\n:AUTOR: %\\2\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("bb" "Blog" entry (file+headline "quizas.org" "Blogs")
-             "* Leer entrada de blog /%^{copy as org}/\n:PROPERTIES:\n:CREATED: %T\n:END:\n%\\1%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("bx" "Idea de proyecto" entry (file+headline "quizas.org" "Ideas para posibles proyectos")
-             "* %^{Titulo o breve descripción} ^%g\n:PROPERTIES:\n:CREATED: %T\n:END:\n%?" :kill-buffer t :clock-in t :clock-resume t)
-            ("bm" "Películas" entry (file+headline "quizas.org" "Películas")
-             "* Ver [[rarbg:%^{Titulo}][%\\1]]\n:PROPERTIES:\n:CREATED: %T\n:END:" :kill-buffer t :clock-in t :clock-resume t)
-            ("ba" "Anime" entry (file+headline "quizas.org" "Anime")
-             "* Ver /%^{Anime}/\n:PROPERTIES:\n:CREATED: %T\n:CATEGORY: anime\n:EPISODIO: 1\n:EPISODIOS: %^{numero de episodios}\n:END:\n- [[nyaa:%\\1][Buscar %\\1 en Nyaa Torrents]]\n- [[bakabt:%\\1][Buscar %\\1 en BakaBT]]\n- [[tokyotosho:%\\1][Buscar %\\1 en Tokyo Toshokan]]" :kill-buffer t :clock-in t :clock-resume t)))
-
-    ;; Do not dim blocked tasks
-    (setf org-agenda-dim-blocked-tasks nil)
-
-    ;; Compact the block agenda view
-    (setf org-agenda-compact-blocks nil)
-
-    ;; Custom agenda command definitions
-    (setf org-agenda-custom-commands
-          '(("a" "Agenda"
-             ((tags "PRIORITY=\"A\""
-                    ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-                     (org-agenda-overriding-header "Tareas de alta prioridad por terminar:")))
-              (agenda ""
-                      ((org-agenda-span 'day)
-                       (org-agenda-overriding-header "Hoy:")
-                       (org-agenda-show-all-dates nil)))
-              (agenda ""
-                      ((org-agenda-span 'week)
-                       (org-agenda-start-day "+1d") ;; A partir de mañana
-                       (org-agenda-overriding-header "Semana:")
-                       (org-agenda-show-all-dates nil)))
-              (agenda ""
-                      ((org-agenda-span 'month)
-                       ;; A partir de la siguiente semana
-                       (org-agenda-start-day "+1w")
-                       (org-agenda-overriding-header "Mes:")
-                       (org-agenda-show-all-dates nil)))
-              (alltodo ""
-                       ((org-agenda-skip-function
-                         '(or (air-org-skip-subtree-if-habit)
-                              (air-org-skip-subtree-if-priority ?A)
-                              (org-agenda-skip-if nil '(scheduled deadline))))
-                        (org-agenda-overriding-header "Todas las tareas de prioridad normal:")))))))
-    (setf org-archive-location (expand-file-name "~/org-archivos/archivado.org::* Entradas viejas y archivadas"))
-    (setf org-footnote-auto-adjust t)
-    (setf org-outline-path-complete-in-steps nil)
-    (setf org-refile-use-outline-path t)
-    (setf org-html-htmlize-output-type 'css)
-    (setf org-html-htmlize-font-prefix "org-")
-    (setf org-habit-graph-column 55)
-    (setf org-special-ctrl-k t)
-    (setf org-ctrl-k-protect-subtree t) ;; al usar C-k, evitamos perder todo el subarbol
-    (setf org-catch-invisible-edits 'show)
-    (setf org-return-follow-link t)
-    (setf org-startup-indented t)
-    (setf org-startup-folded nil)
-    (setf org-log-done nil)
-    (setf org-log-reschedule 'note)
-    (setf org-log-redeadline 'note)
-    (setf org-log-note-clock-out nil)
-    (setf org-log-refile nil)
-    (setf org-log-into-drawer nil)
-    (setf org-clock-persist 'history)
     :config
+    ;; https://github.com/sprig/org-capture-extension#example-closins-the-frame-after-a-capture
+    ;; Kill the frame if one was created for the capture
+    (defvar kk/delete-frame-after-capture 0 "Whether to delete the last frame after the current capture")
+
+    (defun kk/delete-frame-if-neccessary (&rest r)
+      (cond
+       ((= kk/delete-frame-after-capture 0) nil)
+       ((> kk/delete-frame-after-capture 1)
+        (setq kk/delete-frame-after-capture (- kk/delete-frame-after-capture 1)))
+       (t
+        (setq kk/delete-frame-after-capture 0)
+        (delete-frame))))
+
+    (advice-add 'org-capture-finalize :after 'kk/delete-frame-if-neccessary)
+    (advice-add 'org-capture-kill :after 'kk/delete-frame-if-neccessary)
+    (advice-add 'org-capture-refile :after 'kk/delete-frame-if-neccessary)
     (org-clock-persistence-insinuate))
+
+  (with-eval-after-load 'org-capture
+    (add-to-list 'org-agenda-files
+                 (car `(,(expand-file-name "cosas por hacer.org" org-directory))))
+    (add-to-list 'org-capture-templates `("T" "Anotacion técnica" entry (file shackra-custom-engineer-notebook)
+                                          (file ,(expand-file-name "anotacion tecnica.orgcaptmpl" org-plantillas-directory))
+                                          :kill-buffer t :clock-in t :clock-resume t))
+    (add-to-list 'org-capture-templates `("t" "Tarea por hacer" entry (file "cosas por hacer.org")
+                                          (file ,(expand-file-name "tareas por hacer.orgcaptmpl" org-plantillas-directory))
+                                          :kill-buffer t :clock-in t :clock-resume t))
+    (add-to-list 'org-capture-templates `("n" "Notas" entry (file+headline org-default-notes-file "Reorganizar")
+                                          (file ,(expand-file-name "notas.orgcaptmpl" org-plantillas-directory))
+                                          :kill-buffer t :clock-in t :clock-resume t))
+    (add-to-list 'org-capture-templates `("f" "Fechas o eventos" entry (file+headline "cosas por hacer.org" "Fechas")
+                                          (file ,(expand-file-name "fecha o evento.orgcaptmpl" org-plantillas-directory))
+                                          :kill-buffer t :clock-in t :clock-resume t))
+    (add-to-list 'org-capture-templates `("r" "Receta de cocina" entry (file "recetas.org")
+                                          (file ,(expand-file-name "recetas.orgcaptmpl" org-plantillas-directory))
+                                          :kill-buffer t :clock-in t :clock-resume t))
+    (add-to-list 'org-capture-templates `("P" "Protocol" entry (file+headline org-default-notes-file "Reorganizar")
+                                          (file ,(expand-file-name "protocol.orgcaptmpl" org-plantillas-directory))
+                                          :kill-buffer t :clock-in t :clock-resume t))
+    (add-to-list 'org-capture-templates `("l" "Protocol Link" entry (file+headline org-default-notes-file "Reorganizar")
+                                          (file ,(expand-file-name "protocol.orgcaptmpl" org-plantillas-directory))
+                                          :kill-buffer t :clock-in t :clock-resume t)))
+
   (use-package org-indent
     :straight nil
     :after (org)
     :diminish org-indent-mode)
+
   (with-eval-after-load 'org
     (use-package org-projectile
-      :after (projectile)
-      :init
-      (setq org-confirm-elisp-link-function nil)
       :config
-      (if (file-exists-p org-projectile-projects-file)
-          (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files)))
-        (warn "no se añadió archivo porque no existe: %s" org-projectile-projects-file))
-      (add-to-list 'org-capture-templates (org-projectile-project-todo-entry
-                                           :capture-character "P"))))
+      (add-to-list 'org-agenda-files (car (org-projectile-todo-files)))
+      (add-to-list 'org-capture-templates (org-projectile-project-todo-entry :capture-character "p"))))
 #+END_SRC
 *** Hyperbole
 - State "CANCELADO"  from              [2020-01-28 mar 18:08] \\

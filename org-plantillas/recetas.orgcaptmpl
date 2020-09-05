@@ -1,0 +1,8 @@
+* %^{Nombre de la receta}
+:PROPERTIES:
+:CREATED: %T
+:END:
+%?
+- Sacado de: %^a
+** Ingredientes
+** Procedimiento
