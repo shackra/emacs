@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: JSX tag self-closing
-# key: jto
+# key: /ct
 # --
 <$1 $0/>

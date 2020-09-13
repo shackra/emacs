@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
 # name: if err != nil
-# key: err.nil
+# key: /err.nil
 # --
 if err != nil {$0}
