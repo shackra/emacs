@@ -142,6 +142,7 @@
  ("pdf-tools" . "c510442ab89c8a9e9881230eeb364f4663f59e76")
  ("persistent-soft" . "a1e0ddf2a12a6f18cab565dee250f070384cbe02")
  ("pfuture" . "d7926de3ba0105a36cfd00811fd6278aea903eef")
+ ("pkg-info" . "76ba7415480687d05a4353b27fea2ae02b8d9d61")
  ("pkgbuild-mode" . "887c01cb06420501c7780fb01a8a76bdb0864cca")
  ("plantuml-mode" . "5889166b6cfe94a37532ea27fc8de13be2ebfd02")
  ("pony-mode" . "760684d30b6c234d1b88c9a4673a808f36f7f341")

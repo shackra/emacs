@@ -2048,8 +2048,10 @@ Modo mayor para editar archivos GDScript y =.tscn=
     :straight (gdscript-mode
                :type git
                :host github
-               :repo "GDQuest/emacs-gdscript-mode"
-               :files ("*.el" "data/*.txt")))
+               :repo "godotengine/emacs-gdscript-mode"
+               :files ("*.el" "data/*.txt"))
+    :init
+    (setf gdscript-gdformat-save-and-format t))
 #+end_src
 *** gRPC
 #+begin_src emacs-lisp
