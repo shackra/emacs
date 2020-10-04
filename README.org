@@ -555,40 +555,24 @@ Registra la frecuencia con la que se usan ciertas teclas en Emacs. Esta informac
 #+END_SRC
 **** ¿Cómo procesar la información estadística obtenida por éste paquete?
 Primero se ejecuta el comando =command-frequency-display= el cual popula un buffer con los datos, el contenido de ese buffer debe ser guardado en un archivo. Luego se usa un [[http://ergoemacs.org/emacs/command-frequency.py][script de Python]] que procesara ese archivo, saneara los datos y creara un archivo HTML el cual contendrá el reporte.
-*** =undo-tree=
+*** "CTRL Z"
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:45]
 :END:
-Comando asociado a @@html:<kbd>C-x u</kbd>@@.
-
-Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata los cambios realizados como un árbol con ramificaciones.
+Reemplaza el mecanismo de deshacer/hacer de Emacs.
 #+BEGIN_SRC emacs-lisp
-  (use-package undo-tree
-    ;; Reemplaza el mecanismo de deshacer/hacer de Emacs con un sistema que trata
-    ;; los cambios realizados como un árbol con ramificaciones de cambios.
-    ;; para revertir un cambio use `C-x u'. Más información en:
-    ;;   http://melpa.milkbox.net/#/undo-tree
-    :demand t
-    :diminish undo-tree-mode
-    :bind (:map
-           undo-tree-visualizer-mode-map ("RET" . undo-tree-visualizer-quit)
-           :map
-           global-map ("C-x u" . undo-tree-visualizer))
-    :init
-    (defadvice undo-tree-make-history-save-file-name
-        (after undo-tree activate)
-      (setq ad-return-value (concat ad-return-value ".7z")))
-    (defadvice undo-tree-visualize (around undo-tree-split-side-by-side activate)
-      "Divide la ventana de lado a lado al visualizar undo-tree-visualize"
-      (let ((split-height-threshold nil)
-            (split-width-threshold 0))
-        ad-do-it))
-    (setf undo-tree-visualizer-timestamps t)
-    (setf undo-tree-visualizer-diff t)
-    (setf undo-tree-auto-save-history nil) ;; no salva el historial de cambios
+  (use-package undo-fu
+    :preface
+    (global-unset-key (kbd "C-z"))
+    :bind (:map global-map (("C-z" . undo-fu-only-undo)
+                            ("C-S-z" . undo-fu-only-redo))))
+
+  (use-package undo-fu-session
     :config
-    (defalias 'redo 'undo-tree-redo)
-    (global-undo-tree-mode 1))
+    (global-undo-fu-session-mode)
+    :custom
+    (undo-fu-session-incompatible-files
+     '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'")))
 #+END_SRC
 *** numero de lineas
 Muestra el numero de lineas al margen del buffer.
