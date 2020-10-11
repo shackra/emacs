@@ -2220,7 +2220,10 @@ Multiples cursores en Emacs. Asociado a @@html:<kbd>C-c n</kbd>@@
        indent-for-tab-command
        special-hydra-lispy-mark/body
        special-lispy-occur
-       undo-tree-visualize))
+       undo-tree-visualize
+       undo-fu-only-redo-all
+       undo-fu-only-redo
+       undo-fu-only-undo))
     (mc/cmds-to-run-for-all
      '(TeX-insert-backslash
        electric-pair-delete-pair
