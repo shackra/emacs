@@ -2055,19 +2055,6 @@ Modo mayor para editar archivos GDScript y =.tscn=
   (use-package lsp-dart
     :after (lsp-mode dart-mode)
     :hook (dart-mode . lsp))
-
-  (use-package hover
-    :after dart-mode
-    :bind (:map dart-mode-map
-                ("C-M-z" . #'hover-run-or-hot-reload)
-                ("C-M-x" . #'hover-run-or-hot-restart)
-                ("C-M-p" . #'hover-take-screenshot))
-    :init
-    (setq hover-command-path (concat (getenv "GOPATH") "/bin/hover") ; remove if `hover` is already in $PATH
-          hover-hot-reload-on-save t
-          hover-screenshot-path (concat (getenv "HOME") "/Imágenes")
-          hover-screenshot-prefix "flutter-captura-"
-          hover-clear-buffer-on-hot-restart t))
 #+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
