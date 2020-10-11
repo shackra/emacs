@@ -878,12 +878,15 @@ Implementación para Emacs del Language Server Protocol.
     :hook (prog-mode . lsp)
     :custom
     (lsp-idle-delay 0.5)
-    (lsp-signature-auto-activate nil)
+    (lsp-signature-auto-activate t)
+    (lsp-signature-doc-lines 1)
     (lsp-symbol-highlighting-skip-current t)
     (lsp-clients-go-format-tool "goimports")
     (lsp-clients-go-max-parallelism 4)
     (lsp-clients-go-server "gopls")
-    (lsp-gopls-hover-kind "FullDocumentation"))
+    (lsp-gopls-hover-kind "FullDocumentation")
+    (gc-cons-threshold (* 100 1024 1024))
+    (read-process-output-max (* 3 1024 1024)))
 
   (use-package treemacs
     :custom
