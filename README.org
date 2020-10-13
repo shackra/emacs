@@ -2036,7 +2036,23 @@ Modo mayor para editar archivos GDScript y =.tscn=
                :repo "godotengine/emacs-gdscript-mode"
                :files ("*.el" "data/*.txt"))
     :init
-    (setf gdscript-gdformat-save-and-format t))
+    (setf gdscript-gdformat-save-and-format t)
+    :config
+    ;; Temporary workaround issues with the language server
+    ;; https://github.com/godotengine/emacs-gdscript-mode/issues/95#issuecomment-707145449
+    (defun franco/godot-gdscript--lsp-ignore-error (original-function &rest args)
+      "Ignore the error message resulting from Godot not replying to the `JSONRPC' request."
+      (if (string-equal major-mode "gdscript-mode")
+          (let ((json-data (nth 0 args)))
+            (if (and (string= (gethash "jsonrpc" json-data "") "2.0")
+                     (not (gethash "id" json-data nil))
+                     (not (gethash "method" json-data nil)))
+                nil
+              (apply original-function args)))
+        (apply original-function args)))
+
+    (with-eval-after-load "lsp-mode.el"
+      (advice-add #'lsp--get-message-type :around #'franco/godot-gdscript--lsp-ignore-error)))
 #+end_src
 *** gRPC
 #+begin_src emacs-lisp
