@@ -979,10 +979,15 @@ este paquete permite escribir en un área editable del navegador usando Emacs. E
  #+end_src
 *** tree-sitter
 #+begin_src emacs-lisp
+  (use-package tsc
+    :straight (tsc :host github
+                   :repo "ubolonton/emacs-tree-sitter"
+                   :files ("core/*.el")))
+
   (use-package tree-sitter
     :straight (tree-sitter :host github
                            :repo "ubolonton/emacs-tree-sitter"
-                           :files ("lisp/*.el" "src" "Cargo.toml" "Cargo.lock"))
+                           :files ("lisp/*.el"))
     :hook ((after-init . global-tree-sitter-mode)
            ((go-mode python-mode js-mode typescript-mode rust-mode) . tree-sitter-hl-mode)))
 
