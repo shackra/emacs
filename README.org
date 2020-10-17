@@ -1338,9 +1338,9 @@ Teclas
 - @@html:<kbd>C-c a</kbd>@@ :: Abre la agenda
 - @@html:<kbd>C-c c</kbd>@@ :: Capturar algo
 #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
+  (use-package org-superstar
     :after org
-    :hook (org-mode . org-bullets-mode))
+    :hook (org-mode . org-superstar-mode))
 
   (use-package org-download
     :hook (dired-mode . org-download-enable))
