@@ -62,3 +62,4 @@ straight/
 !straight/versions/default.el
 init.el
 /undo-fu-session/
+/debug.org

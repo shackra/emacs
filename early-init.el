@@ -4,8 +4,64 @@
 (defvar orgfile (concat user-emacs-directory "README.org")
   "Ubicación de la configuración literal")
 
+;; para depuracion
+;(setf orgfile (concat user-emacs-directory "debug.org"))
+
 (defvar elfile (concat user-emacs-directory "init.el")
   "Ubicación de la salida de la configuración literal a Emacs Lisp")
+
+(setf straight-use-package-by-default t
+      straight-repository-branch "develop")
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(setf straight-check-for-modifications '(check-on-save find-when-checking))
+
+(setq inhibit-startup-screen t)
+
+;; sombrero de aluminio, le bajamos una rayita
+(setq network-security-level 'medium)
+
+;; https://jamiecollinson.com/blog/my-emacs-config/#make-it-easy-to-edit-this-file
+(defun find-config ()
+  "Abre el archivo de configuración de Emacs"
+  (interactive)
+  (find-file orgfile))
+
+(global-set-key (kbd "C-c I") 'find-config)
+
+;; instala `use-package' usando `straight'
+(straight-use-package 'use-package)
+
+(use-package use-package-hydra)
+
+(use-package hydra :config (require 'hydra-examples))
+
+(use-package diminish)
+
+(use-package bind-key)
+
+(use-package f)
+
+(use-package exec-path-from-shell)
+
+(eval-when-compile
+  (require 'use-package))
+
+;; por default instala todos los paquetes usando `straight' si no estan
+;; disponibles locamente
+(setf straight-use-package-by-default t)
 
 (defun my-tangle-section-canceled ()
   "Checks if the previous section header was CANC"
@@ -56,7 +112,7 @@
   (my-tangle-config-org orgfile elfile))
 
 (defun my-tangle-config-org-hook-func ()
-  (when (string= "README.org" (buffer-name))
+  (when (string= (file-name-nondirectory orgfile) (buffer-name))
     (my-tangle-config-org orgfile elfile)))
 
 (add-hook 'after-save-hook #'my-tangle-config-org-hook-func)

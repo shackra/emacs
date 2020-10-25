@@ -26,56 +26,6 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
   (when (eq window-system 'ns)
     (setenv "DICPATH" (concat (getenv "HOME") "/Library/Spelling")))
 
-  (setf straight-use-package-by-default t
-        straight-repository-branch "develop")
-
-  (defvar bootstrap-version)
-  (let ((bootstrap-file
-         (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-        (bootstrap-version 5))
-    (unless (file-exists-p bootstrap-file)
-      (with-current-buffer
-          (url-retrieve-synchronously
-           "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-           'silent 'inhibit-cookies)
-        (goto-char (point-max))
-        (eval-print-last-sexp)))
-    (load bootstrap-file nil 'nomessage))
-
-  (setf straight-check-for-modifications '(check-on-save find-when-checking))
-
-  (setq inhibit-startup-screen t)
-
-  ;; sombrero de aluminio, le bajamos una rayita
-  (setq network-security-level 'medium)
-
-  ;; https://jamiecollinson.com/blog/my-emacs-config/#make-it-easy-to-edit-this-file
-  (defun find-config ()
-    "Abre el archivo de configuración de Emacs"
-    (interactive)
-    (find-file "~/.emacs.d/README.org"))
-
-  (global-set-key (kbd "C-c I") 'find-config)
-
-  ;; instala `use-package' usando `straight'
-  (straight-use-package 'use-package)
-
-  ;; por default instala todos los paquetes usando `straight' si no estan
-  ;; disponibles locamente
-  (setf straight-use-package-by-default t)
-
-  (use-package use-package-hydra)
-
-  (use-package hydra :config (require 'hydra-examples))
-
-  (use-package diminish)
-
-  (use-package bind-key)
-
-  (use-package f)
-
-  (use-package exec-path-from-shell)
-
   ;; Arreglo para LaTeX con Emacs en MacOS "El Capitan"
   (when (eq system-type 'darwin)
     (setf exec-path (append exec-path '("/Library/TeX/texbin"))))
@@ -91,11 +41,6 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
   ;; si mu4e esta disponible en el sistema lo agrega a load-path
   (when (file-exists-p "/usr/share/emacs/site-lisp/mu4e")
     (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e"))
-
-  (eval-when-compile
-    (require 'use-package))
-  (require 'diminish)
-  (require 'bind-key)
 
   (defun shackra-org-confirm-babel-evaluate (lang body)
     (not (or (string= lang "emacs-lisp") (string= lang "ditaa"))))
@@ -874,9 +819,16 @@ Teclas:
 - State "CANCELADO"  from              [2018-12-31 lun 21:20]
 Implementación para Emacs del Language Server Protocol.
 #+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :config
+    (which-key-setup-side-window-right-bottom))
+
   (use-package lsp-mode
-    :hook (prog-mode . lsp)
+    :config
+    (lsp-enable-which-key-integration t)
+    :hook (prog-mode . lsp-deferred)
     :custom
+    (lsp-keymap-prefix "C-c l")
     (lsp-idle-delay 0.5)
     (lsp-signature-auto-activate t)
     (lsp-signature-doc-lines 1)
@@ -1340,25 +1292,44 @@ Teclas
 #+BEGIN_SRC emacs-lisp
   (use-package org-superstar
     :after org
-    :hook (org-mode . org-superstar-mode))
+    :hook (org-mode . org-superstar-mode)
+    :init
+    ;; copiado de https://github.com/integral-dw/org-superstar-mode/blob/master/DEMO.org#latex-style-headings
+  ;;; Titles and Sections
+    ;; hide #+TITLE:
+    (setq org-hidden-keywords '(title))
+    ;; set basic title font
+    (set-face-attribute 'org-level-8 nil :weight 'bold :inherit 'default)
+    ;; Low levels are unimportant => no scaling
+    (set-face-attribute 'org-level-7 nil :inherit 'org-level-8)
+    (set-face-attribute 'org-level-6 nil :inherit 'org-level-8)
+    (set-face-attribute 'org-level-5 nil :inherit 'org-level-8)
+    (set-face-attribute 'org-level-4 nil :inherit 'org-level-8)
+    ;; Top ones get scaled the same as in LaTeX (\large, \Large, \LARGE)
+    (set-face-attribute 'org-level-3 nil :inherit 'org-level-8 :height 1.2) ;\large
+    (set-face-attribute 'org-level-2 nil :inherit 'org-level-8 :height 1.44) ;\Large
+    (set-face-attribute 'org-level-1 nil :inherit 'org-level-8 :height 1.728) ;\LARGE
+    ;; Only use the first 4 styles and do not cycle.
+    (setq org-cycle-level-faces nil)
+    (setq org-n-level-faces 4)
+    ;; Document Title, (\huge)
+    (set-face-attribute 'org-document-title nil
+                        :height 2.074
+                        :foreground 'unspecified
+                        :inherit 'org-level-8))
 
   (use-package org-download
     :hook (dired-mode . org-download-enable))
 
   (use-package org
-    :straight (org-plus-contrib
-               :repo "https://code.orgmode.org/bzg/org-mode.git"
-               :local-repo "org"
-               :files (:defaults "contrib/lisp/*.el")
-               :includes (org))
-    ;; registrado
+    :straight org-plus-contrib
     :bind (:map global-map
                 ("C-c a" . org-agenda)
                 ("<F12>" . org-agenda)
                 ("C-c l" . org-store-link)
                 ("C-c c" . org-capture))
-    :mode ("\\.orgcaptmpl\\'" . org-mode)
-    :hook (org-mode . yas-minor-mode-on)
+    :hook ((org-mode . yas-minor-mode-on)
+           (org-mode . org-mode-visual-fill))
     :custom
     (org-directory (expand-file-name "org" (getenv "HOME")))
     (org-default-notes-file (expand-file-name  "notas.org" org-directory))
@@ -1486,6 +1457,10 @@ Teclas
         (if (string= (org-entry-get nil "STYLE") "habit")
             subtree-end
           nil)))
+    (defun org-mode-visual-fill ()
+      (setq visual-fill-column-width 100
+            visual-fill-column-center-text t)
+      (visual-fill-column-mode 1))
     :config
     ;; https://github.com/sprig/org-capture-extension#example-closins-the-frame-after-a-capture
     ;; Kill the frame if one was created for the capture
