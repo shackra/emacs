@@ -2052,6 +2052,10 @@ Modo mayor para editar archivos GDScript y =.tscn=
     :after (lsp-mode dart-mode)
     :hook (dart-mode . lsp))
 #+end_src
+*** OPA/Rego
+#+begin_src emacs-lisp
+  (use-package rego-mode)
+#+end_src
 ** Edición de texto y generalidades relacionadas
 *** =flyspell-mode=
 :LOGBOOK:
