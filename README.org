@@ -2362,6 +2362,25 @@ Mover texto a voluntad
   (use-package fountain-mode)
 #+end_src
 ** Otros
+*** spotify
+#+begin_src emacs-lisp
+  (use-package spotify
+    :config (spotify-enable-song-notifications)
+    :bind (:map global-map ("C-c s" . hydra-spotify/body))
+    :hydra (hydra-spotify (:hint nil)
+                          "
+  ^Spotify^
+  ^^^^^^^^^-----------------------------------------------------------
+  _s_: reproducir   _<left>_:  canción anterior   _b_: mostrar canción
+  _p_: pausa        _<right>_: canción siguiente  _q_: salir
+  "
+                          ("s" spotify-play :exit t)
+                          ("p" spotify-pause :exit t)
+                          ("<left>" spotify-previous :exit nil)
+                          ("<right>" spotify-next :exit nil)
+                          ("b" spotify-current :exit nil)
+                          ("q" nil)))
+#+end_src
 *** presentation
 Escala el texto en pantalla para presentaciones
 #+begin_src emacs-lisp
