@@ -2361,6 +2361,13 @@ Mover texto a voluntad
 #+begin_src emacs-lisp
   (use-package fountain-mode)
 #+end_src
+*** =whole-line-or-region=
+Abrevia algunos pasos en Emacs con algunos comandos que pueden operar sobre regiones.
+#+begin_src emacs-lisp
+  (use-package whole-line-or-region
+    :config
+    (whole-line-or-region-global-mode))
+#+end_src
 ** Otros
 *** spotify
 #+begin_src emacs-lisp
