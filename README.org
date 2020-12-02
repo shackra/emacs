@@ -1884,18 +1884,6 @@ go build golang.org/x/tools/cmd/guru
       (add-hook mode (lambda ()
                        (flymake-eslint-easy-load)))))
 
-  (use-package prettier-js
-    :init
-    (setf prettier-js-args '(
-                             "--trailing-comma" "all"
-                             "--bracket-spacing" "true"
-                             "--no-semi"
-                             ))
-    :config
-    (dolist (hook shackra/js-modes)
-      (add-hook hook 'prettier-js-mode)
-      (add-hook hook (lambda () (setq-local electric-indent-inhibit t)))))
-
   ;; asume que (>= emacs-major-version 27)
   (use-package js-mode
     :ensure js
