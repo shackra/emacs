@@ -2031,14 +2031,21 @@ Modo mayor para editar archivos GDScript y =.tscn=
 #+begin_src emacs-lisp
   (use-package dart-mode
     ;; Optional
-    :hook (dart-mode . flutter-test-mode))
+    :hook (dart-mode . flutter-test-mode)
+    :custom
+    (dart-format-on-save t))
 
   (use-package flutter
     :after dart-mode)
 
   (use-package lsp-dart
     :after (lsp-mode dart-mode)
-    :hook (dart-mode . lsp))
+    :hook (dart-mode . lsp)
+    :init
+    (with-eval-after-load "projectile"
+      (add-to-list 'projectile-project-root-files-bottom-up "pubspec.yaml")
+      (add-to-list 'projectile-project-root-files-bottom-up "BUILD"))
+    (setq lsp-auto-guess-root t))
 #+end_src
 *** OPA/Rego
 #+begin_src emacs-lisp
