@@ -2031,7 +2031,14 @@ Modo mayor para editar archivos GDScript y =.tscn=
 #+begin_src emacs-lisp
   (use-package dart-mode
     ;; Optional
-    :hook (dart-mode . flutter-test-mode)
+    :hook ((dart-mode . flutter-test-mode)
+           (dart-mode . shackra/dart-doom-modeline-no-major-mode-icon))
+    :init
+    (defun shackra/dart-doom-modeline-no-major-mode-icon ()
+      "Cambia doom-modeline para que no muestre el icono del modo major en Dart.
+
+  Ver https://github.com/emacs-lsp/lsp-dart/issues/61#issuecomment-692392701"
+      (setq-local doom-modeline-major-mode-icon nil))
     :custom
     (dart-format-on-save t))
 
