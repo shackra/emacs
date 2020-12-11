@@ -1904,7 +1904,17 @@ go build golang.org/x/tools/cmd/guru
                              (electric-indent-mode -1)))
     :mode (rx ".ts" (? "x") string-end)
     :init
-    (setf typescript-indent-level shackra-webdev-indent))
+    (setf typescript-indent-level shackra-webdev-indent)
+    :config
+    ;; FIXME: quitar arreglo cuando
+    ;; https://github.com/theia-ide/typescript-language-server/issues/82 sea
+    ;; resuelto
+    (require 'cl)
+    (with-eval-after-load 'lsp-clients
+      (cl-nsubst '(nconc (list "/usr/bin/node" "--unhandled-rejections=strict" (lsp-package-path 'typescript-language-server)) (cons "--tsserver-path" (cons (lsp-package-path 'typescript) lsp-clients-typescript-server-args)))
+                 '(cons (lsp-package-path 'typescript-language-server) (cons "--tsserver-path" (cons (lsp-package-path 'typescript) lsp-clients-typescript-server-args)))
+                 (lsp--client-new-connection (gethash 'ts-ls lsp-clients))
+                 :test 'equal)))
 #+END_SRC
 *** =html-mode=
 #+BEGIN_SRC emacs-lisp
@@ -2027,7 +2037,7 @@ Modo mayor para editar archivos GDScript y =.tscn=
   (use-package protobuf-mode
     :hook (protobuf-mode . (lambda () (setf c-basic-offset 4))))
 #+end_src
-*** Flutter
+*** Flutter/Dart
 #+begin_src emacs-lisp
   (use-package dart-mode
     ;; Optional
