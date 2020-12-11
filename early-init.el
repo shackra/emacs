@@ -5,7 +5,7 @@
   "Ubicación de la configuración literal")
 
 ;; para depuracion
-;(setf orgfile (concat user-emacs-directory "debug.org"))
+;; (setf orgfile (concat user-emacs-directory "debug.org"))
 
 (defvar elfile (concat user-emacs-directory "init.el")
   "Ubicación de la salida de la configuración literal a Emacs Lisp")
