@@ -32,6 +32,7 @@ Mi configuración utiliza =use-package= para mantener una separación sana entre
 
   (unless (memq system-type '(ms-dos windos-nt cygwin))
     (require 'exec-path-from-shell)
+    (setq exec-path-from-shell-arguments nil)
     (exec-path-from-shell-initialize))
 
   ;; En caso de que /usr/local/bin no este agregado
