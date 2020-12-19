@@ -100,6 +100,11 @@ configuración sana de ciertas opciones en Emacs
     (if (boundp 'buffer-file-coding-system)
         (setq-default buffer-file-coding-system 'utf-8)
       (setf buffer-file-coding-system 'utf-8))
+    ;; coloca los archivos de respaldo hechos por Emacs en /tmp
+    (setq backup-directory-alist
+          `((".*" . ,temporary-file-directory)))
+    (setq auto-save-file-name-transforms
+          `((".*" ,temporary-file-directory t)))
     :custom
     (blink-cursor-blinks 1)
     (blink-cursor-interval 1)
