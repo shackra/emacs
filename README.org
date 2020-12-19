@@ -104,7 +104,9 @@ configuración sana de ciertas opciones en Emacs
     (setq backup-directory-alist
           `((".*" . ,temporary-file-directory)))
     (setq auto-save-file-name-transforms
-          `((".*" ,temporary-file-directory t)))
+          `((".*" "~/.cache/emacs/saves/" t)))
+    ;; apaga creación de lockfiles
+    (setq create-lockfiles nil)
     :custom
     (blink-cursor-blinks 1)
     (blink-cursor-interval 1)
