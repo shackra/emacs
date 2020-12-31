@@ -1310,7 +1310,7 @@ Teclas
     :hook (org-mode . org-superstar-mode)
     :init
     ;; copiado de https://github.com/integral-dw/org-superstar-mode/blob/master/DEMO.org#latex-style-headings
-  ;;; Titles and Sections
+    ;; Titles and Sections
     ;; hide #+TITLE:
     (setq org-hidden-keywords '(title))
     ;; set basic title font
@@ -2426,17 +2426,30 @@ Escala el texto en pantalla para presentaciones
 *** dashboard
 Panel de control para Emacs. Aquí se muestra un trigrama IHS que significa /Iesu Hominis Salvator/, que a su vez significa "Jesus, de la raza humana, el salvador".
 #+begin_src emacs-lisp
+  (defun shackra/dashboard-normalize-faces ()
+    "Reduce el tamaño de los titulos"
+    (face-remap-add-relative 'org-level-3 :weight 'normal :height (font-pt-to-height 13))
+    (face-remap-add-relative 'org-level-2 :weight 'normal :height (font-pt-to-height 13))
+    (face-remap-add-relative 'org-level-1 :weight 'normal :height (font-pt-to-height 13)))
+
   (use-package dashboard
     :if (not (version<= emacs-version "25.2"))
-    :init
-    (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
-    (setq dashboard-banner-logo-title (propertize "Iesu Hominis Salvator" 'help-echo "Jesús salvador de los hombres"))
-    (setq dashboard-startup-banner (expand-file-name "dashboard/JHS.png" user-emacs-directory))
-    (setq dashboard-center-content t)
-    (setq dashboard-items '((agenda    . 5)
-                            (bookmarks . 5)))
+    :custom
+    (initial-buffer-choice (lambda () (get-buffer "*dashboard*")))
+    (dashboard-banner-logo-title (propertize "Iesu Hominis Salvator" 'help-echo "Jesús salvador de los hombres"))
+    (dashboard-startup-banner (expand-file-name "dashboard/JHS.png" user-emacs-directory))
+    (dashboard-center-content t)
+    (dashboard-set-heading-icons t)
+    (dashboard-set-file-icons t)
+    (dashboard-agenda-time-string-format "%d/%m/%Y")
+    (dashboard-footer-messages '("Bendito el Señor, mi Roca, que adiestra mis manos para el combate, mis dedos para la pelea; ~Salmo 143"))
+    (dashboard-projects-show-base 'align)
+    (dashboard-items '((agenda    . 5)
+                       (bookmarks . 3)
+                       (projects . 5)))
     :config
-    (dashboard-setup-startup-hook))
+    (dashboard-setup-startup-hook)
+    (add-hook 'dashboard-mode-hook #'shackra/dashboard-normalize-faces))
 #+end_src
 *** golden-ratio-scroll-screen
 Subraya la linea anterior y la siguiente luego de hacer saltar de linea el cursor del mouse
