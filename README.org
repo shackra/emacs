@@ -382,6 +382,14 @@ Con este paquete hacemos que la interfaz de ivy sea más amigable para algunos c
     :after ivy
     :config (all-the-icons-ivy-rich-mode 1))
 #+end_src
+**** Agrupación con Bufler
+#+begin_src emacs-lisp
+  (use-package bufler
+    :straight (bufler :type git :host github :repo "alphapapa/bufler.el"
+                      :files (:defaults (:exclude "helm-bufler.el")))
+    :config
+    (define-key (current-global-map) [remap counsel-switch-buffer] 'bufler-switch-buffer))
+#+end_src
 *** Manipulación de ventanas
 :LOGBOOK:
 - Refiled on [2015-11-12 jue 16:45]
