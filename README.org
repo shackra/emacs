@@ -987,6 +987,23 @@ Manejo de archivos de un proyecto.
 
   (use-package ag)
 #+END_SRC
+*** reformatter
+Define comandos que corren re-formateadores en el buffer de Emacs actual.
+#+begin_src emacs-lisp
+  (use-package reformatter
+    :after dash
+    :hook ((js-mode typescript-mode css-mode json-mode html-mode yaml-mode) . prettier-js-formatter-on-save-mode)
+    :init
+    (defun shackra-reformatter-prettier-args ()
+      `("prettier"
+       "--stdin-filepath"
+       ,(file-name-nondirectory (buffer-name))))
+    :config
+    (reformatter-define prettier-js-formatter
+      :program (executable-find "npx")
+      :args (shackra-reformatter-prettier-args)
+      :lighter " 📏"))
+#+end_src
 ** Comunicación
 *** Correo electrónico
 =mu4e= se usa para leer y enviar correo electrónico.
