@@ -995,7 +995,7 @@ Define comandos que corren re-formateadores en el buffer de Emacs actual.
   (defun shackra-reformatter-prettier-args ()
     `("prettier"
       "--stdin-filepath"
-      ,(file-name-nondirectory (buffer-name))))
+      ,(buffer-name)))
 
   (defun shackra-reformatter-prettier-npx ()
     (unless prettier-js-formatter-npx-location
