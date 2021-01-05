@@ -1402,7 +1402,7 @@ Teclas
     (org-habit-graph-column 55)
     (org-imenu-depth 5)
     (org-log-done 'time)
-    (org-modules '(org-bbdb org-bibtex org-crypt org-docview org-gnus org-habit org-id org-info org-irc org-mhe org-rmail org-w3m org-protocol))
+    (org-modules '(org-crypt org-habit org-id org-protocol))
     (org-special-ctrl-k t)
     (org-startup-folded nil)
     (org-startup-indented t)
@@ -1464,7 +1464,7 @@ Teclas
     (org-startup-indented t)
     (org-startup-folded nil)
     (org-log-done nil)
-    (org-log-reschedule 'note)
+    (org-log-reschedule nil)
     (org-log-redeadline 'note)
     (org-log-note-clock-out nil)
     (org-log-refile nil)
@@ -2806,8 +2806,7 @@ Sincroniza un calendario de Google con un archivo org-mode
     (interactive)
     (let ((is-org-mode (eq major-mode 'org-mode))
           (file (buffer-file-name))
-          (compare (shackra-org-gcal-get-agenda-file))
-          (org-log-reschedule nil))
+          (compare (shackra-org-gcal-get-agenda-file)))
       (when (and is-org-mode
                  file
                  (string= file compare))
@@ -2816,7 +2815,7 @@ Sincroniza un calendario de Google con un archivo org-mode
   (use-package org-gcal
     :after org
     :hook ((org-capture-after-finalize org-after-refile-insert-hook) . (shackra-org-gcal-sync))
-    :hook (org-agenda-mode . (lambda (let ((org-log-reschedule nil)) (org-gcal-sync))))
+    :hook (org-agenda-mode . (lambda () (org-gcal-sync)))
     :custom
     (org-gcal-notify-p nil)
     (org-gcal-client-id "570262594997-fn587lsqe8k67odp70qpq8j22tibrj7g.apps.googleusercontent.com")
