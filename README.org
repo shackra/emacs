@@ -1369,6 +1369,7 @@ Teclas
     :hook ((org-mode . yas-minor-mode-on)
            (org-mode . org-mode-visual-fill))
     :custom
+    (org-tags-column 0)
     (org-directory (expand-file-name "org" (getenv "HOME")))
     (org-default-notes-file (expand-file-name  "notas.org" org-directory))
     (org-refile-targets `((nil :maxlevel . 9)
@@ -1521,10 +1522,15 @@ Teclas
   (with-eval-after-load 'org-capture
     (add-to-list 'org-agenda-files
                  (car `(,(expand-file-name "cosas por hacer.org" org-directory))))
+    (add-to-list 'org-agenda-files
+                 (car `(,(expand-file-name "agenda.org" org-directory))))
     (add-to-list 'org-capture-templates `("T" "Anotacion técnica" entry (file shackra-custom-engineer-notebook)
                                           (file ,(expand-file-name "anotacion tecnica.orgcaptmpl" org-plantillas-directory))
                                           :kill-buffer t :clock-in t :clock-resume t))
     (add-to-list 'org-capture-templates `("t" "Tarea por hacer" entry (file "cosas por hacer.org")
+                                          (file ,(expand-file-name "tareas por hacer.orgcaptmpl" org-plantillas-directory))
+                                          :kill-buffer t :clock-in t :clock-resume t))
+    (add-to-list 'org-capture-templates `("c" "Agregar al calendario" entry (file "agenda.org")
                                           (file ,(expand-file-name "tareas por hacer.orgcaptmpl" org-plantillas-directory))
                                           :kill-buffer t :clock-in t :clock-resume t))
     (add-to-list 'org-capture-templates `("n" "Notas" entry (file+headline org-default-notes-file "Reorganizar")
@@ -2790,6 +2796,31 @@ Lector de RSS feed dentro de Emacs
                                   :entry-title "Video"
                                   :remove 'unread)))
 #+END_SRC
+*** org-gcal
+Sincroniza un calendario de Google con un archivo org-mode
+#+begin_src emacs-lisp
+  (defun shackra-org-gcal-get-agenda-file ()
+    (expand-file-name "agenda.org" org-directory))
+
+  (defun shackra-org-gcal-sync ()
+    (interactive)
+    (let ((is-org-mode (eq major-mode 'org-mode))
+          (file (buffer-file-name))
+          (compare (shackra-org-gcal-get-agenda-file)))
+      (when (and is-org-mode
+                 file
+                 (string= file compare))
+        (org-gcal-sync))))
+
+  (use-package org-gcal
+    :after org
+    :hook ((org-agenda-mode) . (lambda (org-gcal-sync)))
+    :custom
+    (org-gcal-notify-p nil)
+    (org-gcal-client-id "570262594997-fn587lsqe8k67odp70qpq8j22tibrj7g.apps.googleusercontent.com")
+    (org-gcal-client-secret "2pFS1C8uq8CZeur5KkKmcSbe")
+    (org-gcal-fetch-file-alist `(("c_9ntevgdlhnfngm1987rq28pkpk@group.calendar.google.com" . ,(shackra-org-gcal-get-agenda-file)))))
+#+end_src
 *** Shackle
 Como =display-buffer-alist= pero más sencillo
 #+BEGIN_SRC emacs-lisp
@@ -2810,7 +2841,7 @@ Mejor visor de PDFs para Emacs
                 ("C-s" . isearch-forward)
                 ("C-r" . isearch-backward)))
 #+END_SRC
-*** CANCELADO Emojify 😏                                        :CANCELADO:
+*** CANCELADO Emojify 😏 :CANCELADO:
 - State "CANCELADO"  from              [2020-08-31 lun 12:42] \\
   paquete obsoleto, ver nota.
 Muestra imágenes de emojis en lugar de los caracteres utf-8.
