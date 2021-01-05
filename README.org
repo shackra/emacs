@@ -2,7 +2,7 @@
 #+AUTHOR: Jorge Javier Araya Navarro (Shackra Seaslug)
 #+EMAIL: jorge@esavara.cr
 #+OPTIONS: toc:5 num:nil ^:nil
-#+STARTUP: overview
+#+STARTUP: content
 
 #+begin_example
                                     🕇
@@ -2806,7 +2806,8 @@ Sincroniza un calendario de Google con un archivo org-mode
     (interactive)
     (let ((is-org-mode (eq major-mode 'org-mode))
           (file (buffer-file-name))
-          (compare (shackra-org-gcal-get-agenda-file)))
+          (compare (shackra-org-gcal-get-agenda-file))
+          (org-log-reschedule nil))
       (when (and is-org-mode
                  file
                  (string= file compare))
@@ -2814,7 +2815,8 @@ Sincroniza un calendario de Google con un archivo org-mode
 
   (use-package org-gcal
     :after org
-    :hook ((org-agenda-mode) . (lambda (org-gcal-sync)))
+    :hook ((org-capture-after-finalize org-after-refile-insert-hook) . (shackra-org-gcal-sync))
+    :hook (org-agenda-mode . (lambda (let ((org-log-reschedule nil)) (org-gcal-sync))))
     :custom
     (org-gcal-notify-p nil)
     (org-gcal-client-id "570262594997-fn587lsqe8k67odp70qpq8j22tibrj7g.apps.googleusercontent.com")
