@@ -1004,11 +1004,17 @@ Define comandos que corren re-formateadores en el buffer de Emacs actual.
 
   (use-package reformatter
     :hook ((js-mode typescript-mode css-mode json-mode html-mode yaml-mode) . prettier-js-formatter-on-save-mode)
+    :hook ((js-mode typescript-mode html-mode) . rustywind-formatter-on-save-mode)
     :config
     (reformatter-define prettier-js-formatter
       :program (shackra-reformatter-prettier-npx)
       :args (shackra-reformatter-prettier-args)
-      :lighter " 📏"))
+      :lighter " 📏")
+    (reformatter-define rustywind-formatter
+      :program "rustywind"
+      :args (when (buffer-file-name) (list (buffer-file-name)))
+      :lighter " ䷸"
+      :stdin nil))
 #+end_src
 ** Comunicación
 *** Correo electrónico
