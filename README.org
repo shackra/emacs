@@ -2826,6 +2826,12 @@ Sincroniza un calendario de Google con un archivo org-mode
     (org-gcal-client-secret "2pFS1C8uq8CZeur5KkKmcSbe")
     (org-gcal-fetch-file-alist `(("c_9ntevgdlhnfngm1987rq28pkpk@group.calendar.google.com" . ,(shackra-org-gcal-get-agenda-file)))))
 #+end_src
+*** Anki Editor
+Usa org-mode para generar tarjetas para Anki. Requiere [[https://ankiweb.net/shared/info/2055492159][Anki Connect]] instalado en Anki y =curl= instalado en el sistema.
+#+begin_src emacs-lisp
+  (use-package anki-editor
+    :custom (anki-editor-create-decks t))
+#+end_src
 *** Shackle
 Como =display-buffer-alist= pero más sencillo
 #+BEGIN_SRC emacs-lisp
