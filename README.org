@@ -1004,6 +1004,7 @@ Define comandos que corren re-formateadores en el buffer de Emacs actual.
 
   (use-package reformatter
     :hook ((js-mode typescript-mode css-mode json-mode html-mode yaml-mode) . prettier-js-formatter-on-save-mode)
+    :hook ((typescript-mode html-mode) . rustywind-formatter-on-save-mode)
     :config
     (reformatter-define prettier-js-formatter
       :program (shackra-reformatter-prettier-npx)
@@ -1013,10 +1014,8 @@ Define comandos que corren re-formateadores en el buffer de Emacs actual.
     ;; https://github.com/avencera/rustywind/issues/19
     (reformatter-define rustywind-formatter
       :program "rustywind"
-      :args (when (buffer-file-name) (list "--write" (buffer-file-name)))
-      :lighter " ䷸"
-      :stdin nil
-      :stdout nil))
+      :args '("--stdin")
+      :lighter " ䷸"))
 #+end_src
 ** Comunicación
 *** Correo electrónico
@@ -1555,7 +1554,8 @@ Teclas
                                           :kill-buffer t :clock-in t :clock-resume t))
     (add-to-list 'org-capture-templates `("l" "Protocol Link" entry (file+headline org-default-notes-file "Reorganizar")
                                           (file ,(expand-file-name "protocol.orgcaptmpl" org-plantillas-directory))
-                                          :kill-buffer t :clock-in t :clock-resume t)))
+                                          :kill-buffer t :clock-in t :clock-resume t))
+    (add-to-list 'org-latex-packages-alist '("" "gchords" t)))
 
   (use-package org-indent
     :straight nil
