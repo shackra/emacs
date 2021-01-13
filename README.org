@@ -587,6 +587,14 @@ Un mejor motor de autocompletado comparado con [[https://github.com/auto-complet
     :hook ((company-mode . company-mode-update-backends-with-yasnippet)
            (after-init   . global-company-mode)
            (text-mode    . shackra-company-text-mode))
+    :bind (
+           :map company-active-map
+           ("C-n" . company-select-next)
+           ("C-p" . company-select-previous)
+           :map company-search-map
+           ("C-n" . company-select-next)
+           ("C-p" . company-select-previous)
+           ("C-t" . company-search-toggle-filtering))
     :diminish company-mode
     :custom
     (company-backends '(company-capf
@@ -1004,7 +1012,6 @@ Define comandos que corren re-formateadores en el buffer de Emacs actual.
 
   (use-package reformatter
     :hook ((js-mode typescript-mode css-mode json-mode html-mode yaml-mode) . prettier-js-formatter-on-save-mode)
-    :hook ((typescript-mode html-mode) . rustywind-formatter-on-save-mode)
     :config
     (reformatter-define prettier-js-formatter
       :program (shackra-reformatter-prettier-npx)
