@@ -388,9 +388,11 @@ Con este paquete hacemos que la interfaz de ivy sea más amigable para algunos c
     :after ivy
     :config (all-the-icons-ivy-rich-mode 1))
 #+end_src
-**** Agrupación con Bufler
+**** CANCELADO Agrupación con Bufler :CANCELADO:
+- State "CANCELADO"  from              [2021-01-18 lun 08:39]
 #+begin_src emacs-lisp
   (use-package bufler
+    :disabled
     :straight (bufler :type git :host github :repo "alphapapa/bufler.el"
                       :files (:defaults (:exclude "helm-bufler.el")))
     :config
@@ -873,7 +875,6 @@ Implementación para Emacs del Language Server Protocol.
     :custom
     (treemacs-indentation-string (propertize " ⫶ " 'face 'font-lock-comment-face))
     (treemacs-indentation 1)
-    (treemacs-is-never-other-window t)
     :bind (:map global-map
                 ("M-0"       . treemacs-select-window)
                 ("C-x t 1"   . treemacs-delete-other-windows)
