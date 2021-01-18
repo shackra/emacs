@@ -268,10 +268,16 @@ Mi intento de hacer algo mejor que [[*=appt=][=appt-mode=]].
     (setf secretaria-clocked-task-save-file "~/.secretaria-tarea")
     (add-hook 'after-init-hook #'secretaria-unknown-time-always-remind-me))
 #+END_SRC
-*** Flymake
+*** Flymake / Flycheck
 #+begin_src emacs-lisp
   (use-package flymake
+    :disabled
     :straight (flymake :type built-in))
+
+  (use-package flycheck
+    :init (global-flycheck-mode)
+    :custom
+    (flycheck-check-syntax-automatically '(mode-enabled save idle-change)))
 #+end_src
 *** =swiper= & =ivy=
 :LOGBOOK:
@@ -867,6 +873,7 @@ Implementación para Emacs del Language Server Protocol.
     :custom
     (treemacs-indentation-string (propertize " ⫶ " 'face 'font-lock-comment-face))
     (treemacs-indentation 1)
+    (treemacs-is-never-other-window t)
     :bind (:map global-map
                 ("M-0"       . treemacs-select-window)
                 ("C-x t 1"   . treemacs-delete-other-windows)
