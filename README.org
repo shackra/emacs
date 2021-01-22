@@ -1,0 +1,5 @@
+#+TITLE:   Mi configuración de GNU Emacs con Doom
+#+DATE:    enero 22, 2021
+#+STARTUP: inlineimages nofold
+
+ver [[file:config.org][config.org]]
