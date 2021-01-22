@@ -3,3 +3,5 @@
 #+STARTUP: inlineimages nofold
 
 ver [[file:config.org][config.org]]
+
+Este repositorio debe ser clonado en =~/.doom.d=.
