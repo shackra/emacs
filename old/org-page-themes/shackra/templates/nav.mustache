@@ -1,0 +1,46 @@
+<!-- Cabecera de la pagina -->
+<header>{{! mi nav}} 
+  <div class="container-fluid">
+    <h1><a href="/">{{site-main-title}}</a></h1> 
+    <h3> 
+      <span class="adorno-inicio">Catolicismo</span> 
+      <span class="adorno">Emacs</span> 
+      <span class="adorno-fin">Software libre</span> 
+    </h3>
+  </div>
+  <div class="container-fluid">
+    <h2>“{{site-sub-title}}” <b>~G.K. Chesterton</b></h2>
+  </div> 
+  <div>
+    <nav class="navbar navbar-full navbar-dark bg-inverse text-xs-center">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggler hidden-md-up" data-toggle="collapse" data-target="#menu" aria-expanded="false">
+          <span class="sr-only"> Mostrar menu de navegación</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-toggleable-sm" id="menu">
+        <ul class="nav navbar-nav" style="display: inline-block">
+          <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+          {{#nav-categories}}
+            <li class="nav-item"><a class="nav-link" href="{{category-uri}}">{{category-name}}</a></li>
+          {{/nav-categories}}
+          {{#nav-summary}}
+            <li class="nav-item"><a class="nav-link" href="{{summary-item-uri}}"><i class="fa fa-tags" aria-hidden="true"></i> {{summary-item-name}}</a></li>
+          {{/nav-summary}} 
+          {{#nav-source-browse}}
+            <li class="nav-item"><a class="nav-link" href="{{source-browse-uri}}"><i class="fa fa-bitbucket-square" aria-hidden="true"></i> {{source-browse-name}}</a></li>
+          {{/nav-source-browse}}
+          {{#nav-about}}
+            <li class="nav-item"><a class="nav-link" href="{{about-uri}}"><i class="fa fa-male" aria-hidden="true"></i> {{about-name}}</a></li>
+          {{/nav-about}}
+          {{#nav-rss}}
+            <li class="nav-item"><a class="nav-link" href="{{rss-uri}}"><i class="fa fa-rss-square" aria-hidden="true"></i> {{rss-name}}</a></li>
+          {{/nav-rss}}
+        </ul> 
+      </div> 
+    </nav>
+  </div> 
+</header>

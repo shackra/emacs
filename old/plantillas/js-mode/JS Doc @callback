@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: JS Doc @callback
+# key: @callback
+# --
+@callback $1$0

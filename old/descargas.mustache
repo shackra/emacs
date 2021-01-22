@@ -1,0 +1,28 @@
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h2>{{titulo}}</h2>
+  </div>
+  <div class="panel-body">
+    <p>
+      Los enlaces Magnet (aparecen con el icono <i class="fa fa-magnet"></i>) deben ser descargados con un cliente <a href="https://www.youtube.com/watch?v=0zjMCo5wanI" target="_blank">BitTorrent</a>, <a href="https://download.transmissionbt.com/files/transmission-2.92-x64.msi" target="_blank">Transmission es mi cliente BitTorrent</a> favorito y el que recomiendo usar si aun no usa uno.
+    </p>
+  </div>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th class="text-center">Enlace de Descarga</th>
+      </tr>
+      <tbody>
+        {{#hash-alist}}
+          <tr>
+            <td>{{nombre}}</td>
+            <td class="text-center">
+              <a title="Descarga {{tipo}} de {{nombre}}" class="btn {{#es-torrent}}btn-success{{/es-torrent}}{{^es-torrent}}btn-info{{/es-torrent}}" role="button" href="{{uri}}" target="_blank"><i class="fa {{#es-torrent}}fa-magnet{{/es-torrent}}{{^es-torrent}}fa-download{{/es-torrent}}" aria-hidden="true"></i> Descargar</a>
+            </td>
+          </tr>
+        {{/hash-alist}}
+      </tbody>
+    </thead>
+  </table>
+</div>

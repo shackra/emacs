@@ -1,0 +1,46 @@
+# -*- mode: snippet -*-
+# name: setup.py
+# key: setuppkg
+# --
+import os
+
+from setuptools import setup
+from setuptools.command.test import test as TestCommand
+
+
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
+# Inspired by the example at https://pytest.org/latest/goodpractises.html
+
+
+class NoseTestCommand(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        # Run nose ensuring that argv simulates running nosetests directly
+        import nose
+        nose.run_exit(argv=['nosetests'])
+
+
+package = '$1'
+version = '$2'
+
+setup(name=package,
+      version=version,
+      author="Jorge Javier Araya Navarro",
+      author_email="jorge@esavara.cr",
+      description="$3",
+      long_description=read('README.md'),
+      license="$4",
+      cmdclass={'test': NoseTestCommand},
+      tests_require=['nose', 'coverage', $5],
+      packages=[$6],
+      scripts=[$7],
+      url='$8',
+      install_requires=[
+          $9
+      ])

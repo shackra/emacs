@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: JS Doc @classdesc
+# key: @classdesc
+# --
+@classdesc $1$0

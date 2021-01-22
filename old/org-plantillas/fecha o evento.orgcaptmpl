@@ -1,0 +1,6 @@
+* POR-HACER %^{Nombre del evento} %^g
+SCHEDULED: %^T%?
+:PROPERTIES:%(when (yes-or-no-p "¿Es esto un cumpleaños?")
+(format "\n:NACIMIENTO: %s" (with-temp-buffer (org-time-stamp nil t) (buffer-string))))
+:CREATED_AT: %U
+:END:

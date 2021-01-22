@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: JS Doc @borrows
+# key: @borrows
+# --
+@borrows $1 as $2$0

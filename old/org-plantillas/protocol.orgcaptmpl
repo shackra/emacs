@@ -1,0 +1,7 @@
+* %^{Title}
+fuente: %u, %c
+ #+BEGIN_QUOTE
+ %i
+#+END_QUOTE
+ 
+%?

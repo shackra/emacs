@@ -1,0 +1,51 @@
+# key: kentcdodds
+# name: context
+# --
+$0const $1StateContext = React.createContext()
+const $1DispatchContext = React.createContext()
+
+const initialValue = {}
+
+const countReducer = (state, action) => {
+  switch (action.type) {
+    default: {
+      throw new Error(\`Unhandled action type: \${action.type}\`)
+    }
+  }
+}
+
+const $1Provider = ({children}) => {
+  const [state, dispatch] = React.useReducer(countReducer, initialValue)
+
+  return (
+    <$1StateContext.Provider value={state}>
+      <$1DispatchContext.Provider value={dispatch}>
+        {children}
+      </$1DispatchContext.Provider>
+    </$1StateContext.Provider>
+  )
+}
+
+const use$1State = () => {
+  const context = React.useContext($1StateContext)
+
+  if (context === undefined) {
+    throw new Error('use$1State must be used within a $1Provider')
+  }
+
+  return context
+
+}
+
+const use$1Dispatch = () => {
+  const context = React.useContext($1DispatchContext)
+
+  if (context === undefined) {
+    throw new Error('use$1Dispatch must be used within a $1Provider')
+  }
+
+  return context
+
+}
+
+export {$1Provider, use$1State, use$1Dispatch}

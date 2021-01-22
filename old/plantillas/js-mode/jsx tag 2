@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: JSX tag
+# key: /t
+# --
+<$1$2>$0</$1>
