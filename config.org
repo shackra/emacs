@@ -56,6 +56,11 @@ No estoy interesado en insertar un tabulador al presionar TAB.
 ** configuración básica
 #+begin_src emacs-lisp
 (setq org-directory "~/org/")
+(setq org-agenda-files (expand-file-name ".agendas" doom-private-dir))
+(setq org-refile-targets `((nil :maxlevel . 9)
+                           (org-agenda-files :maxlevel . 9)
+                           (org-default-notes-file :maxlevel . 9)
+                           (,(expand-file-name "quizas.org" org-directory) :maxlevel . 9)))
 #+end_src
 ** plantillas
 #+begin_src emacs-lisp
@@ -92,9 +97,8 @@ No estoy interesado en insertar un tabulador al presionar TAB.
                      (org-agenda-show-all-dates nil)))
             (alltodo ""
                      ((org-agenda-skip-function
-                       '(or (air-org-skip-subtree-if-habit)
-                            (air-org-skip-subtree-if-priority ?A)
-                            (org-agenda-skip-if nil '(scheduled deadline))))
+                       '(and
+                         (org-agenda-skip-if nil '(scheduled deadline))))
                       (org-agenda-overriding-header "Todas las tareas de prioridad normal:"))))))))
 
 (after! org-capture
