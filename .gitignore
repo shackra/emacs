@@ -9,8 +9,6 @@ semanticdb/*
 url/*
 .python-env*
 */.bzr/*
-gerson-emacs.d.tar.xz
-vieja\ configuración/*
 .achievements
 .mc-lists.el
 files-backup/
@@ -50,7 +48,6 @@ bookmars
 javacomp/
 php-language-server/
 .cask/
-README.el
 /transient/history.el
 .extension/
 /.dap-breakpoints
@@ -60,7 +57,6 @@ README.el
 /persp-confs/
 straight/
 !straight/versions/default.el
-init.el
 /undo-fu-session/
 /debug.org
 /eln-cache/
