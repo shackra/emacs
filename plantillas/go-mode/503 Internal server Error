@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: 503 Internal server Error
+# key: /503
+# --
+http.Error(w, fault.NewBackendError(fault.MessageInternalServerError).Error(), http.StatusInternalServerError)
+logrus.WithError(err).Error(fault.MessageInternalServerError)
+return

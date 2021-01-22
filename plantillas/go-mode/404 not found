@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: 404 not found
+# key: /404
+# --
+logrus.WithError($0).Error(fault.MessageNotFound)
+http.Error(w, fault.NewBackendError(fault.MessageNotFound).Error(), http.StatusNotFound)
+return

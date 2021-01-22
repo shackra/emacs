@@ -1,0 +1,198 @@
+#+TITLE:   Configuración de GNU Emacs usando Doom
+#+DATE:    enero 21, 2021
+#+STARTUP: inlineimages nofold
+
+#+begin_example
+                                    🕇
+                 Actiones nostras tibi comítimus, Dómine,
+                  ut ad maiorem gloriam tuam repleamur.
+                                  🕇   🕇
+#+end_example
+
+* Tabla de contenidos :TOC_3:noexport:
+- [[#preámbulo][Preámbulo]]
+- [[#aspecto-visual-de-gnu-emacs][Aspecto visual de GNU Emacs]]
+  - [[#tipografía][tipografía]]
+  - [[#cambia-comportamiento-de-tab][cambia comportamiento de TAB]]
+- [[#org][Org]]
+  - [[#configuración-básica][configuración básica]]
+  - [[#plantillas][plantillas]]
+- [[#ispell][ispell]]
+- [[#undo-y-redo][undo y redo]]
+- [[#cierre-de-buffers][Cierre de buffers]]
+- [[#iedit][iedit]]
+- [[#yasnippets][yasnippets]]
+- [[#reformatter][reformatter]]
+
+* Preámbulo
+Datos personales y opciones de Emacs lisp.
+#+begin_src emacs-lisp
+;; -*- lexical-binding: t; -*-
+
+(setq user-full-name "Jorge Araya Navarro"
+      user-mail-address "jorge@esavara.cr")
+#+end_src
+* Aspecto visual de GNU Emacs
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-gruvbox)
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+(setq display-line-numbers-type t)
+(setq fancy-splash-image (expand-file-name "dashboard/JHS.png" doom-private-dir))
+;; TODO: cambiar arte ASCII
+#+end_src
+** tipografía
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "Fira Code" :size 15)
+      doom-big-font (font-spec :family "Fira Code" :size 24))
+#+end_src
+** cambia comportamiento de TAB
+No estoy interesado en insertar un tabulador al presionar TAB.
+#+begin_src emacs-lisp
+(setq tab-always-indent t)
+#+end_src
+* Org
+** configuración básica
+#+begin_src emacs-lisp
+(setq org-directory "~/org/")
+#+end_src
+** plantillas
+#+begin_src emacs-lisp
+(after! org
+  (setq org-todo-keywords
+        '((sequence "POR-HACER(p)" "SIGNT(s)" "|" "TERMINADO(t)")
+          (sequence "ESPERA(e@/!)" "RETENER(r@/!)" "|" "CANCELADO(c@/!)")))
+  (setq org-todo-keyword-faces
+        '(("POR-HACER" :foreground "red" :weight bold)
+          ("SIGNT" :foreground "blue" :weight bold)
+          ("TERMINADO" :foreground "forest green" :weight bold)
+          ("ESPERA" :foreground "orange" :weight bold)
+          ("RETENER" :foreground "magenta" :weight bold)
+          ("CANCELADO" :foreground "forest green" :weight bold)))
+  (setq org-agenda-custom-commands
+        '(("a" "Agenda"
+           ((tags "PRIORITY=\"A\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "Tareas de alta prioridad por terminar:")))
+            (agenda ""
+                    ((org-agenda-span 'day)
+                     (org-agenda-overriding-header "Hoy:")
+                     (org-agenda-show-all-dates nil)))
+            (agenda ""
+                    ((org-agenda-span 'week)
+                     (org-agenda-start-day "+1d") ;; A partir de mañana
+                     (org-agenda-overriding-header "Semana:")
+                     (org-agenda-show-all-dates nil)))
+            (agenda ""
+                    ((org-agenda-span 'month)
+                     ;; A partir de la siguiente semana
+                     (org-agenda-start-day "+1w")
+                     (org-agenda-overriding-header "Mes:")
+                     (org-agenda-show-all-dates nil)))
+            (alltodo ""
+                     ((org-agenda-skip-function
+                       '(or (air-org-skip-subtree-if-habit)
+                            (air-org-skip-subtree-if-priority ?A)
+                            (org-agenda-skip-if nil '(scheduled deadline))))
+                      (org-agenda-overriding-header "Todas las tareas de prioridad normal:"))))))))
+
+(after! org-capture
+  (setq org-plantillas-directory (expand-file-name "org-plantillas" doom-private-dir))
+  (setq org-default-notes-file (expand-file-name "notas.org" org-directory))
+  (add-to-list 'org-agenda-files
+               (car `(,(expand-file-name "cosas por hacer.org" org-directory))))
+  (add-to-list 'org-agenda-files
+               (car `(,(expand-file-name "agenda.org" org-directory))))
+  (add-to-list 'org-capture-templates `("t" "Tarea por hacer" entry (file "cosas por hacer.org")
+                                        (file ,(expand-file-name "tareas por hacer.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t))
+  (add-to-list 'org-capture-templates `("c" "Agregar al calendario" entry (file "agenda.org")
+                                        (file ,(expand-file-name "tareas por hacer.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t))
+  (add-to-list 'org-capture-templates `("n" "Notas" entry (file+headline org-default-notes-file "Reorganizar")
+                                        (file ,(expand-file-name "notas.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t))
+  (add-to-list 'org-capture-templates `("f" "Fechas o eventos" entry (file+headline "cosas por hacer.org" "Fechas")
+                                        (file ,(expand-file-name "fecha o evento.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t))
+  (add-to-list 'org-capture-templates `("r" "Receta de cocina" entry (file "recetas.org")
+                                        (file ,(expand-file-name "recetas.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t))
+  (add-to-list 'org-capture-templates `("P" "Protocol" entry (file+headline org-default-notes-file "Reorganizar")
+                                        (file ,(expand-file-name "protocol.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t))
+  (add-to-list 'org-capture-templates `("l" "Protocol Link" entry (file+headline org-default-notes-file "Reorganizar")
+                                        (file ,(expand-file-name "protocol.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t))
+  (add-to-list 'org-latex-packages-alist '("" "gchords" t)))
+#+end_src
+* ispell
+Con base al blog post [[https://200ok.ch/posts/2020-08-22_setting_up_spell_checking_with_multiple_dictionaries.html][Setting up spell checking with multiple dictionaries in Emacs]] activamos varios idiomas a la vez.
+#+begin_src emacs-lisp
+(after! ispell
+  (setq ispell-program-name "hunspell")
+  (setq ispell-dictionary "es_CR,en_US")
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic "es_CR,en_US")
+  (setq ispell-personal-dictionary "~/.hunspell_personal")
+  (unless (file-exists-p ispell-personal-dictionary)
+    (write-region "" nil ispell-personal-dictionary nil 0)))
+#+end_src
+* undo y redo
+cambia atajos para llamar a undo y redo
+#+begin_src emacs-lisp
+(map! "C-z" #'undo)
+(map! "C-S-z" #'undo-fu-only-redo)
+#+end_src
+* Cierre de buffers
+Cambia atajo para matar el buffer actual
+#+begin_src emacs-lisp
+(unbind-key "C-x k" global-map)
+(map! "C-x k" #'kill-this-buffer)
+#+end_src
+* iedit
+Realiza ajustes pequeños para iedit-mode
+#+begin_src emacs-lisp
+(map! "C-M-;" #'iedit-mode)
+(map! :map iedit-mode-keymap "RET" #'iedit--quit)
+#+end_src
+* yasnippets
+#+begin_src emacs-lisp
+(after! yasnippet
+  (defun shackra-yas-reload ()
+    "Recarga las definiciones de YaSnippet una vez"
+    (yas-reload-all)
+    (remove-hook 'after-init-hook 'shackra-yas-reload))
+  (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" doom-private-dir) nil)
+  (add-hook! 'after-init-hook #'shackra-yas-reload))
+#+end_src
+* reformatter
+Define mis propios reformateadores de código fuente
+#+begin_src emacs-lisp
+(after! reformatter
+  (defvar-local prettier-js-formatter-npx-location nil)
+
+  (defun shackra-reformatter-prettier-args ()
+    `("prettier"
+      "--stdin-filepath"
+      ,(buffer-name)))
+
+  (defun shackra-reformatter-prettier-npx ()
+    (unless prettier-js-formatter-npx-location
+      (setq prettier-js-formatter-npx-location (executable-find "npx")))
+    prettier-js-formatter-npx-location)
+  (reformatter-define prettier-js-formatter
+                      :program (shackra-reformatter-prettier-npx)
+                      :args (shackra-reformatter-prettier-args)
+                      :lighter " 📏")
+
+  (add-hook! '(js-mode typescript-mode css-mode json-mode html-mode yaml-mode) #'prettier-js-formatter-on-save-mode)
+
+  ;; no funciona correctamente, ver
+  ;; https://github.com/avencera/rustywind/issues/19
+  (reformatter-define rustywind-formatter
+                      :program "rustywind"
+                      :args '("--stdin")
+                      :lighter " ䷸"))
+#+end_src
