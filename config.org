@@ -185,9 +185,11 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
   (defun shackra-yas-reload ()
     "Recarga las definiciones de YaSnippet una vez"
     (yas-reload-all)
-    (remove-hook 'after-init-hook 'shackra-yas-reload))
+    (remove-hook 'yas-minor-mode-hook #'shackra-yas-reload))
+
   (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" doom-private-dir) nil)
-  (add-hook! 'after-init-hook #'shackra-yas-reload))
+
+  (add-hook! 'yas-minor-mode-hook #'shackra-yas-reload))
 #+end_src
 * Golang
 Ajustes menores para Golang
