@@ -183,5 +183,5 @@ Define mis propios reformateadores de código fuente
 
 (set-formatter! 'headwind-rustywind "rustywind --stdin")
 
-(setq-hook! '(js-mode typescript-mode css-mode json-mode html-mode yaml-mode) +format-with 'prettier-with-npx)
+(setq-hook! '(js-mode-hook typescript-mode-hook css-mode-hook json-mode-hook html-mode-hook yaml-mode-hook) +format-with 'prettier-with-npx)
 #+end_src
