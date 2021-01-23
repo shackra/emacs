@@ -22,7 +22,7 @@
 - [[#cierre-de-buffers][Cierre de buffers]]
 - [[#iedit][iedit]]
 - [[#yasnippets][yasnippets]]
-- [[#reformatter][reformatter]]
+- [[#formateadores-de-código][formateadores de código]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -167,32 +167,14 @@ Realiza ajustes pequeños para iedit-mode
   (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" doom-private-dir) nil)
   (add-hook! 'after-init-hook #'shackra-yas-reload))
 #+end_src
-* reformatter
+* formateadores de código
 Define mis propios reformateadores de código fuente
 #+begin_src emacs-lisp
-(after! reformatter
-  (defvar-local prettier-js-formatter-npx-location nil)
+(set-formatter! 'prettier-with-npx
+  '("npx" "prettier" "--stdin-filepath" (or buffer-file-name mode-result ""))
+  :modes '(js-mode typescript-mode css-mode json-mode html-mode yaml-mode))
 
-  (defun shackra-reformatter-prettier-args ()
-    `("prettier"
-      "--stdin-filepath"
-      ,(buffer-name)))
+(set-formatter! 'headwind-rustywind "rustywind --stdin")
 
-  (defun shackra-reformatter-prettier-npx ()
-    (unless prettier-js-formatter-npx-location
-      (setq prettier-js-formatter-npx-location (executable-find "npx")))
-    prettier-js-formatter-npx-location)
-  (reformatter-define prettier-js-formatter
-                      :program (shackra-reformatter-prettier-npx)
-                      :args (shackra-reformatter-prettier-args)
-                      :lighter " 📏")
-
-  (add-hook! '(js-mode typescript-mode css-mode json-mode html-mode yaml-mode) #'prettier-js-formatter-on-save-mode)
-
-  ;; no funciona correctamente, ver
-  ;; https://github.com/avencera/rustywind/issues/19
-  (reformatter-define rustywind-formatter
-                      :program "rustywind"
-                      :args '("--stdin")
-                      :lighter " ䷸"))
+(setq-hook! '(js-mode typescript-mode css-mode json-mode html-mode yaml-mode) +format-with 'prettier-with-npx)
 #+end_src
