@@ -42,6 +42,9 @@ Datos personales y opciones de Emacs lisp.
 (setq display-line-numbers-type t)
 (setq fancy-splash-image (expand-file-name "dashboard/JHS.png" doom-private-dir))
 ;; TODO: cambiar arte ASCII
+(custom-set-faces!
+  '(mode-line :family "Fira Code" :height 0.9)
+  '(mode-line-inactive :family "Fira Code" :height 0.9))
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
