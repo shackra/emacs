@@ -162,7 +162,24 @@ Realiza ajustes pequeños para iedit-mode
 (map! :map iedit-mode-keymap "RET" #'iedit--quit)
 #+end_src
 * yasnippets
+Configura yasnippet y modifica todos los backends de company-mode para incluirlo en los resultados
 #+begin_src emacs-lisp
+(when (and (featurep! :completion company)
+           (featurep! :editor snippets))
+  (defun company-mode-backend-with-yas (backend)
+    "Update BACKEND with YaSnippet."
+    (if (or (and (listp backend) (member 'company-yasnippet backend)))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+
+  (defun company-mode-update-backends-with-yasnippet ()
+    "Update the backends of company and turn on YaSnippet."
+    (yas-minor-mode-on)
+    (setf company-backends (mapcar #'company-mode-backend-with-yas company-backends)))
+
+  (add-hook! 'company-mode-hook #'company-mode-update-backends-with-yasnippet))
+
 (after! yasnippet
   (defun shackra-yas-reload ()
     "Recarga las definiciones de YaSnippet una vez"
