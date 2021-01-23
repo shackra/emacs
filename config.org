@@ -22,6 +22,7 @@
 - [[#cierre-de-buffers][Cierre de buffers]]
 - [[#iedit][iedit]]
 - [[#yasnippets][yasnippets]]
+- [[#golang][Golang]]
 - [[#formateadores-de-código][formateadores de código]]
 
 * Preámbulo
@@ -166,6 +167,12 @@ Realiza ajustes pequeños para iedit-mode
     (remove-hook 'after-init-hook 'shackra-yas-reload))
   (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" doom-private-dir) nil)
   (add-hook! 'after-init-hook #'shackra-yas-reload))
+#+end_src
+* Golang
+Ajustes menores para Golang
+#+begin_src emacs-lisp
+(after! go-mode
+  (setq-default gofmt-command "goimports"))
 #+end_src
 * formateadores de código
 Define mis propios reformateadores de código fuente
