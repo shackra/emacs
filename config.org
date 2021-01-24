@@ -123,6 +123,10 @@ No estoy interesado en insertar un tabulador al presionar TAB.
 (after! org-capture
   (setq org-plantillas-directory (expand-file-name "org-plantillas" doom-private-dir))
   (setq org-default-notes-file (expand-file-name "notas.org" org-directory))
+  (setq org-capture-templates '())
+  (add-to-list 'org-capture-templates `("T" "Anotacion técnica" entry (file "apuntes tecnicos.org")
+                                        (file ,(expand-file-name "anotacion tecnica.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t))
   (add-to-list 'org-capture-templates `("t" "Tarea por hacer" entry (file "cosas por hacer.org")
                                         (file ,(expand-file-name "tareas por hacer.orgcaptmpl" org-plantillas-directory))
                                         :kill-buffer t :clock-in t :clock-resume t))
