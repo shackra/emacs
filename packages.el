@@ -1,6 +1,19 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
+(package! hungry-delete
+  :recipe (:host github :repo "nflath/hungry-delete")
+  :pin "0513152525c38519a5597db2d6495b56dd9cc3f0")
+
+(package! rego-mode
+  :recipe (:host github :repo "psibi/rego-mode")
+  :pin "be110e6cef5d34eef0529a8739c68e619cf15310"
+  :disable (not (featurep! :lang rego)))
+
+(package! highlight-escape-sequences
+  :recipe (:host github :repo "dgutov/highlight-escape-sequences")
+  :pin "fae976568c04b6fe8a9f2d854c8fe23b357a6878")
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.

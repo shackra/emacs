@@ -11,6 +11,7 @@
 
 * Tabla de contenidos :TOC_3:noexport:
 - [[#preámbulo][Preámbulo]]
+- [[#configuración-por-defecto-sabor-jorge][Configuración por defecto, sabor Jorge]]
 - [[#aspecto-visual-de-gnu-emacs][Aspecto visual de GNU Emacs]]
   - [[#tipografía][tipografía]]
   - [[#cambia-comportamiento-de-tab][cambia comportamiento de TAB]]
@@ -33,6 +34,17 @@ Datos personales y opciones de Emacs lisp.
 (setq user-full-name "Jorge Araya Navarro"
       user-mail-address "jorge@esavara.cr")
 #+end_src
+
+* Configuración por defecto, sabor Jorge
+Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que se pueda activar como una bandera en =:config default=, los defino aquí.
+#+begin_src emacs-lisp
+(when (featurep! :config default +jorge)
+  (global-hungry-delete-mode)
+  (after! highlight-escape-sequences
+    (add-hook! 'prog-mode-hook #'turn-on-hes-mode))
+  (after! uniquify
+    (setq uniquify-buffer-name-style 'forward)))
+#+end_src
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-gruvbox)
@@ -46,9 +58,6 @@ Datos personales y opciones de Emacs lisp.
 
 (setq fancy-splash-image (expand-file-name "dashboard/JHS.png" doom-private-dir))
 ;; TODO: cambiar arte ASCII
-(custom-set-faces!
-  '(mode-line :family "Fira Code" :height 0.8)
-  '(mode-line-inactive :family "Fira Code" :height 0.8))
 
 (setq all-the-icons-scale-factor 0.8)
 #+end_src
@@ -175,7 +184,7 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
            (featurep! :tools lsp))
 
   (defun shackra-use-company-capf-with-yasnippet ()
-    (setq company-backends '(company-capf :with company-yasnippet)))
+    (setq company-backends (list 'company-capf :with 'company-yasnippet)))
 
   (add-hook! 'company-mode-hook #'shackra-use-company-capf-with-yasnippet))
 
@@ -186,7 +195,8 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
 Ajustes menores para Golang
 #+begin_src emacs-lisp
 (after! go-mode
-  (setq-default gofmt-command "goimports"))
+  (setq-default gofmt-command "goimports")
+  (add-hook 'go-mode-hook (lambda () (add-hook 'after-save-hook 'gofmt nil 'make-it-local))))
 #+end_src
 * formateadores de código
 Define mis propios reformateadores de código fuente

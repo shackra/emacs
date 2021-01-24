@@ -20,10 +20,10 @@
        ;;layout            ; auie,ctsrnm is the superior home row
 
        :completion
-       (company +childframe) ; the ultimate code completion backend
+       (company +childframe)            ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
        ;;ido               ; the other *other* search engine...
-       (ivy +childframe +prescient +icons)                              ; a search engine for love and life
+       (ivy +childframe +prescient +icons) ; a search engine for love and life
 
        :ui
        ;;deft              ; notational velocity for Emacs
@@ -35,10 +35,10 @@
        hl-todo                ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
        ;;indent-guides     ; highlighted indent columns
-       (ligatures +fira +extra)   ; ligatures and symbols to make your code pretty again
+       (ligatures +fira +extra) ; ligatures and symbols to make your code pretty again
        ;;minimap           ; show a map of the code on the side
        modeline    ; snazzy, Atom-inspired modeline, plus API
-       nav-flash         ; blink cursor line after big motions
+       nav-flash   ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
        ophints                ; highlight the region an operation acts on
        (popup +defaults)      ; tame sudden yet inevitable temporary windows
@@ -142,11 +142,11 @@
        ;;factor
        ;;ledger            ; an accounting system in Emacs
        ;;lua               ; one-based indices? one-based indices
-       markdown         ; writing docs for people to ignore
+       markdown          ; writing docs for people to ignore
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +dragndrop +pretty)              ; organize your plain life in plain text
+       (org +dragndrop +pretty)         ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
@@ -167,6 +167,7 @@
        ;;terra             ; Earth and Moon in alignment for performance.
        (web +lsp)                       ; the tubes
        yaml                             ; JSON, but readable
+       rego
 
        :email
        ;;(mu4e +gmail)
@@ -181,4 +182,5 @@
 
        :config
        literate
-       (default +bindings +smartparens))
+       (default +bindings +smartparens +jorge) ; activa mis preferencias tambien
+       )
