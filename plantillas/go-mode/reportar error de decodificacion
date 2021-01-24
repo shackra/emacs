@@ -1,0 +1,7 @@
+# key: /errdec
+# name: reportar error de decodificacion
+# --
+if $0 {
+	reportError(w, fault.ErrDecode, http.StatusBadRequest, fault.MessageBadRequest, fault.MessageBadRequest)
+	return
+}
