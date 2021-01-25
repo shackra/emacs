@@ -12,6 +12,7 @@
 * Tabla de contenidos :TOC_3:noexport:
 - [[#preámbulo][Preámbulo]]
 - [[#configuración-por-defecto-sabor-jorge][Configuración por defecto, sabor Jorge]]
+  - [[#ajustes-específicos-para-macos][Ajustes específicos para Macos]]
 - [[#aspecto-visual-de-gnu-emacs][Aspecto visual de GNU Emacs]]
   - [[#tipografía][tipografía]]
   - [[#cambia-comportamiento-de-tab][cambia comportamiento de TAB]]
@@ -34,7 +35,6 @@ Datos personales y opciones de Emacs lisp.
 (setq user-full-name "Jorge Araya Navarro"
       user-mail-address "jorge@esavara.cr")
 #+end_src
-
 * Configuración por defecto, sabor Jorge
 Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que se pueda activar como una bandera en =:config default=, los defino aquí.
 #+begin_src emacs-lisp
@@ -44,6 +44,16 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
     (add-hook! 'prog-mode-hook #'turn-on-hes-mode))
   (after! uniquify
     (setq uniquify-buffer-name-style 'forward)))
+#+end_src
+** Ajustes específicos para Macos
+Por motivos que no conozco en Macos Emacs arranca con su directorio por default en =//=, de ser así, cambiamos a =~/=. El problema de esto es que arrancar Emacs desde una terminal podría dejar al usuario arrancando siempre en =~/= sin importar cual es el directorio de trabajo en la terminal.
+
+He tomado algunas previsiones en caso de que algún día decida arrancar Emacs desde la terminal.
+#+begin_src emacs-lisp
+(when (and (eq system-type 'darwin)
+           (eq default-directory "/")
+           (display-graphic-p))
+  (setq default-directory "~/"))
 #+end_src
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
