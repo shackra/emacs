@@ -14,6 +14,11 @@
   :recipe (:host github :repo "dgutov/highlight-escape-sequences")
   :pin "fae976568c04b6fe8a9f2d854c8fe23b357a6878")
 
+(package! pkgbuild-mode
+  :recipe (:host github :repo "juergenhoetzel/pkgbuild-mode")
+  :pin "8a5e95c8514315cb40c47f1acdb68a4ace921497"
+  :disable (not (featurep! :lang pkgbuild)))
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.

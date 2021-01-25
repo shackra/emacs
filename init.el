@@ -168,6 +168,7 @@
        (web +lsp)          ; the tubes
        yaml                ; JSON, but readable
        rego                ; Edita archivos rego (OPA)
+       (:if IS-LINUX pkgbuild)          ; modo mayor para editar PKGBUILDs de Arch
 
        :email
        ;;(mu4e +gmail)
