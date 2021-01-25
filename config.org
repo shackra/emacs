@@ -26,6 +26,7 @@
 - [[#yasnippets][yasnippets]]
 - [[#golang][Golang]]
 - [[#formateadores-de-código][formateadores de código]]
+- [[#detección-de-sangrado][Detección de sangrado]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -222,4 +223,9 @@ Define mis propios reformateadores de código fuente
 (set-formatter! 'headwind-rustywind "rustywind --stdin")
 
 (setq-hook! '(js-mode-hook typescript-mode-hook css-mode-hook json-mode-hook html-mode-hook yaml-mode-hook) +format-with 'prettier-with-npx)
+#+end_src
+* Detección de sangrado
+Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación. Lo activamos.
+#+begin_src emacs-lisp
+(dtrt-indent-global-mode)
 #+end_src
