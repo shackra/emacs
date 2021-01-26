@@ -233,5 +233,11 @@ Define mis propios reformateadores de código fuente
 * Detección de sangrado
 Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación. Lo activamos.
 #+begin_src emacs-lisp
-(dtrt-indent-global-mode)
+(add-hook! 'typescript-mode-hook #'dtrt-indent-mode)
+#+end_src
+* persp-mode
+Ajustes menores
+#+begin_src emacs-lisp
+(when (and (featurep! :ui workspaces) nil)
+  (run-with-idle-timer 10 t #'doom-save-session))
 #+end_src
