@@ -28,6 +28,7 @@
 - [[#typescript][Typescript]]
 - [[#formateadores-de-código][formateadores de código]]
 - [[#detección-de-sangrado][Detección de sangrado]]
+- [[#persp-mode][persp-mode]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -223,12 +224,35 @@ Ajustes menores para Typescript
 * formateadores de código
 Define mis propios reformateadores de código fuente
 #+begin_src emacs-lisp
-(set-formatter! 'prettier
-  '("npx" "prettier" "--stdin-filepath" buffer-file-name))
+(after! web-mode
+  (defvar-local prettier-js-formatter-npx-location nil)
 
-(set-formatter! 'headwind-rustywind "rustywind --stdin")
+  (defun shackra-reformatter-prettier-args ()
+    `("prettier"
+      "--stdin-filepath"
+      ,(buffer-name)))
 
-(setq-hook! '(js-mode-hook css-mode-hook json-mode-hook html-mode-hook yaml-mode-hook) +format-with 'prettier-with-npx)
+  (defun shackra-reformatter-prettier-npx ()
+    (unless prettier-js-formatter-npx-location
+      (setq prettier-js-formatter-npx-location (executable-find "npx")))
+    prettier-js-formatter-npx-location)
+
+  (reformatter-define prettier-js-formatter
+    :program (shackra-reformatter-prettier-npx)
+    :args (shackra-reformatter-prettier-args)
+    :lighter " 📏")
+
+  (defvar prettier-compatible-hooks '(typescript-mode-hook js-mode-hook json-mode-hook css-mode-hook html-mode-hook yaml-mode-hook)
+    "lista de ganchos compatibles con el formateador de prettier")
+
+  (setq-hook! prettier-compatible-hooks +format-with nil +format-with-lsp nil)
+
+  (add-hook! prettier-compatible-hooks #'prettier-js-formatter-on-save-mode)
+  (add-hook 'typescript-tsx-mode-hook #'prettier-js-formatter-on-save-mode :append)
+  (add-hook 'typescript-tsx-mode-hook (lambda () (setq +format-with nil +format-with-lsp nil))))
+
+(after! format
+  (set-formatter! 'headwind-rustywind "rustywind --stdin"))
 #+end_src
 * Detección de sangrado
 Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación. Lo activamos.

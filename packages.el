@@ -19,6 +19,10 @@
   :pin "8a5e95c8514315cb40c47f1acdb68a4ace921497"
   :disable (not (featurep! :lang pkgbuild)))
 
+(package! reformatter
+  :recipe (:host github :repo "purcell/reformatter.el")
+  :pin "45c0add95025f53ca644a6c8b9afa05b2da3c474")
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
