@@ -28,7 +28,7 @@
 - [[#typescript][Typescript]]
 - [[#formateadores-de-código][formateadores de código]]
 - [[#detección-de-sangrado][Detección de sangrado]]
-- [[#persp-mode][persp-mode]]
+- [[#correo-electrónico][correo electrónico]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -259,9 +259,24 @@ Emacs puede detectar automáticamente el nivel de sangrado en archivos de códig
 #+begin_src emacs-lisp
 (add-hook! 'typescript-mode-hook #'dtrt-indent-mode)
 #+end_src
-* persp-mode
-Ajustes menores
-#+begin_src emacs-lisp
-(when (and (featurep! :ui workspaces) nil)
-  (run-with-idle-timer 10 t #'doom-save-session))
-#+end_src
+* correo electrónico
+#+BEGIN_SRC emacs-lisp :tangle no
+(after! mu4e
+  (setq +mu43-mu4e-mail-path "~/mail")
+  (set-email-account! "jorge@esavara.cr"
+                      '((mu4e-sent-folder       . "/personal/Sent Mail")
+                        (mu4e-drafts-folder     . "/personal/Drafts")
+                        (mu4e-trash-folder      . "/personal/Trash")
+                        (mu4e-refile-folder     . "/personal/All Mail")
+                        (smtpmail-smtp-user     . "jorge@esavara.cr")
+                        (mu4e-compose-signature . "---\nJorge"))
+                      t)
+  (set-email-account! "jaraya@kue-cr.com"
+                      '((mu4e-sent-folder       . "/kue/Sent Mail")
+                        (mu4e-drafts-folder     . "/kue/Drafts")
+                        (mu4e-trash-folder      . "/kue/Trash")
+                        (mu4e-refile-folder     . "/kue/All Mail")
+                        (smtpmail-smtp-user     . "jaraya@kue-cr.com")
+                        (mu4e-compose-signature . "---\nJorge Araya"))
+                      nil))
+#+END_SRC

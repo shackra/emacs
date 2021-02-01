@@ -172,7 +172,7 @@
        (:if IS-LINUX pkgbuild)        ; modo mayor para editar PKGBUILDs de Arch
 
        :email
-       ;;(mu4e +gmail)
+       (:if IS-LINUX mu4e)
        ;;notmuch
        ;;(wanderlust +gmail)
 
