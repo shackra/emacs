@@ -272,7 +272,7 @@ Emacs puede detectar automáticamente el nivel de sangrado en archivos de códig
                         (mu4e-compose-signature . "---\nJorge"))
                       t)
   (set-email-account! "jaraya@kue-cr.com"
-                      '((mu4e-sent-folder       . "/kue/Sent Mail")
+                      '((mu4e-sent-folder       . "/kue/Sent")
                         (mu4e-drafts-folder     . "/kue/Drafts")
                         (mu4e-trash-folder      . "/kue/Trash")
                         (mu4e-refile-folder     . "/kue/All Mail")
