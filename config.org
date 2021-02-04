@@ -242,7 +242,7 @@ Define mis propios reformateadores de código fuente
     :args (shackra-reformatter-prettier-args)
     :lighter " 📏")
 
-  (defvar prettier-compatible-hooks '(typescript-mode-hook js-mode-hook json-mode-hook css-mode-hook html-mode-hook yaml-mode-hook)
+  (defvar prettier-compatible-hooks '(typescript-mode-hook js-mode-hook js2-mode-hook json-mode-hook css-mode-hook html-mode-hook yaml-mode-hook)
     "lista de ganchos compatibles con el formateador de prettier")
 
   (setq-hook! prettier-compatible-hooks +format-with nil +format-with-lsp nil)
