@@ -1,7 +1,307 @@
-#+TITLE:   Mi configuración de GNU Emacs con Doom
-#+DATE:    enero 22, 2021
+#+TITLE:   Configuración de GNU Emacs usando Doom
+#+DATE:    enero 21, 2021
 #+STARTUP: inlineimages nofold
 
-ver [[file:config.org][config.org]]
+#+begin_example
+                                    🕇
+                 Actiones nostras tibi comítimus, Dómine,
+                  ut ad maiorem gloriam tuam repleamur.
+                                  🕇   🕇
+#+end_example
 
-Este repositorio debe ser clonado en =~/.doom.d=.
+* Tabla de contenidos :TOC_3:noexport:
+- [[#preámbulo][Preámbulo]]
+- [[#configuración-por-defecto-sabor-jorge][Configuración por defecto, sabor Jorge]]
+  - [[#ajustes-específicos-para-macos][Ajustes específicos para Macos]]
+- [[#aspecto-visual-de-gnu-emacs][Aspecto visual de GNU Emacs]]
+  - [[#tipografía][tipografía]]
+  - [[#cambia-comportamiento-de-tab][cambia comportamiento de TAB]]
+- [[#org][Org]]
+  - [[#configuración-básica][configuración básica]]
+  - [[#plantillas][plantillas]]
+- [[#ispell][ispell]]
+- [[#undo-y-redo][undo y redo]]
+- [[#cierre-de-buffers][Cierre de buffers]]
+- [[#iedit][iedit]]
+- [[#yasnippets][yasnippets]]
+- [[#golang][Golang]]
+- [[#typescript][Typescript]]
+- [[#formateadores-de-código][formateadores de código]]
+- [[#detección-de-sangrado][Detección de sangrado]]
+- [[#tree-sitter][tree-sitter]]
+- [[#correo-electrónico][correo electrónico]]
+- [[#tramp][tramp]]
+- [[#nginx][Nginx]]
+
+* Preámbulo
+Datos personales y opciones de Emacs lisp.
+#+begin_src emacs-lisp
+;; -*- lexical-binding: t; -*-
+
+(setq user-full-name "Jorge Araya Navarro"
+      user-mail-address "jorge@esavara.cr")
+#+end_src
+* Configuración por defecto, sabor Jorge
+Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que se pueda activar como una bandera en =:config default=, los defino aquí.
+#+begin_src emacs-lisp
+(when (featurep! :config default +jorge)
+  (global-hungry-delete-mode)
+  (after! highlight-escape-sequences
+    (add-hook! 'prog-mode-hook #'turn-on-hes-mode))
+  (after! uniquify
+    (setq uniquify-buffer-name-style 'forward)))
+#+end_src
+** Ajustes específicos para Macos
+Por motivos que no conozco en Macos Emacs arranca con su directorio por default en =//=, de ser así, cambiamos a =~/=. El problema de esto es que arrancar Emacs desde una terminal podría dejar al usuario arrancando siempre en =~/= sin importar cual es el directorio de trabajo en la terminal.
+
+He tomado algunas previsiones en caso de que algún día decida arrancar Emacs desde la terminal.
+#+begin_src emacs-lisp
+(when (and (eq system-type 'darwin)
+           (eq default-directory "/")
+           (display-graphic-p))
+  (setq default-directory "~/"))
+#+end_src
+* Aspecto visual de GNU Emacs
+#+begin_src emacs-lisp
+(setq doom-theme 'doom-gruvbox)
+(after! doom-themes
+  (setq doom-themes-enable-bold t
+        doom-themes-enable-italic t))
+(after! doom-modeline
+  (setq doom-modeline-persp-name t))
+
+(setq display-line-numbers-type t)
+
+(setq fancy-splash-image (expand-file-name "dashboard/JHS.png" doom-private-dir))
+;; TODO: cambiar arte ASCII
+
+(setq all-the-icons-scale-factor 0.8)
+#+end_src
+** tipografía
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "Fira Code" :size 16)
+      doom-big-font (font-spec :family "Fira Code" :size 26))
+#+end_src
+** cambia comportamiento de TAB
+No estoy interesado en insertar un tabulador al presionar TAB.
+#+begin_src emacs-lisp
+(setq tab-always-indent t)
+#+end_src
+* Org
+** configuración básica
+#+begin_src emacs-lisp
+(setq org-directory "~/org/")
+(setq org-agenda-files (expand-file-name ".agendas" doom-private-dir))
+(setq org-refile-targets `((nil :maxlevel . 9)
+                           (org-agenda-files :maxlevel . 9)
+                           (org-default-notes-file :maxlevel . 9)
+                           (,(expand-file-name "quizas.org" org-directory) :maxlevel . 9)))
+#+end_src
+** plantillas
+#+begin_src emacs-lisp
+(after! org
+  (setq org-todo-keywords
+        '((sequence "POR-HACER(p)" "SIGNT(s)" "|" "TERMINADO(t)")
+          (sequence "ESPERA(e@/!)" "RETENER(r@/!)" "|" "CANCELADO(c@/!)")))
+  (setq org-todo-keyword-faces
+        '(("POR-HACER" :foreground "red" :weight bold)
+          ("SIGNT" :foreground "blue" :weight bold)
+          ("TERMINADO" :foreground "forest green" :weight bold)
+          ("ESPERA" :foreground "orange" :weight bold)
+          ("RETENER" :foreground "magenta" :weight bold)
+          ("CANCELADO" :foreground "forest green" :weight bold)))
+  (setq org-agenda-custom-commands
+        '(("a" "Agenda"
+           ((tags "PRIORITY=\"A\""
+                  ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                   (org-agenda-overriding-header "Tareas de alta prioridad por terminar:")))
+            (agenda ""
+                    ((org-agenda-span 'day)
+                     (org-agenda-overriding-header "Hoy:")
+                     (org-agenda-show-all-dates nil)))
+            (agenda ""
+                    ((org-agenda-span 'week)
+                     (org-agenda-start-day "+1d") ;; A partir de mañana
+                     (org-agenda-overriding-header "Semana:")
+                     (org-agenda-show-all-dates nil)))
+            (agenda ""
+                    ((org-agenda-span 'month)
+                     ;; A partir de la siguiente semana
+                     (org-agenda-start-day "+1w")
+                     (org-agenda-overriding-header "Mes:")
+                     (org-agenda-show-all-dates nil)))
+            (alltodo ""
+                     ((org-agenda-skip-function
+                       '(and
+                         (org-agenda-skip-if nil '(scheduled deadline))))
+                      (org-agenda-overriding-header "Todas las tareas de prioridad normal:"))))))))
+
+(after! org-capture
+  (setq org-plantillas-directory (expand-file-name "org-plantillas" doom-private-dir))
+  (setq org-default-notes-file (expand-file-name "notas.org" org-directory))
+  (setq org-capture-templates `(("T" "Anotacion técnica" entry (file "apuntes tecnicos.org")
+                                 (file ,(expand-file-name "anotacion tecnica.orgcaptmpl" org-plantillas-directory))
+                                 :kill-buffer t :clock-in t :clock-resume t)))
+  (add-to-list 'org-capture-templates `("t" "Tarea por hacer" entry (file "cosas por hacer.org")
+                                        (file ,(expand-file-name "tareas por hacer.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t) :append)
+  (add-to-list 'org-capture-templates `("c" "Agregar al calendario" entry (file "agenda.org")
+                                        (file ,(expand-file-name "tareas por hacer.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t) :append)
+  (add-to-list 'org-capture-templates `("n" "Notas" entry (file+headline org-default-notes-file "Reorganizar")
+                                        (file ,(expand-file-name "notas.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t) :append)
+  (add-to-list 'org-capture-templates `("f" "Fechas o eventos" entry (file+headline "cosas por hacer.org" "Fechas")
+                                        (file ,(expand-file-name "fecha o evento.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t) :append)
+  (add-to-list 'org-capture-templates `("r" "Receta de cocina" entry (file "recetas.org")
+                                        (file ,(expand-file-name "recetas.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t) :append)
+  (add-to-list 'org-capture-templates `("P" "Protocol" entry (file+headline org-default-notes-file "Reorganizar")
+                                        (file ,(expand-file-name "protocol.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t) :append)
+  (add-to-list 'org-capture-templates `("l" "Protocol Link" entry (file+headline org-default-notes-file "Reorganizar")
+                                        (file ,(expand-file-name "protocol.orgcaptmpl" org-plantillas-directory))
+                                        :kill-buffer t :clock-in t :clock-resume t) :append)
+  ;; Ajuste para LaTeX
+  (add-to-list 'org-latex-packages-alist '("" "gchords" t)))
+#+end_src
+* ispell
+Con base al blog post [[https://200ok.ch/posts/2020-08-22_setting_up_spell_checking_with_multiple_dictionaries.html][Setting up spell checking with multiple dictionaries in Emacs]] activamos varios idiomas a la vez.
+#+begin_src emacs-lisp
+(after! ispell
+  (setq ispell-program-name "hunspell")
+  (setq ispell-dictionary "es_CR,en_US")
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic "es_CR,en_US")
+  (setq ispell-personal-dictionary "~/.hunspell_personal")
+  (unless (file-exists-p ispell-personal-dictionary)
+    (write-region "" nil ispell-personal-dictionary nil 0)))
+#+end_src
+* undo y redo
+cambia atajos para llamar a undo y redo
+#+begin_src emacs-lisp
+(map! "C-z" #'undo)
+(map! "C-S-z" #'undo-fu-only-redo)
+#+end_src
+* Cierre de buffers
+Cambia atajo para matar el buffer actual
+#+begin_src emacs-lisp
+(unbind-key "C-x k" global-map)
+(map! "C-x k" #'kill-this-buffer)
+#+end_src
+* iedit
+Realiza ajustes pequeños para iedit-mode
+#+begin_src emacs-lisp
+(map! "C-M-;" #'iedit-mode)
+(map! :map iedit-mode-keymap "RET" #'iedit--quit)
+#+end_src
+* yasnippets
+Configura yasnippet y modifica todos los backends de company-mode para incluirlo en los resultados
+#+begin_src emacs-lisp
+(when (and (featurep! :completion company)
+           (featurep! :editor snippets)
+           (featurep! :tools lsp))
+
+  (defun shackra-use-company-capf-with-yasnippet ()
+    (setq company-backends '((company-capf company-yasnippet))))
+
+  (add-hook! 'company-mode-hook #'shackra-use-company-capf-with-yasnippet))
+
+(after! yasnippet
+  (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" doom-private-dir) nil))
+#+end_src
+* Golang
+Ajustes menores para Golang
+#+begin_src emacs-lisp
+(after! go-mode
+  (setq-default gofmt-command "goimports")
+  (add-hook 'go-mode-hook (lambda () (add-hook 'after-save-hook 'gofmt nil 'make-it-local))))
+#+end_src
+* Typescript
+Ajustes menores para Typescript
+#+begin_src emacs-lisp
+(setq-hook! 'typescript-mode-hook +format-with-lsp nil)
+(setq-hook! 'typescript-mode-hook +format-with 'prettier)
+#+end_src
+* formateadores de código
+Define mis propios reformateadores de código fuente
+#+begin_src emacs-lisp
+(after! web-mode
+  (defvar-local prettier-js-formatter-npx-location nil)
+
+  (defun shackra-reformatter-prettier-args ()
+    `("prettier"
+      "--stdin-filepath"
+      ,(buffer-name)))
+
+  (defun shackra-reformatter-prettier-npx ()
+    (unless prettier-js-formatter-npx-location
+      (setq prettier-js-formatter-npx-location (executable-find "npx")))
+    prettier-js-formatter-npx-location)
+
+  (reformatter-define prettier-js-formatter
+    :program (shackra-reformatter-prettier-npx)
+    :args (shackra-reformatter-prettier-args)
+    :lighter " 📏")
+
+  (defvar prettier-compatible-hooks '(typescript-mode-hook js-mode-hook js2-mode-hook json-mode-hook css-mode-hook html-mode-hook yaml-mode-hook)
+    "lista de ganchos compatibles con el formateador de prettier")
+
+  (setq-hook! prettier-compatible-hooks +format-with nil +format-with-lsp nil)
+
+  (add-hook! prettier-compatible-hooks #'prettier-js-formatter-on-save-mode)
+  (add-hook 'typescript-tsx-mode-hook #'prettier-js-formatter-on-save-mode :append)
+  (add-hook 'typescript-tsx-mode-hook (lambda () (setq +format-with nil +format-with-lsp nil))))
+
+(after! format
+  (set-formatter! 'headwind-rustywind "rustywind --stdin"))
+#+end_src
+* Detección de sangrado
+Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación. Lo activamos.
+#+begin_src emacs-lisp
+(add-hook! 'typescript-mode-hook #'dtrt-indent-mode)
+#+end_src
+* tree-sitter
+Mejor y veloz resaltado de código fuente
+#+begin_src emacs-lisp
+(when (featurep! :ui tree-sitter)
+  (require 'tree-sitter-langs)
+  (require 'tree-sitter-debug)
+  (require 'tree-sitter-query)
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+#+end_src
+* correo electrónico
+#+BEGIN_SRC emacs-lisp :tangle no
+(after! mu4e
+  (setq +mu43-mu4e-mail-path "~/mail")
+  (set-email-account! "jorge@esavara.cr"
+                      '((mu4e-sent-folder       . "/personal/Sent Mail")
+                        (mu4e-drafts-folder     . "/personal/Drafts")
+                        (mu4e-trash-folder      . "/personal/Trash")
+                        (mu4e-refile-folder     . "/personal/All Mail")
+                        (smtpmail-smtp-user     . "jorge@esavara.cr")
+                        (mu4e-compose-signature . "---\nJorge"))
+                      t)
+  (set-email-account! "jaraya@kue-cr.com"
+                      '((mu4e-sent-folder       . "/kue/Sent")
+                        (mu4e-drafts-folder     . "/kue/Drafts")
+                        (mu4e-trash-folder      . "/kue/Trash")
+                        (mu4e-refile-folder     . "/kue/All Mail")
+                        (smtpmail-smtp-user     . "jaraya@kue-cr.com")
+                        (mu4e-compose-signature . "---\nJorge Araya"))
+                      nil))
+#+END_SRC
+* tramp
+Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.html#tramp][Doom Emacs Configuration]])
+#+begin_src emacs-lisp
+(after! tramp
+  (setenv "SHELL" "/bin/bash"))
+#+end_src
+* Nginx
+Modo mayor para configurar archivos asociados a Nginx
+#+begin_src emacs-lisp
+(when (featurep! :lang nginx)
+  (require 'nginx-mode))
+#+end_src

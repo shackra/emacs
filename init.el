@@ -14,6 +14,8 @@
 ;;      Alternatively, press 'gd' (or 'C-c c d') on a module to browse its
 ;;      directory (for easy access to its source code).
 
+(setq! +literate-config-file (expand-file-name "README.org" doom-private-dir))
+
 (doom! :input
        ;;chinese
        ;;japanese
@@ -50,6 +52,7 @@
        window-select    ; visually switch windows
        workspaces       ; tab emulation, persistence & separate workspaces
        ;;zen               ; distraction-free coding or writing
+       tree-sitter                      ; mejor y veloz resaltado de codigo
 
        :editor
        ;;(evil +everywhere); come to the dark side, we have cookies
@@ -170,6 +173,7 @@
        yaml                           ; JSON, but readable
        rego                           ; Edita archivos rego (OPA)
        (:if IS-LINUX pkgbuild)        ; modo mayor para editar PKGBUILDs de Arch
+       (:if IS-LINUX nginx)
 
        :email
        (:if IS-LINUX mu4e)
