@@ -23,6 +23,35 @@
   :recipe (:host github :repo "purcell/reformatter.el")
   :pin "45c0add95025f53ca644a6c8b9afa05b2da3c474")
 
+(package! tree-sitter
+  :recipe (:host github :repo "ubolonton/emacs-tree-sitter"
+           :files ("lisp/*.el"
+                   (:exclude "lisp/tree-sitter-tests.el")))
+  :pin "d569763c143fdf4ba8480befbb4b8ce1e49df5e2"
+  :disable (not (functionp 'module-load)))
+
+(package! tree-sitter-langs
+  :recipe (:host github :repo "ubolonton/emacs-tree-sitter"
+           :files ("langs/*.el"
+                   "langs/queries"))
+  :pin "d569763c143fdf4ba8480befbb4b8ce1e49df5e2"
+  :disable (not (functionp 'module-load)))
+
+(package! tsc
+  :recipe (:host github :repo "ubolonton/emacs-tree-sitter"
+           :files
+           ("core/*.el"
+            "core/Cargo.toml"
+            "core/Cargo.lock"
+            "core/src"))
+  :pin "d569763c143fdf4ba8480befbb4b8ce1e49df5e2"
+  :disable (not (functionp 'module-load)))
+
+(package! nginx-mode
+  :recipe (:host github :repo "ajc/nginx-mode"
+           :files ("*.el"))
+  :pin "a2bab83c2eb233d57d76b236e7c141c2ccc97005")
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
