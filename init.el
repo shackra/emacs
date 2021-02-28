@@ -16,11 +16,7 @@
 
 (setq! +literate-config-file (expand-file-name "README.org" doom-private-dir))
 
-(doom! :input
-       ;;chinese
-       ;;japanese
-       ;;layout            ; auie,ctsrnm is the superior home row
-
+(doom!
        :completion
        (company +childframe)            ; the ultimate code completion backend
        ;;helm              ; the *other* search engine for love and life
@@ -42,7 +38,7 @@
        modeline    ; snazzy, Atom-inspired modeline, plus API
        nav-flash   ; blink cursor line after big motions
        ;;neotree           ; a project drawer, like NERDTree for vim
-       ophints                ; highlight the region an operation acts on
+       ophints          ; highlight the region an operation acts on
        (popup +defaults)      ; tame sudden yet inevitable temporary windows
        ;;tabs              ; a tab bar for Emacs
        treemacs         ; a project drawer, like neotree but cooler
@@ -61,8 +57,8 @@
        (format +onsave)                 ; automated prettiness
        (reformatter +onsave)            ; utilizamos reformatter
        ;;god               ; run Emacs commands without modifier keys
-       lispy                       ; vim for lisp, for people who don't like vim
-       multiple-cursors            ; editing in many places at once
+       lispy          ; vim for lisp, for people who don't like vim
+       multiple-cursors                 ; editing in many places at once
        ;;objed             ; text object editing for the innocent
        ;;parinfer          ; turn lisp into python, sort of
        ;;rotate-text       ; cycle region at point between text candidates
@@ -150,7 +146,7 @@
        ;;nim               ; python + lisp at the speed of c
        ;;nix               ; I hereby declare "nix geht mehr!"
        ;;ocaml             ; an objective camel
-       (org +dragndrop +pretty +noter +pomodoro +present)         ; organize your plain life in plain text
+       (org +dragndrop +pretty +noter +pomodoro +present) ; organize your plain life in plain text
        ;;php               ; perl's insecure younger brother
        ;;plantuml          ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
@@ -188,5 +184,5 @@
 
        :config
        literate
-       (default +bindings +smartparens +jorge) ; activa mis preferencias tambien
+       (default +bindings +jorge)       ; activa mis preferencias tambien
        )

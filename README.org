@@ -46,6 +46,9 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+begin_src emacs-lisp
 (when (featurep! :config default +jorge)
   (global-hungry-delete-mode)
+  ;; activa electric-pair-mode solo si +smartparens no lo esta
+  (unless (featurep! :config default +smartparens)
+    (add-hook! 'prog-mode-hook #'electric-pair-local-mode))
   (after! highlight-escape-sequences
     (add-hook! 'prog-mode-hook #'turn-on-hes-mode))
   (after! uniquify
@@ -54,13 +57,7 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 ** Ajustes específicos para Macos
 Por motivos que no conozco en Macos Emacs arranca con su directorio por default en =//=, de ser así, cambiamos a =~/=. El problema de esto es que arrancar Emacs desde una terminal podría dejar al usuario arrancando siempre en =~/= sin importar cual es el directorio de trabajo en la terminal.
 
-He tomado algunas previsiones en caso de que algún día decida arrancar Emacs desde la terminal.
-#+begin_src emacs-lisp
-(when (and (eq system-type 'darwin)
-           (eq default-directory "/")
-           (display-graphic-p))
-  (setq default-directory "~/"))
-#+end_src
+No he logrado reparar este comportamiento
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-gruvbox)
@@ -76,6 +73,11 @@ He tomado algunas previsiones en caso de que algún día decida arrancar Emacs d
 ;; TODO: cambiar arte ASCII
 
 (setq all-the-icons-scale-factor 0.8)
+
+(custom-set-faces!
+  '(aw-leading-char-face
+    :foreground "white" :background "red"
+    :weight bold :height 2.5 :box (:line-width 10 :color "red")))
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
