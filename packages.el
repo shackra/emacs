@@ -19,10 +19,6 @@
   :pin "8a5e95c8514315cb40c47f1acdb68a4ace921497"
   :disable (not (featurep! :lang pkgbuild)))
 
-(package! reformatter
-  :recipe (:host github :repo "purcell/reformatter.el")
-  :pin "45c0add95025f53ca644a6c8b9afa05b2da3c474")
-
 (package! tree-sitter
   :recipe (:host github :repo "ubolonton/emacs-tree-sitter"
            :files ("lisp/*.el"
@@ -51,6 +47,10 @@
   :recipe (:host github :repo "ajc/nginx-mode"
            :files ("*.el"))
   :pin "a2bab83c2eb233d57d76b236e7c141c2ccc97005")
+
+(package! apheleia
+  :recipe (:host github :repo "raxod502/apheleia" :files ("apheleia.el"))
+  :pin "87115f5cda2a6c0653fc0ac69bbbc7d39a253f11")
 
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or

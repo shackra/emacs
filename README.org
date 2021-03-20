@@ -25,7 +25,7 @@
 - [[#iedit][iedit]]
 - [[#yasnippets][yasnippets]]
 - [[#golang][Golang]]
-- [[#typescript][Typescript]]
+- [[#flutter-y-dart][Flutter y Dart]]
 - [[#formateadores-de-código][formateadores de código]]
 - [[#detección-de-sangrado][Detección de sangrado]]
 - [[#tree-sitter][tree-sitter]]
@@ -221,44 +221,26 @@ Ajustes menores para Golang
   (setq-default gofmt-command "goimports")
   (add-hook 'go-mode-hook (lambda () (add-hook 'after-save-hook 'gofmt nil 'make-it-local))))
 #+end_src
-* Typescript
-Ajustes menores para Typescript
+* Flutter y Dart
+ajustes menores para estos modos mayores
 #+begin_src emacs-lisp
-(setq-hook! 'typescript-mode-hook +format-with-lsp nil)
-(setq-hook! 'typescript-mode-hook +format-with 'prettier)
+(after! dart-mode
+  (setq-default lsp-dart-sdk-dir nil)
+  (setq-default flutter-sdk-path nil))
 #+end_src
 * formateadores de código
-Define mis propios reformateadores de código fuente
+Define mis propios reformateadores de código fuente usando [[https://github.com/raxod502/apheleia][apheleia]].
 #+begin_src emacs-lisp
-(after! web-mode
-  (defvar-local prettier-js-formatter-npx-location nil)
+(when (featurep! :editor reformat)
+  (require 'apheleia)
+  ;; activa globalmente alpheleia
+  (apheleia-global-mode))
 
-  (defun shackra-reformatter-prettier-args ()
-    `("prettier"
-      "--stdin-filepath"
-      ,(buffer-name)))
-
-  (defun shackra-reformatter-prettier-npx ()
-    (unless prettier-js-formatter-npx-location
-      (setq prettier-js-formatter-npx-location (executable-find "npx")))
-    prettier-js-formatter-npx-location)
-
-  (reformatter-define prettier-js-formatter
-    :program (shackra-reformatter-prettier-npx)
-    :args (shackra-reformatter-prettier-args)
-    :lighter " 📏")
-
-  (defvar prettier-compatible-hooks '(typescript-mode-hook js-mode-hook js2-mode-hook json-mode-hook css-mode-hook html-mode-hook yaml-mode-hook)
-    "lista de ganchos compatibles con el formateador de prettier")
-
-  (setq-hook! prettier-compatible-hooks +format-with nil +format-with-lsp nil)
-
-  (add-hook! prettier-compatible-hooks #'prettier-js-formatter-on-save-mode)
-  (add-hook 'typescript-tsx-mode-hook #'prettier-js-formatter-on-save-mode :append)
-  (add-hook 'typescript-tsx-mode-hook (lambda () (setq +format-with nil +format-with-lsp nil))))
-
-(after! format
-  (set-formatter! 'headwind-rustywind "rustywind --stdin"))
+(after! apheleia-mode
+  ;; TODO: agregar rustywind cuando
+  ;; https://github.com/raxod502/apheleia/issues/31 haya sido resuelto
+  (add-to-list 'apheleia-formatters '(rustywind . ("rustywind" "--stdin")))
+  (add-to-list 'apheleia-mode-alist '(typescript-tsx-mode . prettier)))
 #+end_src
 * Detección de sangrado
 Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación. Lo activamos.
