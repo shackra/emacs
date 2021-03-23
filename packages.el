@@ -23,14 +23,14 @@
   :recipe (:host github :repo "ubolonton/emacs-tree-sitter"
            :files ("lisp/*.el"
                    (:exclude "lisp/tree-sitter-tests.el")))
-  :pin "d569763c143fdf4ba8480befbb4b8ce1e49df5e2"
+  :pin "3a600d769bd5da95bf46bec58893934370c6c04f"
   :disable (not (functionp 'module-load)))
 
 (package! tree-sitter-langs
   :recipe (:host github :repo "ubolonton/emacs-tree-sitter"
            :files ("langs/*.el"
                    "langs/queries"))
-  :pin "d569763c143fdf4ba8480befbb4b8ce1e49df5e2"
+  :pin "3a600d769bd5da95bf46bec58893934370c6c04f"
   :disable (not (functionp 'module-load)))
 
 (package! tsc
@@ -40,7 +40,7 @@
             "core/Cargo.toml"
             "core/Cargo.lock"
             "core/src"))
-  :pin "d569763c143fdf4ba8480befbb4b8ce1e49df5e2"
+  :pin "3a600d769bd5da95bf46bec58893934370c6c04f"
   :disable (not (functionp 'module-load)))
 
 (package! nginx-mode
