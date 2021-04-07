@@ -247,6 +247,11 @@ Emacs puede detectar automáticamente el nivel de sangrado en archivos de códig
 #+begin_src emacs-lisp
 (add-hook! 'typescript-mode-hook #'dtrt-indent-mode)
 #+end_src
+** Apaga auto-sangrado en web-mode
+#+begin_src emacs-lisp
+(after! web-mode
+  (setq-default web-mode-enable-auto-indentation nil))
+#+end_src
 * tree-sitter
 Mejor y veloz resaltado de código fuente
 #+begin_src emacs-lisp
