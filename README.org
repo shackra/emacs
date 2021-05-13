@@ -215,8 +215,7 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
 Ajustes menores para Golang
 #+begin_src emacs-lisp
 (after! go-mode
-  (setq-default gofmt-command "goimports")
-  (add-hook 'go-mode-hook (lambda () (add-hook 'after-save-hook 'gofmt nil 'make-it-local))))
+  (setq-default gofmt-command "goimports"))
 #+end_src
 * Flutter y Dart
 ajustes menores para estos modos mayores
