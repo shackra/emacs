@@ -12,7 +12,6 @@
 * Tabla de contenidos :TOC_3:noexport:
 - [[#preámbulo][Preámbulo]]
 - [[#configuración-por-defecto-sabor-jorge][Configuración por defecto, sabor Jorge]]
-  - [[#ajustes-específicos-para-macos][Ajustes específicos para Macos]]
 - [[#aspecto-visual-de-gnu-emacs][Aspecto visual de GNU Emacs]]
   - [[#tipografía][tipografía]]
   - [[#cambia-comportamiento-de-tab][cambia comportamiento de TAB]]
@@ -28,10 +27,12 @@
 - [[#flutter-y-dart][Flutter y Dart]]
 - [[#formateadores-de-código][formateadores de código]]
 - [[#detección-de-sangrado][Detección de sangrado]]
+  - [[#apaga-auto-sangrado-en-web-mode][Apaga auto-sangrado en web-mode]]
 - [[#tree-sitter][tree-sitter]]
 - [[#correo-electrónico][correo electrónico]]
 - [[#tramp][tramp]]
 - [[#nginx][Nginx]]
+- [[#configuración-de-depuración-con-dap-mode][configuración de depuración con dap-mode]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -55,10 +56,6 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
   (after! uniquify
     (setq uniquify-buffer-name-style 'forward)))
 #+end_src
-** Ajustes específicos para Macos
-Por motivos que no conozco en Macos Emacs arranca con su directorio por default en =//=, de ser así, cambiamos a =~/=. El problema de esto es que arrancar Emacs desde una terminal podría dejar al usuario arrancando siempre en =~/= sin importar cual es el directorio de trabajo en la terminal.
-
-No he logrado reparar este comportamiento
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-gruvbox)
@@ -294,4 +291,11 @@ Modo mayor para configurar archivos asociados a Nginx
 #+begin_src emacs-lisp
 (when (featurep! :lang nginx)
   (require 'nginx-mode))
+#+end_src
+* configuración de depuración con dap-mode
+#+begin_src emacs-lisp
+(after! dap-mode
+  ;; configura dap-mode para depurar en Chrome/Brave
+  (require 'dap-chrome)
+  (dap-chrome-setup))
 #+end_src
