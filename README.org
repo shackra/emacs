@@ -239,10 +239,7 @@ Define mis propios reformateadores de código fuente usando [[https://github.com
   (add-to-list 'apheleia-mode-alist '(typescript-tsx-mode . prettier)))
 #+end_src
 * Detección de sangrado
-Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación. Lo activamos.
-#+begin_src emacs-lisp
-(add-hook! 'typescript-mode-hook #'dtrt-indent-mode)
-#+end_src
+Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación.
 ** Apaga auto-sangrado en web-mode
 #+begin_src emacs-lisp
 (after! web-mode
