@@ -3,7 +3,7 @@
 
 (package! hungry-delete
   :recipe (:host github :repo "nflath/hungry-delete")
-  :pin "0513152525c38519a5597db2d6495b56dd9cc3f0")
+  :pin "d919e555e5c13a2edf4570f3ceec84f0ade71657")
 
 (package! rego-mode
   :recipe (:host github :repo "psibi/rego-mode")
@@ -51,6 +51,10 @@
 (package! apheleia
   :recipe (:host github :repo "raxod502/apheleia" :files ("apheleia.el"))
   :pin "87115f5cda2a6c0653fc0ac69bbbc7d39a253f11")
+
+(package! openapi-yaml-mode
+  :recipe (:host github :repo "magoyette/openapi-yaml-mode" :files ("openapi-yaml-mode.el"))
+  :pin "0e2e9e7772b1b819d9f0033c64f03ad074ac6ffd")
 
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
