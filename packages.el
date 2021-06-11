@@ -1,10 +1,6 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
-(package! hungry-delete
-  :recipe (:host github :repo "nflath/hungry-delete")
-  :pin "d919e555e5c13a2edf4570f3ceec84f0ade71657")
-
 (package! rego-mode
   :recipe (:host github :repo "psibi/rego-mode")
   :pin "be110e6cef5d34eef0529a8739c68e619cf15310"

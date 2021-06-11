@@ -46,7 +46,6 @@ Datos personales y opciones de Emacs lisp.
 Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que se pueda activar como una bandera en =:config default=, los defino aquí.
 #+begin_src emacs-lisp
 (when (featurep! :config default +jorge)
-  (global-hungry-delete-mode)
   ;; activa electric-pair-mode solo si +smartparens no lo esta
   (unless (featurep! :config default +smartparens)
     (add-hook! 'prog-mode-hook #'electric-pair-local-mode)
