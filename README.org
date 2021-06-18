@@ -54,6 +54,9 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
     (add-hook! 'prog-mode-hook #'turn-on-hes-mode))
   (after! uniquify
     (setq uniquify-buffer-name-style 'forward)))
+
+;; cambia ubicacion de snippets para YaSnippet
+(setf +snippets-dir (expand-file-name "plantillas" doom-private-dir))
 #+end_src
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
