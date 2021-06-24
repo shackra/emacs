@@ -230,9 +230,10 @@ ajustes menores para estos modos mayores
 Define mis propios reformateadores de código fuente usando [[https://github.com/raxod502/apheleia][apheleia]].
 #+begin_src emacs-lisp
 (when (featurep! :editor reformat)
-  (require 'apheleia)
-  ;; activa globalmente alpheleia
-  (apheleia-global-mode))
+  (after! apheleia
+    (require 'apheleia)
+    ;; activa globalmente alpheleia
+    (apheleia-global-mode)))
 
 (after! apheleia-mode
   ;; TODO: agregar rustywind cuando
@@ -251,11 +252,12 @@ Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrad
 Mejor y veloz resaltado de código fuente
 #+begin_src emacs-lisp
 (when (featurep! :ui tree-sitter)
-  (require 'tree-sitter-langs)
-  (require 'tree-sitter-debug)
-  (require 'tree-sitter-query)
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (after! tree-sitter
+    (require 'tree-sitter-langs)
+    (require 'tree-sitter-debug)
+    (require 'tree-sitter-query)
+    (global-tree-sitter-mode)
+    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)))
 #+end_src
 * correo electrónico
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -288,7 +290,8 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 Modo mayor para configurar archivos asociados a Nginx
 #+begin_src emacs-lisp
 (when (featurep! :lang nginx)
-  (require 'nginx-mode))
+  (after! nginx-mode
+    (require 'nginx-mode)))
 #+end_src
 * configuración de depuración con dap-mode
 #+begin_src emacs-lisp
