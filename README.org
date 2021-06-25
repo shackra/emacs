@@ -28,10 +28,8 @@
 - [[#formateadores-de-código][formateadores de código]]
 - [[#detección-de-sangrado][Detección de sangrado]]
   - [[#apaga-auto-sangrado-en-web-mode][Apaga auto-sangrado en web-mode]]
-- [[#tree-sitter][tree-sitter]]
 - [[#correo-electrónico][correo electrónico]]
 - [[#tramp][tramp]]
-- [[#nginx][Nginx]]
 - [[#configuración-de-depuración-con-dap-mode][configuración de depuración con dap-mode]]
 
 * Preámbulo
@@ -45,16 +43,6 @@ Datos personales y opciones de Emacs lisp.
 * Configuración por defecto, sabor Jorge
 Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que se pueda activar como una bandera en =:config default=, los defino aquí.
 #+begin_src emacs-lisp
-(when (featurep! :config default +jorge)
-  ;; activa electric-pair-mode solo si +smartparens no lo esta
-  (unless (featurep! :config default +smartparens)
-    (add-hook! 'prog-mode-hook #'electric-pair-local-mode)
-    (add-hook! 'prog-mode-hook #'turn-off-smartparens-mode))
-  (after! highlight-escape-sequences
-    (add-hook! 'prog-mode-hook #'turn-on-hes-mode))
-  (after! uniquify
-    (setq uniquify-buffer-name-style 'forward)))
-
 ;; cambia ubicacion de snippets para YaSnippet
 (setf +snippets-dir (expand-file-name "plantillas" doom-private-dir))
 #+end_src
@@ -86,8 +74,6 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 (setq-default doom-modeline-height 35)
 ;; ajusta el ancho de la barra
 (setq-default doom-modeline-bar-width 8)
-
-
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
@@ -239,13 +225,7 @@ ajustes menores para estos modos mayores
 * formateadores de código
 Define mis propios reformateadores de código fuente usando [[https://github.com/raxod502/apheleia][apheleia]].
 #+begin_src emacs-lisp
-(when (featurep! :editor reformat)
-  (after! apheleia
-    (require 'apheleia)
-    ;; activa globalmente alpheleia
-    (apheleia-global-mode)))
-
-(after! apheleia-mode
+(after! apheleia
   ;; TODO: agregar rustywind cuando
   ;; https://github.com/raxod502/apheleia/issues/31 haya sido resuelto
   (add-to-list 'apheleia-formatters '(rustywind . ("rustywind" "--stdin")))
@@ -257,17 +237,6 @@ Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrad
 #+begin_src emacs-lisp
 (after! web-mode
   (setq-default web-mode-enable-auto-indentation nil))
-#+end_src
-* tree-sitter
-Mejor y veloz resaltado de código fuente
-#+begin_src emacs-lisp
-(when (featurep! :ui tree-sitter)
-  (after! tree-sitter
-    (require 'tree-sitter-langs)
-    (require 'tree-sitter-debug)
-    (require 'tree-sitter-query)
-    (global-tree-sitter-mode)
-    (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)))
 #+end_src
 * correo electrónico
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -295,13 +264,6 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 #+begin_src emacs-lisp
 (after! tramp
   (setenv "SHELL" "/bin/bash"))
-#+end_src
-* Nginx
-Modo mayor para configurar archivos asociados a Nginx
-#+begin_src emacs-lisp
-(when (featurep! :lang nginx)
-  (after! nginx-mode
-    (require 'nginx-mode)))
 #+end_src
 * configuración de depuración con dap-mode
 #+begin_src emacs-lisp

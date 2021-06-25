@@ -1,53 +1,6 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
-(package! rego-mode
-  :recipe (:host github :repo "psibi/rego-mode")
-  :pin "be110e6cef5d34eef0529a8739c68e619cf15310"
-  :disable (not (featurep! :lang rego)))
-
-(package! highlight-escape-sequences
-  :recipe (:host github :repo "dgutov/highlight-escape-sequences")
-  :pin "fae976568c04b6fe8a9f2d854c8fe23b357a6878")
-
-(package! pkgbuild-mode
-  :recipe (:host github :repo "juergenhoetzel/pkgbuild-mode")
-  :pin "8a5e95c8514315cb40c47f1acdb68a4ace921497"
-  :disable (not (featurep! :lang pkgbuild)))
-
-(package! tree-sitter
-  :recipe (:host github :repo "ubolonton/emacs-tree-sitter"
-           :files ("lisp/*.el"
-                   (:exclude "lisp/tree-sitter-tests.el")))
-  :pin "3a600d769bd5da95bf46bec58893934370c6c04f"
-  :disable (not (functionp 'module-load)))
-
-(package! tree-sitter-langs
-  :recipe (:host github :repo "ubolonton/tree-sitter-langs"
-           :files ("*.el"
-                   "queries/"))
-  :pin "5d362ce98dcf656d7a55fcad6ae21c0a2caca861"
-  :disable (not (functionp 'module-load)))
-
-(package! tsc
-  :recipe (:host github :repo "ubolonton/emacs-tree-sitter"
-           :files
-           ("core/*.el"
-            "core/Cargo.toml"
-            "core/Cargo.lock"
-            "core/src"))
-  :pin "3a600d769bd5da95bf46bec58893934370c6c04f"
-  :disable (not (functionp 'module-load)))
-
-(package! nginx-mode
-  :recipe (:host github :repo "ajc/nginx-mode"
-           :files ("*.el"))
-  :pin "a2bab83c2eb233d57d76b236e7c141c2ccc97005")
-
-(package! apheleia
-  :recipe (:host github :repo "raxod502/apheleia" :files ("apheleia.el"))
-  :pin "87115f5cda2a6c0653fc0ac69bbbc7d39a253f11")
-
 (package! openapi-yaml-mode
   :recipe (:host github :repo "magoyette/openapi-yaml-mode" :files ("openapi-yaml-mode.el"))
   :pin "0e2e9e7772b1b819d9f0033c64f03ad074ac6ffd")
