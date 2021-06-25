@@ -3,4 +3,4 @@
 
 (package! apheleia
   :recipe (:host github :repo "raxod502/apheleia" :files ("apheleia.el"))
-  :pin "87115f5cda2a6c0653fc0ac69bbbc7d39a253f11")
+  :pin "f865c165dac606187a66b2b25a57d5099b452120")
