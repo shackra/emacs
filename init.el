@@ -34,7 +34,7 @@
  hydra
  ;;indent-guides                                    ; highlighted indent columns
  (ligatures +fira +extra)                           ; ligatures and symbols to make your code pretty again
- ;;minimap                                          ; show a map of the code on the side
+ minimap                                          ; show a map of the code on the side
  modeline                                           ; snazzy, Atom-inspired modeline, plus API
  nav-flash                                          ; blink cursor line after big motions
  ;;neotree                                          ; a project drawer, like NERDTree for vim
@@ -65,7 +65,7 @@
  ;;word-wrap                                        ; soft wrapping with language-aware indent
 
  :emacs
- dired                                              ; making dired pretty [functional]
+ (dired +ranger +icons)                             ; making dired pretty [functional]
  electric                                           ; smarter, keyword-based electric-indent
  ;;ibuffer                                          ; interactive buffer management
  undo                                               ; persistent, smarter undo for your inevitable mistakes
@@ -183,5 +183,5 @@
 
  :config
  literate
- (default +bindings +jorge)                         ; activa mis preferencias tambien
+ (default +bindings)                                ; activa mis preferencias tambien
  )
