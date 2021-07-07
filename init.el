@@ -34,7 +34,7 @@
  hydra
  ;;indent-guides                                    ; highlighted indent columns
  (ligatures +fira +extra)                           ; ligatures and symbols to make your code pretty again
- minimap                                          ; show a map of the code on the side
+ minimap                                            ; show a map of the code on the side
  modeline                                           ; snazzy, Atom-inspired modeline, plus API
  nav-flash                                          ; blink cursor line after big motions
  ;;neotree                                          ; a project drawer, like NERDTree for vim
@@ -167,6 +167,7 @@
  (web +lsp)                                         ; the tubes
  yaml                                               ; JSON, but readable
  rego                                               ; Edita archivos rego (OPA)
+ deno
  (:if IS-LINUX pkgbuild)                            ; modo mayor para editar PKGBUILDs de Arch
  (:if IS-LINUX nginx)
 
