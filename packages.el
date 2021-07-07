@@ -5,6 +5,11 @@
   :recipe (:host github :repo "magoyette/openapi-yaml-mode" :files ("openapi-yaml-mode.el"))
   :pin "0e2e9e7772b1b819d9f0033c64f03ad074ac6ffd")
 
+;; TODO: migrar a su propio paquete
+(package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss")
+  :pin "77ebadcb7decd953c069b421a7ab18188295e4b6")
+
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.

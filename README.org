@@ -31,6 +31,7 @@
 - [[#correo-electrónico][correo electrónico]]
 - [[#tramp][tramp]]
 - [[#configuración-de-depuración-con-dap-mode][configuración de depuración con dap-mode]]
+- [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -271,4 +272,10 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
   ;; configura dap-mode para depurar en Chrome/Brave
   (require 'dap-chrome)
   (dap-chrome-setup))
+#+end_src
+* configuración de lsp-tailwind
+#+begin_src emacs-lisp
+(use-package! lsp-tailwindcss
+  :init
+  (setq lsp-tailwindcss-add-on-mode t))
 #+end_src
