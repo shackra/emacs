@@ -78,8 +78,8 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "Iosevka" :size 16)
-      doom-big-font (font-spec :family "Iosevka" :size 26))
+(setq doom-font (font-spec :family (if IS-MAC "Iosevka Nerd Font" "Iosevka") :size 16)
+      doom-big-font (font-spec :family (if IS-MAC "Iosevka Nerd Font" "Iosevka") :size 26))
 #+end_src
 ** cambia comportamiento de TAB
 No estoy interesado en insertar un tabulador al presionar TAB.
