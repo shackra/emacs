@@ -32,6 +32,7 @@
 - [[#tramp][tramp]]
 - [[#configuración-de-depuración-con-dap-mode][configuración de depuración con dap-mode]]
 - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
+- [[#svelte-mode][svelte-mode]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -214,7 +215,8 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
 Ajustes menores para Golang
 #+begin_src emacs-lisp
 (after! go-mode
-  (setq-default gofmt-command "goimports"))
+  (setq-default gofmt-command "goimports")
+  (require 'dap-go))
 #+end_src
 * Flutter y Dart
 ajustes menores para estos modos mayores
