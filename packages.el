@@ -9,6 +9,8 @@
 (package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss")
   :pin "77ebadcb7decd953c069b421a7ab18188295e4b6")
 
+(package! svelte-mode :recipe (:host github :repo "leafOfTree/svelte-mode")
+  :pin "25d0018036f44ff9bd685a1c9a76d8ba57c1024d")
 
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
