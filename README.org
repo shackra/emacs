@@ -76,6 +76,8 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 (setq-default doom-modeline-height 35)
 ;; ajusta el ancho de la barra
 (setq-default doom-modeline-bar-width 8)
+;; hace unicos los nombres de buffers
+(setq-default uniquify-buffer-name-style 'post-forward)
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
