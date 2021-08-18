@@ -12,6 +12,9 @@
 (package! svelte-mode :recipe (:host github :repo "leafOfTree/svelte-mode")
   :pin "25d0018036f44ff9bd685a1c9a76d8ba57c1024d")
 
+(package! dockerfile-mode :recipe (:host github :repo "spotify/dockerfile-mode")
+  :pin "ad06a41259ff2961d603bf23a3a8fbd22dde2161")
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.

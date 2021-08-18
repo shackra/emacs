@@ -33,6 +33,8 @@
 - [[#configuración-de-depuración-con-dap-mode][configuración de depuración con dap-mode]]
 - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 - [[#svelte-mode][svelte-mode]]
+- [[#docker][Docker]]
+  - [[#dockerfile][Dockerfile]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -286,4 +288,9 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 * svelte-mode
 #+begin_src emacs-lisp
 (use-package! svelte-mode)
+#+end_src
+* Docker
+** Dockerfile
+#+begin_src emacs-lisp
+(use-package! dockerfile-mode)
 #+end_src
