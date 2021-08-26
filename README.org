@@ -175,12 +175,15 @@ Con base al blog post [[https://200ok.ch/posts/2020-08-22_setting_up_spell_check
 #+begin_src emacs-lisp
 (after! ispell
   (setq ispell-program-name "hunspell")
-  (setq ispell-dictionary "es_CR,en_US")
+  (setq ispell-dictionary "en_US")
   (ispell-set-spellchecker-params)
   (ispell-hunspell-add-multi-dic "es_CR,en_US")
+  (setq ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "es_CR"))))
   (setq ispell-personal-dictionary "~/.hunspell_personal")
   (unless (file-exists-p ispell-personal-dictionary)
-    (write-region "" nil ispell-personal-dictionary nil 0)))
+    (write-region "" nil ispell-personal-dictionary nil 0))
+  (when (boundp 'ispell-hunspell-dictionary-alist)
+      (setq ispell-hunspell-dictionary-alist ispell-local-dictionary-alist)))
 #+end_src
 * undo y redo
 cambia atajos para llamar a undo y redo
