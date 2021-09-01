@@ -6,9 +6,6 @@
   :pin "0e2e9e7772b1b819d9f0033c64f03ad074ac6ffd")
 
 ;; TODO: migrar a su propio paquete
-(package! lsp-tailwindcss :recipe (:host github :repo "merrickluo/lsp-tailwindcss")
-  :pin "77ebadcb7decd953c069b421a7ab18188295e4b6")
-
 (package! svelte-mode :recipe (:host github :repo "leafOfTree/svelte-mode")
   :pin "25d0018036f44ff9bd685a1c9a76d8ba57c1024d")
 

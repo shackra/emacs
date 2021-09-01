@@ -284,9 +284,8 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 #+end_src
 * configuración de lsp-tailwind
 #+begin_src emacs-lisp
-(use-package! lsp-tailwindcss
-  :init
-  (setq lsp-tailwindcss-add-on-mode t))
+(after! lsp-tailwindcss
+  (setq lsp-tailwindcss-major-modes '(typescript-tsx-mode rjsx-mode web-mode html-mode css-mode)))
 #+end_src
 * svelte-mode
 #+begin_src emacs-lisp
