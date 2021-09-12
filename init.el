@@ -93,7 +93,7 @@
  ;;gist                                             ; interacting with github gists
  lookup                                             ; navigate your code and its documentation
  (lsp +peek)
- (lsp-tailwindcss)
+ ;; (lsp-tailwindcss)
  magit                                              ; a git porcelain for Emacs
  ;;make                                             ; run make tasks from Emacs
  ;;pass                                             ; password manager for nerds
