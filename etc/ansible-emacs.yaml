@@ -10,9 +10,9 @@
       community.general.homebrew_tap:
         name: d12frosted/emacs-plus
         state: present
-    - name: Instala Emacs {{emacs_version}}
+    - name: "Instala Emacs {{emacs_version}}"
       community.general.homebrew:
-        name: emacs-plus@{{emacs_version}}
+        name: "emacs-plus@{{emacs_version}}"
         state: latest
         update_homebrew: yes
         install_options: with-dbus,with-xwidgets,with-modern-cg433n-icon
@@ -22,6 +22,6 @@
         path: /Application/Emacs.app
     - name: Copia Emacs.app desde emacs-plus a /Applications
       copy:
-        src: /usr/local/opt/emacs-plus@{{emacs_version}}/Emacs.app
+        src: "/usr/local/opt/emacs-plus@{{emacs_version}}/Emacs.app"
         dest: /Applications
         mode: preserve
