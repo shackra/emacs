@@ -1,16 +1,18 @@
 ---
-- name: Instala Emacs 28 en MacOS
+- name: Instala Emacs en MacOS
   hosts: localhost
   connection: local
+  vars:
+    emacs_version: 28
 
   tasks:
     - name: Agrega fuentes para emacs-plus
       community.general.homebrew_tap:
         name: d12frosted/emacs-plus
         state: present
-    - name: Instala Emacs 28
+    - name: Instala Emacs {{emacs_version}}
       community.general.homebrew:
-        name: emacs-plus@28
+        name: emacs-plus@{{emacs_version}}
         state: latest
         update_homebrew: yes
         install_options: with-dbus,with-xwidgets,with-modern-cg433n-icon
@@ -20,6 +22,6 @@
         path: /Application/Emacs.app
     - name: Copia Emacs.app desde emacs-plus a /Applications
       copy:
-        src: /usr/local/opt/emacs-plus@28/Emacs.app
+        src: /usr/local/opt/emacs-plus@{{emacs_version}}/Emacs.app
         dest: /Applications
         mode: preserve
