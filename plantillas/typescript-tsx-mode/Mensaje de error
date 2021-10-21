@@ -1,0 +1,4 @@
+# key: formerr
+# name: Mensaje de error
+# --
+<p className={\`\${($1) ? "visible" : "invisible"} text-red-800 text-xs\`}>{($1)?.message}</p>

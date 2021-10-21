@@ -1,0 +1,27 @@
+# key: select
+# name: formulario select
+# --
+<div>
+  <label htmlFor="${1:$(downcase (replace-regexp-in-string " +" "_" yas-text))}">$1</label>
+  <Controller
+    name="${1:$(downcase (replace-regexp-in-string " +" "_" yas-text))}"
+    control={control}
+    rules={{ validate: (value) => value !== undefined && value !== null }}
+    render={({ onChange, onBlur, value, name, ref }) => (
+      <Select
+        classNamePrefix="kue-select"
+        onBlur={onBlur}
+        onChange={onChange}
+        value={value}
+        name={name}
+        ref={ref}
+        isLoading={true}
+        isClearable={false}
+        isMulti={false}
+        placeholder=""
+        options={[]}
+      />
+    )}
+  />
+  {${3}?.${1:$(downcase (replace-regexp-in-string " +" "_" yas-text))?.message && (<p className="text-red-800 ml-2">{$3?.${1:$(downcase (replace-regexp-in-string " +" "_" yas-text))?.message}</p>)}$0
+</div>

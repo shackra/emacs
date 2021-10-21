@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: formulario input
+# key: input
+# --
+<div>
+    <label htmlFor="${1:$(downcase (replace-regexp-in-string " +" "_" yas-text))}">$1</label>
+    <input
+      type="text"
+      name="${1:$(downcase (replace-regexp-in-string " +" "_" yas-text))}"
+      className="w-full"
+      ref={register()}
+    />
+    {$2?.${1:$(downcase (replace-regexp-in-string " +" "_" yas-text))}?.message && (
+          <p className="text-red-800 ml-2">{$2?.${1:$(downcase (replace-regexp-in-string " +" "_" yas-text))}??.message}</p>
+        )}$0
+</div>

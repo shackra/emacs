@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: Controller in FieldArray (antd)
+# key: form-controller-field-array
+# --
+<Controller
+  name={\`\${name}.$1\`}
+  rules={{ required: 'campo requerido' }}
+  render={({ field }) => (
+    <Form.Item
+      label="$2"
+      validateStatus={fieldError?.$1 && 'error'}
+    >
+      $0
+    </Form.Item>
+  )}
+/>
