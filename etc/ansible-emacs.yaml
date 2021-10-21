@@ -22,3 +22,4 @@
       copy:
         src: /usr/local/opt/emacs-plus@28/Emacs.app
         dest: /Applications
+        mode: preserve
