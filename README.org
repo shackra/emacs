@@ -236,17 +236,19 @@ ajustes menores para estos modos mayores
 Define mis propios reformateadores de código fuente usando [[https://github.com/raxod502/apheleia][apheleia]].
 #+begin_src emacs-lisp
 (after! apheleia
-  ;; TODO: agregar rustywind cuando
-  ;; https://github.com/raxod502/apheleia/issues/31 haya sido resuelto
-  (add-to-list 'apheleia-formatters '(rustywind . ("rustywind" "--stdin")))
-  (add-to-list 'apheleia-mode-alist '(typescript-tsx-mode . prettier)))
+  (reformat-add-formatter! '(rustywind . ("rustywind" "--stdin")))
+  (reformat-add-formatter! '(eslint . (npx "eslint" "--stdin" "--stdin-filename" file "--fix")))
+  (add-to-list 'apheleia-mode-alist '(typescript-tsx-mode . (prettier rustywind))))
 #+end_src
 * Detección de sangrado
 Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación.
 ** Apaga auto-sangrado en web-mode
 #+begin_src emacs-lisp
 (after! web-mode
-  (setq-default web-mode-enable-auto-indentation nil))
+  (setq-default web-mode-enable-auto-indentation nil)
+  (setq-default web-mode-markup-indent-offset 2)
+  (setq-default web-mode-css-indent-offset 2)
+  (setq-default web-mode-code-indent-offset 2))
 #+end_src
 * correo electrónico
 #+BEGIN_SRC emacs-lisp :tangle no
