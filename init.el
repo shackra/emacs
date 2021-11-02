@@ -21,7 +21,8 @@
  (company +childframe)                              ; the ultimate code completion backend
  ;;helm                                             ; the *other* search engine for love and life
  ;;ido                                              ; the other *other* search engine...
- (ivy +childframe +prescient +icons)                ; a search engine for love and life
+ ;;(ivy +childframe +prescient +icons)              ; a search engine for love and life
+ (vertico +icons)
 
  :ui
  ;;deft                                             ; notational velocity for Emacs
@@ -32,11 +33,11 @@
  ;;fill-column                                      ; a `fill-column' indicator
  hl-todo                                            ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
  hydra
- ;;indent-guides                                    ; highlighted indent columns
+ indent-guides                                      ; highlighted indent columns
  (ligatures +iosevka +extra)                        ; ligatures and symbols to make your code pretty again
- minimap                                            ; show a map of the code on the side
+ ;;minimap                                          ; show a map of the code on the side
  modeline                                           ; snazzy, Atom-inspired modeline, plus API
- nav-flash                                          ; blink cursor line after big motions
+ ;;nav-flash                                        ; blink cursor line after big motions
  ;;neotree                                          ; a project drawer, like NERDTree for vim
  ophints                                            ; highlight the region an operation acts on
  (popup +defaults)                                  ; tame sudden yet inevitable temporary windows
@@ -48,13 +49,12 @@
  window-select                                      ; visually switch windows
  workspaces                                         ; tab emulation, persistence & separate workspaces
  ;;zen                                              ; distraction-free coding or writing
- tree-sitter                                        ; mejor y veloz resaltado de codigo
+ shackra:tree-sitter                                ; mejor y veloz resaltado de codigo
 
  :editor
- ;;(evil +everywhere)                               ; come to the dark side, we have cookies
  file-templates                                     ; auto-snippets for empty files
  fold                                               ; (nigh) universal code folding
- reformat                                           ; reformateo de codigo con apheleia-mode
+ shackra:reformat                                   ; reformateo de codigo con apheleia-mode
  ;;god                                              ; run Emacs commands without modifier keys
  lispy                                              ; vim for lisp, for people who don't like vim
  multiple-cursors                                   ; editing in many places at once
@@ -93,17 +93,17 @@
  ;;gist                                             ; interacting with github gists
  lookup                                             ; navigate your code and its documentation
  (lsp +peek)
- ;; (lsp-tailwindcss)
  magit                                              ; a git porcelain for Emacs
  ;;make                                             ; run make tasks from Emacs
  ;;pass                                             ; password manager for nerds
  pdf                                                ; pdf enhancements
  ;;prodigy                                          ; FIXME managing external services & code builders
- ;;rgb                                              ; creating color strings
+ rgb                                                ; creating color strings
  ;;taskrunner                                       ; taskrunner for all your projects
  ;;terraform                                        ; infrastructure as code
  ;;tmux                                             ; an API for interacting with tmux
  ;;upload                                           ; map local to remote projects via ssh/ftp
+ shackra:lsp-tailwindcss
 
  :os
  (:if IS-MAC macos)                                 ; improve compatibility with macOS
@@ -111,7 +111,7 @@
 
  :lang
  ;;agda                                             ; types of types of types of types...
- ;;cc                                               ; C/C++/Obj-C madness
+ (cc +lsp)                                               ; C/C++/Obj-C madness
  ;;clojure                                          ; java with a lisp
  ;;common-lisp                                      ; if you've seen one lisp, you've seen them all
  ;;coq                                              ; proofs-as-programs
@@ -167,13 +167,13 @@
  ;;terra                                            ; Earth and Moon in alignment for performance.
  (web +lsp)                                         ; the tubes
  yaml                                               ; JSON, but readable
- rego                                               ; Edita archivos rego (OPA)
- deno
- (:if IS-LINUX pkgbuild)                            ; modo mayor para editar PKGBUILDs de Arch
- (:if IS-LINUX nginx)
+ shackra:rego                                     ; Edita archivos rego (OPA)
+ shackra:deno
+ (:if IS-LINUX shackra:pkgbuild)                    ; modo mayor para editar PKGBUILDs de Arch
+ (:if IS-LINUX shackra:nginx)
 
  :email
- (:if IS-LINUX mu4e)
+ ;;(:if IS-LINUX mu4e)
  ;;notmuch
  ;;(wanderlust +gmail)
 
@@ -185,5 +185,6 @@
 
  :config
  literate
- (default +bindings)                                ; activa mis preferencias tambien
+ (default +bindings)
+ shackra:me
  )
