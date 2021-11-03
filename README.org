@@ -31,7 +31,8 @@
 - [[#correo-electrónico][correo electrónico]]
 - [[#tramp][tramp]]
 - [[#configuración-de-depuración-con-dap-mode][configuración de depuración con dap-mode]]
-- [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
+- [[#ajustes-para-lsp-mode][Ajustes para lsp-mode]]
+  - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 - [[#svelte-mode][svelte-mode]]
 - [[#docker][Docker]]
   - [[#dockerfile][Dockerfile]]
@@ -284,10 +285,17 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
   (require 'dap-chrome)
   (dap-chrome-setup))
 #+end_src
-* configuración de lsp-tailwind
+* Ajustes para lsp-mode
+#+begin_src emacs-lisp
+;; ignora .log y .next
+(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.log\\'")
+(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.next\\'")
+(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]__snapshots?__\\'")
+#+end_src
+** configuración de lsp-tailwind
 #+begin_src emacs-lisp
 (after! lsp-tailwindcss
-  (setq lsp-tailwindcss-major-modes '(typescript-tsx-mode rjsx-mode web-mode html-mode css-mode)))
+  (setq lsp-tailwindcss-major-modes '(typescript-tsx-mode rjsx-mode web-mode html-mode css-mode svelte-mode)))
 #+end_src
 * svelte-mode
 #+begin_src emacs-lisp
