@@ -82,8 +82,9 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 ;; hace unicos los nombres de buffers
 (setq-default uniquify-buffer-name-style 'post-forward)
 
-(setq-default highlight-indent-guides-method 'bitmap)
-(setq-default highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-dots)
+(when IS-LINUX
+  (setq-default highlight-indent-guides-method 'bitmap)
+  (setq-default highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-dots))
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
