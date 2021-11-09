@@ -81,6 +81,9 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 (setq-default doom-modeline-bar-width 8)
 ;; hace unicos los nombres de buffers
 (setq-default uniquify-buffer-name-style 'post-forward)
+
+(setq-default highlight-indent-guides-method 'bitmap)
+(setq-default highlight-indent-guides-bitmap-function 'highlight-indent-guides--bitmap-dots)
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
@@ -239,7 +242,8 @@ Define mis propios reformateadores de código fuente usando [[https://github.com
 (after! apheleia
   (reformat-add-formatter! '(rustywind . ("rustywind" "--stdin")))
   (reformat-add-formatter! '(eslint . (npx "eslint" "--stdin" "--stdin-filename" file "--fix")))
-  (add-to-list 'apheleia-mode-alist '(typescript-tsx-mode . (prettier rustywind))))
+  (add-to-list 'apheleia-mode-alist '(typescript-tsx-mode . (prettier rustywind)))
+  (setf (alist-get 'web-mode apheleia-mode-alist) '(prettier rustywind)))
 #+end_src
 * Detección de sangrado
 Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación.
