@@ -10,12 +10,16 @@
       community.general.homebrew_tap:
         name: d12frosted/emacs-plus
         state: present
+    - name: Desinstala Emacs
+      homebrew:
+        name: "emacs-plus@{{emacs_version}}"
+        state: absent
     - name: "Instala Emacs {{emacs_version}}"
       community.general.homebrew:
         name: "emacs-plus@{{emacs_version}}"
         state: latest
         update_homebrew: yes
-        install_options: with-dbus,with-xwidgets,with-modern-cg433n-icon
+        install_options: "with-dbus,with-xwidgets,with-modern-cg433n-icon{{',with-native-comp' if emacs_version >= 28}}"
     - name: Elimina Emacs.app
       file:
         state: absent
