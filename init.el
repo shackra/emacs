@@ -111,7 +111,7 @@
 
  :lang
  ;;agda                                             ; types of types of types of types...
- (cc +lsp)                                               ; C/C++/Obj-C madness
+ (cc +lsp)                                          ; C/C++/Obj-C madness
  ;;clojure                                          ; java with a lisp
  ;;common-lisp                                      ; if you've seen one lisp, you've seen them all
  ;;coq                                              ; proofs-as-programs
@@ -167,8 +167,9 @@
  ;;terra                                            ; Earth and Moon in alignment for performance.
  (web +lsp)                                         ; the tubes
  yaml                                               ; JSON, but readable
- shackra:rego                                     ; Edita archivos rego (OPA)
+ shackra:rego                                       ; Edita archivos rego (OPA)
  shackra:deno
+ shackra:graphql
  (:if IS-LINUX shackra:pkgbuild)                    ; modo mayor para editar PKGBUILDs de Arch
  (:if IS-LINUX shackra:nginx)
 
