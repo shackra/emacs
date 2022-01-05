@@ -58,7 +58,10 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
 (after! doom-modeline
-  (setq doom-modeline-persp-name t))
+  (setq doom-modeline-persp-name t)
+  (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+  ;; hace unicos los nombres de buffers
+  (setq-default uniquify-buffer-name-style 'reverse))
 
 (setq display-line-numbers-type t)
 
@@ -79,8 +82,6 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 (setq-default doom-modeline-height 35)
 ;; ajusta el ancho de la barra
 (setq-default doom-modeline-bar-width 8)
-;; hace unicos los nombres de buffers
-(setq-default uniquify-buffer-name-style 'post-forward)
 
 (when IS-LINUX
   (setq-default highlight-indent-guides-method 'bitmap)
@@ -310,4 +311,12 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 ** Dockerfile
 #+begin_src emacs-lisp
 (use-package! dockerfile-mode)
+#+end_src
+* GraphQL
+#+begin_src emacs-lisp
+(use-package! request)
+
+(use-package! graphql-mode
+  :mode ("\\.gql\\'" "\\.graphql\\'")
+  :config (setq-hook! 'graphql-mode-hook tab-width graphql-indent-level))
 #+end_src

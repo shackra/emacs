@@ -79,7 +79,7 @@
 
  :checkers
  syntax                                             ; tasing you for every semicolon you forget
- (spell +enchant)                                   ; tasing you for misspelling mispelling
+ (spell +flyspell)                                  ; tasing you for misspelling mispelling
  grammar                                            ; tasing grammar mistake every you make
 
  :tools
@@ -159,7 +159,7 @@
  ;;(ruby +rails)                                    ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
  (rust +lsp)                                        ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
  ;;scala                                            ; java, but good
- ;;scheme                                           ; a fully conniving family of lisps
+ (scheme +guile)                                    ; a fully conniving family of lisps
  (sh +lsp)                                          ; she sells {ba,z,fi}sh shells on the C xor
  ;;sml
  ;;solidity                                         ; do you need a blockchain? No.

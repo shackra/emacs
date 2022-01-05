@@ -12,6 +12,12 @@
 (package! dockerfile-mode :recipe (:host github :repo "spotify/dockerfile-mode")
   :pin "ad06a41259ff2961d603bf23a3a8fbd22dde2161")
 
+(package! graphql-mode :recipe (:host github :repo "davazp/graphql-mode")
+  :pin "80e9ac8020f7a4a8a963136698eb97a9fca28f7d")
+
+(package! request :recipe (:host github :repo "tkf/emacs-request")
+  :pin "3336eaa97de923f74b90dda3e35985e122d40805")
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
