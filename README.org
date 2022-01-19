@@ -36,6 +36,7 @@
 - [[#svelte-mode][svelte-mode]]
 - [[#docker][Docker]]
   - [[#dockerfile][Dockerfile]]
+- [[#graphql][GraphQL]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -89,8 +90,12 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family (if IS-MAC "Iosevka Nerd Font" "Iosevka") :size 16)
-      doom-big-font (font-spec :family (if IS-MAC "Iosevka Nerd Font" "Iosevka") :size 26))
+(setq doom-font (font-spec :family "Iosevka Nerd Font" :size 16)
+      doom-big-font (font-spec :family "Iosevka Nerd Font" :size 26)
+      doom-variable-pitch-font (font-spec :family "DejaVu Serif Condensed" :size 16))
+(custom-set-faces!
+  '(font-lock-comment-face :slant italic)
+  '(font-lock-keyword-face :slant italic))
 #+end_src
 ** cambia comportamiento de TAB
 No estoy interesado en insertar un tabulador al presionar TAB.
