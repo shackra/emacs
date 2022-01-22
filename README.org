@@ -34,6 +34,7 @@
 - [[#ajustes-para-lsp-mode][Ajustes para lsp-mode]]
   - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 - [[#svelte-mode][svelte-mode]]
+- [[#typescript-mode][typescript-mode]]
 - [[#docker][Docker]]
   - [[#dockerfile][Dockerfile]]
 - [[#graphql][GraphQL]]
@@ -256,11 +257,10 @@ Define mis propios reformateadores de código fuente usando [[https://github.com
 Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación.
 ** Apaga auto-sangrado en web-mode
 #+begin_src emacs-lisp
-(after! web-mode
-  (setq-default web-mode-enable-auto-indentation nil)
-  (setq-default web-mode-markup-indent-offset 2)
-  (setq-default web-mode-css-indent-offset 2)
-  (setq-default web-mode-code-indent-offset 2))
+(setq-default web-mode-enable-auto-indentation nil)
+(setq-default web-mode-markup-indent-offset 2)
+(setq-default web-mode-css-indent-offset 2)
+(setq-default web-mode-code-indent-offset 2)
 #+end_src
 * correo electrónico
 #+BEGIN_SRC emacs-lisp :tangle no
@@ -311,6 +311,13 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 * svelte-mode
 #+begin_src emacs-lisp
 (use-package! svelte-mode)
+#+end_src
+* typescript-mode
+#+begin_src emacs-lisp
+(defun turn-off-indent-guides ()
+  (highlight-indent-guides-mode -1))
+
+(add-hook! 'typescript-tsx-mode-hook #'turn-off-indent-guides)
 #+end_src
 * Docker
 ** Dockerfile
