@@ -318,6 +318,7 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
   (highlight-indent-guides-mode -1))
 
 (add-hook! 'typescript-tsx-mode-hook #'turn-off-indent-guides)
+(setq-hook! 'typescript-tsx-mode typescript-indent-level 2)
 #+end_src
 * Docker
 ** Dockerfile
