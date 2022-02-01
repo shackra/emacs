@@ -38,6 +38,7 @@
 - [[#docker][Docker]]
   - [[#dockerfile][Dockerfile]]
 - [[#graphql][GraphQL]]
+- [[#configuración-de-vertico][Configuración de vertico]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -61,9 +62,13 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
         doom-themes-enable-italic t))
 (after! doom-modeline
   (setq doom-modeline-persp-name t)
-  (setq doom-modeline-buffer-file-name-style 'truncate-except-project)
+  (setq doom-modeline-buffer-file-name-style 'truncate-except-project))
+(after! uniquify
   ;; hace unicos los nombres de buffers
-  (setq-default uniquify-buffer-name-style 'reverse))
+  (setq uniquify-buffer-name-style 'reverse)
+  (setq uniquify-separator " • ")
+  (setq uniquify-after-kill-buffer-p t)
+  (setq uniquify-ignore-buffers-re "^\\*"))
 
 (setq display-line-numbers-type t)
 
@@ -332,4 +337,14 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 (use-package! graphql-mode
   :mode ("\\.gql\\'" "\\.graphql\\'")
   :config (setq-hook! 'graphql-mode-hook tab-width graphql-indent-level))
+#+end_src
+* Configuración de vertico
+ajustes para Vertico
+#+begin_src emacs-lisp
+(after! vertico
+  (vertico-multiform-mode)
+  (setq vertico-cycle t)
+  (setq vertico-multiform-categories
+        '((imenu buffer)
+          (consult-grep buffer))))
 #+end_src
