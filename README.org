@@ -322,11 +322,12 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 #+end_src
 * typescript-mode
 #+begin_src emacs-lisp
-(defun turn-off-indent-guides ()
-  (highlight-indent-guides-mode -1))
+(after! indent-guides
+  (defun turn-off-indent-guides ()
+    (highlight-indent-guides-mode -1))
 
-(add-hook! 'typescript-tsx-mode-hook #'turn-off-indent-guides)
-(setq-hook! 'typescript-tsx-mode typescript-indent-level 2)
+  (add-hook! 'typescript-tsx-mode-hook #'turn-off-indent-guides)
+  (setq-hook! 'typescript-tsx-mode typescript-indent-level 2))
 #+end_src
 * Docker
 ** Dockerfile
