@@ -304,9 +304,10 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 * Ajustes para lsp-mode
 #+begin_src emacs-lisp
 ;; ignora .log y .next
-(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.log\\'")
-(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.next\\'")
-(add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]__snapshots?__\\'")
+(after! lsp-mode
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.log\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.next\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]__snapshots?__\\'"))
 #+end_src
 ** configuración de lsp-tailwind
 #+begin_src emacs-lisp

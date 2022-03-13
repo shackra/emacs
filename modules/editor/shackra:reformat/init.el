@@ -4,7 +4,7 @@
   "Add formatter FORMATTER."
   (push formatter apheleia-formatters))
 
-;; FIXME: ninguna función sirve del todo xd
+;; FIXME: ninguna de estas funciones sirven del todo xd
 (defun reformat-change-formatter! (name new-command)
   "Change formatter NAME with NEW-COMMAND."
   (setf (alist-get name apheleia-formatters) new-command))
