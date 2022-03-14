@@ -18,7 +18,7 @@
 - [[#org][Org]]
   - [[#configuración-básica][configuración básica]]
   - [[#plantillas][plantillas]]
-- [[#ispell][ispell]]
+- [[#corrección-ortografica][Corrección ortografica]]
 - [[#undo-y-redo][undo y redo]]
 - [[#cierre-de-buffers][Cierre de buffers]]
 - [[#iedit][iedit]]
@@ -189,20 +189,19 @@ No estoy interesado en insertar un tabulador al presionar TAB.
   ;; Ajuste para LaTeX
   (add-to-list 'org-latex-packages-alist '("" "gchords" t)))
 #+end_src
-* ispell
+* Corrección ortografica
 Con base al blog post [[https://200ok.ch/posts/2020-08-22_setting_up_spell_checking_with_multiple_dictionaries.html][Setting up spell checking with multiple dictionaries in Emacs]] activamos varios idiomas a la vez.
 #+begin_src emacs-lisp
-(after! ispell
-  (setq ispell-program-name "hunspell")
-  (setq ispell-dictionary "en_US")
-  (ispell-set-spellchecker-params)
-  (ispell-hunspell-add-multi-dic "es_CR,en_US")
-  (setq ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]" "[']" nil ("-d" "es_CR"))))
-  (setq ispell-personal-dictionary "~/.hunspell_personal")
-  (unless (file-exists-p ispell-personal-dictionary)
-    (write-region "" nil ispell-personal-dictionary nil 0))
-  (when (boundp 'ispell-hunspell-dictionary-alist)
-      (setq ispell-hunspell-dictionary-alist ispell-local-dictionary-alist)))
+(after! spell-fu
+  (defvar shackra-personal-dict-file-es (expand-file-name ".spell.es.pws" (getenv "HOME")) "Ubicación del archivo de palabras personales para revision ortografica en español")
+  (defvar shackra-personal-dict-file-en (expand-file-name ".spell.en.pws" (getenv "HOME")) "Ubicación del archivo de palabras personales para revision ortografica en inglés")
+
+  (defun shackra-spell-configure ()
+    (spell-fu-dictionary-add (spell-fu-get-ispell-dictionary "es"))
+    (spell-fu-dictionary-add (spell-fu-get-ispell-dictionary "en"))
+    (spell-fu-dictionary-add (spell-fu-get-personal-dictionary "es-personal" shackra-personal-dict-file-es))
+    (spell-fu-dictionary-add (spell-fu-get-personal-dictionary "en-personal" shackra-personal-dict-file-en)))
+  (add-hook! spell-fu-mode #'shackra-spell-configure))
 #+end_src
 * undo y redo
 cambia atajos para llamar a undo y redo
