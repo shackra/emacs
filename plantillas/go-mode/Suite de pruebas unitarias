@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: Suite de pruebas unitarias
+# key: testify suite
+# --
+import (
+	"testing"
+
+	"github.com/stretchr/testify/suite"
+)
+
+func Test$1TestSuite(t *testing.T) {
+	suite.Run(t, $0)
+}
