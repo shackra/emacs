@@ -62,7 +62,7 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
         doom-themes-enable-italic t))
 (after! doom-modeline
   (setq doom-modeline-persp-name t)
-  (setq doom-modeline-buffer-file-name-style 'truncate-except-project))
+  (setq doom-modeline-buffer-file-name-style 'relative-from-project))
 (after! uniquify
   ;; hace unicos los nombres de buffers
   (setq uniquify-buffer-name-style 'reverse)
