@@ -292,8 +292,8 @@ Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrad
 * tramp
 Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.html#tramp][Doom Emacs Configuration]])
 #+begin_src emacs-lisp
-(after! tramp
-  (setenv "SHELL" "/bin/bash"))
+;; Añade una frase adicional a la lista de palabras
+(add-to-list 'password-word-equivalents "verification code")
 #+end_src
 * configuración de depuración con dap-mode
 #+begin_src emacs-lisp
