@@ -1,0 +1,90 @@
+# -*- mode: snippet -*-
+# name: TS table-driven unit testing
+# key: tstabletesting
+# --
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Main Points																																																					 //
+// 																																																								 //
+//     1. Method setup naming: should include the service/interface that is being mocked i,e: symbolServiceGetStockMockSetup. (Line 4).																							 //
+//         a. The idea is to make it easier for the IDE to autocomplete/suggest fields when you start typing the service name first and consistency for mock setup naming.														 //
+//     2. For mock method name: Avoid a "name" field in the mock struct and use constants directly inside the method mockService.On(...)																						 //
+//         a. To avoid string literals or additional fields inside other structs that could be repetitive or make it hard to change the value later on.																			 //
+//     3. Test Case and Mock Method setup arguments: Always use a struct to define the arguments for methods and use them as reference instead of declaring new values on methods like mockService.On(...).Return(...).			 //
+//         a. This helps adding more arguments in the future without breaking too much the tests and helps to re-use default struct values, but be careful using these references when data is modified by methods being tested. //
+//     4. Structs should be defined as close to the first time used in the tests.																																				 //
+//         a. Helps keeping code organized and easier to find where certain structs are defined.																																 //
+//     5. Use more constants instead of literal values like "0.00" or "invalid".																																				 //
+//         a. Makes these kind of test values easier to re-use and change if necessary.																																			 //
+//     6. Always execute the method symbolsService.AssertExpectations(suiteT) for all mocks in the test.																														 //
+//         a. When mocking methods it's necessary to check that the expectations were fulfilled because if they don't then that test case would fail.																			 //
+//     7. Make sure the suite.EqualError(err, expectedError.Error()) is in the right order, first the resulting error and then the expected error.																				 //
+//         a. This is important to help with debugging problems with test cases as tests report values in this specific order, it also helps when reading the test framework code match the unit test code.						 //
+//     8. Make sure the suite.Equal(expectedResult, result) is in the right order, first the expected result and then the actual result.																						 //
+//         a. This is important to help with debugging problems with test cases as tests report values in this specific order, it also helps when reading the test framework code match the unit test code.						 //
+//     9. Make sure to always validate both expectedError and actualError, as the expectedError might not be nil but if actualError is nil that test case would fail.															 //
+//         a. Some times these scenarios could lead to test cases that should fail but if we don't check the errors in both ways we could miss them.																			 //
+//     10. The unit test name should follow this convention 'success - #what happened#' or 'error - #what happened#'																											 //
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+type $1TestCase struct {
+	name           string
+	arguments      *$1TestCaseArguments
+	$2MockSetup   *$2MockSetup
+	$3MockSetup   *$3MockSetup
+	expectedResult *$1Results
+	expectedError  error
+}
+
+type $3MockSetup struct{}
+
+type $1Results struct{}
+
+type $2Results struct{}
+
+type $2MockSetup struct {
+	arguments      *$4MethodArguments
+	expectedResult *$2Results
+	expectedError  error
+}
+
+type $4MethodArguments struct {}
+
+type $1TestCaseArguments struct{}
+
+func (suite *$0) Test$5() {
+	testCases := []*$1TestCase{
+		{
+			name:           "success - #what happened#",
+			arguments:      &$1TestCaseArguments{},
+			$2MockSetup:   &$2MockSetup{},
+			$3MockSetup:   &$3MockSetup{},
+			expectedResult: nil,
+			expectedError:  nil,
+		},
+		{
+			name:           "error - #what happened#",
+			arguments:      &$1TestCaseArguments{},
+			$2MockSetup:   &$2MockSetup{},
+			$3MockSetup:   &$3MockSetup{},
+			expectedResult: nil,
+			expectedError:  nil,
+		},
+	}
+
+	for _, tc := range testCases {
+		suiteT := suite.T()
+		suite.Run(tc.name, func() {
+			// TODO: instantiate mock struct
+			// TODO: setup the mockup if `$2MockSetup` is non-nil
+
+			// TODO: instantiate the service you want to test
+			// TODO: call it!
+
+			// TODO: call AssertExpectations(suiteT) for the mock struct
+
+			// TODO: check the returned value matches the expected result
+
+			// TODO: check if any error was returned and compare it with any expected error
+		})
+	}
+}
