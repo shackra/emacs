@@ -18,6 +18,12 @@
 (package! request :recipe (:host github :repo "tkf/emacs-request")
   :pin "3336eaa97de923f74b90dda3e35985e122d40805")
 
+(when (package! restclient :recipe (:host github :repo "pashky/restclient.el"
+                                    :files ("restclient.el" "restclient-jq.el"))
+        :pin "ae79e7dd283890072da69b8f48aeec1afd0d9442")
+  (package! jq-mode :recipe (:host github :repo "ljos/jq-mode")
+    :pin "1af31ba701cf844f938f840ed78867c9a28174b6"))
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
