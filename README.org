@@ -18,7 +18,7 @@
 - [[#org][Org]]
   - [[#configuración-básica][configuración básica]]
   - [[#plantillas][plantillas]]
-- [[#corrección-ortografica][Corrección ortografica]]
+- [[#corrección-ortográfica][Corrección ortográfica]]
 - [[#undo-y-redo][undo y redo]]
 - [[#cierre-de-buffers][Cierre de buffers]]
 - [[#iedit][iedit]]
@@ -187,7 +187,7 @@ No estoy interesado en insertar un tabulador al presionar TAB.
   ;; Ajuste para LaTeX
   (add-to-list 'org-latex-packages-alist '("" "gchords" t)))
 #+end_src
-* Corrección ortografica
+* Corrección ortográfica
 Con base al blog post [[https://200ok.ch/posts/2020-08-22_setting_up_spell_checking_with_multiple_dictionaries.html][Setting up spell checking with multiple dictionaries in Emacs]] activamos varios idiomas a la vez.
 #+begin_src emacs-lisp
 (after! spell-fu

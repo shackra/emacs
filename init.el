@@ -187,5 +187,4 @@
  :config
  literate
  (default +bindings)
- shackra:me
- )
+ shackra:me)
