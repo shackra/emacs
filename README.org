@@ -35,9 +35,6 @@
   - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 - [[#svelte-mode][svelte-mode]]
 - [[#typescript-mode][typescript-mode]]
-- [[#docker][Docker]]
-  - [[#dockerfile][Dockerfile]]
-- [[#restful][RestFul]]
 - [[#graphql][GraphQL]]
 - [[#configuración-de-vertico][Configuración de vertico]]
 
@@ -328,18 +325,6 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 
   (add-hook! 'typescript-tsx-mode-hook #'turn-off-indent-guides)
   (setq-hook! 'typescript-tsx-mode typescript-indent-level 2))
-#+end_src
-* Docker
-** Dockerfile
-#+begin_src emacs-lisp
-(use-package! dockerfile-mode)
-#+end_src
-* RestFul
-#+begin_src emacs-lisp
-(use-package! restclient
-  :defer)
-(after! restclient
-  (require 'restclient-jq))
 #+end_src
 * GraphQL
 #+begin_src emacs-lisp
