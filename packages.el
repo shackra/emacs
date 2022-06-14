@@ -15,6 +15,9 @@
 (package! request :recipe (:host github :repo "tkf/emacs-request")
   :pin "3336eaa97de923f74b90dda3e35985e122d40805")
 
+(package! protobuf-mode :recipe (:host github :repo "protocolbuffers/protobuf" :files ("editors/protobuf-mode.el"))
+  :pin "c38281dd20e562bac239bc77ab2fa10f71661708")
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.

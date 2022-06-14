@@ -37,6 +37,7 @@
 - [[#typescript-mode][typescript-mode]]
 - [[#graphql][GraphQL]]
 - [[#configuración-de-vertico][Configuración de vertico]]
+- [[#protobuf][protobuf]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -343,4 +344,13 @@ ajustes para Vertico
   (setq vertico-multiform-categories
         '((imenu buffer)
           (consult-grep buffer))))
+#+end_src
+* protobuf
+#+begin_src emacs-lisp
+(use-package! protobuf-mode
+  :init
+  (defconst shackra-protobuf-style
+    '((c-basic-offset . 4)
+      (indent-tabs-mode . nil)))
+  :hook (protobuf-mode . (lambda () (c-add-style "shackra-protobuf" shackra-protobuf-style t))))
 #+end_src
