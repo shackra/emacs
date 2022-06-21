@@ -38,6 +38,7 @@
 - [[#graphql][GraphQL]]
 - [[#configuración-de-vertico][Configuración de vertico]]
 - [[#protobuf][protobuf]]
+- [[#kubernetes][Kubernetes]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -353,4 +354,9 @@ ajustes para Vertico
     '((c-basic-offset . 4)
       (indent-tabs-mode . nil)))
   :hook (protobuf-mode . (lambda () (c-add-style "shackra-protobuf" shackra-protobuf-style t))))
+#+end_src
+* Kubernetes
+#+begin_src emacs-lisp
+(use-package! k8s-mode
+  :hook (k8s-mode . yas-minor-mode))
 #+end_src
