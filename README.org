@@ -224,6 +224,20 @@ Realiza ajustes pequeños para iedit-mode
 * yasnippets
 Configura yasnippet y modifica todos los backends de company-mode para incluirlo en los resultados
 #+begin_src emacs-lisp
+(defvar shackra-story-in-branch-rx (rx (submatch (+ (any (?A . ?z))) "-" (** 3 5 (any (?0 . ?9)))))
+  "Expresion regular para encontrar una referencia a una historia en el nombre de la rama actual.")
+
+(defvar shackra-story-default "xxx"
+  "Dato por defecto en caso de que la rama no tenga una historia identificable.")
+
+(defun shackra-get-branch-story ()
+  "Retorna la historia enumerada en la rama de git actual."
+  (let* ((branch (magit-get-current-branch))
+         (have-match (string-match shackra-story-in-branch-rx branch)))
+    (if have-match
+        (format "[%s]:" (upcase (match-data 1)))
+      (format "[%s]:" (upcase shackra-story-default)))))
+
 (when (and (featurep! :completion company)
            (featurep! :editor snippets)
            (featurep! :tools lsp))
@@ -235,6 +249,8 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
 
 (after! yasnippet
   (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" doom-private-dir) nil))
+
+(add-hook 'git-commit-mode-hook #'yas-minor-mode-on)
 #+end_src
 * Golang
 Ajustes menores para Golang
