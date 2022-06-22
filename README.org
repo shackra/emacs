@@ -232,11 +232,12 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
 
 (defun shackra-get-branch-story ()
   "Retorna la historia enumerada en la rama de git actual."
-  (let* ((branch (magit-get-current-branch))
-         (have-match (string-match shackra-story-in-branch-rx branch)))
-    (if have-match
-        (format "[%s]:" (upcase (match-data 1)))
-      (format "[%s]:" (upcase shackra-story-default)))))
+  (let* ((result)
+         (branch (magit-get-current-branch)))
+    (save-match-data
+      (upcase (if (string-match shackra-story-in-branch-rx branch)
+                  (match-string-no-properties 1 branch)
+                shackra-story-default)))))
 
 (when (and (featurep! :completion company)
            (featurep! :editor snippets)

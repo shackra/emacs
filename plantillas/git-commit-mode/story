@@ -2,4 +2,4 @@
 # name: story
 # condition: (string= (buffer-name) "COMMIT_EDITMSG")
 # --
-`(shackra-get-branch-story)` $0
+[`(shackra-get-branch-story)`]: $0
