@@ -346,7 +346,8 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 #+end_src
 * GraphQL
 #+begin_src emacs-lisp
-(use-package! request)
+(use-package! request
+  :defer)
 
 (use-package! graphql-mode
   :mode ("\\.gql\\'" "\\.graphql\\'")
