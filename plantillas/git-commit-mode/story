@@ -1,5 +1,5 @@
-# key: story
-# name: story
+# key: ttt
+# name: Jira/Shortcut ID de historias o tiquetes
 # condition: (string= (buffer-name) "COMMIT_EDITMSG")
 # --
 [`(shackra-get-branch-story)`]: $0
