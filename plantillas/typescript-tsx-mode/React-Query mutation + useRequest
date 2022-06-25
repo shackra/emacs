@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: React-Query mutation + useRequest
+# key: rqm
+# --
+const $1 = useRequest<$2, $3>(
+    $0,
+    '$4'
+  )
+const {} = useMutation(
+  '$5',
+  $1
+)

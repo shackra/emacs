@@ -118,7 +118,7 @@
  ;;crystal                                          ; ruby at the speed of c
  ;;csharp                                           ; unity, .NET, and mono shenanigans
  data                                               ; config/data formats
- (dart +flutter +lsp)                               ; paint ui and not much else
+ ;; (dart +flutter +lsp)                               ; paint ui and not much else
  ;;elixir                                           ; erlang done right
  ;;elm                                              ; care for a cup of TEA?
  emacs-lisp                                         ; drown in parentheses
@@ -166,7 +166,7 @@
  ;;swift                                            ; who asked for emoji variables?
  ;;terra                                            ; Earth and Moon in alignment for performance.
  (web +lsp)                                         ; the tubes
- yaml                                               ; JSON, but readable
+ (yaml +lsp)                                               ; JSON, but readable
  shackra:rego                                       ; Edita archivos rego (OPA)
  shackra:deno
  shackra:graphql
