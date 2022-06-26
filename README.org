@@ -83,7 +83,8 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
     :weight bold :height 1.2 :box (:line-width 10 :color "red")))
 
 ;; cambia el tamaño del primer marco al ancho y alto de la pantalla
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(unless IS-MAC
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
 ;; ajusta el alto del modeline de doom-modeline
 (setq-default doom-modeline-height 35)
