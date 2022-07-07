@@ -260,7 +260,6 @@ Ajustes menores para Golang
 #+begin_src emacs-lisp
 (after! go-mode
   (setq-default gofmt-command "goimports")
-  (setq-default flycheck-golangci-lint-enable-all t)
 
   (defun shackra-go-mode-select-golangci-lint-checker ()
     (when (executable-find "golangci-lint")
