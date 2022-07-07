@@ -258,18 +258,8 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
 * Golang
 Ajustes menores para Golang
 #+begin_src emacs-lisp
-(after! flycheck-mode
-  (require 'flycheck-golangci-lint)
-  (add-hook! go-mode #'flycheck-golangci-lint-setup))
-
 (after! go-mode
-  (setq-default gofmt-command "goimports")
-
-  (defun shackra-go-mode-select-golangci-lint-checker ()
-    (when (executable-find "golangci-lint")
-      (flycheck-select-checker 'golangci-lint)))
-
-  (add-hook! go-mode :append #'shackra-go-mode-select-golangci-lint-checker))
+  (setq-default gofmt-command "goimports"))
 #+end_src
 * Flutter y Dart
 ajustes menores para estos modos mayores
