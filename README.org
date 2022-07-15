@@ -335,7 +335,8 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 #+end_src
 * svelte-mode
 #+begin_src emacs-lisp
-(use-package! svelte-mode)
+(use-package! svelte-mode
+  :defer)
 #+end_src
 * typescript-mode
 #+begin_src emacs-lisp
