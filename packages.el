@@ -20,6 +20,8 @@
 
 (package! k8s-mode :recipe (:host github :repo "TxGVNN/emacs-k8s-mode"))
 
+(package! beacon)
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.

@@ -56,6 +56,9 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+end_src
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
+;; enciende beacon para no perder de vista el cursor
+(beacon-mode 1)
+
 (setq doom-theme 'doom-gruvbox)
 (after! doom-themes
   (setq doom-themes-enable-bold t
