@@ -15,6 +15,7 @@
 ;;      directory (for easy access to its source code).
 
 (setq! +literate-config-file (expand-file-name "README.org" doom-private-dir))
+(setq-default +treemacs-git-mode 'deferred)
 
 (doom! :input
        ;;bidi                                              ; (tfel ot) thgir etirw uoy gnipleh
@@ -47,7 +48,7 @@
        ophints                                             ; highlight the region an operation acts on
        (popup +defaults)                                   ; tame sudden yet inevitable temporary windows
        ;;tabs                                              ; a tab bar for Emacs
-       treemacs                                            ; a project drawer, like neotree but cooler
+       (treemacs +lsp)                                     ; a project drawer, like neotree but cooler
        unicode                                             ; extended unicode support for various languages
        vc-gutter                                           ; vcs diff in the fringe
        vi-tilde-fringe                                     ; fringe tildes to mark beyond EOB
