@@ -39,6 +39,7 @@
 - [[#configuración-de-vertico][Configuración de vertico]]
 - [[#protobuf][protobuf]]
 - [[#kubernetes][Kubernetes]]
+- [[#dired][dired]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -385,4 +386,9 @@ ajustes para Vertico
 #+begin_src emacs-lisp
 (use-package! k8s-mode
   :hook (k8s-mode . yas-minor-mode))
+#+end_src
+* dired
+#+begin_src emacs-lisp
+(after! dirvish
+  (setq dirvish-attributes '(vc-state subtree-state all-the-icons collapse git-msg file-size)))
 #+end_src
