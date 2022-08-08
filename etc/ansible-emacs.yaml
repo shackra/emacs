@@ -4,8 +4,11 @@
   connection: local
   vars:
     emacs_version: 28
+    use_native_comp: false
 
   tasks:
+    - debug:
+        msg: use --extra-vars para sobreescribir el valor de `emacs_version` y `use_native_comp`
     - name: Agrega fuentes para emacs-plus
       community.general.homebrew_tap:
         name: d12frosted/emacs-plus
@@ -19,13 +22,19 @@
         name: "emacs-plus@{{emacs_version}}"
         state: latest
         update_homebrew: yes
-        install_options: "with-dbus,with-xwidgets,with-modern-cg433n-icon{{',with-native-comp' if emacs_version >= 28}}"
+        install_options: "with-dbus,with-xwidgets,with-modern-cg433n-icon{{',with-native-comp' if emacs_version >= 28 and use_native_comp == true}}"
+    - name: "Localiza instalacion de Emacs {{emacs_version}}"
+      shell: brew info emacs-plus@28 | grep "ln -s" | tr ' ' '\n' | grep opt
+      register: location
+    - set_fact:
+          emacs_location={{location.stdout}}
+    - debug: var=emacs_location
     - name: Elimina Emacs.app
       file:
         state: absent
         path: /Application/Emacs.app
     - name: Copia Emacs.app desde emacs-plus a /Applications
       copy:
-        src: "/usr/local/opt/emacs-plus@{{emacs_version}}/Emacs.app"
+        src: "{{emacs_location}}"
         dest: /Applications
         mode: preserve
