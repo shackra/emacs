@@ -396,6 +396,8 @@ ajustes para Vertico
 * Ajustes de tree-sitter-fold
 #+begin_src emacs-lisp
 (use-package! tree-sitter-fold
-  :defer-incrementally 'tree-sitter)
-(add-hook! '(python-mode go-mode) #'tree-sitter-fold-mode)
+  :config
+  (add-hook! 'tree-sitter-after-on-hook #'tree-sitter-fold-mode)
+  (add-hook! 'tree-sitter-fold-mode-hook #'tree-sitter-fold-close-all))
+
 #+end_src
