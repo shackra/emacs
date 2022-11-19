@@ -55,7 +55,6 @@
        window-select                                       ; visually switch windows
        workspaces                                          ; tab emulation, persistence & separate workspaces
        ;;zen                                               ; distraction-free coding or writing
-       shackra:tree-sitter                                 ; mejor y veloz resaltado de codigo
 
        :editor
        file-templates                                      ; auto-snippets for empty files
@@ -71,7 +70,7 @@
        ;;word-wrap                                         ; soft wrapping with language-aware indent
 
        :emacs
-       (dired +dirvish)                                    ; making dired pretty [functional]
+       dired                                               ; making dired pretty [functional]
        electric                                            ; smarter, keyword-based electric-indent
        ;;ibuffer                                           ; interactive buffer management
        undo                                                ; persistent, smarter undo for your inevitable mistakes

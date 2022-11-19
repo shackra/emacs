@@ -40,6 +40,7 @@
 - [[#protobuf][protobuf]]
 - [[#kubernetes][Kubernetes]]
 - [[#dired][dired]]
+- [[#ajustes-de-tree-sitter-fold][Ajustes de tree-sitter-fold]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -391,4 +392,10 @@ ajustes para Vertico
 #+begin_src emacs-lisp
 (after! dirvish
   (setq dirvish-attributes '(vc-state subtree-state all-the-icons collapse git-msg file-size)))
+#+end_src
+* Ajustes de tree-sitter-fold
+#+begin_src emacs-lisp
+(use-package! tree-sitter-fold
+  :defer-incrementally 'tree-sitter)
+(add-hook! '(python-mode go-mode) #'tree-sitter-fold-mode)
 #+end_src

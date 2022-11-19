@@ -20,6 +20,8 @@
 
 (package! k8s-mode :recipe (:host github :repo "TxGVNN/emacs-k8s-mode"))
 
+(package! tree-sitter-fold :recipe (:host github :repo "junyi-hou/tree-sitter-fold"))
+
 (package! beacon)
 
 (unpin! dirvish)
