@@ -22,7 +22,13 @@
 
 (package! tree-sitter-fold :recipe (:host github :repo "junyi-hou/tree-sitter-fold"))
 
+(package! sxhkd-mode :recipe (:host github :repo "xFA25E/sxhkd-mode"))
+
 (package! beacon)
+
+(package! annotate)
+
+(package! code-compass :recipe (:host github :repo "ag91/code-compass" :files ("*.el" "scripts" "pages")))
 
 (unpin! dirvish)
 

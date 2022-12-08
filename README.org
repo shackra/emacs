@@ -41,6 +41,11 @@
 - [[#kubernetes][Kubernetes]]
 - [[#dired][dired]]
 - [[#ajustes-de-tree-sitter-fold][Ajustes de tree-sitter-fold]]
+- [[#configuración-para-sxhkd-mode][Configuración para sxhkd-mode]]
+- [[#configuración-para-plantuml][Configuración para PlantUML]]
+- [[#annotateel][Annotate.el]]
+- [[#sbcl][SBCL]]
+- [[#code-compass][Code Compass]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -88,7 +93,7 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
     :weight bold :height 1.2 :box (:line-width 10 :color "red")))
 
 ;; cambia el tamaño del primer marco al ancho y alto de la pantalla
-(unless IS-MAC
+(when IS-MAC
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
 ;; ajusta el alto del modeline de doom-modeline
@@ -398,6 +403,45 @@ ajustes para Vertico
 (use-package! tree-sitter-fold
   :config
   (add-hook! 'tree-sitter-after-on-hook #'tree-sitter-fold-mode)
-  (add-hook! 'tree-sitter-fold-mode-hook #'tree-sitter-fold-close-all))
+  (add-hook! 'go-mode #'tree-sitter-fold-close-all))
 
+#+end_src
+* Configuración para sxhkd-mode
+#+begin_src emacs-lisp
+(use-package! sxhkd-mode
+  :config
+  (add-to-list 'auto-mode-alist `(,(rx "sxhkdrc" string-end) . sxhkd-mode)))
+#+end_src
+* Configuración para PlantUML
+#+begin_src emacs-lisp
+(after! plantuml-mode
+  (let* ((executable (executable-find "plantuml")))
+    (when executable
+      (setq-default plantuml-executable-path executable)
+      (setq-default plantuml-default-exec-mode 'executable)
+      (setq-default plantuml-output-type "svg"))))
+#+end_src
+* Annotate.el
+#+begin_src emacs-lisp
+(use-package! annotate
+  :init
+  (defvar shackra-default-annotate-file (expand-file-name "annotations" doom-etc-dir)
+    "Define la ubicación por defecto para `ANNOTATE-FILE'")
+  :config
+  (setq annotate-file shackra-default-annotate-file))
+#+end_src
+* SBCL
+#+begin_src emacs-lisp
+(let* ((slime-helper-file (expand-file-name "~/quicklisp/slime-helper.el")))
+  (when (file-exists-p slime-helper-file)
+    (load (expand-file-name "~/quicklisp/slime-helper.el"))
+    (setq inferior-lisp-program (executable-find "sbcl"))))
+#+end_src
+* Code Compass
+#+begin_src emacs-lisp
+(use-package! code-compass
+  :defer
+  :config
+  (when (executable-find "firefox")
+    (setq c/preferred-browser "firefox")))
 #+end_src
