@@ -30,6 +30,8 @@
 
 (package! code-compass :recipe (:host github :repo "ag91/code-compass" :files ("*.el" "scripts" "pages")))
 
+(package! i3wm-config-mode)
+
 (unpin! dirvish)
 
 ;; To install a package with Doom you must declare them here and run 'doom sync'
