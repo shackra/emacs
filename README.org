@@ -35,17 +35,10 @@
   - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 - [[#svelte-mode][svelte-mode]]
 - [[#typescript-mode][typescript-mode]]
-- [[#graphql][GraphQL]]
 - [[#configuración-de-vertico][Configuración de vertico]]
-- [[#protobuf][protobuf]]
-- [[#kubernetes][Kubernetes]]
 - [[#dired][dired]]
-- [[#ajustes-de-tree-sitter-fold][Ajustes de tree-sitter-fold]]
-- [[#configuración-para-sxhkd-mode][Configuración para sxhkd-mode]]
 - [[#configuración-para-plantuml][Configuración para PlantUML]]
-- [[#annotateel][Annotate.el]]
 - [[#sbcl][SBCL]]
-- [[#code-compass][Code Compass]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -63,9 +56,6 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+end_src
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
-;; enciende beacon para no perder de vista el cursor
-(beacon-mode 1)
-
 (setq doom-theme 'doom-gruvbox)
 (after! doom-themes
   (setq doom-themes-enable-bold t
@@ -270,6 +260,9 @@ Ajustes menores para Golang
 #+begin_src emacs-lisp
 (after! go-mode
   (setq-default gofmt-command "goimports"))
+
+(after! lsp-mode
+  (setq lsp-go-use-gofumpt t))
 #+end_src
 * Flutter y Dart
 ajustes menores para estos modos mayores
@@ -325,10 +318,7 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 #+end_src
 * configuración de depuración con dap-mode
 #+begin_src emacs-lisp
-(after! dap-mode
-  ;; configura dap-mode para depurar en Chrome/Brave
-  (require 'dap-chrome)
-  (dap-chrome-setup))
+
 #+end_src
 * Ajustes para lsp-mode
 #+begin_src emacs-lisp
@@ -357,15 +347,6 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
   (add-hook! 'typescript-tsx-mode-hook #'turn-off-indent-guides)
   (setq-hook! 'typescript-tsx-mode typescript-indent-level 2))
 #+end_src
-* GraphQL
-#+begin_src emacs-lisp
-(use-package! request
-  :defer)
-
-(use-package! graphql-mode
-  :mode ("\\.gql\\'" "\\.graphql\\'")
-  :config (setq-hook! 'graphql-mode-hook tab-width graphql-indent-level))
-#+end_src
 * Configuración de vertico
 ajustes para Vertico
 #+begin_src emacs-lisp
@@ -379,38 +360,10 @@ ajustes para Vertico
           (file grid)
           (consult-grep buffer))))
 #+end_src
-* protobuf
-#+begin_src emacs-lisp
-(use-package! protobuf-mode
-  :init
-  (defconst shackra-protobuf-style
-    '((c-basic-offset . 4)
-      (indent-tabs-mode . nil)))
-  :hook (protobuf-mode . (lambda () (c-add-style "shackra-protobuf" shackra-protobuf-style t))))
-#+end_src
-* Kubernetes
-#+begin_src emacs-lisp
-(use-package! k8s-mode
-  :hook (k8s-mode . yas-minor-mode))
-#+end_src
 * dired
 #+begin_src emacs-lisp
 (after! dirvish
   (setq dirvish-attributes '(vc-state subtree-state all-the-icons collapse git-msg file-size)))
-#+end_src
-* Ajustes de tree-sitter-fold
-#+begin_src emacs-lisp
-(use-package! tree-sitter-fold
-  :config
-  (add-hook! 'tree-sitter-after-on-hook #'tree-sitter-fold-mode)
-  (add-hook! 'go-mode #'tree-sitter-fold-close-all))
-
-#+end_src
-* Configuración para sxhkd-mode
-#+begin_src emacs-lisp
-(use-package! sxhkd-mode
-  :config
-  (add-to-list 'auto-mode-alist `(,(rx "sxhkdrc" string-end) . sxhkd-mode)))
 #+end_src
 * Configuración para PlantUML
 #+begin_src emacs-lisp
@@ -421,27 +374,10 @@ ajustes para Vertico
       (setq-default plantuml-default-exec-mode 'executable)
       (setq-default plantuml-output-type "svg"))))
 #+end_src
-* Annotate.el
-#+begin_src emacs-lisp
-(use-package! annotate
-  :init
-  (defvar shackra-default-annotate-file (expand-file-name "annotations" doom-etc-dir)
-    "Define la ubicación por defecto para `ANNOTATE-FILE'")
-  :config
-  (setq annotate-file shackra-default-annotate-file))
-#+end_src
 * SBCL
 #+begin_src emacs-lisp
 (let* ((slime-helper-file (expand-file-name "~/quicklisp/slime-helper.el")))
   (when (file-exists-p slime-helper-file)
     (load (expand-file-name "~/quicklisp/slime-helper.el"))
     (setq inferior-lisp-program (executable-find "sbcl"))))
-#+end_src
-* Code Compass
-#+begin_src emacs-lisp
-(use-package! code-compass
-  :defer
-  :config
-  (when (executable-find "firefox")
-    (setq c/preferred-browser "firefox")))
 #+end_src

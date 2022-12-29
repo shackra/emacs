@@ -1,36 +1,9 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
-(package! openapi-yaml-mode
-  :recipe (:host github :repo "magoyette/openapi-yaml-mode" :files ("openapi-yaml-mode.el"))
-  :pin "0e2e9e7772b1b819d9f0033c64f03ad074ac6ffd")
-
 ;; TODO: migrar a su propio paquete
 (package! svelte-mode :recipe (:host github :repo "leafOfTree/svelte-mode")
   :pin "25d0018036f44ff9bd685a1c9a76d8ba57c1024d")
-
-(package! graphql-mode :recipe (:host github :repo "davazp/graphql-mode")
-  :pin "80e9ac8020f7a4a8a963136698eb97a9fca28f7d")
-
-(package! request :recipe (:host github :repo "tkf/emacs-request")
-  :pin "3336eaa97de923f74b90dda3e35985e122d40805")
-
-(package! protobuf-mode :recipe (:host github :repo "protocolbuffers/protobuf" :files ("editors/protobuf-mode.el"))
-  :pin "c38281dd20e562bac239bc77ab2fa10f71661708")
-
-(package! k8s-mode :recipe (:host github :repo "TxGVNN/emacs-k8s-mode"))
-
-(package! tree-sitter-fold :recipe (:host github :repo "junyi-hou/tree-sitter-fold"))
-
-(package! sxhkd-mode :recipe (:host github :repo "xFA25E/sxhkd-mode"))
-
-(package! beacon)
-
-(package! annotate)
-
-(package! code-compass :recipe (:host github :repo "ag91/code-compass" :files ("*.el" "scripts" "pages")))
-
-(package! i3wm-config-mode)
 
 (unpin! dirvish)
 
