@@ -22,7 +22,7 @@
         name: "emacs-plus@{{emacs_version}}"
         state: latest
         update_homebrew: yes
-        install_options: "with-dbus,with-xwidgets,with-modern-cg433n-icon{{',with-native-comp' if emacs_version >= 28 and use_native_comp == true}}"
+        install_options: "with-dbus,with-xwidgets,with-modern-cg433n-icon{{',with-native-comp' if emacs_version|int >= 28 and use_native_comp|bool == true}}"
     - name: "Localiza instalacion de Emacs {{emacs_version}}"
       shell: brew info emacs-plus@{{emacs_version}} | grep "ln -s" | tr ' ' '\n' | grep opt
       register: location
