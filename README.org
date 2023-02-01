@@ -30,7 +30,6 @@
   - [[#apaga-auto-sangrado-en-web-mode][Apaga auto-sangrado en web-mode]]
 - [[#correo-electrónico][correo electrónico]]
 - [[#tramp][tramp]]
-- [[#configuración-de-depuración-con-dap-mode][configuración de depuración con dap-mode]]
 - [[#ajustes-para-lsp-mode][Ajustes para lsp-mode]]
   - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 - [[#svelte-mode][svelte-mode]]
@@ -39,6 +38,7 @@
 - [[#dired][dired]]
 - [[#configuración-para-plantuml][Configuración para PlantUML]]
 - [[#sbcl][SBCL]]
+-  [[#code-compass][Code Compass]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -316,10 +316,6 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 ;; Añade una frase adicional a la lista de palabras
 (add-to-list 'password-word-equivalents "verification code")
 #+end_src
-* configuración de depuración con dap-mode
-#+begin_src emacs-lisp
-
-#+end_src
 * Ajustes para lsp-mode
 #+begin_src emacs-lisp
 ;; ignora .log y .next
@@ -380,4 +376,8 @@ ajustes para Vertico
   (when (file-exists-p slime-helper-file)
     (load (expand-file-name "~/quicklisp/slime-helper.el"))
     (setq inferior-lisp-program (executable-find "sbcl"))))
+#+end_src
+*  Code Compass
+#+begin_src emacs-lisp
+(use-package! code-compass)
 #+end_src

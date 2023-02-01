@@ -5,7 +5,7 @@
 (package! svelte-mode :recipe (:host github :repo "leafOfTree/svelte-mode")
   :pin "25d0018036f44ff9bd685a1c9a76d8ba57c1024d")
 
-(unpin! dirvish)
+(package! code-compass :recipe (:host github :repo "ag91/code-compass" :files ("*.el" "scripts" "pages")))
 
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
