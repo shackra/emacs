@@ -72,7 +72,7 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 
 (setq display-line-numbers-type t)
 
-(setq fancy-splash-image (expand-file-name "dashboard/JHS.png" doom-private-dir))
+(setq fancy-splash-image (expand-file-name "dashboard/sacred-heart.svg" doom-private-dir))
 ;; TODO: cambiar arte ASCII
 
 (setq all-the-icons-scale-factor 0.8)
