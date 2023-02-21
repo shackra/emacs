@@ -25,7 +25,6 @@
 - [[#yasnippets][yasnippets]]
 - [[#golang][Golang]]
 - [[#flutter-y-dart][Flutter y Dart]]
-- [[#formateadores-de-código][formateadores de código]]
 - [[#detección-de-sangrado][Detección de sangrado]]
   - [[#apaga-auto-sangrado-en-web-mode][Apaga auto-sangrado en web-mode]]
 - [[#correo-electrónico][correo electrónico]]
@@ -269,15 +268,6 @@ ajustes menores para estos modos mayores
 (after! dart-mode
   (setq-default lsp-dart-sdk-dir nil)
   (setq-default flutter-sdk-path nil))
-#+end_src
-* formateadores de código
-Define mis propios reformateadores de código fuente usando [[https://github.com/raxod502/apheleia][apheleia]].
-#+begin_src emacs-lisp
-(after! apheleia
-  (reformat-add-formatter! '(rustywind . ("rustywind" "--stdin")))
-  (reformat-add-formatter! '(eslint . (npx "eslint" "--stdin" "--stdin-filename" file "--fix")))
-  (add-to-list 'apheleia-mode-alist '(typescript-tsx-mode . (prettier rustywind)))
-  (setf (alist-get 'web-mode apheleia-mode-alist) '(prettier rustywind)))
 #+end_src
 * Detección de sangrado
 Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación.
