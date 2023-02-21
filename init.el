@@ -194,5 +194,4 @@
 
        :config
        literate
-       (default +bindings)
-       shackra:me)
+       (default +bindings +smartparens))
