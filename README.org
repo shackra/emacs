@@ -259,10 +259,9 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
 Ajustes menores para Golang
 #+begin_src emacs-lisp
 (after! go-mode
-  (setq-default gofmt-command "goimports"))
-
-(after! lsp-mode
-  (setq lsp-go-use-gofumpt t))
+  (if (and (modulep! :lang go +lsp) (executable-find "gofumpt"))
+      (setq lsp-go-use-gofumpt t)
+    (message "gofumpt no instalado")))
 #+end_src
 * Flutter y Dart
 ajustes menores para estos modos mayores
