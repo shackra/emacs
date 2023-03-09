@@ -27,7 +27,7 @@
        (company +childframe)                               ; the ultimate code completion backend
        ;;helm                                              ; the *other* search engine for love and life
        ;;ido                                               ; the other *other* search engine...
-       (ivy +childframe +prescient +icons)                 ; a search engine for love and life
+       (ivy +childframe +prescient +icons +fuzzy)          ; a search engine for love and life
        ;;(vertico +icons)
 
        :ui
@@ -35,7 +35,7 @@
        doom                                                ; what makes DOOM look the way it does
        doom-dashboard                                      ; a nifty splash screen for Emacs
        doom-quit                                           ; DOOM quit-message prompts when you quit Emacs
-       ;;(emoji +unicode)                                  ; 🙂
+       (emoji +unicode)                                    ; 🙂
        ;;fill-column                                       ; a `fill-column' indicator
        hl-todo                                             ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        hydra
@@ -46,13 +46,13 @@
        ;;nav-flash                                         ; blink cursor line after big motions
        ;;neotree                                           ; a project drawer, like NERDTree for vim
        ophints                                             ; highlight the region an operation acts on
-       (popup +defaults)                                   ; tame sudden yet inevitable temporary windows
+       (popup +defaults +all)                              ; tame sudden yet inevitable temporary windows
        ;;tabs                                              ; a tab bar for Emacs
        (treemacs +lsp)                                     ; a project drawer, like neotree but cooler
        unicode                                             ; extended unicode support for various languages
        vc-gutter                                           ; vcs diff in the fringe
        vi-tilde-fringe                                     ; fringe tildes to mark beyond EOB
-       window-select                                       ; visually switch windows
+       (window-select +switch-window)                      ; visually switch windows
        workspaces                                          ; tab emulation, persistence & separate workspaces
        ;;zen                                               ; distraction-free coding or writing
 
@@ -70,10 +70,10 @@
        ;;word-wrap                                         ; soft wrapping with language-aware indent
 
        :emacs
-       dired                                               ; making dired pretty [functional]
+       (dired +icons)                                      ; making dired pretty [functional]
        electric                                            ; smarter, keyword-based electric-indent
-       ;;ibuffer                                           ; interactive buffer management
-       undo                                                ; persistent, smarter undo for your inevitable mistakes
+       (ibuffer +icons)                                    ; interactive buffer management
+       (undo +tree)                                        ; persistent, smarter undo for your inevitable mistakes
        vc                                                  ; version-control and Emacs, sitting in a tree
 
        :term
@@ -105,7 +105,6 @@
        pdf                                                 ; pdf enhancements
        ;;prodigy                                           ; FIXME managing external services & code builders
        rgb                                                 ; creating color strings
-       taskrunner                                          ; taskrunner for all your projects
        ;;terraform                                         ; infrastructure as code
        ;;tmux                                              ; an API for interacting with tmux
        tree-sitter
@@ -114,18 +113,18 @@
 
        :os
        (:if IS-MAC macos)                                  ; improve compatibility with macOS
-       ;;tty                                               ; improve the terminal Emacs experience
+       (tty +osc)                                          ; improve the terminal Emacs experience
 
        :lang
        ;;agda                                              ; types of types of types of types...
-       ;;(cc +lsp +tree-sitter)                            ; C/C++/Obj-C madness
+       (cc +lsp +tree-sitter)                              ; C/C++/Obj-C madness
        ;;clojure                                           ; java with a lisp
        ;;common-lisp                                       ; if you've seen one lisp, you've seen them all
        ;;coq                                               ; proofs-as-programs
        ;;crystal                                           ; ruby at the speed of c
        ;;csharp                                            ; unity, .NET, and mono shenanigans
        data                                                ; config/data formats
-       ;; (dart +flutter +lsp)                             ; paint ui and not much else
+       ;;(dart +flutter +lsp)                              ; paint ui and not much else
        ;;elixir                                            ; erlang done right
        ;;elm                                               ; care for a cup of TEA?
        emacs-lisp                                          ; drown in parentheses
@@ -136,7 +135,7 @@
        ;;fstar                                             ; (dependent) types and (monadic) effects and Z3
        (gdscript +lsp)                                     ; the language you waited for
        (go +lsp +tree-sitter)                              ; the hipster dialect
-       (haskell +dante +lsp +tree-sitter)                  ; a language that's lazier than I am
+       ;;(haskell +dante +lsp +tree-sitter)                ; a language that's lazier than I am
        ;;hy                                                ; readability of scheme w/ speed of python
        ;;idris                                             ; a language you can depend on
        (json +tree-sitter)                                 ; At least it ain't XML
@@ -154,7 +153,7 @@
        ;;nix                                               ; I hereby declare "nix geht mehr!"
        ;;ocaml                                             ; an objective camel
        (org +dragndrop +pretty +noter +pomodoro +present)  ; organize your plain life in plain text
-       ;;php                                               ; perl's insecure younger brother
+       (php +lsp)                                          ; perl's insecure younger brother
        plantuml                                            ; diagrams for confusing people more
        ;;purescript                                        ; javascript, but functional
        (python +lsp +tree-sitter)                          ; beautiful is better than ugly
