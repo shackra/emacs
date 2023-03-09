@@ -25,14 +25,11 @@
 - [[#yasnippets][yasnippets]]
 - [[#golang][Golang]]
 - [[#flutter-y-dart][Flutter y Dart]]
-- [[#detección-de-sangrado][Detección de sangrado]]
-  - [[#apaga-auto-sangrado-en-web-mode][Apaga auto-sangrado en web-mode]]
 - [[#correo-electrónico][correo electrónico]]
 - [[#tramp][tramp]]
 - [[#ajustes-para-lsp-mode][Ajustes para lsp-mode]]
-  - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
+  -  [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 - [[#svelte-mode][svelte-mode]]
-- [[#typescript-mode][typescript-mode]]
 - [[#configuración-de-vertico][Configuración de vertico]]
 - [[#dired][dired]]
 - [[#configuración-para-plantuml][Configuración para PlantUML]]
@@ -268,15 +265,6 @@ ajustes menores para estos modos mayores
 (after! dart-mode
   (setq-default lsp-dart-sdk-dir nil)
   (setq-default flutter-sdk-path nil))
-#+end_src
-* Detección de sangrado
-Con =dtrt-indent-mode= Emacs puede detectar automáticamente el nivel de sangrado en archivos de código fuente en varios lenguajes de programación.
-** Apaga auto-sangrado en web-mode
-#+begin_src emacs-lisp
-(setq-default web-mode-enable-auto-indentation nil)
-(setq-default web-mode-markup-indent-offset 2)
-(setq-default web-mode-css-indent-offset 2)
-(setq-default web-mode-code-indent-offset 2)
 #+end_src
 * correo electrónico
 #+BEGIN_SRC emacs-lisp :tangle no
