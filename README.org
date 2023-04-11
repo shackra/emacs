@@ -28,8 +28,9 @@
 - [[#correo-electrónico][correo electrónico]]
 - [[#tramp][tramp]]
 - [[#ajustes-para-lsp-mode][Ajustes para lsp-mode]]
-  -  [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
+  - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
 - [[#svelte-mode][svelte-mode]]
+- [[#typescript-mode][typescript-mode]]
 - [[#configuración-de-vertico][Configuración de vertico]]
 - [[#dired][dired]]
 - [[#configuración-para-plantuml][Configuración para PlantUML]]
@@ -341,11 +342,8 @@ ajustes para Vertico
 * Configuración para PlantUML
 #+begin_src emacs-lisp
 (after! plantuml-mode
-  (let* ((executable (executable-find "plantuml")))
-    (when executable
-      (setq-default plantuml-executable-path executable)
-      (setq-default plantuml-default-exec-mode 'executable)
-      (setq-default plantuml-output-type "svg"))))
+  (setq-default plantuml-jar-path (executable-find "plantuml"))
+  (setq-default plantuml-output-type "svg"))
 #+end_src
 * SBCL
 #+begin_src emacs-lisp
