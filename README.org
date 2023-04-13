@@ -34,6 +34,7 @@
 - [[#configuración-de-vertico][Configuración de vertico]]
 - [[#dired][dired]]
 - [[#configuración-para-plantuml][Configuración para PlantUML]]
+-  [[#structurzr][Structurzr]]
 - [[#sbcl][SBCL]]
 -  [[#code-compass][Code Compass]]
 
@@ -345,6 +346,11 @@ ajustes para Vertico
   (setq-default plantuml-jar-path (executable-find "plantuml"))
   (setq-default plantuml-output-type "svg"))
 #+end_src
+*  Structurzr
+#+begin_src emacs-lisp
+(use-package! structurzr-mode
+  :defer)
+#+end_src
 * SBCL
 #+begin_src emacs-lisp
 (let* ((slime-helper-file (expand-file-name "~/quicklisp/slime-helper.el")))
@@ -354,5 +360,6 @@ ajustes para Vertico
 #+end_src
 *  Code Compass
 #+begin_src emacs-lisp
-(use-package! code-compass)
+(use-package! code-compass
+  :defer)
 #+end_src

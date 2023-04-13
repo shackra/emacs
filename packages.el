@@ -9,6 +9,8 @@
 
 (package! ob-kotlin :recipe (:host github :repo "shackra/ob-kotlin" :files ("*.el")))
 
+(package! structurizr-mode :recipe (:host github :repo "gilesp/structurizr-mode"))
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
