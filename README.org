@@ -361,5 +361,7 @@ ajustes para Vertico
 *  Code Compass
 #+begin_src emacs-lisp
 (use-package! code-compass
-  :defer)
+  :defer
+  :config
+  (setq-default code-compass-preferred-browser "firefox"))
 #+end_src
