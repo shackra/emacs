@@ -151,6 +151,8 @@ in {
 
       if [ -f "$HOME/.emacs.d/bin/doom" ]; then
          export PATH="$PATH:$HOME/.emacs.d/bin"
+      elif [ -f "$HOME/.config/emacs/bin/doom" ]; then
+         export PATH="$PATH:$HOME/.config/emacs/bin"
       fi
     '';
     history = {
