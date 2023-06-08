@@ -54,7 +54,7 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+end_src
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-gruvbox)
+(setq doom-theme 'doom-laserwave)
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
@@ -97,8 +97,8 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 16)
       doom-big-font (font-spec :family "Iosevka Nerd Font Mono" :size 24 :weight 'normal)
-      doom-variable-pitch-font (font-spec :family "Iosevka Aile" :size 16)
-      doom-serif-font (font-spec :family "Iosevka Etoile" :size 16))
+      doom-variable-pitch-font (font-spec :family "Iosevka Comfy" :size 16)
+      doom-serif-font (font-spec :family "Iosevka Comfy Motion Duo" :size 16))
 
 (custom-set-faces!
   '(font-lock-comment-face :slant italic)
