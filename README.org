@@ -54,7 +54,7 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+end_src
 * Aspecto visual de GNU Emacs
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-laserwave)
+(setq doom-theme 'doom-challenger-deep)
 (after! doom-themes
   (setq doom-themes-enable-bold t
         doom-themes-enable-italic t))
