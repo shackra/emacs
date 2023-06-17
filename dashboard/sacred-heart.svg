@@ -6,9 +6,9 @@
    id="Layer_1"
    x="0px"
    y="0px"
-   width="275.80789"
-   height="350"
-   viewBox="0 0 275.80789 350"
+   width="299.08887"
+   height="393.58084"
+   viewBox="0 0 299.08886 393.58084"
    enable-background="new 0 0 506 629"
    xml:space="preserve"
    sodipodi:docname="sacred-heart.svg"
@@ -29,9 +29,9 @@
    inkscape:pagecheckerboard="true"
    inkscape:deskcolor="#d1d1d1"
    showgrid="false"
-   inkscape:zoom="1"
-   inkscape:cx="457"
-   inkscape:cy="339"
+   inkscape:zoom="1.4142136"
+   inkscape:cx="293.09576"
+   inkscape:cy="217.08178"
    inkscape:window-width="1880"
    inkscape:window-height="971"
    inkscape:window-x="1100"
@@ -93,7 +93,17 @@
 		
 		
 		
-		<g
+		<text
+   xml:space="preserve"
+   style="font-size:38.6325px;text-align:start;text-anchor:start;fill:#d40000;fill-opacity:1;stroke:none;stroke-width:3.21937"
+   id="text435"
+   x="35.729279"
+   y="686.12183"><tspan
+     sodipodi:role="line"
+     x="35.729279"
+     y="686.12183"
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'TeX Gyre Bonum';-inkscape-font-specification:'TeX Gyre Bonum Bold';text-align:start;text-anchor:start;fill:#d40000;fill-opacity:1;stroke-width:3.21937"
+     id="tspan345">Cor Jesu Sacratissimum</tspan></text><g
    id="g648"
    style="fill:#552200"><path
      fill="none"
