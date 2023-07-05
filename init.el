@@ -76,7 +76,7 @@
        ansible
        ;;biblio                                    ; Writes a PhD for you (citation needed)
        (debugger +lsp)                             ; FIXME stepping through code, to help you add bugs
-       ;;direnv
+       direnv
        docker
        ;;editorconfig                              ; let someone else argue about tabs vs spaces
        ;;ein                                       ; tame Jupyter notebooks with emacs
@@ -89,7 +89,6 @@
        ;;pass                                      ; password manager for nerds
        pdf                                         ; pdf enhancements
        ;;prodigy                                   ; FIXME managing external services & code builders
-       ;;rgb                                       ; creating color strings
        ;;taskrunner                                ; taskrunner for all your projects
        ;;terraform                                 ; infrastructure as code
        ;;tmux                                      ; an API for interacting with tmux
@@ -105,7 +104,7 @@
        ;;beancount                                 ; mind the GAAP
        (cc +lsp +tree-sitter)                      ; C > C++ == 1
        ;;clojure                                   ; java with a lisp
-       ;;common-lisp                               ; if you've seen one lisp, you've seen them all
+       common-lisp                                 ; if you've seen one lisp, you've seen them all
        ;;coq                                       ; proofs-as-programs
        ;;crystal                                   ; ruby at the speed of c
        ;;csharp                                    ; unity, .NET, and mono shenanigans
