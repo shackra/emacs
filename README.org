@@ -85,9 +85,9 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
   (add-to-list 'initial-frame-alist '(fullscreen . maximized)))
 
 ;; ajusta el alto del modeline de doom-modeline
-(setq-default doom-modeline-height 35)
+(setq-default doom-modeline-height 40)
 ;; ajusta el ancho de la barra
-(setq-default doom-modeline-bar-width 8)
+(setq-default doom-modeline-bar-width 10)
 
 (when IS-LINUX
   (setq-default highlight-indent-guides-method 'bitmap)
