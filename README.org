@@ -295,7 +295,7 @@ ajustes menores para estos modos mayores
 * correo electrónico
 #+BEGIN_SRC emacs-lisp :tangle no
 (after! mu4e
-  (setq +mu43-mu4e-mail-path "~/mail")
+  (setq +mu43-mu4e-mail-path "~/Maildir")
   (set-email-account! "jorge@esavara.cr"
                       '((mu4e-sent-folder       . "/personal/Sent Mail")
                         (mu4e-drafts-folder     . "/personal/Drafts")
@@ -303,15 +303,7 @@ ajustes menores para estos modos mayores
                         (mu4e-refile-folder     . "/personal/All Mail")
                         (smtpmail-smtp-user     . "jorge@esavara.cr")
                         (mu4e-compose-signature . "---\nJorge"))
-                      t)
-  (set-email-account! "jaraya@kue-cr.com"
-                      '((mu4e-sent-folder       . "/kue/Sent")
-                        (mu4e-drafts-folder     . "/kue/Drafts")
-                        (mu4e-trash-folder      . "/kue/Trash")
-                        (mu4e-refile-folder     . "/kue/All Mail")
-                        (smtpmail-smtp-user     . "jaraya@kue-cr.com")
-                        (mu4e-compose-signature . "---\nJorge Araya"))
-                      nil))
+                      t))
 #+END_SRC
 * tramp
 Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.html#tramp][Doom Emacs Configuration]])
