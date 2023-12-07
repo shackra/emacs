@@ -3,10 +3,10 @@
 #+STARTUP: inlineimages nofold
 
 #+begin_example
-                                    🕇
+                                    ✝
                  Actiones nostras tibi comítimus, Dómine,
                   ut ad maiorem gloriam tuam repleamur.
-                                  🕇   🕇
+                                  ✝   ✝
 #+end_example
 
 * Tabla de contenidos :TOC_3:noexport:
