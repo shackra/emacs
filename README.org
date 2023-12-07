@@ -38,6 +38,8 @@
 -  [[#structurzr][Structurzr]]
 - [[#sbcl][SBCL]]
 -  [[#code-compass][Code Compass]]
+-  [[#ai][AI]]
+  - [[#ollama][ollama]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -386,4 +388,11 @@ ajustes para Vertico
   :defer
   :config
   (setq-default code-compass-preferred-browser "firefox"))
+#+end_src
+*  AI
+** ollama
+#+begin_src emacs-lisp
+(use-package! ellama
+  :defer
+  :config (setopt ellama-language "English"))
 #+end_src
