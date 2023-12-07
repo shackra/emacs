@@ -15,6 +15,7 @@
 - [[#aspecto-visual-de-gnu-emacs][Aspecto visual de GNU Emacs]]
   - [[#tipografía][tipografía]]
   - [[#cambia-comportamiento-de-tab][cambia comportamiento de TAB]]
+  - [[#historial-de-archivos-recientes-y-proyectos][historial de archivos recientes y proyectos]]
 - [[#org][Org]]
   - [[#configuración-básica][configuración básica]]
   - [[#plantillas][plantillas]]
@@ -108,6 +109,27 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 No estoy interesado en insertar un tabulador al presionar TAB.
 #+begin_src emacs-lisp
 (setq tab-always-indent t)
+#+end_src
+** historial de archivos recientes y proyectos
+vamos a pedirle a =recentf= ignorar ciertos archivos.
+#+begin_src emacs-lisp
+(after! recentf
+(add-to-list 'recentf-exclude "~/.config/emacs")
+(add-to-list 'recentf-exclude "\\`/[^:]+:"))
+#+end_src
+Hacemos lo mismo para Projectile
+#+begin_src emacs-lisp
+(defun shackra/projectile-ignore-projects (project-root)
+  "Retorna t si PROJECT-ROOT es una ubicación TRAMP"
+  (or (file-remote-p project-root)
+      (doom-project-ignored-p project-root)))
+
+(after! projectile
+  (setq projectile-ignored-project-function #'shackra/projectile-ignore-projects)
+  (setq projectile-project-search-path '(("~/code" . 1)
+                                         ("~/code/ai" . 1)
+                                         ("~/Documentos/sotsf/proyectos" . 1)
+                                         ("~/Documentos/Straubinger Digital" . 1))))
 #+end_src
 * Org
 ** configuración básica
