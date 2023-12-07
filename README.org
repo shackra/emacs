@@ -122,14 +122,14 @@ vamos a pedirle a =recentf= ignorar ciertos archivos.
 Hacemos lo mismo para Projectile
 #+begin_src emacs-lisp
 (defun shackra/projectile-ignore-projects (project-root)
-  "Retorna t si PROJECT-ROOT es una ubicación TRAMP"
   (or (file-remote-p project-root)
-      (doom-project-ignored-p project-root)))
+      (doom-project-ignored-p project-root)
+      (string-match-p "^/nix/store" project-root)
+      (string-match-p "/node_modules/" project-root)))
 
 (after! projectile
   (setq projectile-ignored-project-function #'shackra/projectile-ignore-projects)
-  (setq projectile-project-search-path '(("~/code" . 1)
-                                         ("~/code/ai" . 1)
+  (setq projectile-project-search-path '(("~/code" . 4)
                                          ("~/Documentos/sotsf/proyectos" . 1)
                                          ("~/Documentos/Straubinger Digital" . 1))))
 #+end_src
