@@ -98,10 +98,10 @@ Hay comportamientos en Emacs que me gustaría que fueran usados en Doom, y que s
 #+end_src
 ** tipografía
 #+begin_src emacs-lisp
-(setq doom-font (font-spec :family "Iosevka Nerd Font Mono" :size 16)
-      doom-big-font (font-spec :family "Iosevka Nerd Font Mono" :size 24 :weight 'normal)
-      doom-variable-pitch-font (font-spec :family "Iosevka Comfy" :size 16)
-      doom-serif-font (font-spec :family "Iosevka Comfy Motion Duo" :size 16))
+(setq doom-font  (font-spec :family "Iosevka Nerd Font Mono" :size 18)
+      doom-big-font (font-spec :family "Iosevka Nerd Font Mono" :size 26 :weight 'normal)
+      doom-variable-pitch-font (font-spec :family "Iosevka Comfy" :size 18)
+      doom-serif-font (font-spec :family "Iosevka Comfy Motion Duo" :size 18))
 
 (custom-set-faces!
   '(font-lock-comment-face :slant italic)
