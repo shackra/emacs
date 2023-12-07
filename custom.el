@@ -24,3 +24,5 @@
  '(aw-leading-char-face ((t (:foreground "white" :background "red" :weight bold :height 1.2 :box (:line-width 10 :color "red")))))
  '(font-lock-comment-face ((t (:slant italic))))
  '(font-lock-keyword-face ((t (:slant italic)))))
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
