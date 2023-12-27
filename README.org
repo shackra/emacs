@@ -318,7 +318,9 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 (after! lsp-mode
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.log\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.next\\'")
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]__snapshots?__\\'"))
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]__snapshots?__\\'")
+  ;; https://github.com/emacs-lsp/lsp-mode/issues/3577#issuecomment-1857344443
+  (delete 'lsp-terraform lsp-client-packages))
 #+end_src
 
 **  Ajusta lsp-ui
