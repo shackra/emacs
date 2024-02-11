@@ -52,7 +52,7 @@
        ;;parinfer                                  ; turn lisp into python, sort of
        ;;rotate-text                               ; cycle region at point between text candidates
        snippets                                    ; my elves. They type so I don't have to
-       ;;word-wrap                                 ; soft wrapping with language-aware indent
+       word-wrap                                 ; soft wrapping with language-aware indent
 
        :emacs
        (dired +icons)                              ; making dired pretty [functional]
@@ -78,7 +78,7 @@
        (debugger +lsp)                             ; FIXME stepping through code, to help you add bugs
        direnv
        docker
-       ;;editorconfig                              ; let someone else argue about tabs vs spaces
+       editorconfig                              ; let someone else argue about tabs vs spaces
        ;;ein                                       ; tame Jupyter notebooks with emacs
        (eval +overlay)                             ; run code, run (also, repls)
        ;;gist                                      ; interacting with github gists
@@ -153,7 +153,7 @@
        ;;(ruby +rails)                             ; 1.step {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
        (rust +lsp +tree-sitter)                    ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
        ;;scala                                     ; java, but good
-       (scheme +guile)                             ; a fully conniving family of lisps
+       (scheme)                                    ; a fully conniving family of lisps
        (sh +lsp +tree-sitter)                      ; she sells {ba,z,fi}sh shells on the C xor
        ;;sml
        ;;solidity                                  ; do you need a blockchain? No.
