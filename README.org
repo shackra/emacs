@@ -126,7 +126,8 @@ Hacemos lo mismo para Projectile
   (or (file-remote-p project-root)
       (doom-project-ignored-p project-root)
       (string-match-p "^/nix/store" project-root)
-      (string-match-p "/node_modules/" project-root)))
+      (string-match-p "/node_modules/" project-root)
+      (string-match-p "go/pkg/mod" project-root)))
 
 (after! projectile
   (setq projectile-ignored-project-function #'shackra/projectile-ignore-projects)
