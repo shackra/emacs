@@ -5,12 +5,14 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    '("d6603a129c32b716b3d3541fc0b6bfe83d0e07f1954ee64517aa62c9405a3441" default))
+ '(magit-todos-insert-after '(bottom) nil nil "Changed by setter of obsolete option `magit-todos-insert-at'")
  '(safe-local-variable-values
    '((git-commit-major-mode . git-commit-elisp-text-mode)
      (org-download-image-dir . "./imagenes")
      (org-clock-mode-line-total . today)))
  '(warning-suppress-types
-   '((lsp-on-idle-hook)
+   '((emacsql)
+     (lsp-on-idle-hook)
      (lsp-mode)
      (lsp-mode)
      (doom-first-file-hook)
