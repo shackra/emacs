@@ -1,7 +1,0 @@
-# -*- mode: snippet -*-
-# name: JS Doc
-# key: jd
-# --
-/**
- * $1$0
- */
