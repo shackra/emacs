@@ -15,6 +15,8 @@
 
 (package! prisma-mode :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main"))
 
+(package! just-mode :recipe (:host github :repo "leon-barrett/just-mode.el" :branch "main"))
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.

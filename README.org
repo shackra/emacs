@@ -41,6 +41,7 @@
 -  [[#code-compass][Code Compass]]
 -  [[#ai][AI]]
   - [[#ollama][ollama]]
+- [[#just][just]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -404,4 +405,10 @@ ajustes para Vertico
 (use-package! ellama
   :defer
   :config (setopt ellama-language "English"))
+#+end_src
+* just
+inspirado por =make=, corre comandos específicos a un proyecto.
+#+begin_src emacs-lisp
+(use-package! just-mode
+    :defer)
 #+end_src
