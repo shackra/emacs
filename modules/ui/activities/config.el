@@ -1,5 +1,15 @@
 ;;; ui/activities/config.el -*- lexical-binding: t; -*-
 
+(defun ap/switch-to-buffer ()
+  "Switch to buffer offered from various sources.
+If an activity is current, use `activities-switch-buffer';
+otherwise use `switch-to-buffer'."
+  (interactive)
+  (cond ((or (equal '(16) current-prefix-arg)
+             (not (activities-current)))
+         (call-interactively #'switch-to-buffer))
+        (t (call-interactively #'activities-switch-buffer))))
+
 (use-package! activities
   :unless noninteractive
   :hook ((doom-init-ui . activities-mode)
@@ -17,4 +27,5 @@
    ;; This binding mirrors, e.g. "C-x t RET".
    ("C-x C-a RET" . activities-switch)
    ("C-x C-a g" . activities-revert)
-   ("C-x C-a l" . activities-list)))
+   ("C-x C-a l" . activities-list)
+   ("C-x b" . ap/switch-to-buffer)))
