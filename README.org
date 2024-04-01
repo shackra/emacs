@@ -42,6 +42,7 @@
 -  [[#ai][AI]]
   - [[#ollama][ollama]]
 - [[#just][just]]
+-  [[#hashicorp-configuration-language][Hashicorp Configuration Language]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -411,4 +412,9 @@ inspirado por =make=, corre comandos específicos a un proyecto.
 #+begin_src emacs-lisp
 (use-package! just-mode
     :defer)
+#+end_src
+*  Hashicorp Configuration Language
+#+begin_src emacs-lisp
+(use-package! hcl-mode
+  :defer)
 #+end_src
