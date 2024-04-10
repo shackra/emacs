@@ -331,8 +331,8 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 (after! lsp-mode
   (setq lsp-headerline-breadcrumb-enable t)
   (setq lsp-ui-doc-enable t)
-  (setq lsp-ui-doc-position 'at-point)
-  (setq lsp-ui-doc-show-with-cursor t)
+  (setq lsp-ui-doc-position 'top)
+  (setq lsp-ui-doc-show-with-cursor nil)
   (setq lsp-ui-doc-show-with-mouse t)
   (setq lsp-signature-render-documentation nil)
   (setq lsp-eldoc-enable-hover nil)
