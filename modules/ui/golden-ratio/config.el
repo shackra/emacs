@@ -3,5 +3,5 @@
 (use-package! golden-ratio
   :unless noninteractive
   :hook (after-init . golden-ratio-mode)
-  :config
+  :custom
   (golden-ratio-exclude-modes '(occur-mode)))
