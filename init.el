@@ -41,6 +41,8 @@
        ;;zen                                       ; distraction-free coding or writing
        ;;activities
        coverage
+       golden-ratio
+       spacious-padding
 
        :editor
        ;;(evil +everywhere); come to the dark side, we have cookies
@@ -96,6 +98,7 @@
        ;;tmux                                      ; an API for interacting with tmux
        tree-sitter                                 ; syntax and parsing, sitting in a tree...
        ;;upload                                    ; map local to remote projects via ssh/ftp
+       devdocs
 
        :os
        (:if IS-MAC macos)                          ; improve compatibility with macOS
