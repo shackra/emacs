@@ -41,7 +41,7 @@
        ;;zen                                       ; distraction-free coding or writing
        ;;activities
        coverage
-       golden-ratio
+       ;;golden-ratio
        spacious-padding
 
        :editor
