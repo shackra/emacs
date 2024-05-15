@@ -38,11 +38,12 @@
 - [[#configuración-para-plantuml][Configuración para PlantUML]]
 -  [[#structurzr][Structurzr]]
 - [[#sbcl][SBCL]]
--  [[#code-compass][Code Compass]]
--  [[#ai][AI]]
+- [[#code-compass][Code Compass]]
+- [[#ai][AI]]
   - [[#ollama][ollama]]
 - [[#just][just]]
 -  [[#hashicorp-configuration-language][Hashicorp Configuration Language]]
+- [[#devdocs][devdocs]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -266,15 +267,12 @@ Configura yasnippet y modifica todos los backends de company-mode para incluirlo
                   (match-string-no-properties 1 branch)
                 shackra-story-default)))))
 
-(when (and (featurep! :completion company)
-           (featurep! :editor snippets)
-           (featurep! :tools lsp))
+(when (and (modulep! :completion company)
+           (modulep! :editor snippets)
+           (modulep! :tools lsp))
 
   (defun shackra-use-company-capf-with-yasnippet ()
-    (setq company-backends '((company-capf company-yasnippet))))
-
-  ;; (add-hook! 'company-mode-hook #'shackra-use-company-capf-with-yasnippet)
-  )
+    (setq company-backends '((company-capf company-yasnippet)))))
 
 (after! yasnippet
   (add-to-list 'yas-snippet-dirs (expand-file-name "plantillas" doom-private-dir) nil))
@@ -393,14 +391,14 @@ ajustes para Vertico
     (load (expand-file-name "~/quicklisp/slime-helper.el"))
     (setq inferior-lisp-program (executable-find "sbcl"))))
 #+end_src
-*  Code Compass
+* Code Compass
 #+begin_src emacs-lisp
 (use-package! code-compass
   :defer
   :config
   (setq-default code-compass-preferred-browser "firefox"))
 #+end_src
-*  AI
+* AI
 ** ollama
 #+begin_src emacs-lisp
 (use-package! ellama
@@ -417,4 +415,55 @@ inspirado por =make=, corre comandos específicos a un proyecto.
 #+begin_src emacs-lisp
 (use-package! hcl-mode
   :defer)
+#+end_src
+* devdocs
+#+begin_src emacs-lisp
+(when (modulep! :tools devdocs)
+  (add-to-list 'display-buffer-alist
+               '("\\*devdocs\\*"
+                 display-buffer-in-side-window
+                 (side . right)
+                 (slot . 3)
+                 (window-parameters . ((no-delete-other-windows . t)))
+                 (dedicated . t))))
+
+(when (modulep! :tools devdocs)
+  (setq-hook! 'go-mode
+    devdocs-current-docs
+    '("go"
+      "sqlite"
+      "http"))
+  (setq-hook! 'gdscript-mode
+    devdocs-current-docs
+    '("godot~3.5"))
+  (setq-hook! 'emacs-lisp-mode
+    devdocs-current-docs
+    '("elisp"))
+  (setq-hook! 'python-mode
+    devdocs-current-docs
+    '("python~3.11"
+      "python~3.12"
+      "sqlite"
+      "flask~3.0"
+      "http"))
+  (setq-hook! 'web-mode
+    devdocs-current-docs
+    '("react"
+      "svelte"
+      "javascript"
+      "typescript"
+      "moment"
+      "tailwindcss"
+      "html"
+      "css"))
+  (setq-hook! 'typescript-mode
+    devdocs-current-docs
+    '("react"
+      "svelte"
+      "javascript"
+      "typescript"
+      "moment"
+      "tailwindcss"
+      "html"
+      "css")))
 #+end_src
