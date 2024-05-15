@@ -20,9 +20,9 @@
   :config
   (setq-hook! 'go-mode
     devdocs-current-docs
-    "go"
-    "sqlite"
-    "http")
+    '("go"
+      "sqlite"
+      "http"))
   (setq-hook! 'gdscript-mode
     devdocs-current-docs
     '("godot~3.5"))
