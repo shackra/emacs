@@ -7,17 +7,15 @@
     (let ((query (thing-at-point 'symbol t)))
       (devdocs-lookup ask-docs query)))
 
-  (when (modulep! :tools devdocs)
-    (add-to-list 'display-buffer-alist
-                 '("\\*devdocs\\*"
-                   display-buffer-in-side-window
-                   (side . right)
-                   (slot . 3)
-                   (window-parameters . ((no-delete-other-windows . t)))
-                   (dedicated . t))))
-
   (global-set-key (kbd "C-h D") 'shackra/devdocs-lookup)
   :config
+  (set-popup-rules!
+    '(("^\\*devdocs\\*"
+       :side right
+       :slot 3
+       :width 0.3
+       :parameters ((no-delete-other-windows . t) (dedicated . t)))))
+
   (setq-hook! 'go-mode-hook
     devdocs-current-docs
     '("go"
