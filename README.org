@@ -42,7 +42,9 @@
 - [[#ai][AI]]
   - [[#ollama][ollama]]
 - [[#just][just]]
--  [[#hashicorp-configuration-language][Hashicorp Configuration Language]]
+- [[#hashicorp-configuration-language][Hashicorp Configuration Language]]
+- [[#apheleia-formateadores][apheleia formateadores]]
+  - [[#nix-mode][nix-mode]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -410,8 +412,13 @@ inspirado por =make=, corre comandos específicos a un proyecto.
 (use-package! just-mode
     :defer)
 #+end_src
-*  Hashicorp Configuration Language
+* Hashicorp Configuration Language
 #+begin_src emacs-lisp
 (use-package! hcl-mode
   :defer)
+#+end_src
+* apheleia formateadores
+** nix-mode
+#+begin_src emacs-lisp
+(add-to-list 'apheleia-formatters '(alejandra . ("alejandra")))
 #+end_src
