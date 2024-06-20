@@ -334,7 +334,7 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
   (setq lsp-ui-doc-show-with-cursor nil)
   (setq lsp-ui-doc-show-with-mouse t)
   (setq lsp-signature-render-documentation nil)
-  (setq lsp-eldoc-enable-hover nil)
+  (setq lsp-eldoc-enable-hover t)
   (setq lsp-signature-auto-activate nil))
 #+end_src
 ** configuración de lsp-tailwind
