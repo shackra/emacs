@@ -420,5 +420,6 @@ inspirado por =make=, corre comandos específicos a un proyecto.
 * apheleia formateadores
 ** nix-mode
 #+begin_src emacs-lisp
-(add-to-list 'apheleia-formatters '(alejandra . ("alejandra")))
+(after! apheleia-formatters
+  (add-to-list 'apheleia-formatters '(alejandra . ("alejandra"))))
 #+end_src
