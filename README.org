@@ -30,6 +30,7 @@
 - [[#ajustes-para-lsp-mode][Ajustes para lsp-mode]]
   -  [[#ajusta-lsp-ui][Ajusta lsp-ui]]
   - [[#configuración-de-lsp-tailwind][configuración de lsp-tailwind]]
+  - [[#ajustes-para-nix-mode][ajustes para nix-mode]]
 - [[#svelte-mode][svelte-mode]]
 - [[#typescript-mode][typescript-mode]]
 - [[#configuración-de-vertico][Configuración de vertico]]
@@ -312,6 +313,15 @@ Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.
 #+begin_src emacs-lisp
 (after! lsp-tailwindcss
   (setq lsp-tailwindcss-major-modes '(typescript-tsx-mode rjsx-mode web-mode html-mode css-mode svelte-mode)))
+#+end_src
+** ajustes para nix-mode
+#+begin_src emacs-lisp
+(after! lsp-mode
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection "nixd")
+                    :major-modes '(nix-mode)
+                    :priority 1
+                    :server-id 'nixd)))
 #+end_src
 * svelte-mode
 #+begin_src emacs-lisp
