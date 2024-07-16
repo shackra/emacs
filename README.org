@@ -135,9 +135,7 @@ Hacemos lo mismo para Projectile
 
 (after! projectile
   (setq projectile-ignored-project-function #'shackra/projectile-ignore-projects)
-  (setq projectile-project-search-path '(("~/code" . 4)
-                                         ("~/Documentos/sotsf/proyectos" . 1)
-                                         ("~/Documentos/Straubinger Digital" . 1))))
+  (setq projectile-project-search-path '(("~/code" . 3))))
 #+end_src
 * Org
 ** configuración básica
