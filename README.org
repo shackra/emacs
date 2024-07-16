@@ -300,32 +300,34 @@ ajustes menores para estos modos mayores
 (setq +mu43-mu4e-mail-path "~/Maildir"
       mu4e-context-policy 'ask-if-none)
 
+(setq shackra-mu4e-signature "Jorge Araya\n\nContacto M.I.:\n· Telegram: t.me/shackra\n· Signal: Shackra.28")
+
 (after! mu4e
   (set-email-account! "principal"
-                      '((mu4e-sent-folder         . "/principal/Sent")
+                      `((mu4e-sent-folder         . "/principal/Sent")
                         (mu4e-drafts-folder       . "/principal/Drafts")
                         (mu4e-trash-folder        . "/principal/Trash")
                         (mu4e-refile-folder       . "/principal/All Mail")
                         (+mu4e-personal-addresses . "jorge@esavara.cr")
-                        (mu4e-compose-signature   . "---\nJorge"))
+                        (mu4e-compose-signature   . ,shackra-mu4e-signature))
                       t)
 
   (set-email-account! "gmail"
-                      '((mu4e-sent-folder         . "/gmail/[Gmail]/Enviados")
+                      `((mu4e-sent-folder         . "/gmail/[Gmail]/Enviados")
                         (mu4e-drafts-folder       . "/gmail/[Gmail]/Borradores")
                         (mu4e-trash-folder        . "/gmail/[Gmail]/Papelera")
                         (mu4e-refile-folder       . "/gmail/[Gmail]/Todos")
                         (+mu4e-personal-addresses . "shackrasislock@gmail.com")
-                        (mu4e-compose-signature   . "---\nJorge"))
+                        (mu4e-compose-signature   . ,shackra-mu4e-signature))
                       nil)
 
   (set-email-account! "yahoo"
-                      '((mu4e-sent-folder         . "/yahoo/Sent")
+                      `((mu4e-sent-folder         . "/yahoo/Sent")
                         (mu4e-drafts-folder       . "/yahoo/Draft")
                         (mu4e-trash-folder        . "/yahoo/Trash")
                         (mu4e-refile-folder       . "/yahoo/Archive")
                         (+mu4e-personal-addresses . "jorgejavieran@yahoo.com.mx")
-                        (mu4e-compose-signature   . "---\nJorge"))
+                        (mu4e-compose-signature   . ,shackra-mu4e-signature))
                       nil)
 
   (setq mu4e-bookmarks
@@ -333,16 +335,19 @@ ajustes menores para estos modos mayores
            :query "maildir:/principal/inbox or maildir:/gmail/Inbox or maildir:/yahoo/Inbox and not flag:list"
            :key ?i)
           (:name "Listas de correo"
-           :query "flag:list and not flag:trashed"
+           :query "flag:list and not flag:trashed and not maildir:/gmail/[Gmail]/Papelera"
            :key ?l)
           (:name "Importante"
-           :query "flag:flagged and not flag:trashed"
+           :query "flag:flagged and not flag:trashed and not maildir:/gmail/[Gmail]/Papelera"
            :key ?f
            :hide-unread t)
           (:name "Correo basura"
            :query "maildir:/principal/Spam or maildir:/gmail/\[Gmail\]/Spam"
            :key ?s
-           :hide-unread t))))
+           :hide-unread t)
+          (:name "BAC San José (pagos y transferencias)"
+           :query "contact:notificacion@notificacionesbaccr.com or contact:sinpe@notificacionesbaccr.com and not flag:trashed"
+           :key ?b))))
 #+END_SRC
 * tramp
 Ajustes para Tramp (sacados de [[https://tecosaur.github.io/emacs-config/config.html#tramp][Doom Emacs Configuration]])
