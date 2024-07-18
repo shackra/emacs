@@ -229,6 +229,15 @@ ajustes menores para estos modos mayores
 (setq +mu43-mu4e-mail-path "~/Maildir"
       mu4e-context-policy 'ask-if-none)
 
+(setq mu4e-alert-interesting-mail-query
+      (concat "maildir:/principal/inbox or "
+              "maildir:/gmail/Inbox or "
+              "maildir:/yahoo/Inbox "
+              "and not flag:list and "
+              "flag:unread")
+      mu4e-alert-email-notification-types
+      '(count))
+
 (setq shackra-mu4e-signature "Jorge Araya\n\nContacto M.I.:\n· Telegram: t.me/shackra\n· Signal: Shackra.28")
 
 (after! mu4e
