@@ -238,7 +238,7 @@ ajustes menores para estos modos mayores
       mu4e-alert-email-notification-types
       '(count))
 
-(setq shackra-mu4e-signature "Jorge Araya\n\nContacto M.I.:\n· Telegram: t.me/shackra\n· Signal: Shackra.28")
+(setq shackra-mu4e-signature "Jorge Araya\n\nContacto:\n Telegram: t.me/shackra · Signal: Shackra.28")
 
 (after! mu4e
   (setq sendmail-program (executable-find "msmtp")
