@@ -290,7 +290,7 @@ ajustes menores para estos modos mayores
            :key ?s
            :hide-unread t)
           (:name "BAC San José (pagos y transferencias)"
-           :query "contact:notificacion@notificacionesbaccr.com or contact:sinpe@notificacionesbaccr.com and not flag:trashed"
+           :query "contact:notificacion@notificacionesbaccr.com or contact:sinpe@notificacionesbaccr.com and not flag:trashed and not maildir:/principal/Trash"
            :key ?b))))
 #+END_SRC
 * tramp
