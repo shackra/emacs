@@ -19,6 +19,10 @@
 
 (package! hcl-mode :recipe (:host github :repo "hcl-emacs/hcl-mode"))
 
+(package! protobuf-mode
+  :recipe (:host github :repo "protocolbuffers/protobuf"
+           :files ("editors/protobuf-mode.el")))
+
 ;; To install a package with Doom you must declare them here and run 'doom sync'
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.

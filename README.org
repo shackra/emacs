@@ -45,6 +45,7 @@
 - [[#hashicorp-configuration-language][Hashicorp Configuration Language]]
 - [[#apheleia-formateadores][apheleia formateadores]]
   - [[#nix-mode][nix-mode]]
+- [[#protobuf][protobuf]]
 
 * Preámbulo
 Datos personales y opciones de Emacs lisp.
@@ -416,4 +417,10 @@ inspirado por =make=, corre comandos específicos a un proyecto.
 #+begin_src emacs-lisp
 (after! apheleia-formatters
   (add-to-list 'apheleia-formatters '(alejandra . ("alejandra"))))
+#+end_src
+* protobuf
+TODO: instalar https://github.com/lasorda/protobuf-language-server
+#+begin_src emacs-lisp
+(use-package! protobuf-mode
+  :defer-incrementally)
 #+end_src
