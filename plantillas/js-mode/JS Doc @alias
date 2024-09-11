@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: JS Doc @alias
-# key: @alias
-# --
-@alias $1$0

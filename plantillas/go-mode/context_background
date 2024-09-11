@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: context.Background()
-# key: ctb
-# --
-context.Background()

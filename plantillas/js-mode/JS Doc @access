@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: JS Doc @access
-# key: @access
-# --
-@access ${1: $$(yas-auto-next (yas-choose-value '("package" "private" "protected" "public")))}$0

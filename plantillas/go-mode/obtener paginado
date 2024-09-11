@@ -1,9 +1,0 @@
-# -*- mode: snippet -*-
-# name: obtener paginado
-# key: /pag
-# --
-page, pageSize, err := getPagination(r)
-if err != nil {
-	reportError(w, fault.ErrConversionError, http.StatusBadRequest, fault.MessageBadRequest, fault.MessageBadRequest)
-	return
-}

@@ -1,8 +1,0 @@
-# -*- mode: snippet -*-
-# name: reportar error de permisos
-# key: /errauth
-# --
-if $0 {
-	reportError(w, fault.ErrPermissionDenied, http.StatusForbidden, fault.MessageForbidden, fault.MessageForbidden)
-	return
-}
