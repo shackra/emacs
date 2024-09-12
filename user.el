@@ -59,7 +59,7 @@
   (((go-mode go-ts-mode) . eglot-ensure)
    ((go-mode go-ts-mode) . #'shackra/eglot-format-buffer-before-save)))
 
-;; activa eglot para algunos modos mayores
+;; activa `eglot' para algunos modos mayores
 (with-eval-after-load 'eglot
   (add-hook 'python-mode-hook #'eglot-ensure)
   (add-hook 'python-ts-mode-hook #'eglot-ensure)
@@ -82,7 +82,7 @@
   :bind-keymap
   ("C-c p" . projectile-command-map))
 
-;; me gustaria tener un tablero como en Doom
+;; me gustaría tener un tablero como en Doom
 (use-package dashboard
   :ensure t
   :config
@@ -137,7 +137,7 @@
 	'((magit-status-mode :select t :inhibit-window-quit t :same t)
           (magit-log-mode    :select t :inhibit-window-quit t :same t))))
 
-;; quiero que lo mostrado por eldoc aparezca en un child-frame
+;; quiero que lo mostrado por `eldoc' aparezca en un `child-frame'
 (use-package eldoc-box
   :defer t
   :ensure t
@@ -146,7 +146,7 @@
   :config
   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
 
-;; quisiera que la posicion del cursor sea recordado al visitar un
+;; quisiera que la posición del cursor sea recordado al visitar un
 ;; archivo de nuevo
 (use-package saveplace
   :ensure t
@@ -159,3 +159,36 @@
 
 (use-package saveplace-pdf-view
   :ensure t)
+
+;; Necesito cambiar el corrector ortográfico según el idioma!
+(use-package guess-language
+  :ensure t
+  :hook (flyspell-mode . guess-language-mode)
+  :config
+  (setq guess-language-langcodes '((en . ("en_US-w_accents" "English" "🇺🇸" "Inglés"))
+                                   (es . ("es" nil "🇪🇸" "Español")))
+        guess-language-languages '(en es)
+        guess-language-min-paragraph-length 45))
+
+(use-package flyspell
+  :hook ((prog-mode		.	flyspell-prog-mode)
+	 (text-mode		.	flyspell-mode)
+	 (git-commit-setup-hook .	git-commit-turn-on-flyspell))
+  :init
+  (setq ispell-program-name "aspell")
+  (setq ispell-list-command "--list"))
+
+(use-package flyspell-correct
+  :ensure t
+  :after flyspell)
+
+(use-package consult-flyspell
+  :ensure t
+  :after (:all flyspell flyspell-correct)
+  :bind
+  (("M-\\" . consult-flyspell)
+   ("M-ç"  . consult-flyspell))
+  :config
+  (setq consult-flyspell-select-function 'flyspell-correct-at-point
+        consult-flyspell-set-point-after-word t
+        consult-flyspell-always-check-buffer nil))
