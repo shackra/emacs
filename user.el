@@ -215,3 +215,16 @@
   :after nix-ts-mode
   :ensure t
   :hook (nix-ts-mode . nix-modeline-mode))
+
+;; Intentemos tener las mismas variables de entorno
+(use-package exec-path-from-shell
+  :ensure t
+  :init
+  (setq exec-path-from-shell-warn-duration-millis 600)
+  :config
+  (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "NIX_SSL_CERT_FILE" "NIX_PATH"))
+    (add-to-list 'exec-path-from-shell-variables var))
+  (if (daemonp)
+      (exec-path-from-shell-initialize)
+    (when (memq window-system '(mac ns x))
+      (exec-path-from-shell-initialize))))
