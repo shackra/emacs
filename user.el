@@ -7,9 +7,6 @@
 ;; Fuente variable (para textos con variable-pitch)
 (set-face-attribute 'variable-pitch nil :family "Iosevka Comfy" :height 160)
 
-;; Fuente serif
-(set-face-attribute 'serif nil :family "Iosevka Comfy Motion Duo" :height 160)
-
 ;; Fuente de símbolos
 (set-fontset-font t 'symbol (font-spec :family "Julia Mono" :size 16))
 
