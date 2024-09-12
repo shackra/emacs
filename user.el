@@ -17,7 +17,10 @@
 ;; deshabilita la ayuda rapida al iniciar Emacs
 (remove-hook 'after-init-hook 'help-quick)
 
-(add-hook 'prog-mode-hook (lambda () (toggle-truncate-lines +1)))
+(defun shackra/truncate-long-lines ()
+  (setq truncate-lines t))
+
+(add-hook 'prog-mode-hook #'shackra/truncate-long-lines)
 
 ;; Necesito escribir software en Go
 (use-package go-mode
