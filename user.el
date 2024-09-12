@@ -22,6 +22,14 @@
 
 (add-hook 'prog-mode-hook #'shackra/truncate-long-lines)
 
+(use-package treesit-auto
+  :ensure t
+  :custom
+  (treesit-auto-install 'prompt)
+  :config
+  (treesit-auto-add-to-auto-mode-alist 'all)
+  (global-treesit-auto-mode))
+
 ;; Necesito escribir software en Go
 (use-package go-mode
   :ensure t
