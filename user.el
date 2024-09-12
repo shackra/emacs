@@ -192,3 +192,10 @@
   (setq consult-flyspell-select-function 'flyspell-correct-at-point
         consult-flyspell-set-point-after-word t
         consult-flyspell-always-check-buffer nil))
+
+;; Estoy usando envrc
+(use-package envrc
+  :ensure t
+  :hook (after-init . envrc-global-mode)
+  :bind (:map envrc-mode-map
+	      ("C-c e" . envrc-command-map)))
