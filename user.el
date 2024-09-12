@@ -80,7 +80,7 @@
   :ensure t
   :hook (after-init . doom-modeline-mode)
   :init
-  (setq doom-modeline-height 32))
+  (setq doom-modeline-height 44))
 
 ;; Me gustaria usar temas de Doom
 (use-package doom-themes
