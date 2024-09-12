@@ -51,6 +51,35 @@
   :bind-keymap
   ("C-c p" . projectile-command-map))
 
+;; me gustaria tener un tablero como en Doom
+(use-package dashboard
+  :ensure t
+  :config
+  (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
+	dashboard-banner-logo-title "«Bendito el Señor, mi Roca,\nque adiestra mis manos para el combate,\nmis dedos para la pelea» —Salmo 143"
+	dashboard-startup-banner (expand-file-name "dashboard/sacred-heart.svg" user-emacs-directory)
+	dashboard-item-names '(("Recent Files:" .	"Archivos visitados recientemente:")
+			       ("Bookmarks:"    .	"Marcadores:")
+			       ("Projects:"	.	"Proyectos:")
+			       ("Registers:"	.	"Registros:"))
+	dashboard-item-shortcuts '((recents	.	"r")
+                                   (bookmarks	.	"m")
+                                   (projects	.	"p")
+                                   (registers	.	"e"))
+	dashboard-items '((recents		.	3)
+                          (bookmarks		.	5)
+                          (projects		.	5)
+                          (registers		.	5))
+	dashboard-display-icons-p t
+	dashboard-icon-type 'nerd-icon
+	dashboard-set-heading-icons t
+	dashboard-set-file-icons t)
+
+  (dashboard-modify-heading-icons '((recents . "nf-oct-file_text")
+				    (bookmarks . "nf-oct-book")))
+
+  (dashboard-setup-startup-hook))
+
 ;; quiero una barra modeline más bonita
 (use-package doom-modeline
   :ensure t
