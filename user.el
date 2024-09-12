@@ -84,6 +84,10 @@
   :bind-keymap
   ("C-c p" . projectile-command-map))
 
+(use-package rg
+  :ensure t
+  :hook (after-init . rg-enable-default-bindings))
+
 ;; me gustaría tener un tablero como en Doom
 (use-package dashboard
   :ensure t
