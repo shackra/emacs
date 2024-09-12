@@ -143,3 +143,17 @@
   (setq eldoc-box-only-multi-line t)
   :config
   (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
+
+;; quisiera que la posicion del cursor sea recordado al visitar un
+;; archivo de nuevo
+(use-package saveplace
+  :ensure t
+  :hook (after-init . save-place-mode)
+  :custom
+  (save-place-ignore-files-regexp
+   "\\(?:COMMIT_EDITMSG\\|hg-editor-[[:alnum:]]+\\.txt\\|elpa\\|svn-commit\\.tmp\\|bzr_log\\.[[:alnum:]]+\\)$")
+  (save-place-file (expand-file-name ".mis-lugares-guardados" user-emacs-directory))
+  (save-place-forget-unreadable-files t))
+
+(use-package saveplace-pdf-view
+  :ensure t)
