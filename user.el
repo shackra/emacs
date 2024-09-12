@@ -145,12 +145,10 @@
 
 ;; quiero que lo mostrado por `eldoc' aparezca en un `child-frame'
 (use-package eldoc-box
-  :defer t
   :ensure t
   :init
   (setq eldoc-box-only-multi-line t)
-  :config
-  (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
+  :hook (eglot-managed-mode . eldoc-box-hover-mode))
 
 ;; quisiera que la posición del cursor sea recordado al visitar un
 ;; archivo de nuevo
