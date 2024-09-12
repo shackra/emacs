@@ -118,3 +118,11 @@
   (setq shackle-rules
 	'((magit-status-mode :select t :inhibit-window-quit t :same t)
           (magit-log-mode    :select t :inhibit-window-quit t :same t))))
+
+;; quiero que lo mostrado por eldoc aparezca en un child-frame
+(use-package eldoc-box
+  :ensure t
+  :init
+  (setq eldoc-box-only-multi-line t)
+  :config
+  (add-hook 'eglot-managed-mode-hook #'eldoc-box-hover-mode t))
