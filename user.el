@@ -199,3 +199,17 @@
   :hook (after-init . envrc-global-mode)
   :bind (:map envrc-mode-map
 	      ("C-c e" . envrc-command-map)))
+
+;; Quisiera editar los archivos de NixOS :)
+(use-package nix-ts-mode
+  :ensure t
+  :mode "\\.nix\\'"
+  :hook (nix-ts-mode . eglot-ensure))
+
+(with-eval-after-load 'eglot
+  (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nil"))))
+
+(use-package nix-modeline
+  :after nix-ts-mode
+  :ensure t
+  :hook (nix-ts-mode . nix-modeline-mode))
