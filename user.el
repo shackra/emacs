@@ -89,3 +89,15 @@
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italics t)
   (load-theme 'doom-sourcerer t))
+
+;; Necesito que algunas ventanas se comporten de forma distinta
+(use-package shackle
+  :init
+  (setq shackle-lighter ""
+	shackle-default-size 0.4)
+  :ensure t
+  :hook (after-init . shackle-mode)
+  :config
+  (setq shackle-rules
+	'((magit-status-mode :select t :inhibit-window-quit t :same t)
+          (magit-log-mode    :select t :inhibit-window-quit t :same t))))
