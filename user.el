@@ -43,8 +43,10 @@
 
 ;; activa eglot para algunos modos mayores
 (with-eval-after-load 'eglot
-  (add-hook 'python-mode-hook #'eglot)
-  (add-hook 'json-mode-hook #'eglot))
+  (add-hook 'python-mode-hook #'eglot-ensure)
+  (add-hook 'python-ts-mode-hook #'eglot-ensure)
+  (add-hook 'json-mode-hook #'eglot-ensure)
+  (add-hook 'json-ts-mode-hook #'eglot-ensure))
 
 (defun shackra/projectile-ignore-projects (project-root)
   (or (file-remote-p project-root)
