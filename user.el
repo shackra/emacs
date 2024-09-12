@@ -81,6 +81,7 @@
                                    (registers	.	"e"))
 	dashboard-items '((recents		.	3)
                           (bookmarks		.	5))
+
 	dashboard-display-icons-p t
 	dashboard-icon-type 'nerd-icon
 	dashboard-set-heading-icons t
