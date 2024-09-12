@@ -53,7 +53,7 @@
   :ensure t
   :config
   (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
-	dashboard-banner-logo-title "«Bendito el Señor, mi Roca,\nque adiestra mis manos para el combate,\nmis dedos para la pelea» —Salmo 143"
+	dashboard-banner-logo-title "«Bendito el Señor, mi Roca,\nque adiestra mis manos para el combate,\nmis dedos para la pelea» — Salmo 143"
 	dashboard-startup-banner (expand-file-name "dashboard/sacred-heart.svg" user-emacs-directory)
 	dashboard-item-names '(("Recent Files:" .	"Archivos visitados recientemente:")
 			       ("Bookmarks:"    .	"Marcadores:")
