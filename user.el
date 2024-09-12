@@ -51,13 +51,15 @@
 (defun shackra/eglot-format-buffer-before-save ()
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
 
+;; Gancho para agregar `eglot-format-buffer'
+(with-eval-after-load 'eglot
+  (add-hook 'after-init-hook #'shackra/eglot-format-buffer-before-save))
+
 ;; Necesito escribir software en Go
 (use-package go-mode
   :ensure t
   :after (eglot)
-  :hook
-  (((go-mode go-ts-mode) . eglot-ensure)
-   ((go-mode go-ts-mode) . #'shackra/eglot-format-buffer-before-save)))
+  :hook ((go-mode go-ts-mode) . eglot-ensure))
 
 ;; activa `eglot' para algunos modos mayores
 (with-eval-after-load 'eglot
