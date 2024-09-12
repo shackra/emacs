@@ -30,13 +30,16 @@
   (treesit-auto-add-to-auto-mode-alist 'all)
   (global-treesit-auto-mode))
 
+(defun shackra/eglot-format-buffer-before-save ()
+  (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+
 ;; Necesito escribir software en Go
 (use-package go-mode
   :ensure t
+  :after (eglot)
   :hook
-  ((go-mode . eglot))
-  :config
-  (add-to-list 'major-mode-remap-alist '(go-mode . go-ts-mode)))
+  (((go-mode go-ts-mode) . eglot-ensure)
+   ((go-mode go-ts-mode) . #'shackra/eglot-format-buffer-before-save)))
 
 ;; activa eglot para algunos modos mayores
 (with-eval-after-load 'eglot
