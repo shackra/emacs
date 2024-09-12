@@ -1,3 +1,6 @@
+;; Usa respuetas cortas para yes/no
+(setopt use-short-answers t)
+
 ;; Deshabilita CUA mode
 (cua-mode -1)
 ;; des-ata C-z
