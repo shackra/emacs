@@ -1,0 +1,11 @@
+ #+title: Mi configuración de GNU Emacs
+#+author: Jorge Javier Araya Navarro
+#+email: jorge@esavara.cr
+#+date: <2024-09-11 mié>
+
+Sin ningun motivo en particular he decidido abandonar Doom Emacs y fabricar una nueva configuración usando [[https://codeberg.org/ashton314/emacs-bedrock/][Emacs Bedrock]].
+
+Tengo un 80% de lo esencial para mi computación diaria, aunque resiento la ausencia de un paquete para la lectura de mi correo electronico. He copiado los archivos =init.el=, =early-init.el= y la carpeta =extras= sin modificar casi nada en =init.el=.
+
+Para configurar a partir de Bedrock he usado una aproximación similar a la que nos obliga Doom para hacer ajustes, ajustes que estan en el archivo =user.el=. Así se hace más sencillo actualizar Bedrock en el futuro.
+
