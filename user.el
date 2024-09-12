@@ -40,6 +40,7 @@
 		(kill-local-variable '+magit--pos)))))
 
 (use-package treesit-auto
+  :defer t
   :ensure t
   :custom
   (treesit-auto-install 'prompt)
@@ -138,6 +139,7 @@
 
 ;; quiero que lo mostrado por eldoc aparezca en un child-frame
 (use-package eldoc-box
+  :defer t
   :ensure t
   :init
   (setq eldoc-box-only-multi-line t)
