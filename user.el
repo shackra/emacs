@@ -1,6 +1,9 @@
 ;; Usa respuetas cortas para yes/no
 (setopt use-short-answers t)
 
+;; Mata el buffer actual
+(global-set-key (kbd "C-x k") 'kill-this-buffer)
+
 ;; Fuente principal
 (set-face-attribute 'default nil :family "Iosevka Nerd Font Mono" :height 160)
 
