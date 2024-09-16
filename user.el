@@ -1,4 +1,4 @@
-;; Usa respuetas cortas para yes/no
+;; Usa respuestas cortas para yes/no
 (setopt use-short-answers t)
 
 ;; Mata el buffer actual
