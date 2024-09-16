@@ -64,13 +64,6 @@
   :after (eglot)
   :hook ((go-mode go-ts-mode) . eglot-ensure))
 
-;; activa `eglot' para algunos modos mayores
-(with-eval-after-load 'eglot
-  (add-hook 'python-mode-hook #'eglot-ensure)
-  (add-hook 'python-ts-mode-hook #'eglot-ensure)
-  (add-hook 'json-mode-hook #'eglot-ensure)
-  (add-hook 'json-ts-mode-hook #'eglot-ensure))
-
 (defun shackra/projectile-ignore-projects (project-root)
   (or (file-remote-p project-root)
       (string-match-p "^/nix/store" project-root)
@@ -214,7 +207,22 @@
   :hook (nix-ts-mode . eglot-ensure))
 
 (with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nil"))))
+  (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nil")))
+  ;; activa eglot para modos mayores
+  (dolist (hook '(js-mode-hook
+		  js-ts-mode-hook
+		  typescript-mode-hook
+		  typescript-ts-mode-hook
+		  python-mode-hook
+		  python-ts-mode-hook
+		  json-mode-hook
+		  json-ts-mode-hook))
+    (add-hook hook #'eglot-ensure))
+
+  (define-key eglot-mode-map (kbd "C-c e ! n") #'flymake-goto-next-error)
+  (define-key eglot-mode-map (kbd "C-c e ! p") #'flymake-goto-prev-error)
+  (define-key eglot-mode-map (kbd "C-c e r")   #'eglot-rename)
+  (define-key eglot-mode-map (kbd "C-c e a")   #'eglot-code-actions))
 
 (use-package nix-modeline
   :after nix-ts-mode
