@@ -233,3 +233,12 @@
       (exec-path-from-shell-initialize)
     (when (memq window-system '(mac ns x))
       (exec-path-from-shell-initialize))))
+
+;; ajustes para uniquify
+;; sacado de:
+;;     https://pragmaticemacs.wordpress.com/2016/05/10/uniquify-your-buffer-names/
+(with-eval-after-load 'uniquify
+  (setq uniquify-buffer-name-style 'forward
+	uniquify-separator "/"
+	uniquify-after-kill-buffer-p t    ; rename after killing uniquified
+	uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
