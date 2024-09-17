@@ -225,6 +225,14 @@
   (define-key eglot-mode-map (kbd "C-c e r")   #'eglot-rename)
   (define-key eglot-mode-map (kbd "C-c e a")   #'eglot-code-actions))
 
+;; ajustes adicionales para servidores LSP, por defecto
+(with-eval-after-load 'eglot
+  (setq-default eglot-workspace-configuration
+                '(:nil (:formatting (:command ["nixfmt"])
+				    :nix (:flake
+					  (:autoArchive t :autoEvalInputs t :nixpkgsInputName "nixpkgs")))
+		       :gopls (:usePlaceholders t :gofumpt t))))
+
 (use-package nix-modeline
   :after nix-ts-mode
   :ensure t
