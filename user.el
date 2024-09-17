@@ -56,7 +56,7 @@
 
 ;; Gancho para agregar `eglot-format-buffer'
 (with-eval-after-load 'eglot
-  (add-hook 'after-init-hook #'shackra/eglot-format-buffer-before-save))
+  (add-hook 'eglot-managed-mode-hook #'shackra/eglot-format-buffer-before-save))
 
 ;; Necesito escribir software en Go
 (use-package go-mode
