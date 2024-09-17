@@ -99,8 +99,9 @@
                                    (bookmarks	.	"m")
                                    (projects	.	"p")
                                    (registers	.	"e"))
-	dashboard-items '((recents		.	3)
-                          (bookmarks		.	5))
+	dashboard-items '((projects		.	3)
+                          (bookmarks		.	3)
+			  (registers		.       3))
 
 	dashboard-display-icons-p t
 	dashboard-icon-type 'nerd-icon
