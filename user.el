@@ -220,10 +220,10 @@
 		  json-ts-mode-hook))
     (add-hook hook #'eglot-ensure))
 
-  (define-key eglot-mode-map (kbd "C-c e ! n") #'flymake-goto-next-error)
-  (define-key eglot-mode-map (kbd "C-c e ! p") #'flymake-goto-prev-error)
-  (define-key eglot-mode-map (kbd "C-c e r")   #'eglot-rename)
-  (define-key eglot-mode-map (kbd "C-c e a")   #'eglot-code-actions))
+  (define-key eglot-mode-map (kbd "C-c l ! n") #'flymake-goto-next-error)
+  (define-key eglot-mode-map (kbd "C-c l ! p") #'flymake-goto-prev-error)
+  (define-key eglot-mode-map (kbd "C-c l r")   #'eglot-rename)
+  (define-key eglot-mode-map (kbd "C-c l a")   #'eglot-code-actions))
 
 ;; ajustes adicionales para servidores LSP, por defecto
 (with-eval-after-load 'eglot
