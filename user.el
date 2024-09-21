@@ -64,16 +64,24 @@
   :after (eglot)
   :hook ((go-mode go-ts-mode) . eglot-ensure))
 
-(defun shackra/projectile-ignore-projects (project-root)
+(defun shackra/project-ignore-projects (project-root)
   (or (file-remote-p project-root)
       (string-match-p "^/nix/store" project-root)
       (string-match-p "/node_modules/" project-root)
       (string-match-p "go/pkg/mod" project-root)))
 
-;; Necesito manejar proyectos
 (use-package rg
   :ensure t
   :hook (after-init . rg-enable-default-bindings))
+
+;; Necesito manejar proyectos
+(use-package project
+  :ensure t
+  :config
+  (setq 'project-vc-extra-root-markers
+	'("Cargo.toml" "compile_commands.json"
+	  "compile_flags.txt" "go.mod"
+	  "project.godot")))
 
 ;; me gustaría tener un tablero como en Doom
 (use-package dashboard
