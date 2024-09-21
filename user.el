@@ -260,3 +260,11 @@
 	uniquify-separator "/"
 	uniquify-after-kill-buffer-p t    ; rename after killing uniquified
 	uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
+
+;; Soporte para Godot Engine
+(use-package gdscript-mode
+  :ensure t
+  :hook ((gdscript-mode gdscript-ts-mode) . eglot-ensure)
+  :init
+  (add-to-list 'major-mode-remap-alist '(gdscript-mode . gdscript-ts-mode)))
+
