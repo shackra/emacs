@@ -71,15 +71,6 @@
       (string-match-p "go/pkg/mod" project-root)))
 
 ;; Necesito manejar proyectos
-(use-package projectile
-  :ensure t
-  :hook ((after-init . projectile-mode))
-  :init
-  (setq projectile-ignored-project-function #'shackra/projectile-ignore-projects)
-  (setq projectile-project-search-path '(("~/code" . 3) ("~/code/work" . 1)))
-  :bind-keymap
-  ("C-c p" . projectile-command-map))
-
 (use-package rg
   :ensure t
   :hook (after-init . rg-enable-default-bindings))
