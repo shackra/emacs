@@ -219,10 +219,8 @@
 		  json-ts-mode-hook))
     (add-hook hook #'eglot-ensure))
 
-  (define-key eglot-mode-map (kbd "C-c l ! n") #'flymake-goto-next-error)
-  (define-key eglot-mode-map (kbd "C-c l ! p") #'flymake-goto-prev-error)
-  (define-key eglot-mode-map (kbd "C-c l r")   #'eglot-rename)
-  (define-key eglot-mode-map (kbd "C-c l a")   #'eglot-code-actions))
+  (define-key eglot-mode-map   (kbd "C-c l r")   #'eglot-rename)
+  (define-key eglot-mode-map   (kbd "C-c l a")   #'eglot-code-actions))
 
 ;; ajustes adicionales para servidores LSP, por defecto
 (with-eval-after-load 'eglot
@@ -231,6 +229,10 @@
 				    :nix (:flake
 					  (:autoArchive t :autoEvalInputs t :nixpkgsInputName "nixpkgs")))
 		       :gopls (:usePlaceholders t :gofumpt t))))
+
+(with-eval-after-load 'flymake
+  (define-key flymake-mode-map (kbd "C-c ! n") #'flymake-goto-next-error)
+  (define-key flymake-mode-map (kbd "C-c ! p") #'flymake-goto-prev-error))
 
 (use-package nix-modeline
   :after nix-ts-mode
