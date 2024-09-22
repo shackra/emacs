@@ -78,7 +78,7 @@
 (use-package project
   :ensure t
   :config
-  (setq 'project-vc-extra-root-markers
+  (setq project-vc-extra-root-markers
 	'("Cargo.toml" "compile_commands.json"
 	  "compile_flags.txt" "go.mod"
 	  "project.godot")))
@@ -266,5 +266,5 @@
   :ensure t
   :hook ((gdscript-mode gdscript-ts-mode) . eglot-ensure)
   :init
-  (add-to-list 'major-mode-remap-alist '(gdscript-mode . gdscript-ts-mode)))
+  (add-to-list major-mode-remap-alist '(gdscript-mode . gdscript-ts-mode)))
 
