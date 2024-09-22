@@ -43,7 +43,6 @@
 		(kill-local-variable '+magit--pos)))))
 
 (use-package treesit-auto
-  :defer t
   :ensure t
   :custom
   (treesit-auto-install 'prompt)
