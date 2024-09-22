@@ -266,5 +266,5 @@
   :ensure t
   :hook ((gdscript-mode gdscript-ts-mode) . eglot-ensure)
   :init
-  (add-to-list major-mode-remap-alist '(gdscript-mode . gdscript-ts-mode)))
+  (add-to-list 'major-mode-remap-alist '(gdscript-mode . gdscript-ts-mode)))
 
