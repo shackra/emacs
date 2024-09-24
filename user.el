@@ -299,17 +299,20 @@
 (use-package pdf-tools
   :ensure t)
 
-(with-eval-after-load 'project
-  ;; muestra buffers asociados a un proyecto cuando estoy en uno
-  (defun shackra/project-buffer-switching ()
-    "Reasignar el atajo `C-x b` a `project-switch-to-buffer` cuando esté en un proyecto."
-    (when (project-current)
-      (local-set-key (kbd "C-x b") #'project-switch-to-buffer)
-      ;; asigna switch-to-buffer al atajo que tenia project-switch-to-buffer
-      (local-set-key (kbd "C-x p b") #'switch-to-buffer)))
+(use-package persp-mode
+  :ensure t
+  :hook (after-init . persp-mode)
+  :init
+  (setq persp-autokill-buffer-on-remove 'kill-weak))
 
-  (add-hook 'find-file-hook #'shackra/project-buffer-switching)
-  (add-hook 'dired-mode-hook #'shackra/project-buffer-switching))
+(use-package persp-mode-project-bridge
+  :ensure t
+  :hook
+  (persp-mode-project-bridge-mode . (lambda ()
+                                      (if persp-mode-project-bridge-mode
+                                          (persp-mode-project-bridge-find-perspectives-for-all-buffers)
+                                        (persp-mode-project-bridge-kill-perspectives))))
+  (persp-mode . persp-mode-project-bridge-mode))
 
 ;; borramos espacios en blanco de forma inteligente
 (use-package smart-hungry-delete
