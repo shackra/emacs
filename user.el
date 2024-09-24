@@ -152,11 +152,15 @@
           "Output\\*$"
           "\\*Async Shell Command\\*"
           help-mode
-          compilation-mode))
+          compilation-mode
+	  vterm-mode))
   (popper-mode +1)
   (popper-echo-mode +1)                 ; For echo area hints
   :config
   (setq popper-group-function #'popper-group-by-project))
+
+;; emulador de terminal dentro de Emacs!
+(use-package vterm) ;; no lleva :ensure porque el paquete esta instalado en el sistema operativo
 
 ;; quiero que lo mostrado por `eldoc' aparezca en un `child-frame'
 (use-package eldoc-box
