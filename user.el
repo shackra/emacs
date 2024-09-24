@@ -298,3 +298,8 @@
 ;; Soporte para leer y anotar PDFs
 (use-package pdf-tools
   :ensure t)
+;; borramos espacios en blanco de forma inteligente
+(use-package smart-hungry-delete
+  :ensure t
+  :bind (("<backspace>" . smart-hungry-delete-backward-char)
+         ("C-d" . smart-hungry-delete-forward-char)))
