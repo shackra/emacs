@@ -298,6 +298,17 @@
 ;; Soporte para leer y anotar PDFs
 (use-package pdf-tools
   :ensure t)
+
+(with-eval-after-load 'project
+  ;; muestra buffers asociados a un proyecto cuando estoy en uno
+  (defun shackra/project-buffer-switching ()
+    "Reasignar el atajo `C-x b` a `project-switch-to-buffer` cuando esté en un proyecto."
+    (when (project-current)
+      (local-set-key (kbd "C-x b") #'project-switch-to-buffer)))
+
+  (add-hook 'find-file-hook #'shackra/project-buffer-switching)
+  (add-hook 'dired-mode-hook #'shackra/project-buffer-switching))
+
 ;; borramos espacios en blanco de forma inteligente
 (use-package smart-hungry-delete
   :ensure t
