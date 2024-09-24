@@ -138,6 +138,7 @@
 	'((magit-status-mode :select t :inhibit-window-quit t :same t)
           (magit-log-mode    :select t :inhibit-window-quit t :same t))))
 
+(add-hook 'after-init-hook #'winner-mode)
 ;; quiero que lo mostrado por `eldoc' aparezca en un `child-frame'
 (use-package eldoc-box
   :ensure t
