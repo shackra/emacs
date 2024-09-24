@@ -135,8 +135,10 @@
   :hook (after-init . shackle-mode)
   :config
   (setq shackle-rules
-	'((magit-status-mode :select t :inhibit-window-quit t :same t)
-          (magit-log-mode    :select t :inhibit-window-quit t :same t))))
+	'((magit-status-mode        :select t :inhibit-window-quit t :same t)
+          (magit-log-mode           :select t :inhibit-window-quit t :same t)
+	  ("*Async Shell Command*"  :ignore t)
+	  ("*eshell*"               :select t :other t))))
 
 (add-hook 'after-init-hook #'winner-mode)
 
