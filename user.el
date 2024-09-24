@@ -153,6 +153,7 @@
           "\\*Async Shell Command\\*"
           help-mode
           compilation-mode
+	  eshell-mode
 	  vterm-mode))
   (popper-mode +1)
   (popper-echo-mode +1)                 ; For echo area hints
