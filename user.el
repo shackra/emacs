@@ -144,7 +144,7 @@
 (use-package popper
   :ensure t
   :bind (("C-<break>"   . popper-toggle) ;; <break> sería Pause en el teclado
-         ("M-<break>"   . popper-cycle)
+         ("M-<pause>"   . popper-cycle)
          ("C-M-<break>" . popper-toggle-type))
   :init
   (setq popper-reference-buffers
