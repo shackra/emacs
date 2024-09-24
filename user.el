@@ -287,3 +287,6 @@
   :init
   (add-to-list 'major-mode-remap-alist '(gdscript-mode . gdscript-ts-mode)))
 
+;; Soporte para leer y anotar PDFs
+(use-package pdf-tools
+  :ensure t)
