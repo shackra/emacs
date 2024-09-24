@@ -139,6 +139,25 @@
           (magit-log-mode    :select t :inhibit-window-quit t :same t))))
 
 (add-hook 'after-init-hook #'winner-mode)
+
+;; Domestica ciertas ventanas
+(use-package popper
+  :ensure t
+  :bind (("C-<break>"   . popper-toggle) ;; <break> sería Pause en el teclado
+         ("M-<break>"   . popper-cycle)
+         ("C-M-<break>" . popper-toggle-type))
+  :init
+  (setq popper-reference-buffers
+        '("\\*Messages\\*"
+          "Output\\*$"
+          "\\*Async Shell Command\\*"
+          help-mode
+          compilation-mode))
+  (popper-mode +1)
+  (popper-echo-mode +1)                 ; For echo area hints
+  :config
+  (setq popper-group-function #'popper-group-by-project))
+
 ;; quiero que lo mostrado por `eldoc' aparezca en un `child-frame'
 (use-package eldoc-box
   :ensure t
