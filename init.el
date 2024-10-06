@@ -248,7 +248,7 @@ If the new path's directories does not exist, create them."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(persp-mode-project-bridge persp-mode smart-hungry-delete popper pdf-tools gdscript-mode rg exec-path-from-shell nix-ts-mode nix-modeline envrc consult-flyspell flyspell-correct guess-language eldoc-box treesit-auto shackle doom-themes doom-modeline which-key)))
+   '(smart-hungry-delete popper pdf-tools gdscript-mode rg exec-path-from-shell nix-ts-mode nix-modeline envrc consult-flyspell flyspell-correct guess-language eldoc-box treesit-auto shackle doom-themes doom-modeline which-key)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

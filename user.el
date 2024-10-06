@@ -299,23 +299,18 @@
 (use-package pdf-tools
   :ensure t)
 
-(use-package persp-mode
-  :ensure t
-  :hook (after-init . persp-mode)
-  :init
-  (setq persp-autokill-buffer-on-remove 'kill-weak))
-
-(use-package persp-mode-project-bridge
-  :ensure t
-  :hook
-  (persp-mode-project-bridge-mode . (lambda ()
-                                      (if persp-mode-project-bridge-mode
-                                          (persp-mode-project-bridge-find-perspectives-for-all-buffers)
-                                        (persp-mode-project-bridge-kill-perspectives))))
-  (persp-mode . persp-mode-project-bridge-mode))
-
 ;; borramos espacios en blanco de forma inteligente
 (use-package smart-hungry-delete
   :ensure t
   :bind (("<backspace>" . smart-hungry-delete-backward-char)
          ("C-d" . smart-hungry-delete-forward-char)))
+
+;; ajustes para C/C++
+(with-eval-after-load 'cc-mode
+  ;; activa eglot
+  (with-eval-after-load 'eglot
+    (dolist (hook '(c++-mode
+		    c-mode
+		    c++-ts-mode
+		    c-ts-mode))
+    (add-hook hook #'eglot-ensure))))
