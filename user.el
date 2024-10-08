@@ -314,3 +314,9 @@
 		    c++-ts-mode
 		    c-ts-mode))
     (add-hook hook #'eglot-ensure))))
+
+(with-eval-after-load 'consult
+  (add-to-list 'consult-buffer-filter "\\`\\*Async-native-compile-log\\*\\'")
+  (add-to-list 'consult-buffer-filter "\\`\\*Messages\\*\\'")
+  (add-to-list 'consult-buffer-filter "\\`\\*info\\*\\'")
+  (add-to-list 'consult-buffer-filter "\\`\\*Help\\*\\'"))
