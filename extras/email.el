@@ -39,7 +39,7 @@
   (setq mu4easy-contexts `(
 			   ,(mu4easy-context
 			     :c-name "personal"
-			     :maildir "personal"
+			     :maildir "principal"
 			     :mail (base64-decode-string "am9yZ2VAZXNhdmFyYS5jcg=="))
 			   ,(mu4easy-context
 			     :c-name  "gmail"
