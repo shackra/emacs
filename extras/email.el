@@ -24,6 +24,7 @@
   :custom
   (mu4easy-signature "\nJorge Araya\n\nContacto:\n Telegram: t.me/shackra · Signal: Shackra.28")
   (mu4e-update-interval nil)
+  (mu4e-alert-email-notification-types '(count))
   :config
   (setq sendmail-program (executable-find "msmtp")
 	send-mail-function #'smtpmail-send-it
