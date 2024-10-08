@@ -41,39 +41,37 @@
 ;;; Phase 2 variables
 
 ;; Agenda variables
-(setq org-directory "~/Documents/org/") ; Non-absolute paths for agenda and
+(setq org-directory "~/Documentos/org/") ; Non-absolute paths for agenda and
                                         ; capture templates will look here.
 
-(setq org-agenda-files '("inbox.org" "work.org"))
+(setq org-agenda-files nil)
 
 ;; Default tags
-(setq org-tag-alist '(
-                      ;; locale
-                      (:startgroup)
-                      ("home" . ?h)
-                      ("work" . ?w)
-                      ("school" . ?s)
-                      (:endgroup)
-                      (:newline)
-                      ;; scale
-                      (:startgroup)
-                      ("one-shot" . ?o)
-                      ("project" . ?j)
-                      ("tiny" . ?t)
-                      (:endgroup)
-                      ;; misc
-                      ("meta")
-                      ("review")
-                      ("reading")))
+;; (setq org-tag-alist '(
+;;                       ;; locale
+;;                       (:startgroup)
+;;                       ("home" . ?h)
+;;                       ("work" . ?w)
+;;                       ("school" . ?s)
+;;                       (:endgroup)
+;;                       (:newline)
+;;                       ;; scale
+;;                       (:startgroup)
+;;                       ("one-shot" . ?o)
+;;                       ("project" . ?j)
+;;                       ("tiny" . ?t)
+;;                       (:endgroup)
+;;                       ;; misc
+;;                       ("meta")
+;;                       ("review")
+;;                       ("reading")))
 
 ;; Org-refile: where should org-refile look?
-(setq org-refile-targets 'FIXME)
+;;(setq org-refile-targets 'FIXME)
 
 ;;; Phase 3 variables
 
 ;; Org-roam variables
-(setq org-roam-directory "~/Documents/org-roam/")
-(setq org-roam-index-file "~/Documents/org-roam/index.org")
 
 ;;; Optional variables
 
@@ -153,17 +151,17 @@
 ;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package org-roam
-  :ensure t
-  :config
-  (org-roam-db-autosync-mode)
-  ;; Dedicated side window for backlinks
-  (add-to-list 'display-buffer-alist
-               '("\\*org-roam\\*"
-                 (display-buffer-in-side-window)
-                 (side . right)
-                 (window-width . 0.4)
-                 (window-height . fit-window-to-buffer))))
+;; (use-package org-roam
+;;   :ensure t
+;;   :config
+;;   (org-roam-db-autosync-mode)
+;;   ;; Dedicated side window for backlinks
+;;   (add-to-list 'display-buffer-alist
+;;                '("\\*org-roam\\*"
+;;                  (display-buffer-in-side-window)
+;;                  (side . right)
+;;                  (window-width . 0.4)
+;;                  (window-height . fit-window-to-buffer))))
 
 ;; Pretty web interface for org-roam
 ;(use-package org-roam-ui
