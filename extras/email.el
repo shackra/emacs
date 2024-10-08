@@ -41,20 +41,20 @@
 			   ,(mu4easy-context
 			     :c-name "personal"
 			     :maildir "principal"
-			     :mail (base64-decode-string "am9yZ2VAZXNhdmFyYS5jcg=="))
+			     :mail "jorge@esavara.cr")
 			   ,(mu4easy-context
 			     :c-name  "gmail"
 			     :maildir "gmail"
-			     :mail    (base64-decode-string "c2hhY2tyYXNpc2xvY2swQGdtYWlsLmNvbQ==")
+			     :mail    "shackrasislock0@gmail.com"
 			     :sent-action delete)
 			   ,(mu4easy-context
 			     :c-name "yahoo"
 			     :maildir "yahoo"
-			     :mail (base64-decode-string "am9yZ2VqYXZpZXJhbkB5YWhvby5jb20ubXg="))
+			     :mail "jorgejavieran@yahoo.com.mx")
 			   ,(mu4easy-context
 			     :c-name "work"
 			     :maildir "work"
-			     :mail (base64-decode-string "am9yZ2UuYXJheWFAY29uZHVjdG9yb25lLmNvbQ==")
+			     :mail "jorge.araya@conductorone.com"
 			     :sig "Jorge Araya\nGolang Software Developer"
 			     :sent-action delete))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
