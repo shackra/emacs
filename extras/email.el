@@ -42,15 +42,37 @@
   (turn-on-flyspell))
 
 (use-package mu4e
-  :bind ("C-c u" . mu4e)
+  ;; la mayoria de estos fueron tomados de mu4easy-mode
+  :bind
+  (("C-c u" . mu4e)
+   :map mu4e-main-mode-map
+   ("x" . bury-buffer)
+   ("I" . mu4e-update-index)
+   ("<tab>" . shr-next-link)
+   ("<backtab>" . shr-previous-link)
+   :map mu4e-headers-mode-map
+   ("M" . mu4e-headers-mark-all)
+   ("N" . mu4e-headers-mark-all-unread-read))
   :hook (mu4e-compose-mode . shackra/mu4e-compose-goodies)
-  :custom
-  (mu4e-maildir "~/Maildir")
-  (mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
-  (mu4e-update-interval nil)
-  (mu4e-attachment-dir "~/Descargas")
-  (mu4e-change-filenames-when-moving t) ;; requerido por mbsync
   :config
+  ;; la mayoria de estos fueron tomados de mu4easy-mode
+  (setq mu4e-maildir "~/Maildir")
+  (setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
+  (setq mu4e-update-interval nil)
+  (setq mu4e-attachment-dir "~/Descargas")
+  (setq mu4e-change-filenames-when-moving t) ;; requerido por mbsync
+  (setq mail-user-agent 'mu4e-user-agent)
+  (setq mu4e-bookmarks email-bookmarks)
+  (setq mu4e-headers-fields email-headers)
+  (setq message-citation-line-function 'message-insert-formatted-citation-line)
+  (setq mu4e-compose-format-flowed t)
+  (setq mu4e-headers-auto-update t)
+  (setq mu4e-headers-date-format "%d/%m/%Y %H:%M")
+  (setq mu4e-index-cleanup t)
+  (setq mu4e-index-lazy-check nil)
+  (setq mu4e-main-hide-personal-addresses t)
+  (setq mu4e-main-buffer-name "*mu4e-main*")
+  (setq mu4e-use-fancy-chars t)
   (setq sendmail-program (executable-find "msmtp"))
   (setq message-sendmail-f-is-evil t)
   (setq message-sendmail-extra-arguments '("--read-envelope-from"))
@@ -73,8 +95,10 @@
   (setq message-citation-line-format  "El %A %d de %B del %Y, %N escribió:\n")
   ;; M-x find-function RET message-citation-line-format for docs:
   (setq message-citation-line-function 'message-insert-formatted-citation-line)
-  ;; by default do not show related emails:
+  ;; by default do show related emails:
   (setq mu4e-headers-include-related nil)
+  (add-to-list 'mu4e-view-actions
+               '("Aplicar correo" . mu4e-action-git-apply-mbox) t)
 
   ;; contexts
   (setq mu4e-contexts `(,(shackra/mu4e-easy-context
@@ -120,6 +144,51 @@
                             (if (string-match-p "Gmail\\|Google" maildir)
 				(mu4e--server-remove docid)
                               (mu4e--server-move docid (mu4e--mark-check-target target) "+S-u-N")))))))
+
+(defvar email-today-query "date:today..now AND NOT maildir:/Trash/ AND NOT maildir:/Spam/")
+(defvar email-trash-query "maildir:/Trash/")
+(defvar email-inbox-query "maildir:/Inbox/")
+(defvar email-unread-query "flag:new AND NOT maildir:/Trash/ AND NOT maildir:/Spam/")
+
+(defcustom email-bookmarks
+  `(( :name  "No leido"
+      :query ,email-unread-query
+      :key   ?u)
+    ( :name  "Bandeja de entrada"
+      :query ,email-inbox-query
+      :key   ?i)
+    ( :name "Hoy"
+      :query ,email-today-query
+      :key   ?t)
+    ( :name "Marcado ⛳"
+      :query "flag:flagged"
+      :key   ?f)
+    ( :name "Etiquetas"
+      :query "tag://"
+      :key   ?T)
+    ( :name "Papelera"
+      :query ,email-trash-query
+      :key ?x
+      :hide-unread t)
+    ( :name "Adjuntos"
+      :query "mime:application/pdf or mime:image/jpg or mime:image/png or mime:application/zip"
+      :key   ?a
+      :hide-unread t))
+  "Preconfigured bookmarks for easy navigation.
+See variable `mu4e-bookmarks'."
+  :type '(repeat (plist)))
+
+(defcustom email-headers
+  '((:human-date   . 18)
+    (:flags        . 6)
+    (:maildir      . 16)
+    (:from-or-to   . 22)
+    (:mailing-list . 10)
+    (:tags         . 10)
+    (:subject      . 92))
+  "Format of headers.
+See variable `mu4e-headers-fields'"
+  :type '(repeat (cons symbol integer)))
 
 (use-package mu4e-views
   :after mu4e
