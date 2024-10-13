@@ -100,6 +100,22 @@
   (add-to-list 'mu4e-view-actions
                '("Aplicar correo" . mu4e-action-git-apply-mbox) t)
 
+  (setq
+   mu4e-headers-draft-mark     '("D" . "💈")
+   mu4e-headers-flagged-mark   '("F" . "📍")
+   mu4e-headers-new-mark       '("N" . "🔥")
+   mu4e-headers-passed-mark    '("P" . "❯")
+   mu4e-headers-replied-mark   '("R" . "👍")
+   mu4e-headers-seen-mark      '("S" . "👀")
+   mu4e-headers-trashed-mark   '("T" . "💀")
+   mu4e-headers-attach-mark    '("a" . "📎")
+   mu4e-headers-encrypted-mark '("x" . "🔒")
+   mu4e-headers-signed-mark    '("s" . "🔑")
+   mu4e-headers-unread-mark    '("u" . "📩")
+   mu4e-headers-list-mark      '("l" . "🔈")
+   mu4e-headers-personal-mark  '("p" . "👨")
+   mu4e-headers-calendar-mark  '("c" . "📅"))
+
   ;; contexts
   (setq mu4e-contexts `(,(shackra/mu4e-easy-context
 			  :c-name "personal"
