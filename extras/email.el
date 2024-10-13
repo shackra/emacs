@@ -206,7 +206,10 @@ See variable `mu4e-bookmarks'."
 See variable `mu4e-headers-fields'"
   :type '(repeat (cons symbol integer)))
 
+;; deshabilitado, motivo:
+;; https://github.com/lordpretzel/mu4e-views/issues/36
 (use-package mu4e-views
+  :disabled
   :after mu4e
   :ensure t
   :bind (:map mu4e-headers-mode-map
