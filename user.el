@@ -320,3 +320,8 @@
   (add-to-list 'consult-buffer-filter "\\`\\*Messages\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*info\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*Help\\*\\'"))
+
+;; instala modo mayor para editar archivos de CMake
+(use-package cmake-mode
+  :ensure t
+  :hook (cmake-mode . cmake-ts-mode))
