@@ -324,4 +324,5 @@
 ;; instala modo mayor para editar archivos de CMake
 (use-package cmake-mode
   :ensure t
-  :hook (cmake-mode . cmake-ts-mode))
+  :hook ((cmake-mode . cmake-ts-mode)
+	 ((cmake-mode cmake-ts-mode) . eglot-ensure)))
