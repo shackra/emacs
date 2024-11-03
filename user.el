@@ -337,5 +337,16 @@
   (global-set-key (kbd "C-<backspace>") #'crux-kill-line-backwards)
   (global-set-key [remap kill-whole-line] #'crux-kill-whole-line))
 
+(use-package just-ts-mode
+  :ensure t
+  :hook (after-init . just-ts-mode-install-grammar))
+
 (use-package typescript-ts-mode)
 
+(use-package svelte-mode
+  :ensure t)
+
+(with-eval-after-load 'eglot
+  (with-eval-after-load 'svelte-mode
+    (add-to-list 'eglot-server-programs
+           '(svelte-mode . ("svelteserver" "--stdio")))))
