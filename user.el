@@ -350,3 +350,6 @@
   (with-eval-after-load 'svelte-mode
     (add-to-list 'eglot-server-programs
            '(svelte-mode . ("svelteserver" "--stdio")))))
+
+(use-package go-add-tags
+  :ensure t)
