@@ -351,5 +351,5 @@
     (add-to-list 'eglot-server-programs
            '(svelte-mode . ("svelteserver" "--stdio")))))
 
-(use-package go-add-tags
+(use-package go-tag
   :ensure t)
