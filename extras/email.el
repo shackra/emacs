@@ -55,6 +55,7 @@
    ("N" . mu4e-headers-mark-all-unread-read))
   :hook (mu4e-compose-mode . shackra/mu4e-compose-goodies)
   :config
+  (setq gnus-article-date-headers '(combined-local-lapsed))
   ;; la mayoria de estos fueron tomados de mu4easy-mode
   (setq mu4e-maildir "~/Maildir")
   (setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
