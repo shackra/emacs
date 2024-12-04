@@ -249,8 +249,14 @@ If the new path's directories does not exist, create them."
  ;; If there is more than one, they won't work right.
  '(nil nil t)
  '(package-selected-packages
-   '(go-tag go-add-tags svelte-mode just-mode just-ts-mode cmake-mode mu4e-views smart-hungry-delete popper pdf-tools gdscript-mode rg exec-path-from-shell nix-ts-mode nix-modeline envrc consult-flyspell flyspell-correct guess-language eldoc-box treesit-auto shackle doom-themes doom-modeline which-key))
- '(safe-local-variable-values '((go-add-tags-style quote lower-camel-case))))
+   '(markdown-mode go-tag go-add-tags svelte-mode just-mode just-ts-mode cmake-mode mu4e-views smart-hungry-delete popper pdf-tools gdscript-mode rg exec-path-from-shell nix-ts-mode nix-modeline envrc consult-flyspell flyspell-correct guess-language eldoc-box treesit-auto shackle doom-themes doom-modeline which-key))
+ '(safe-local-variable-values
+   '((go-tag-args "-transform" "snakecase")
+     (go-tag-args "-transform" "camelcase")
+     (go-tag-args eval
+		  (list "-transform" "camelcase"))
+     (go-tag-args list "-transform" "camelcase")
+     (go-add-tags-style quote lower-camel-case))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

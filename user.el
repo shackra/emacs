@@ -353,3 +353,7 @@
 
 (use-package go-tag
   :ensure t)
+
+(use-package markdown-mode
+  :ensure t
+  :init (setq markdown-command "multimarkdown"))
