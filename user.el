@@ -171,7 +171,7 @@
   :ensure t
   :init
   (setq eldoc-box-only-multi-line t)
-  :hook (eglot-managed-mode . eldoc-box-hover-mode))
+  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
 
 ;; quisiera que la posición del cursor sea recordado al visitar un
 ;; archivo de nuevo
