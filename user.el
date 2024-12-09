@@ -357,3 +357,17 @@
 (use-package markdown-mode
   :ensure t
   :init (setq markdown-command "multimarkdown"))
+
+(use-package eglot-inactive-regions
+  :ensure t
+  :custom
+  (eglot-inactive-regions-style 'darken-foreground)
+  (eglot-inactive-regions-opacity 0.4)
+  :config
+  (eglot-inactive-regions-mode 1)
+  (with-eval-after-load 'eglot  
+    (dolist (hook '(c++-mode
+		    c-mode
+		    c++-ts-mode
+		    c-ts-mode))
+      (add-hook hook #'eglot-inactive-regions-mode))))
