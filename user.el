@@ -1,3 +1,6 @@
+;; esconde la barra de menú
+(menu-bar-mode -1)
+
 ;; Usa respuestas cortas para yes/no
 (setopt use-short-answers t)
 
