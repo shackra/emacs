@@ -387,3 +387,10 @@
   :config
   ;; Opcional: Personalización adicional
   (setq mc/always-run-for-all t))
+
+(use-package lispy
+  :load-path "~/.emacs.d/forks/lispy"
+  :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode) . lispy-mode)
+  :config
+  ;; Opcional: Personalizaciones adicionales
+  (setq lispy-close-quotes-at-end-p t))
