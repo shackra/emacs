@@ -394,3 +394,8 @@
   :config
   ;; Opcional: Personalizaciones adicionales
   (setq lispy-close-quotes-at-end-p t))
+
+;; subraya coloridamente instancias de TODO, FIXME, etc.
+(use-package fic-mode
+  :ensure t
+  :hook (prog-mode . fic-mode))
