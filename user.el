@@ -200,6 +200,16 @@
         guess-language-languages '(en es)
         guess-language-min-paragraph-length 45))
 
+(defun suppress-messages (old-fun &rest args)
+  (cl-flet ((silence (&rest args1) (ignore)))
+    (advice-add 'message :around #'silence)
+    (unwind-protect
+         (apply old-fun args)
+      (advice-remove 'message #'silence))))
+
+(advice-add 'ispell-init-process :around #'suppress-messages)
+(advice-add 'ispell-kill-ispell :around #'suppress-messages)
+
 (use-package flyspell
   :hook ((prog-mode		.	flyspell-prog-mode)
 	 (text-mode		.	flyspell-mode)
