@@ -249,7 +249,7 @@ If the new path's directories does not exist, create them."
  ;; If there is more than one, they won't work right.
  '(nil nil t)
  '(package-selected-packages
-   '(multiple-cursors vterm markdown-mode go-tag go-add-tags svelte-mode just-mode just-ts-mode cmake-mode mu4e-views smart-hungry-delete popper pdf-tools gdscript-mode rg exec-path-from-shell nix-ts-mode nix-modeline envrc consult-flyspell flyspell-correct guess-language eldoc-box treesit-auto shackle doom-themes doom-modeline which-key))
+   '(iedit lispy fic-mode multiple-cursors vterm markdown-mode go-tag go-add-tags svelte-mode just-mode just-ts-mode cmake-mode mu4e-views smart-hungry-delete popper pdf-tools gdscript-mode rg exec-path-from-shell nix-ts-mode nix-modeline envrc consult-flyspell flyspell-correct guess-language eldoc-box treesit-auto shackle doom-themes doom-modeline which-key))
  '(safe-local-variable-values
    '((go-tag-args "-transform" "snakecase")
      (go-tag-args "-transform" "camelcase")

@@ -388,7 +388,14 @@
   ;; Opcional: Personalización adicional
   (setq mc/always-run-for-all t))
 
+(use-package iedit
+  :ensure t)
+
+(use-package hydra
+  :ensure t)
+
 (use-package lispy
+  :after (iedit hydra)
   :load-path "~/.emacs.d/forks/lispy"
   :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode) . lispy-mode)
   :config
