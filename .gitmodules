@@ -1,0 +1,3 @@
+[submodule "forks/lispy"]
+	path = forks/lispy
+	url = https://github.com/papercatlol/lispy.git
