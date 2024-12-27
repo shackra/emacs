@@ -374,3 +374,16 @@
 		    c++-ts-mode
 		    c-ts-mode))
       (add-hook hook #'eglot-inactive-regions-mode))))
+
+(use-package multiple-cursors
+  :ensure t
+  :bind (("C-. n" . mc/mark-next-like-this)
+         ("C-. p" . mc/mark-previous-like-this)
+         ("C-. a" . mc/mark-all-like-this)
+         ("C-. e" . mc/edit-lines)
+         ("C-. i" . mc/insert-numbers)
+         ("C-. l" . mc/edit-ends-of-lines)
+         ("C-. h" . mc/edit-beginnings-of-lines))
+  :config
+  ;; Opcional: Personalización adicional
+  (setq mc/always-run-for-all t))
