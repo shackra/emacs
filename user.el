@@ -404,15 +404,13 @@
 (use-package hydra
   :ensure t)
 
+(use-package zoutline
+  :ensure t)
+
 (use-package lispy
-  :after (iedit hydra)
+  :after (iedit hydra zoutline)
   :load-path "~/.emacs.d/forks/lispy"
   :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode) . lispy-mode)
   :config
   ;; Opcional: Personalizaciones adicionales
   (setq lispy-close-quotes-at-end-p t))
-
-;; subraya coloridamente instancias de TODO, FIXME, etc.
-(use-package fic-mode
-  :ensure t
-  :hook (prog-mode . fic-mode))
