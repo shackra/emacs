@@ -253,9 +253,6 @@ If the new path's directories does not exist, create them."
  '(safe-local-variable-values
    '((go-tag-args "-transform" "snakecase")
      (go-tag-args "-transform" "camelcase")
-     (go-tag-args eval
-		  (list "-transform" "camelcase"))
-     (go-tag-args list "-transform" "camelcase")
      (go-add-tags-style quote lower-camel-case))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
