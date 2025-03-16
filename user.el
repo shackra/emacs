@@ -5,7 +5,7 @@
 (setopt use-short-answers t)
 
 ;; Mata el buffer actual
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 
 ;; Fuente principal
 (set-face-attribute 'default nil :family "Iosevka Nerd Font Mono" :height 160)
