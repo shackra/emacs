@@ -11,10 +11,15 @@
 (set-face-attribute 'default nil :family "Iosevka Nerd Font Mono" :height 160)
 
 ;; Fuente variable (para textos con variable-pitch)
-(set-face-attribute 'variable-pitch nil :family "Iosevka Comfy" :height 160)
+(set-face-attribute 'variable-pitch nil :family "Fira Sans Condensed")
+
+(set-face-attribute 'fixed-pitch nil :family "FiraCode Nerd Font")
 
 ;; Fuente de símbolos
-(set-fontset-font t 'symbol (font-spec :family "Julia Mono" :size 16))
+(set-fontset-font t 'symbol (font-spec :family "Julia Mono"))
+
+;; Fuente para caracteres Unicode (opcional)
+(set-fontset-font t 'unicode (font-spec :family "Noto Color Emoji"))
 
 ;; Deshabilita CUA mode
 (cua-mode -1)
