@@ -18,9 +18,6 @@
 ;; Fuente de símbolos
 (set-fontset-font t 'symbol (font-spec :family "Julia Mono"))
 
-;; Fuente para caracteres Unicode (opcional)
-(set-fontset-font t 'unicode (font-spec :family "Noto Color Emoji"))
-
 ;; Deshabilita CUA mode
 (cua-mode -1)
 ;; des-ata C-z
