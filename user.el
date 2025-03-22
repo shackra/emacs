@@ -47,6 +47,14 @@
 		(set-window-start nil (caddr +magit--pos) t)
 		(kill-local-variable '+magit--pos)))))
 
+(use-package magit-todos
+  :after magit
+  :ensure t
+  :config
+  (magit-todos-mode 1)
+  (dolist (dir '("vendor/" "node_modules/"))
+    (add-to-list 'magit-todos-exclude-globs dir)))
+
 (use-package treesit-auto
   :ensure t
   :custom
@@ -416,3 +424,7 @@
   :config
   ;; Opcional: Personalizaciones adicionales
   (setq lispy-close-quotes-at-end-p t))
+
+(use-package hl-todo
+  :ensure t
+  :config (global-hl-todo-mode 1))
