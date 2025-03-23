@@ -445,6 +445,8 @@
                       completion-at-point-functions)))
   :bind (("M-+" . tempel-complete)
          ("M-*" . tempel-insert))
+  :config
+  (setq tempel-path (expand-file-name "templates/*.eld" user-emacs-directory))
   :hook
   (conf-mode-hook . tempel-setup-capf)
   (prog-mode-hook . tempel-setup-capf)
