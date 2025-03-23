@@ -255,8 +255,8 @@ If the new path's directories does not exist, create them."
 		just-mode just-ts-mode lispy magit-todo magit-todos
 		markdown-mode mu4e-views multiple-cursors nix-modeline
 		nix-ts-mode pdf-tools popper rg shackle
-		smart-hungry-delete svelte-mode treesit-auto vterm
-		which-key))
+		smart-hungry-delete svelte-mode tempel treesit-auto
+		vterm which-key))
  '(safe-local-variable-values
    '((go-tag-args "-transform" "snakecase")
      (go-tag-args "-transform" "camelcase")

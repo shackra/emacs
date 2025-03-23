@@ -430,6 +430,7 @@
   :config (global-hl-todo-mode 1))
 
 (use-package tempel
+  :ensure t
   :preface
   (defun tempel-setup-capf ()
     ;; Add the Tempel Capf to `completion-at-point-functions'.
