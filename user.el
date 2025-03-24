@@ -451,3 +451,11 @@
   (conf-mode-hook . tempel-setup-capf)
   (prog-mode-hook . tempel-setup-capf)
   (text-mode-hook . tempel-setup-capf))
+
+(use-package lsp-snippet-tempel
+  :load-path "~/.emacs.d/forks/lsp-snippet"
+  :after tempel eglot
+  :config
+  (when (featurep 'eglot)
+    ;; Initialize lsp-snippet -> tempel in eglot
+    (lsp-snippet-tempel-eglot-init)))

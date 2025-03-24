@@ -252,11 +252,11 @@ If the new path's directories does not exist, create them."
    '(cmake-mode consult-flyspell doom-modeline doom-themes eldoc-box
 		envrc exec-path-from-shell fic-mode flyspell-correct
 		gdscript-mode go-add-tags go-tag guess-language iedit
-		just-mode just-ts-mode lispy magit-todo magit-todos
-		markdown-mode mu4e-views multiple-cursors nix-modeline
-		nix-ts-mode pdf-tools popper rg shackle
-		smart-hungry-delete svelte-mode tempel treesit-auto
-		vterm which-key))
+		just-mode just-ts-mode lispy lsp-snippet-tempel
+		magit-todo magit-todos markdown-mode mu4e-views
+		multiple-cursors nix-modeline nix-ts-mode pdf-tools
+		popper rg shackle smart-hungry-delete svelte-mode
+		tempel treesit-auto vterm which-key))
  '(safe-local-variable-values
    '((go-tag-args "-transform" "snakecase")
      (go-tag-args "-transform" "camelcase")
