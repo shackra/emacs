@@ -48,6 +48,7 @@
 		(kill-local-variable '+magit--pos)))))
 
 (use-package magit-todos
+  :disabled
   :after magit
   :ensure t
   :config
