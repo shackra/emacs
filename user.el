@@ -398,13 +398,13 @@
 
 (use-package multiple-cursors
   :ensure t
-  :bind (("C-c . n" . mc/mark-next-like-this)
-         ("C-c . p" . mc/mark-previous-like-this)
-         ("C-c . a" . mc/mark-all-like-this)
-         ("C-c . e" . mc/edit-lines)
-         ("C-c . i" . mc/insert-numbers)
-         ("C-c . l" . mc/edit-ends-of-lines)
-         ("C-c . h" . mc/edit-beginnings-of-lines))
+  :bind (("C-c m n" . mc/mark-next-like-this)
+         ("C-c m p" . mc/mark-previous-like-this)
+         ("C-c m a" . mc/mark-all-like-this)
+         ("C-c m e" . mc/edit-lines)
+         ("C-c m i" . mc/insert-numbers)
+         ("C-c m l" . mc/edit-ends-of-lines)
+         ("C-c m h" . mc/edit-beginnings-of-lines))
   :config
   ;; Opcional: Personalización adicional
   (setq mc/always-run-for-all t))
