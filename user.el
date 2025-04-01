@@ -460,3 +460,6 @@
   (when (featurep 'eglot)
     ;; Initialize lsp-snippet -> tempel in eglot
     (lsp-snippet-tempel-eglot-init)))
+
+(use-package yuck-mode
+  :ensure t)
