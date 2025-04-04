@@ -463,3 +463,19 @@
 
 (use-package yuck-mode
   :ensure t)
+
+;; afecta dired
+(use-package ls-lisp
+  :config
+  (setq ls-lisp-dirs-first t)
+  (setq ls-lisp-use-insert-directory-program nil))
+
+(use-package all-the-icons
+  :ensure t)
+
+(use-package all-the-icons-dired
+  :ensure t
+  :after (all-the-icons)
+  :config
+  (setq all-the-icons-dired-monochrome nil)
+  (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))

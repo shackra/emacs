@@ -249,14 +249,17 @@ If the new path's directories does not exist, create them."
  ;; If there is more than one, they won't work right.
  '(nil nil t)
  '(package-selected-packages
-   '(cmake-mode consult-flyspell doom-modeline doom-themes eldoc-box
-		envrc exec-path-from-shell fic-mode flyspell-correct
-		gdscript-mode go-add-tags go-tag guess-language iedit
-		just-mode just-ts-mode lispy lsp-snippet-tempel
-		magit-todo magit-todos markdown-mode mu4e-views
-		multiple-cursors nix-modeline nix-ts-mode pdf-tools
-		popper rg shackle smart-hungry-delete svelte-mode
-		tempel treesit-auto vterm which-key yuck-mode))
+   '(all-the-icons-dired cmake-mode consult-flyspell doom-modeline
+			 doom-themes eldoc-box envrc
+			 exec-path-from-shell fic-mode
+			 flyspell-correct gdscript-mode go-add-tags
+			 go-tag guess-language iedit just-mode
+			 just-ts-mode lispy lsp-snippet-tempel
+			 magit-todo magit-todos markdown-mode
+			 mu4e-views multiple-cursors nix-modeline
+			 nix-ts-mode pdf-tools popper rg shackle
+			 smart-hungry-delete svelte-mode tempel
+			 treesit-auto vterm which-key yuck-mode))
  '(safe-local-variable-values
    '((go-tag-args "-transform" "snakecase")
      (go-tag-args "-transform" "camelcase")
