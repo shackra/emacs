@@ -479,3 +479,11 @@
   :config
   (setq all-the-icons-dired-monochrome nil)
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
+
+(add-to-list 'treesit-language-source-alist
+        '(hyprlang "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
+
+(use-package hyprlang-ts-mode
+  :ensure t
+  :custom
+  (hyprlang-ts-mode-indent-offset 2))
