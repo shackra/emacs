@@ -261,7 +261,8 @@ If the new path's directories does not exist, create them."
 			 shackle smart-hungry-delete svelte-mode
 			 tempel treesit-auto vterm which-key yuck-mode))
  '(safe-local-variable-values
-   '((go-tag-args "-transform" "snakecase")
+   '((go-tag-args "-transform" "pascalcase")
+     (go-tag-args "-transform" "snakecase")
      (go-tag-args "-transform" "camelcase")
      (go-add-tags-style quote lower-camel-case))))
 (custom-set-faces
