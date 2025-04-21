@@ -346,7 +346,10 @@
   (add-to-list 'consult-buffer-filter "\\`\\*Async-native-compile-log\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*Messages\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*info\\*\\'")
-  (add-to-list 'consult-buffer-filter "\\`\\*Help\\*\\'"))
+  (add-to-list 'consult-buffer-filter "\\`\\*Help\\*\\'")
+  (add-to-list 'consult-buffer-filter "\\`\\*EGLOT")
+  (add-to-list 'consult-buffer-filter "\\`magit-process")
+  (add-to-list 'consult-buffer-filter "\\`\\*xref\\*\\'"))
 
 ;; instala modo mayor para editar archivos de CMake
 (use-package cmake-mode
