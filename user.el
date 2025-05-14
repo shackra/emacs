@@ -493,3 +493,8 @@
   :ensure t
   :custom
   (hyprlang-ts-mode-indent-offset 2))
+
+(use-package gcmh
+  :ensure t
+  :custom
+  (gcmh-idle-delay 1.2))
