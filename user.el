@@ -215,7 +215,7 @@
   (cl-flet ((silence (&rest args1) (ignore)))
     (advice-add 'message :around #'silence)
     (unwind-protect
-         (apply old-fun args)
+        (apply old-fun args)
       (advice-remove 'message #'silence))))
 
 (advice-add 'ispell-init-process :around #'suppress-messages)
@@ -351,7 +351,7 @@
 		    c-mode
 		    c++-ts-mode
 		    c-ts-mode))
-    (add-hook hook #'eglot-ensure))))
+      (add-hook hook #'eglot-ensure))))
 
 (with-eval-after-load 'consult
   (add-to-list 'consult-buffer-filter "\\`\\*Async-native-compile-log\\*\\'")
@@ -390,7 +390,7 @@
 (with-eval-after-load 'eglot
   (with-eval-after-load 'svelte-mode
     (add-to-list 'eglot-server-programs
-           '(svelte-mode . ("svelteserver" "--stdio")))))
+		 '(svelte-mode . ("svelteserver" "--stdio")))))
 
 (use-package go-tag
   :ensure t)
@@ -498,7 +498,7 @@
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
 (add-to-list 'treesit-language-source-alist
-        '(hyprlang "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
+             '(hyprlang "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
 
 (use-package hyprlang-ts-mode
   :ensure t
