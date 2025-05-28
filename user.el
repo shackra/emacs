@@ -258,7 +258,7 @@
   :hook (nix-ts-mode . eglot-ensure))
 
 (with-eval-after-load 'eglot
-  (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nil")))
+  (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nixd")))
   (add-to-list 'eglot-server-programs '(css-ts-mode . ("gtkcsslanguageserver")))
   ;; activa eglot para modos mayores
   (dolist (hook '(js-mode-hook
@@ -278,11 +278,22 @@
 
 ;; ajustes adicionales para servidores LSP, por defecto
 (with-eval-after-load 'eglot
-  (setq-default eglot-workspace-configuration
-                '(:nil (:formatting (:command ["nixfmt"])
-				    :nix (:flake
-					  (:autoArchive t :autoEvalInputs t :nixpkgsInputName "nixpkgs")))
-		       :gopls (:usePlaceholders t :gofumpt t))))
+  (let* ((dotfiles-home     (substitute-in-file-name "$HOME/dotfiles"))
+	 (nixos-expr        (format "(builtins.getFlake \"%s\").nixosConfigurations.woody.options" dotfiles-home))
+	 (home-manager-expr (format "(builtins.getFlake \"%s\").homeConfigurations.jorge.options" dotfiles-home)))
+    (setq-default eglot-workspace-configuration
+                  `(:nil
+		    (:formatting (:command ["nixfmt"])
+				 :nix (:flake
+				       (
+					:autoArchive t
+					:autoEvalInputs t
+					:nixpkgsInputName "nixpkgs")))
+		    :nixd '(:formatting (:command ["nixfmt"]) ;; revisar https://github.com/nix-community/nixd/blob/main/nixd/docs/configuration.md#configuration-overview
+					:nixpkgs (:expr "import <nixpkgs> { }")
+					:nixos (:optionsExpr ,nixos-expr)
+					:homeManager (:optionsExpr ,home-manager-expr))
+		    :gopls (:usePlaceholders t :gofumpt t)))))
 
 (with-eval-after-load 'flymake
   (define-key flymake-mode-map (kbd "C-c ! n") #'flymake-goto-next-error)
