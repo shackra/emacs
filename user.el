@@ -497,9 +497,74 @@
   (setq all-the-icons-dired-monochrome nil)
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
+(with-eval-after-load 'dired
+  ;; this command is useful when you want to close the window of `dirvish-side'
+  ;; automatically when opening a file
+  (put 'dired-find-alternate-file 'disabled nil)
+  (setq dired-mouse-drag-files t)
+  (setq mouse-drag-and-drop-region-cross-program t)
+  (setq delete-by-moving-to-trash t))
+
+(with-eval-after-load 'tramp
+  ;; Enable full-featured Dirvish over TRAMP on ssh connections
+  ;; https://www.gnu.org/software/tramp/#Improving-performance-of-asynchronous-remote-processes
+  (connection-local-set-profile-variables
+   'remote-direct-async-process
+   '((tramp-direct-async-process . t)))
+  (connection-local-set-profiles
+   '(:application tramp :protocol "ssh")
+   'remote-direct-async-process)
+  ;; Tips to speed up connections
+  (setq tramp-verbose 0)
+  (setq tramp-chunksize 2000)
+  (setq tramp-ssh-controlmaster-options nil))
+
 (use-package dirvish
   :ensure t
-  :hook (after-init . dirvish-override-dired-mode))
+  :hook (after-init . dirvish-override-dired-mode)
+  :custom
+  (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
+   '(("h" "~/"                          "Carpeta personal")
+     ("d" "~/Documentos"                "Documentos")
+     ("b" "~/Descargas"                 "Descargas")
+     ("i" "~/Imágenes"                  "Imágenes")
+     ("c" "~/code"                      "Proyectos de software")
+     ("f" "~/dotfiles"                  "dotfiles")))
+  :config
+  (dirvish-side-follow-mode)	   ; similar to `treemacs-follow-mode'
+  (setq mouse-1-click-follows-link nil)
+  (setq dirvish-mode-line-format
+        '(:left (sort symlink) :right (omit yank index)))
+  (setq dirvish-attributes   ; The order *MATTERS* for some attributes
+        '(vc-state subtree-state collapse git-msg file-time)
+        dirvish-side-attributes
+        '(vc-state nerd-icons collapse file-size))
+  (setq dirvish-large-directory-threshold 20000)
+  (setq dirvish-preview-dispatchers 	;; usa pdf-tools para previsualizar pdfs
+      (cl-substitute 'pdf-tools 'pdf dirvish-preview-dispatchers))
+  :bind	  ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
+  (("C-c f" . dirvish)
+   :map dirvish-mode-map	; Dirvish inherits `dired-mode-map'
+   (";"   . dired-up-directory)	; So you can adjust `dired' bindings here
+   ("?"		.	dirvish-dispatch) ; [?] a helpful cheatsheet
+   ("a"		.	dirvish-setup-menu) ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
+   ("f"		.	dirvish-file-info-menu)	; [f]ile info
+   ("o"		.	dirvish-quick-access) ; [o]pen `dirvish-quick-access-entries'
+   ("s"		.	dirvish-quicksort)    ; [s]ort flie list
+   ("r"		.	dirvish-history-jump) ; [r]ecent visited
+   ("l"		.	dirvish-ls-switches-menu) ; [l]s command flags
+   ("v"		.	dirvish-vc-menu) ; [v]ersion control commands
+   ("*"		.	dirvish-mark-menu)
+   ("y"		.	dirvish-yank-menu)
+   ("N"		.	dirvish-narrow)
+   ("^"		.	dirvish-history-last)
+   ("TAB"	.	dirvish-subtree-toggle)
+   ("M-f"	.	dirvish-history-go-forward)
+   ("M-b"	.	dirvish-history-go-backward)
+   ("M-e"	.	dirvish-emerge-menu)
+   ("<mouse-1>" .	dirvish-subtree-toggle-or-open)
+   ("<mouse-2>" .	dired-mouse-find-file-other-window)
+   ("<mouse-3>" .	dired-mouse-find-file)))
 
 (add-to-list 'treesit-language-source-alist
              '(hyprlang "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
