@@ -494,6 +494,7 @@
   :ensure t)
 
 (use-package all-the-icons-dired
+  :disabled
   :ensure t
   :after (all-the-icons)
   :config
@@ -539,7 +540,7 @@
   (setq dirvish-mode-line-format
         '(:left (sort symlink) :right (omit yank index)))
   (setq dirvish-attributes   ; The order *MATTERS* for some attributes
-        '(vc-state subtree-state collapse git-msg file-time)
+        '(vc-state nerd-icons subtree-state collapse git-msg file-time)
         dirvish-side-attributes
         '(vc-state nerd-icons collapse file-size))
   (setq dirvish-large-directory-threshold 20000)
