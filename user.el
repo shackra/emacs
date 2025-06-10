@@ -570,6 +570,22 @@
    ("<mouse-2>" .	dired-mouse-find-file-other-window)
    ("<mouse-3>" .	dired-mouse-find-file)))
 
+(use-package dired-x
+  :config
+  ;; Make dired-omit-mode hide all "dotfiles"
+  (setq dired-omit-files
+        (concat dired-omit-files "\\|^\\..*$")))
+
+;; Additional syntax highlighting for dired
+(use-package diredfl
+  :ensure t
+  :hook
+  ((dired-mode . diredfl-mode)
+   ;; highlight parent and directory preview as well
+   (dirvish-directory-view-mode . diredfl-mode))
+  :config
+  (set-face-attribute 'diredfl-dir-name nil :bold t))
+
 (add-to-list 'treesit-language-source-alist
              '(hyprlang "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
 
