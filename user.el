@@ -363,7 +363,8 @@
   (add-to-list 'consult-buffer-filter "\\`\\*xref\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*img-cache\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*mu4e-last-update\\*\\'")
-  (add-to-list 'consult-buffer-filter "\\`\\magit-diff:"))
+  (add-to-list 'consult-buffer-filter "\\`\\magit-diff:")
+  (add-to-list 'consult-buffer-filter "\\`\\*playerctl\\*\\'"))
 
 ;; instala modo mayor para editar archivos de CMake
 (use-package cmake-mode
