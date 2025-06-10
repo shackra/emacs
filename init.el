@@ -249,8 +249,8 @@ If the new path's directories does not exist, create them."
  ;; If there is more than one, they won't work right.
  '(nil nil t)
  '(package-selected-packages
-   '(all-the-icons-dired cmake-mode consult-flyspell doom-modeline
-			 doom-themes eldoc-box envrc
+   '(all-the-icons-dired cmake-mode consult-flyspell dirvish
+			 doom-modeline doom-themes eldoc-box envrc
 			 exec-path-from-shell fic-mode
 			 flyspell-correct gcmh gdscript-mode
 			 go-add-tags go-tag guess-language

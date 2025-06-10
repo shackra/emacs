@@ -497,6 +497,10 @@
   (setq all-the-icons-dired-monochrome nil)
   (add-hook 'dired-mode-hook 'all-the-icons-dired-mode))
 
+(use-package dirvish
+  :ensure t
+  :hook (after-init . dirvish-override-dired-mode))
+
 (add-to-list 'treesit-language-source-alist
              '(hyprlang "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
 
