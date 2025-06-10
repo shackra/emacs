@@ -525,7 +525,8 @@
 
 (use-package dirvish
   :ensure t
-  :hook (after-init . dirvish-override-dired-mode)
+  :hook ((after-init . dirvish-override-dired-mode)
+	 (dirvish-setup . dirvish-emerge-mode))
   :custom
   (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
    '(("h" "~/"                          "Carpeta personal")
@@ -544,12 +545,19 @@
         dirvish-side-attributes
         '(vc-state nerd-icons collapse file-size))
   (setq dirvish-large-directory-threshold 20000)
-  (setq dirvish-preview-dispatchers 	;; usa pdf-tools para previsualizar pdfs
-      (cl-substitute 'pdf-tools 'pdf dirvish-preview-dispatchers))
+  (setq dirvish-preview-dispatchers ;; usa pdf-tools para previsualizar pdfs
+	(cl-substitute 'pdf-tools 'pdf dirvish-preview-dispatchers))
+  (setq dirvish-emerge-groups
+	'(("Archivos recientes"  (predicate . recent-files-2h))
+	  ("Documentos"          (extensions "pdf" "tex" "bib" "epub"))
+	  ("Vídeos"              (extensions "mp4" "mkv" "webm"))
+	  ("Imágenes"            (extensions "jpg" "png" "svg" "gif" "jpeg"))
+	  ("Audio"               (extensions "mp3" "flac" "wav" "ape" "aac" "ogg"))
+	  ("Archivos"            (extensions "gz" "rar" "zip" "7z"))))
   :bind	  ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
   (("C-c f" . dirvish)
    :map dirvish-mode-map	; Dirvish inherits `dired-mode-map'
-   (";"   . dired-up-directory)	; So you can adjust `dired' bindings here
+   (";"         .       dired-up-directory)	; So you can adjust `dired' bindings here
    ("?"		.	dirvish-dispatch) ; [?] a helpful cheatsheet
    ("a"		.	dirvish-setup-menu) ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
    ("f"		.	dirvish-file-info-menu)	; [f]ile info
