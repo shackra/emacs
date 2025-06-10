@@ -360,7 +360,10 @@
   (add-to-list 'consult-buffer-filter "\\`\\*Help\\*\\'")
   (add-to-list 'consult-buffer-filter "\\`\\*EGLOT")
   (add-to-list 'consult-buffer-filter "\\`magit-process")
-  (add-to-list 'consult-buffer-filter "\\`\\*xref\\*\\'"))
+  (add-to-list 'consult-buffer-filter "\\`\\*xref\\*\\'")
+  (add-to-list 'consult-buffer-filter "\\`\\*img-cache\\*\\'")
+  (add-to-list 'consult-buffer-filter "\\`\\*mu4e-last-update\\*\\'")
+  (add-to-list 'consult-buffer-filter "\\`\\magit-diff:"))
 
 ;; instala modo mayor para editar archivos de CMake
 (use-package cmake-mode
