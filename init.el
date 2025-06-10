@@ -258,7 +258,7 @@ If the new path's directories does not exist, create them."
 			 lispy lsp-snippet-tempel magit-todo
 			 magit-todos markdown-mode mu4e-views
 			 multiple-cursors nix-modeline nix-ts-mode
-			 pdf-tools popper rg shackle
+			 pdf-tools playerctl popper rg shackle
 			 smart-hungry-delete svelte-mode tempel
 			 treesit-auto vterm which-key yuck-mode))
  '(safe-local-variable-values

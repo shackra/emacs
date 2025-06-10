@@ -606,3 +606,10 @@
   :ensure t
   :custom
   (gcmh-idle-delay 1.2))
+
+(use-package playerctl
+  :ensure t
+  :bind
+  ("C-c C-SPC" . playerctl-play-pause-song)
+  ("C-c C-n" . playerctl-next-song)
+  ("C-c C-p" . playerctl-previous-song))
