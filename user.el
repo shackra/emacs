@@ -614,3 +614,41 @@
   ("C-c C-SPC" . playerctl-play-pause-song)
   ("C-c C-n" . playerctl-next-song)
   ("C-c C-p" . playerctl-previous-song))
+
+(use-package outline-indent
+  :ensure t
+  :defer t
+  :commands outline-indent-minor-mode
+  :custom
+  (outline-indent-ellipsis " ▼ ")
+  :hook ((python-mode . outline-indent-minor-mode)
+	 (python-ts-mode . outline-indent-minor-mode)
+	 (yaml-mode . outline-indent-minor-mode)
+	 (yaml-ts-mode . outline-indent-minor-mode))
+  :config
+  (setq outline-blank-line t)
+  (setq-default search-invisible nil))
+
+;; sacado de https://github.com/jamescherti/outline-indent.el#how-to-make-emacs-indent-new-lines-based-on-previous-non-blank-line
+;; This ensures that pressing Enter will insert a new line and indent it.
+(global-set-key (kbd "RET") #'newline-and-indent)
+
+;; Indentation based on the indentation of the previous non-blank line.
+(setq-default indent-line-function #'indent-relative-first-indent-point)
+
+;; In modes such as `text-mode', pressing Enter multiple times removes
+;; the indentation. The following fixes the issue and ensures that text
+;; is properly indented using `indent-relative' or
+;; `indent-relative-first-indent-point'.
+(setq-default indent-line-ignored-functions '())
+
+(use-package dtrt-indent
+  :ensure t
+  :commands (dtrt-indent-global-mode
+             dtrt-indent-mode
+             dtrt-indent-adapt
+             dtrt-indent-undo
+             dtrt-indent-diagnosis
+             dtrt-indent-highlight)
+  :config
+  (dtrt-indent-global-mode))

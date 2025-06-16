@@ -250,17 +250,17 @@ If the new path's directories does not exist, create them."
  '(nil nil t)
  '(package-selected-packages
    '(all-the-icons-dired cmake-mode consult-flyspell dired-x diredfl
-			 dirvish doom-modeline doom-themes eldoc-box
-			 envrc exec-path-from-shell fic-mode
+			 dirvish doom-modeline doom-themes dtrt-indent
+			 eldoc-box envrc exec-path-from-shell fic-mode
 			 flyspell-correct gcmh gdscript-mode
 			 go-add-tags go-tag guess-language
 			 hyprlang-ts-mode iedit just-mode just-ts-mode
 			 lispy lsp-snippet-tempel magit-todo
 			 magit-todos markdown-mode mu4e-views
 			 multiple-cursors nix-modeline nix-ts-mode
-			 pdf-tools playerctl popper rg shackle
-			 smart-hungry-delete svelte-mode tempel
-			 treesit-auto vterm which-key yuck-mode))
+			 outline-indent pdf-tools playerctl popper rg
+			 shackle smart-hungry-delete svelte-mode
+			 tempel treesit-auto vterm which-key yuck-mode))
  '(safe-local-variable-values
    '((go-tag-args "-transform" "pascalcase")
      (go-tag-args "-transform" "snakecase")
