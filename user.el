@@ -615,6 +615,8 @@
   ("C-c C-n" . playerctl-next-song)
   ("C-c C-p" . playerctl-previous-song))
 
+(use-package python)
+
 (use-package outline-indent
   :ensure t
   :defer t
