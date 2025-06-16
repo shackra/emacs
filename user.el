@@ -624,12 +624,16 @@
   :bind (
 	 :map python-mode-map
 	 ("C-{" . outline-indent-toggle-fold)
+	 ("C-}" . outline-indent-toggle-level-at-point)
 	 :map yaml-mode-map
 	 ("C-{" . outline-indent-toggle-fold)
+	 ("C-}" . outline-indent-toggle-level-at-point)
 	 :map python-ts-mode-map
 	 ("C-{" . outline-indent-toggle-fold)
+	 ("C-}" . outline-indent-toggle-level-at-point)
 	 :map yaml-ts-mode-map
-	 ("C-{" . outline-indent-toggle-fold))
+	 ("C-{" . outline-indent-toggle-fold)
+	 ("C-}" . outline-indent-toggle-level-at-point))
   :custom
   (outline-indent-ellipsis " ▼ ")
   :hook ((python-mode . outline-indent-minor-mode)
