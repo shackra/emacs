@@ -625,6 +625,10 @@
 	 :map python-mode-map
 	 ("C-{" . outline-indent-toggle-fold)
 	 :map yaml-mode-map
+	 ("C-{" . outline-indent-toggle-fold)
+	 :map python-ts-mode-map
+	 ("C-{" . outline-indent-toggle-fold)
+	 :map yaml-ts-mode-map
 	 ("C-{" . outline-indent-toggle-fold))
   :custom
   (outline-indent-ellipsis " ▼ ")
