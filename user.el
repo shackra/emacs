@@ -619,6 +619,11 @@
   :ensure t
   :defer t
   :commands outline-indent-minor-mode
+  :bind (
+	 :map python-mode-map
+	 ("C-{" . outline-indent-toggle-fold)
+	 :map yaml-mode-map
+	 ("C-{" . outline-indent-toggle-fold))
   :custom
   (outline-indent-ellipsis " ▼ ")
   :hook ((python-mode . outline-indent-minor-mode)
