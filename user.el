@@ -615,32 +615,32 @@
   ("C-c C-n" . playerctl-next-song)
   ("C-c C-p" . playerctl-previous-song))
 
+(defun shackra--outline-indent-define-keys-for-keymaps (keymaps)
+  "Establece atajos de teclado para keymaps en `KEYMAPS'"
+  (dolist (keymap-sym keymaps)
+    (let ((keymap (symbol-value keymap-sym)))
+      (define-key keymap (kbd "C-{") 'outline-indent-toggle-fold)
+      (define-key keymap (kbd "C-}") 'outline-indent-toggle-level-at-point))))
+
 (use-package python
-  :hook (python-mode . (lambda () (outline-indent-close-level 1))))
+  :config
+  (shackra--outline-indent-define-keys-for-keymaps '(python-mode-map python-ts-mode-map)))
+
+(use-package yaml-mode
+  :config
+  (shackra--outline-indent-define-keys-for-keymaps '(yaml-mode-map)))
+
+(use-package yaml-ts-mode
+  :config
+  (shackra--outline-indent-define-keys-for-keymaps '(yaml-ts-mode-map)))
 
 (use-package outline-indent
   :ensure t
   :defer t
+  :hook ((python-mode python-ts-mode yaml-mode yaml-ts-mode) . outline-indent-minor-mode)
   :commands outline-indent-minor-mode
-  :bind (
-	 :map python-mode-map
-	 ("C-{" . outline-indent-toggle-fold)
-	 ("C-}" . outline-indent-toggle-level-at-point)
-	 :map yaml-mode-map
-	 ("C-{" . outline-indent-toggle-fold)
-	 ("C-}" . outline-indent-toggle-level-at-point)
-	 :map python-ts-mode-map
-	 ("C-{" . outline-indent-toggle-fold)
-	 ("C-}" . outline-indent-toggle-level-at-point)
-	 :map yaml-ts-mode-map
-	 ("C-{" . outline-indent-toggle-fold)
-	 ("C-}" . outline-indent-toggle-level-at-point))
   :custom
   (outline-indent-ellipsis " ▼ ")
-  :hook ((python-mode . outline-indent-minor-mode)
-	 (python-ts-mode . outline-indent-minor-mode)
-	 (yaml-mode . outline-indent-minor-mode)
-	 (yaml-ts-mode . outline-indent-minor-mode))
   :config
   (setq outline-blank-line t)
   (setq-default search-invisible nil))
