@@ -22,8 +22,9 @@
 ;;;  - Built-in customization framework
 
 ;;; Guardrail
+
 (when (< emacs-major-version 29)
-  (error (format "Emacs Bedrock only works with Emacs 29 and newer; you have version ~a" emacs-major-version)))
+  (error "Emacs Bedrock only works with Emacs 29 and newer; you have version %s" emacs-major-version))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -78,12 +79,21 @@
 (defun bedrock--backup-file-name (fpath)
   "Return a new file path of a given file path.
 If the new path's directories does not exist, create them."
-  (let* ((backupRootDir "~/.emacs.d/emacs-backup/")
+  (let* ((backupRootDir (concat user-emacs-directory "emacs-backup/"))
          (filePath (replace-regexp-in-string "[A-Za-z]:" "" fpath )) ; remove Windows driver letter in path
          (backupFilePath (replace-regexp-in-string "//" "/" (concat backupRootDir filePath "~") )))
     (make-directory (file-name-directory backupFilePath) (file-name-directory backupFilePath))
     backupFilePath))
 (setopt make-backup-file-name-function 'bedrock--backup-file-name)
+
+;; The above creates nested directories in the backup folder. If
+;; instead you would like all backup files in a flat structure, albeit
+;; with their full paths concatenated into a filename, then you can
+;; use the following configuration:
+;; (Run `'M-x describe-variable RET backup-directory-alist RET' for more help)
+;;
+;; (let ((backup-dir (expand-file-name "emacs-backup/" user-emacs-directory)))
+;;   (setopt backup-directory-alist `(("." . ,backup-dir))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -117,7 +127,6 @@ If the new path's directories does not exist, create them."
 
 (setopt completion-auto-help 'always)                  ; Open completion always; `lazy' another option
 (setopt completions-max-height 20)                     ; This is arbitrary
-(setopt completions-detailed t)
 (setopt completions-format 'one-column)
 (setopt completions-group t)
 (setopt completion-auto-select 'second-tab)            ; Much more eager
@@ -163,6 +172,10 @@ If the new path's directories does not exist, create them."
 
 ;; Use common keystrokes by default
 (cua-mode)
+
+;; For terminal users, make the mouse more useful
+
+(xterm-mouse-mode 1)
 
 ;; Display line numbers in programming mode
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
@@ -272,3 +285,5 @@ If the new path's directories does not exist, create them."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(setq gc-cons-threshold (or bedrock--initial-gc-threshold 800000))

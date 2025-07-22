@@ -64,10 +64,15 @@
   ;; Narrowing lets you restrict results to certain groups of candidates
   (setq consult-narrow-key "<"))
 
+(use-package embark-consult
+  :ensure t)
+
+;; Embark: supercharged context-dependent menu; kinda like a
+;; super-charged right-click.
 (use-package embark
   :ensure t
   :demand t
-  :after avy
+  :after (avy embark-consult)
   :bind (("C-c a" . embark-act))        ; bind this to an easy key to hit
   :init
   ;; Add the option to run embark when using avy
@@ -84,9 +89,6 @@
   ;; candidate you select
   (setf (alist-get ?. avy-dispatch-alist) 'bedrock/avy-action-embark))
 
-(use-package embark-consult
-  :ensure t)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;;   Minibuffer and completion
@@ -101,6 +103,7 @@
   (vertico-mode))
 
 (use-package vertico-directory
+  :ensure nil
   :after vertico
   :bind (:map vertico-map
               ("M-DEL" . vertico-directory-delete-word)))
@@ -111,7 +114,7 @@
   :config
   (marginalia-mode))
 
-;; Popup completion-at-point
+;; Corfu: Popup completion-at-point
 (use-package corfu
   :ensure t
   :init
@@ -125,6 +128,7 @@
 ;; Part of corfu
 (use-package corfu-popupinfo
   :after corfu
+  :ensure nil
   :hook (corfu-mode . corfu-popupinfo-mode)
   :custom
   (corfu-popupinfo-delay '(0.25 . 0.1))
@@ -162,6 +166,15 @@
     ;; a work-around to make C-r bound in the keymap
     (keymap-set eshell-mode-map "C-r" 'consult-history))
   :hook ((eshell-mode . bedrock/setup-eshell)))
+
+;; Eat: Emulate A Terminal
+(use-package eat
+  :ensure t
+  :custom
+  (eat-term-name "xterm")
+  :config
+  (eat-eshell-mode)                     ; use Eat to handle term codes in program output
+  (eat-eshell-visual-command-mode))     ; commands like less will be handled by Eat
 
 ;; Orderless: powerful completion style
 (use-package orderless
