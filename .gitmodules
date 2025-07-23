@@ -1,6 +1,0 @@
-[submodule "forks/lispy"]
-	path = forks/lispy
-	url = https://github.com/papercatlol/lispy.git
-[submodule "lsp-snippet"]
-	path = forks/lsp-snippet
-	url = https://github.com/svaante/lsp-snippet.git
