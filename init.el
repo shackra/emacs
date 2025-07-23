@@ -1,3 +1,8 @@
+(load-file (expand-file-name "emacs-backpack/init.el" user-emacs-directory))
+(load-file (expand-file-name "extras/base.el" emacs-backpack--base-backpack-dir))
+(load-file (expand-file-name "extras/dev.el" emacs-backpack--base-backpack-dir))
+(load-file (expand-file-name "extras/writer.el" emacs-backpack--base-backpack-dir))
+
 ;; esconde la barra de menú
 (menu-bar-mode -1)
 
@@ -47,7 +52,7 @@
 		(set-window-start nil (caddr +magit--pos) t)
 		(kill-local-variable '+magit--pos)))))
 
-(use-package magit-todos
+(leaf magit-todos
   :disabled
   :after magit
   :ensure t
@@ -56,13 +61,13 @@
   (dolist (dir '("vendor/" "node_modules/"))
     (add-to-list 'magit-todos-exclude-globs dir)))
 
-(use-package treesit-auto
+(leaf treesit-auto
   :ensure t
   :custom
-  (treesit-auto-install 'prompt)
-  :config
-  (treesit-auto-add-to-auto-mode-alist 'all)
-  (global-treesit-auto-mode))
+  (treesit-auto-install . 'prompt)
+  :global-minor-mode global-treesit-auto-mode
+  :defer-config
+  (treesit-auto-add-to-auto-mode-alist 'all))
 
 (defun shackra/eglot-format-buffer-before-save ()
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
@@ -72,10 +77,10 @@
   (add-hook 'eglot-managed-mode-hook #'shackra/eglot-format-buffer-before-save))
 
 ;; Necesito escribir software en Go
-(use-package go-mode
+(leaf go-mode
   :ensure t
   :after (eglot)
-  :hook ((go-mode go-ts-mode) . eglot-ensure))
+  :hook ((go-mode-hook go-ts-mode-hook) . eglot-ensure))
 
 (defun shackra/project-ignore-projects (project-root)
   (or (file-remote-p project-root)
@@ -83,12 +88,12 @@
       (string-match-p "/node_modules/" project-root)
       (string-match-p "go/pkg/mod" project-root)))
 
-(use-package rg
+(leaf rg
   :ensure t
-  :hook (after-init . rg-enable-default-bindings))
+  :hook (after-init-hook . rg-enable-default-bindings))
 
 ;; Necesito manejar proyectos
-(use-package project
+(leaf project
   :ensure t
   :config
   (setq project-vc-extra-root-markers
@@ -97,7 +102,7 @@
 	  "project.godot")))
 
 ;; me gustaría tener un tablero como en Doom
-(use-package dashboard
+(leaf dashboard
   :ensure t
   :config
   (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
@@ -120,20 +125,20 @@
 	dashboard-set-heading-icons t
 	dashboard-set-file-icons t)
 
+  (dashboard-setup-startup-hook)
+  :defer-config
   (dashboard-modify-heading-icons '((recents . "nf-oct-file_text")
-				    (bookmarks . "nf-oct-book")))
-
-  (dashboard-setup-startup-hook))
+				    (bookmarks . "nf-oct-book"))))
 
 ;; quiero una barra modeline más bonita
-(use-package doom-modeline
+(leaf doom-modeline
   :ensure t
-  :hook (after-init . doom-modeline-mode)
+  :hook (after-init-hook . doom-modeline-mode)
   :init
   (setq doom-modeline-height 44))
 
 ;; Me gustaria usar temas de Doom
-(use-package doom-themes
+(leaf doom-themes
   :ensure t
   :config
   (setq doom-themes-enable-bold t
@@ -141,12 +146,12 @@
   (load-theme 'doom-sourcerer t))
 
 ;; Necesito que algunas ventanas se comporten de forma distinta
-(use-package shackle
+(leaf shackle
   :init
   (setq shackle-lighter ""
 	shackle-default-size 0.4)
   :ensure t
-  :hook (after-init . shackle-mode)
+  :hook (after-init-hook . shackle-mode)
   :config
   (setq shackle-rules
 	'((magit-status-mode        :select t :inhibit-window-quit t :same t)
@@ -157,7 +162,7 @@
 (add-hook 'after-init-hook #'winner-mode)
 
 ;; Domestica ciertas ventanas
-(use-package popper
+(leaf popper
   :ensure t
   :bind (("C-<break>"   . popper-toggle) ;; <break> sería Pause en el teclado
          ("M-<pause>"   . popper-cycle)
@@ -177,65 +182,57 @@
   (setq popper-group-function #'popper-group-by-project))
 
 ;; emulador de terminal dentro de Emacs!
-(use-package vterm
+(leaf vterm
   :bind ("C-c t" . vterm)) ;; no lleva :ensure porque el paquete esta instalado en el sistema operativo
 
 ;; quiero que lo mostrado por `eldoc' aparezca en un `child-frame'
-(use-package eldoc-box
+(leaf eldoc-box
   :ensure t
   :init
   (setq eldoc-box-only-multi-line t)
-  :hook (eglot-managed-mode . eldoc-box-hover-at-point-mode))
+  :hook (eglot-managed-mode-hook . eldoc-box-hover-at-point-mode))
 
 ;; quisiera que la posición del cursor sea recordado al visitar un
 ;; archivo de nuevo
-(use-package saveplace
+(leaf saveplace
   :ensure t
-  :hook (after-init . save-place-mode)
+  :hook (after-init-hook . save-place-mode)
+  :config
+  (setq save-place-file (expand-file-name ".mis-lugares-guardados" user-emacs-directory))
   :custom
-  (save-place-ignore-files-regexp
-   "\\(?:COMMIT_EDITMSG\\|hg-editor-[[:alnum:]]+\\.txt\\|elpa\\|svn-commit\\.tmp\\|bzr_log\\.[[:alnum:]]+\\)$")
-  (save-place-file (expand-file-name ".mis-lugares-guardados" user-emacs-directory))
-  (save-place-forget-unreadable-files t))
+  (save-place-ignore-files-regexp . "\\(?:COMMIT_EDITMSG\\|hg-editor-[[:alnum:]]+\\.txt\\|elpa\\|svn-commit\\.tmp\\|bzr_log\\.[[:alnum:]]+\\)$")
+  (save-place-forget-unreadable-files . t))
 
-(use-package saveplace-pdf-view
+(leaf saveplace-pdf-view
   :ensure t)
 
 ;; Necesito cambiar el corrector ortográfico según el idioma!
-(use-package guess-language
+(leaf guess-language
+  :disabled
   :ensure t
-  :hook (flyspell-mode . guess-language-mode)
+  :hook (flyspell-mode-hook . guess-language-mode)
   :config
   (setq guess-language-langcodes '((en . ("en_US-w_accents" "English" "🇺🇸" "Inglés"))
                                    (es . ("es" nil "🇪🇸" "Español")))
         guess-language-languages '(en es)
         guess-language-min-paragraph-length 45))
 
-(defun suppress-messages (old-fun &rest args)
-  (cl-flet ((silence (&rest args1) (ignore)))
-    (advice-add 'message :around #'silence)
-    (unwind-protect
-        (apply old-fun args)
-      (advice-remove 'message #'silence))))
-
-(advice-add 'ispell-init-process :around #'suppress-messages)
-(advice-add 'ispell-kill-ispell :around #'suppress-messages)
-
-(use-package flyspell
-  :hook ((prog-mode		.	flyspell-prog-mode)
-	 (text-mode		.	flyspell-mode)
-	 (git-commit-setup-hook .	git-commit-turn-on-flyspell))
+(leaf flyspell
+  :disabled
+  :hook ((prog-mode-hook		.	flyspell-prog-mode)
+	 (text-mode-hook		.	flyspell-mode)
+	 (git-commit-setup-hook 	.	git-commit-turn-on-flyspell))
   :init
   (setq ispell-program-name "aspell")
   (setq ispell-list-command "--list"))
 
-(use-package flyspell-correct
+(leaf flyspell-correct
   :ensure t
   :after flyspell)
 
-(use-package consult-flyspell
+(leaf consult-flyspell
   :ensure t
-  :after (:all flyspell flyspell-correct)
+  :after (flyspell flyspell-correct)
   :bind
   (("M-\\" . consult-flyspell)
    ("M-ç"  . consult-flyspell))
@@ -245,17 +242,17 @@
         consult-flyspell-always-check-buffer nil))
 
 ;; Estoy usando envrc
-(use-package envrc
+(leaf envrc
   :ensure t
-  :hook (after-init . envrc-global-mode)
-  :bind (:map envrc-mode-map
+  :hook (after-init-hook . envrc-global-mode)
+  :bind (:envrc-mode-map
 	      ("C-c e" . envrc-command-map)))
 
 ;; Quisiera editar los archivos de NixOS :)
-(use-package nix-ts-mode
+(leaf nix-ts-mode
   :ensure t
   :mode "\\.nix\\'"
-  :hook (nix-ts-mode . eglot-ensure))
+  :hook (nix-ts-mode-hook . eglot-ensure))
 
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nixd")))
@@ -299,19 +296,20 @@
   (define-key flymake-mode-map (kbd "C-c ! n") #'flymake-goto-next-error)
   (define-key flymake-mode-map (kbd "C-c ! p") #'flymake-goto-prev-error))
 
-(use-package nix-modeline
+(leaf nix-modeline
   :after nix-ts-mode
   :ensure t
-  :hook (nix-ts-mode . nix-modeline-mode))
+  :hook (nix-ts-mode-hook . nix-modeline-mode))
 
 ;; Intentemos tener las mismas variables de entorno
-(use-package exec-path-from-shell
+(leaf exec-path-from-shell
   :ensure t
   :init
   (setq exec-path-from-shell-warn-duration-millis 600)
-  :config
+  :defer-config
   (dolist (var '("SSH_AUTH_SOCK" "SSH_AGENT_PID" "GPG_AGENT_INFO" "LANG" "LC_CTYPE" "NIX_SSL_CERT_FILE" "NIX_PATH"))
     (add-to-list 'exec-path-from-shell-variables var))
+  :config
   (if (daemonp)
       (exec-path-from-shell-initialize)
     (when (memq window-system '(mac ns x))
@@ -327,18 +325,21 @@
 	uniquify-ignore-buffers-re "^\\*")) ; don't muck with special buffers
 
 ;; Soporte para Godot Engine
-(use-package gdscript-mode
+(leaf gdscript-mode
   :ensure t
-  :hook ((gdscript-mode gdscript-ts-mode) . eglot-ensure)
+  :hook ((gdscript-mode-hook gdscript-ts-mode-hook) . eglot-ensure)
   :init
   (add-to-list 'major-mode-remap-alist '(gdscript-mode . gdscript-ts-mode)))
 
 ;; Soporte para leer y anotar PDFs
-(use-package pdf-tools
-  :ensure t)
+(leaf pdf-tools
+  :ensure t
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (pdf-tools-install))
 
 ;; borramos espacios en blanco de forma inteligente
-(use-package smart-hungry-delete
+(leaf smart-hungry-delete
   :ensure t
   :bind (("<backspace>" . smart-hungry-delete-backward-char)
          ("C-d" . smart-hungry-delete-forward-char)))
@@ -347,10 +348,10 @@
 (with-eval-after-load 'cc-mode
   ;; activa eglot
   (with-eval-after-load 'eglot
-    (dolist (hook '(c++-mode
-		    c-mode
-		    c++-ts-mode
-		    c-ts-mode))
+    (dolist (hook '(c++-mode-hook
+		    c-mode-hook
+		    c++-ts-mode-hook
+		    c-ts-mode-hook))
       (add-hook hook #'eglot-ensure))))
 
 (with-eval-after-load 'consult
@@ -367,12 +368,12 @@
   (add-to-list 'consult-buffer-filter "\\`\\*playerctl\\*\\'"))
 
 ;; instala modo mayor para editar archivos de CMake
-(use-package cmake-mode
+(leaf cmake-mode
   :ensure t
-  :hook ((cmake-mode . cmake-ts-mode)
-	 ((cmake-mode cmake-ts-mode) . eglot-ensure)))
+  :hook ((cmake-mode-hook . cmake-ts-mode-hook)
+	 ((cmake-mode-hook cmake-ts-mode-hook) . eglot-ensure)))
 
-(use-package crux
+(leaf crux
   :ensure t
   :config
   (global-set-key [remap move-beginning-of-line] #'crux-move-beginning-of-line)
@@ -382,13 +383,13 @@
   (global-set-key (kbd "C-<backspace>") #'crux-kill-line-backwards)
   (global-set-key [remap kill-whole-line] #'crux-kill-whole-line))
 
-(use-package just-ts-mode
+(leaf just-ts-mode
   :ensure t
-  :hook (after-init . just-ts-mode-install-grammar))
+  :hook (after-init-hook . just-ts-mode-install-grammar))
 
-(use-package typescript-ts-mode)
+(leaf typescript-ts-mode)
 
-(use-package svelte-mode
+(leaf svelte-mode
   :ensure t)
 
 (with-eval-after-load 'eglot
@@ -396,28 +397,28 @@
     (add-to-list 'eglot-server-programs
 		 '(svelte-mode . ("svelteserver" "--stdio")))))
 
-(use-package go-tag
+(leaf go-tag
   :ensure t)
 
-(use-package markdown-mode
+(leaf markdown-mode
   :ensure t
   :init (setq markdown-command "multimarkdown"))
 
-(use-package eglot-inactive-regions
+(leaf eglot-inactive-regions
+  :after eglot
   :ensure t
   :custom
-  (eglot-inactive-regions-style 'darken-foreground)
-  (eglot-inactive-regions-opacity 0.4)
+  (eglot-inactive-regions-style . 'darken-foreground)
+  (eglot-inactive-regions-opacity . 0.4)
+  :global-minor-mode eglot-inactive-regions-mode
   :config
-  (eglot-inactive-regions-mode 1)
-  (with-eval-after-load 'eglot  
-    (dolist (hook '(c++-mode
+  (dolist (hook '(c++-mode
 		    c-mode
 		    c++-ts-mode
 		    c-ts-mode))
-      (add-hook hook #'eglot-inactive-regions-mode))))
+      (add-hook hook #'eglot-inactive-regions-mode)))
 
-(use-package multiple-cursors
+(leaf multiple-cursors
   :ensure t
   :bind (("C-c m n" . mc/mark-next-like-this)
          ("C-c m p" . mc/mark-previous-like-this)
@@ -430,71 +431,39 @@
   ;; Opcional: Personalización adicional
   (setq mc/always-run-for-all t))
 
-(use-package iedit
+(leaf iedit
   :ensure t)
 
-(use-package hydra
+(leaf hydra
   :ensure t)
 
-(use-package zoutline
+(leaf zoutline
   :ensure t)
 
-(use-package lispy
-  :after (iedit hydra zoutline)
-  :load-path "~/.emacs.d/forks/lispy"
-  :hook ((emacs-lisp-mode lisp-mode lisp-interaction-mode) . lispy-mode)
+(leaf lispy
+  :straight '(lispy :type git :host github :repo "enzuru/lispy")
+  :hook ((emacs-lisp-mode-hook lisp-mode-hook lisp-interaction-mode-hook) . lispy-mode)
   :config
   ;; Opcional: Personalizaciones adicionales
   (setq lispy-close-quotes-at-end-p t))
 
-(use-package hl-todo
+(leaf hl-todo
   :ensure t
   :config (global-hl-todo-mode 1))
 
-(use-package tempel
-  :ensure t
-  :preface
-  (defun tempel-setup-capf ()
-    ;; Add the Tempel Capf to `completion-at-point-functions'.
-    ;; `tempel-expand' only triggers on exact matches. Alternatively use
-    ;; `tempel-complete' if you want to see all matches, but then you
-    ;; should also configure `tempel-trigger-prefix', such that Tempel
-    ;; does not trigger too often when you don't expect it. NOTE: We add
-    ;; `tempel-expand' *before* the main programming mode Capf, such
-    ;; that it will be tried first.
-    (setq-local completion-at-point-functions
-                (cons #'tempel-expand
-                      completion-at-point-functions)))
-  :bind (("M-+" . tempel-complete)
-         ("M-*" . tempel-insert))
-  :config
-  (setq tempel-path (expand-file-name "templates/*.eld" user-emacs-directory))
-  :hook
-  (conf-mode-hook . tempel-setup-capf)
-  (prog-mode-hook . tempel-setup-capf)
-  (text-mode-hook . tempel-setup-capf))
-
-(use-package lsp-snippet-tempel
-  :load-path "~/.emacs.d/forks/lsp-snippet"
-  :after tempel eglot
-  :config
-  (when (featurep 'eglot)
-    ;; Initialize lsp-snippet -> tempel in eglot
-    (lsp-snippet-tempel-eglot-init)))
-
-(use-package yuck-mode
+(leaf yuck-mode
   :ensure t)
 
 ;; afecta dired
-(use-package ls-lisp
+(leaf ls-lisp
   :config
   (setq ls-lisp-dirs-first t)
   (setq ls-lisp-use-insert-directory-program nil))
 
-(use-package all-the-icons
+(leaf all-the-icons
   :ensure t)
 
-(use-package all-the-icons-dired
+(leaf all-the-icons-dired
   :disabled
   :ensure t
   :after (all-the-icons)
@@ -524,12 +493,12 @@
   (setq tramp-chunksize 2000)
   (setq tramp-ssh-controlmaster-options nil))
 
-(use-package dirvish
+(leaf dirvish
   :ensure t
-  :hook ((after-init . dirvish-override-dired-mode)
-	 (dirvish-setup . dirvish-emerge-mode))
+  :hook ((after-init-hook . dirvish-override-dired-mode)
+	 (dirvish-setup-hook . dirvish-emerge-mode))
   :custom
-  (dirvish-quick-access-entries ; It's a custom option, `setq' won't work
+  (dirvish-quick-access-entries . ; It's a custom option, `setq' won't work
    '(("h" "~/"                          "Carpeta personal")
      ("d" "~/Documentos"                "Documentos")
      ("b" "~/Descargas"                 "Descargas")
@@ -557,7 +526,7 @@
 	  ("Archivos"            (extensions "gz" "rar" "zip" "7z"))))
   :bind	  ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
   (("C-c f" . dirvish)
-   :map dirvish-mode-map	; Dirvish inherits `dired-mode-map'
+   (:dirvish-mode-map	; Dirvish inherits `dired-mode-map'
    ("u"         .       dired-up-directory)	; So you can adjust `dired' bindings here
    ("?"		.	dirvish-dispatch) ; [?] a helpful cheatsheet
    ("a"		.	dirvish-setup-menu) ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
@@ -577,38 +546,39 @@
    ("M-e"	.	dirvish-emerge-menu)
    ("<mouse-1>" .	dirvish-subtree-toggle-or-open)
    ("<mouse-2>" .	dired-mouse-find-file-other-window)
-   ("<mouse-3>" .	dired-mouse-find-file)))
+   ("<mouse-3>" .	dired-mouse-find-file))))
 
-(use-package dired-x
-  :config
+(leaf dired-x
+  :defer-config
   ;; Make dired-omit-mode hide all "dotfiles"
   (setq dired-omit-files
         (concat dired-omit-files "\\|^\\..*$")))
 
 ;; Additional syntax highlighting for dired
-(use-package diredfl
+(leaf diredfl
   :ensure t
   :hook
-  ((dired-mode . diredfl-mode)
+  ((dired-mode-hook . diredfl-mode)
    ;; highlight parent and directory preview as well
-   (dirvish-directory-view-mode . diredfl-mode))
+   (dirvish-directory-view-mode-hook . diredfl-mode))
   :config
   (set-face-attribute 'diredfl-dir-name nil :bold t))
 
-(add-to-list 'treesit-language-source-alist
-             '(hyprlang "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang"))
+(with-eval-after-load 'treesit
+  (add-to-list 'treesit-language-source-alist
+               '(hyprlang "https://github.com/tree-sitter-grammars/tree-sitter-hyprlang")))
 
-(use-package hyprlang-ts-mode
+(leaf hyprlang-ts-mode
   :ensure t
   :custom
-  (hyprlang-ts-mode-indent-offset 2))
+  (hyprlang-ts-mode-indent-offset . 2))
 
-(use-package gcmh
+(leaf gcmh
   :ensure t
   :custom
-  (gcmh-idle-delay 1.2))
+  (gcmh-idle-delay . 1.2))
 
-(use-package playerctl
+(leaf playerctl
   :ensure t
   :bind
   ("C-c C-SPC" . playerctl-play-pause-song)
@@ -622,25 +592,24 @@
       (define-key keymap (kbd "C-{") 'outline-indent-toggle-fold)
       (define-key keymap (kbd "C-}") 'outline-indent-toggle-level-at-point))))
 
-(use-package python
-  :config
+(leaf python
+  :defer-config
   (shackra--outline-indent-define-keys-for-keymaps '(python-mode-map python-ts-mode-map)))
 
-(use-package yaml-mode
-  :config
+(leaf yaml-mode
+  :defer-config
   (shackra--outline-indent-define-keys-for-keymaps '(yaml-mode-map)))
 
-(use-package yaml-ts-mode
-  :config
+(leaf yaml-ts-mode
+  :defer-config
   (shackra--outline-indent-define-keys-for-keymaps '(yaml-ts-mode-map)))
 
-(use-package outline-indent
+(leaf outline-indent
   :ensure t
-  :defer t
-  :hook ((python-mode python-ts-mode yaml-mode yaml-ts-mode) . outline-indent-minor-mode)
+  :hook ((python-mode-hook python-ts-mode-hook yaml-mode-hook yaml-ts-mode-hook) . outline-indent-minor-mode)
   :commands outline-indent-minor-mode
   :custom
-  (outline-indent-ellipsis " ▼ ")
+  (outline-indent-ellipsis . " ▼ ")
   :config
   (setq outline-blank-line t)
   (setq-default search-invisible nil))
@@ -658,7 +627,7 @@
 ;; `indent-relative-first-indent-point'.
 (setq-default indent-line-ignored-functions '())
 
-(use-package dtrt-indent
+(leaf dtrt-indent
   :ensure t
   :commands (dtrt-indent-global-mode
              dtrt-indent-mode
