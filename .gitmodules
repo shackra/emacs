@@ -1,0 +1,3 @@
+[submodule "emacs-backpack"]
+	path = emacs-backpack
+	url = git@github.com:shackra/emacs-backpack.git
