@@ -206,41 +206,6 @@
 (leaf saveplace-pdf-view
   :ensure t)
 
-;; Necesito cambiar el corrector ortográfico según el idioma!
-(leaf guess-language
-  :disabled
-  :ensure t
-  :hook (flyspell-mode-hook . guess-language-mode)
-  :config
-  (setq guess-language-langcodes '((en . ("en_US-w_accents" "English" "🇺🇸" "Inglés"))
-                                   (es . ("es" nil "🇪🇸" "Español")))
-        guess-language-languages '(en es)
-        guess-language-min-paragraph-length 45))
-
-(leaf flyspell
-  :disabled
-  :hook ((prog-mode-hook		.	flyspell-prog-mode)
-	 (text-mode-hook		.	flyspell-mode)
-	 (git-commit-setup-hook 	.	git-commit-turn-on-flyspell))
-  :init
-  (setq ispell-program-name "aspell")
-  (setq ispell-list-command "--list"))
-
-(leaf flyspell-correct
-  :ensure t
-  :after flyspell)
-
-(leaf consult-flyspell
-  :ensure t
-  :after (flyspell flyspell-correct)
-  :bind
-  (("M-\\" . consult-flyspell)
-   ("M-ç"  . consult-flyspell))
-  :config
-  (setq consult-flyspell-select-function 'flyspell-correct-at-point
-        consult-flyspell-set-point-after-word t
-        consult-flyspell-always-check-buffer nil))
-
 ;; Estoy usando envrc
 (leaf envrc
   :ensure t
@@ -637,3 +602,14 @@
              dtrt-indent-highlight)
   :config
   (dtrt-indent-global-mode))
+
+(leaf jinx
+  :custom (jinx-languages . "es en_US-w_accents")
+  :bind (("M-$" . jinx-correct)
+         ("C-M-$" . jinx-languages)))
+
+(leaf vertico
+  :config
+  (add-to-list 'vertico-multiform-categories
+               '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 4)))
+  :global-minor-mode vertico-multiform-mode)
