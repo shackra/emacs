@@ -477,9 +477,9 @@
   (setq dirvish-mode-line-format
         '(:left (sort symlink) :right (omit yank index)))
   (setq dirvish-attributes   ; The order *MATTERS* for some attributes
-        '(vc-state nerd-icons subtree-state collapse git-msg file-time)
+        '(vc-state subtree-state collapse git-msg file-time)
         dirvish-side-attributes
-        '(vc-state nerd-icons collapse file-size))
+        '(vc-state collapse file-size))
   (setq dirvish-large-directory-threshold 20000)
   (setq dirvish-preview-dispatchers ;; usa pdf-tools para previsualizar pdfs
 	(cl-substitute 'pdf-tools 'pdf dirvish-preview-dispatchers))
