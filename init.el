@@ -80,7 +80,6 @@
 ;; Necesito escribir software en Go
 (leaf go-mode
   :ensure t
-  :after (eglot)
   :hook ((go-mode-hook go-ts-mode-hook) . eglot-ensure))
 
 (defun shackra/project-ignore-projects (project-root)
@@ -371,7 +370,6 @@
   :init (setq markdown-command "multimarkdown"))
 
 (leaf eglot-inactive-regions
-  :after eglot
   :ensure t
   :custom
   (eglot-inactive-regions-style . 'darken-foreground)
