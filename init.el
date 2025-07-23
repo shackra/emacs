@@ -2,6 +2,7 @@
 (load-file (expand-file-name "extras/base.el" emacs-backpack--base-backpack-dir))
 (load-file (expand-file-name "extras/dev.el" emacs-backpack--base-backpack-dir))
 (load-file (expand-file-name "extras/writer.el" emacs-backpack--base-backpack-dir))
+(load-file (expand-file-name "email.el" user-emacs-directory))
 
 ;; esconde la barra de menú
 (menu-bar-mode -1)
