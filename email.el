@@ -97,25 +97,28 @@
   ;; M-x find-function RET message-citation-line-format for docs:
   (setq message-citation-line-function 'message-insert-formatted-citation-line)
   ;; by default do show related emails:
-  (setq mu4e-headers-include-related nil)
+  (setq mu4e-headers-include-related t)
+  ;; omite duplicados
+  (setq mu4e-search-skip-duplicates t)
   (add-to-list 'mu4e-view-actions
                '("Aplicar correo" . mu4e-action-git-apply-mbox) t)
 
   (setq
+   mu4e-headers-attach-mark    '("a" . "📎")
+   mu4e-headers-calendar-mark  '("c" . "📅")
    mu4e-headers-draft-mark     '("D" . "💈")
+   mu4e-headers-encrypted-mark '("x" . "🔒")
    mu4e-headers-flagged-mark   '("F" . "📍")
+   mu4e-headers-list-mark      '("l" . "🔈")
    mu4e-headers-new-mark       '("N" . "🔥")
    mu4e-headers-passed-mark    '("P" . "❯")
+   mu4e-headers-personal-mark  '("p" . "👨")
    mu4e-headers-replied-mark   '("R" . "👍")
    mu4e-headers-seen-mark      '("S" . "👀")
-   mu4e-headers-trashed-mark   '("T" . "💀")
-   mu4e-headers-attach-mark    '("a" . "📎")
-   mu4e-headers-encrypted-mark '("x" . "🔒")
    mu4e-headers-signed-mark    '("s" . "🔑")
+   mu4e-headers-trashed-mark   '("T" . "💀")
    mu4e-headers-unread-mark    '("u" . "📩")
-   mu4e-headers-list-mark      '("l" . "🔈")
-   mu4e-headers-personal-mark  '("p" . "👨")
-   mu4e-headers-calendar-mark  '("c" . "📅"))
+   )
 
   ;; contexts
   (setq mu4e-contexts `(,(shackra/mu4e-easy-context
@@ -162,10 +165,11 @@
 				(mu4e--server-remove docid)
                               (mu4e--server-move docid (mu4e--mark-check-target target) "+S-u-N")))))))
 
-(defvar email-today-query "date:today..now AND NOT maildir:/Trash/ AND NOT maildir:/Spam/")
+(defvar email-today-query "date:today..now AND NOT 'maildir:/.*/Trash'")
 (defvar email-trash-query "maildir:/Trash/")
 (defvar email-inbox-query "maildir:/Inbox/")
-(defvar email-unread-query "flag:new AND NOT maildir:/Trash/ AND NOT maildir:/Spam/")
+(defvar email-unread-query "flag:new and not 'maildir:/.*/Trash'")
+(defvar email-mailing-list-query "flag:new and not 'maildir:/.*/Trash' and list:")
 
 (defcustom email-bookmarks
   `(( :name  "No leido"
@@ -174,6 +178,9 @@
     ( :name  "Bandeja de entrada"
       :query ,email-inbox-query
       :key   ?i)
+    ( :name "Listas de correo"
+      :query ,email-mailing-list-query
+      :key   ?l)
     ( :name "Hoy"
       :query ,email-today-query
       :key   ?t)
@@ -188,7 +195,7 @@
       :key ?x
       :hide-unread t)
     ( :name "Adjuntos"
-      :query "mime:application/pdf or mime:image/jpg or mime:image/png or mime:application/zip"
+      :query "mime:application/* or mime:image/*"
       :key   ?a
       :hide-unread t))
   "Preconfigured bookmarks for easy navigation.
