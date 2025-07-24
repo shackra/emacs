@@ -18,10 +18,7 @@
 /dirvish/
 /var/
 
-/straight/repos/el-get/
-/straight/repos/emacsmirror-mirror/
-/straight/repos/gnu-elpa-mirror/
-/straight/repos/melpa/
-/straight/repos/nongnu-elpa/
+/straight
+!/straight/versions
 
 *.elc
