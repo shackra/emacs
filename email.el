@@ -36,10 +36,10 @@
 
 (defun shackra/mu4e-compose-goodies ()
   "Settings for mu4e compose mode."
-  (set-fill-column 120)
+  (set-fill-column 72)
   (turn-on-auto-fill)
   (electric-indent-local-mode -1)
-  (turn-on-flyspell))
+  (jinx-mode 1))
 
 (leaf mu4e
   ;; la mayoria de estos fueron tomados de mu4easy-mode
@@ -58,7 +58,7 @@
   (setq gnus-article-date-headers '(combined-local-lapsed))
   ;; la mayoria de estos fueron tomados de mu4easy-mode
   (setq mu4e-maildir "~/Maildir")
-  (setq mu4e-get-mail-command (concat (executable-find "mbsync") " -a"))
+  (setq mu4e-get-mail-command (concat (executable-find "mbsync") " --push --all")) ;; no adquiere nuevo email, solo empuja los cambios locales
   (setq mu4e-update-interval nil)
   (setq mu4e-attachment-dir "~/Descargas")
   (setq mu4e-change-filenames-when-moving t) ;; requerido por mbsync
@@ -132,10 +132,10 @@
 			  :maildir "yahoo"
 			  :mail "jorgejavieran@yahoo.com.mx")
 			,(shackra/mu4e-easy-context
-			  :c-name "work"
-			  :maildir "work"
-			  :mail "jorge.araya@conductorone.com"
-			  :sig "Jorge Araya\nGolang Software Developer"
+			  :c-name "jorgearaya.dev"
+			  :maildir "hey"
+			  :mail "hey@jorgearaya.dev"
+			  :sig "Jorge Araya\nFreelance Software Engineer — https://jorgearaya.dev"
 			  :sent-action delete)))
 
   (setf (alist-get 'trash mu4e-marks)
