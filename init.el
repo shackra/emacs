@@ -637,4 +637,47 @@
           (format-time-string mu4e-headers-time-format date)
 	(format-time-string mu4e-headers-date-format date))))
 
-  (advice-add 'mu4e~headers-human-date :override #'my/mu4e~headers-human-date))
+  (advice-add 'mu4e~headers-human-date :override #'my/mu4e~headers-human-date)
+
+  (setq
+   mu4e-headers-attach-mark
+   `("a" . ,(propertize "@" 'face '(:foreground "gold" :weight bold)))
+
+   mu4e-headers-calendar-mark
+   `("c" . ,(propertize "%" 'face '(:foreground "deep sky blue")))
+
+   mu4e-headers-draft-mark
+   `("D" . ,(propertize "*" 'face '(:foreground "orange" :slant italic)))
+
+   mu4e-headers-encrypted-mark
+   `("x" . ,(propertize "?" 'face '(:foreground "medium purple" :weight bold)))
+
+   mu4e-headers-flagged-mark
+   `("F" . ,(propertize "+" 'face '(:foreground "red" :weight bold)))
+
+   mu4e-headers-list-mark
+   `("l" . ,(propertize "L" 'face '(:foreground "forest green")))
+
+   mu4e-headers-new-mark
+   `("N" . ,(propertize "!" 'face '(:foreground "orange red" :weight bold)))
+
+   mu4e-headers-passed-mark
+   `("P" . ,(propertize ">" 'face '(:foreground "gray")))
+
+   mu4e-headers-personal-mark
+   `("p" . ,(propertize "y" 'face '(:foreground "light sea green" :slant italic)))
+
+   mu4e-headers-replied-mark
+   `("R" . ,(propertize "R" 'face '(:foreground "steel blue" :weight bold)))
+
+   mu4e-headers-seen-mark
+   `("S" . ,(propertize "]" 'face '(:foreground "gray55")))
+
+   mu4e-headers-signed-mark
+   `("s" . ,(propertize "{" 'face '(:foreground "green4" :weight bold)))
+
+   mu4e-headers-trashed-mark
+   `("T" . ,(propertize "X" 'face '(:foreground "firebrick" :weight bold)))
+
+   mu4e-headers-unread-mark
+   `("u" . ,(propertize "[" 'face '(:foreground "dodger blue" :weight bold)))))
