@@ -615,11 +615,10 @@
 
 (with-eval-after-load 'mu4e
   ;; encabezados estilo gmail
-  (setq email-headers
-	'((:flags        . 6)
-	  (:from         . 22)
-	  (:subject      . 92)
-	  (:human-date   . 11)))
+  (setq mu4e-headers-fields '((:human-date   . 12)
+			      (:flags        . 7)
+			      (:from         . 30)
+			      (:subject      . 92)))
 
   (setq mu4e-headers-date-format "%-d %b %Y") ; e.g., "3 mar 2024" (con año)
   (setq mu4e-headers-time-format "%-d %b")    ; e.g., "3 mar"
