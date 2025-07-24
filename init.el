@@ -612,3 +612,29 @@
   (add-to-list 'vertico-multiform-categories
                '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 4)))
   :global-minor-mode vertico-multiform-mode)
+
+(with-eval-after-load 'mu4e
+  ;; encabezados estilo gmail
+  (setq email-headers
+	'((:flags        . 6)
+	  (:from         . 22)
+	  (:subject      . 92)
+	  (:human-date   . 11)))
+
+  (setq mu4e-headers-date-format "%-d %b %Y") ; e.g., "3 mar 2024" (con año)
+  (setq mu4e-headers-time-format "%-d %b")    ; e.g., "3 mar"
+
+  (defun my/mu4e~headers-human-date (msg)
+    "Mostrar fecha sin año si es del año actual; caso contrario, con año."
+    (let* ((date (mu4e-msg-field msg :date))
+           (tm   (decode-time date))
+           (cur  (decode-time (current-time)))
+           (day  (nth 3 tm))
+           (mon  (nth 4 tm))
+           (year (nth 5 tm))
+           (cyr  (nth 5 cur)))
+      (if (= year cyr)
+          (format-time-string mu4e-headers-time-format date)
+	(format-time-string mu4e-headers-date-format date))))
+
+  (advice-add 'mu4e~headers-human-date :override #'my/mu4e~headers-human-date))
