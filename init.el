@@ -613,6 +613,40 @@
                '(jinx grid (vertico-grid-annotate . 20) (vertico-count . 4)))
   :global-minor-mode vertico-multiform-mode)
 
+(leaf mu4e-query
+  :after mu4e
+  :straight (mu4e-query :type git :host github :repo "mickeynp/mu4e-query")
+  :config
+  (setq mu4e-bookmarks `((
+			  :name "Sin leer"
+			  :key ?u
+			  :query ,(mu4e-make-query '(and
+						     (flag unread)
+						     (not (flag trashed))
+						     (not (flag list)))))
+			 (
+			  :name "Bandeja de entrada"
+			  :key ?i
+			  :query ,(mu4e-make-query '(and
+						     (not (flag trashed))
+						     (not (flag list))
+						     (maildir (regex "[Ii]nbox$")))))
+			 (
+			  :name "Listas de correo"
+			  :key ?l
+			  :query ,(mu4e-make-query '(and
+						     (flag unread)
+						     (not (flag trashed))
+						     (flag list))))
+			 (
+			  :name "Marcado ⛳"
+			  :key ?f
+			  :query ,(mu4e-make-query '(flag flagged)))
+			 (
+			  :name "Papelera"
+			  :key ?x
+			  :query ,(mu4e-make-query '(maildir (regex "[Tt]rash$")))))))
+
 (with-eval-after-load 'mu4e
   ;; encabezados estilo gmail
   (setq mu4e-headers-fields '((:human-date   . 12)
