@@ -638,6 +638,13 @@
 
   (advice-add 'mu4e~headers-human-date :override #'my/mu4e~headers-human-date)
 
+  (defun mi/mu4e-push-mail-al-salir (&rest _args)
+    "Llama a mbsync --push --all al salir de mu4e."
+    (start-process-shell-command "mbsync-push" "*mbsync-push*"
+				 "mbsync --push --all"))
+
+  (advice-add 'mu4e-quit :after #'mi/mu4e-push-mail-al-salir)
+
   (setq
    mu4e-headers-attach-mark
    `("a" . ,(propertize "@" 'face '(:foreground "gold" :weight bold)))
