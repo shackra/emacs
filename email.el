@@ -165,11 +165,11 @@
 				(mu4e--server-remove docid)
                               (mu4e--server-move docid (mu4e--mark-check-target target) "+S-u-N")))))))
 
-(defvar email-today-query "date:today..now and not maildir:/trash/ and not list:")
+(defvar email-today-query "date:today..now and not maildir:/trash/ and not flag:list")
 (defvar email-trash-query "maildir:/Trash/")
 (defvar email-inbox-query "maildir:/Inbox/")
-(defvar email-unread-query "flag:unread and not maildir:/trash/ and not list:")
-(defvar email-mailing-list-query "flag:unread and not maildir:/trash/ and list:")
+(defvar email-unread-query "flag:unread and not maildir:/trash/ and not flag:list")
+(defvar email-mailing-list-query "flag:unread and not maildir:/trash/ and flag:list")
 
 (defcustom email-bookmarks
   `(( :name  "No leido"
