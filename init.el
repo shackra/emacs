@@ -616,7 +616,7 @@
 (leaf mu4e-query
   :after mu4e
   :straight (mu4e-query :type git :host github :repo "mickeynp/mu4e-query")
-  :config
+  :defer-config
   (setq mu4e-bookmarks `((
 			  :name "Sin leer"
 			  :key ?u
@@ -624,13 +624,6 @@
 						     (flag unread)
 						     (not (flag trashed))
 						     (not (flag list)))))
-			 (
-			  :name "Bandeja de entrada"
-			  :key ?i
-			  :query ,(mu4e-make-query '(and
-						     (not (flag trashed))
-						     (not (flag list))
-						     (maildir (regex "[Ii]nbox$")))))
 			 (
 			  :name "Listas de correo"
 			  :key ?l
@@ -641,11 +634,7 @@
 			 (
 			  :name "Marcado ⛳"
 			  :key ?f
-			  :query ,(mu4e-make-query '(flag flagged)))
-			 (
-			  :name "Papelera"
-			  :key ?x
-			  :query ,(mu4e-make-query '(maildir (regex "[Tt]rash$")))))))
+			  :query ,(mu4e-make-query '(flag flagged))))))
 
 (with-eval-after-load 'mu4e
   ;; encabezados estilo gmail
