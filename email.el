@@ -97,7 +97,7 @@
   ;; M-x find-function RET message-citation-line-format for docs:
   (setq message-citation-line-function 'message-insert-formatted-citation-line)
   ;; by default do show related emails:
-  (setq mu4e-headers-include-related t)
+  (setq mu4e-search-include-related nil)
   ;; omite duplicados
   (setq mu4e-search-skip-duplicates t)
   (add-to-list 'mu4e-view-actions
