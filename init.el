@@ -211,7 +211,7 @@
   :ensure t
   :hook (after-init-hook . envrc-global-mode)
   :bind (:envrc-mode-map
-	      ("C-c e" . envrc-command-map)))
+	 ("C-c e" . envrc-command-map)))
 
 ;; Quisiera editar los archivos de NixOS :)
 (leaf nix-ts-mode
@@ -377,10 +377,10 @@
   :global-minor-mode eglot-inactive-regions-mode
   :config
   (dolist (hook '(c++-mode
-		    c-mode
-		    c++-ts-mode
-		    c-ts-mode))
-      (add-hook hook #'eglot-inactive-regions-mode)))
+		  c-mode
+		  c++-ts-mode
+		  c-ts-mode))
+    (add-hook hook #'eglot-inactive-regions-mode)))
 
 (leaf multiple-cursors
   :ensure t
@@ -463,12 +463,12 @@
 	 (dirvish-setup-hook . dirvish-emerge-mode))
   :custom
   (dirvish-quick-access-entries . ; It's a custom option, `setq' won't work
-   '(("h" "~/"                          "Carpeta personal")
-     ("d" "~/Documentos"                "Documentos")
-     ("b" "~/Descargas"                 "Descargas")
-     ("i" "~/Imágenes"                  "Imágenes")
-     ("c" "~/code"                      "Proyectos de software")
-     ("f" "~/dotfiles"                  "dotfiles")))
+				'(("h" "~/"                          "Carpeta personal")
+				  ("d" "~/Documentos"                "Documentos")
+				  ("b" "~/Descargas"                 "Descargas")
+				  ("i" "~/Imágenes"                  "Imágenes")
+				  ("c" "~/code"                      "Proyectos de software")
+				  ("f" "~/dotfiles"                  "dotfiles")))
   :config
   (dirvish-side-follow-mode)	   ; similar to `treemacs-follow-mode'
   (setq mouse-1-click-follows-link nil)
@@ -491,26 +491,26 @@
   :bind	  ; Bind `dirvish-fd|dirvish-side|dirvish-dwim' as you see fit
   (("C-c f" . dirvish)
    (:dirvish-mode-map	; Dirvish inherits `dired-mode-map'
-   ("u"         .       dired-up-directory)	; So you can adjust `dired' bindings here
-   ("?"		.	dirvish-dispatch) ; [?] a helpful cheatsheet
-   ("a"		.	dirvish-setup-menu) ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
-   ("f"		.	dirvish-file-info-menu)	; [f]ile info
-   ("o"		.	dirvish-quick-access) ; [o]pen `dirvish-quick-access-entries'
-   ("s"		.	dirvish-quicksort)    ; [s]ort flie list
-   ("r"		.	dirvish-history-jump) ; [r]ecent visited
-   ("l"		.	dirvish-ls-switches-menu) ; [l]s command flags
-   ("v"		.	dirvish-vc-menu) ; [v]ersion control commands
-   ("*"		.	dirvish-mark-menu)
-   ("y"		.	dirvish-yank-menu)
-   ("N"		.	dirvish-narrow)
-   ("^"		.	dirvish-history-last)
-   ("TAB"	.	dirvish-subtree-toggle)
-   ("M-f"	.	dirvish-history-go-forward)
-   ("M-b"	.	dirvish-history-go-backward)
-   ("M-e"	.	dirvish-emerge-menu)
-   ("<mouse-1>" .	dirvish-subtree-toggle-or-open)
-   ("<mouse-2>" .	dired-mouse-find-file-other-window)
-   ("<mouse-3>" .	dired-mouse-find-file))))
+    ("u"         .       dired-up-directory)	; So you can adjust `dired' bindings here
+    ("?"		.	dirvish-dispatch) ; [?] a helpful cheatsheet
+    ("a"		.	dirvish-setup-menu) ; [a]ttributes settings:`t' toggles mtime, `f' toggles fullframe, etc.
+    ("f"		.	dirvish-file-info-menu)	; [f]ile info
+    ("o"		.	dirvish-quick-access) ; [o]pen `dirvish-quick-access-entries'
+    ("s"		.	dirvish-quicksort)    ; [s]ort flie list
+    ("r"		.	dirvish-history-jump) ; [r]ecent visited
+    ("l"		.	dirvish-ls-switches-menu) ; [l]s command flags
+    ("v"		.	dirvish-vc-menu) ; [v]ersion control commands
+    ("*"		.	dirvish-mark-menu)
+    ("y"		.	dirvish-yank-menu)
+    ("N"		.	dirvish-narrow)
+    ("^"		.	dirvish-history-last)
+    ("TAB"	.	dirvish-subtree-toggle)
+    ("M-f"	.	dirvish-history-go-forward)
+    ("M-b"	.	dirvish-history-go-backward)
+    ("M-e"	.	dirvish-emerge-menu)
+    ("<mouse-1>" .	dirvish-subtree-toggle-or-open)
+    ("<mouse-2>" .	dired-mouse-find-file-other-window)
+    ("<mouse-3>" .	dired-mouse-find-file))))
 
 (leaf dired-x
   :defer-config
