@@ -196,12 +196,12 @@
 ;; archivo de nuevo
 (leaf saveplace
   :ensure t
-  :hook (after-init-hook . save-place-mode)
   :config
   (setq save-place-file (expand-file-name ".mis-lugares-guardados" user-emacs-directory))
   :custom
   (save-place-ignore-files-regexp . "\\(?:COMMIT_EDITMSG\\|hg-editor-[[:alnum:]]+\\.txt\\|elpa\\|svn-commit\\.tmp\\|bzr_log\\.[[:alnum:]]+\\)$")
-  (save-place-forget-unreadable-files . t))
+  (save-place-forget-unreadable-files . t)
+  :global-minor-mode save-place-mode)
 
 (leaf saveplace-pdf-view
   :ensure t)
