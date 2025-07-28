@@ -742,8 +742,9 @@
 						  (:from	. 30)
 						  (:subject	. 92)))
   :config
-  (setq mu4e-bookmarks  `((:name "Sin leer" :key ?u :query ,(mu4e-make-query '(and (flag unread) (not (flag trashed)) (not (flag list)))))
-			  (:name "Listas de correo" :key ?l :query ,(mu4e-make-query '(and (flag unread) (not (flag trashed)) (flag list))))
+  (setq shackra-query-mailing-lists '(or (from (one-of "emacs-devel@gnu.org" "help-gnu-emacs@gnu.org" "mu-discuss@googlegroups.com")) (to (one-of "emacs-devel@gnu.org" "help-emacs@gnu.org" "mu-discuss@googlegroups.com")) (cc (one-of "emacs-devel@gnu.org" "help-gnu-emacs@gnu.org" "mu-discuss@googlegroups.com"))))
+  (setq mu4e-bookmarks  `((:name "Sin leer" :key ?u :query ,(mu4e-make-query `(and (flag unread) (not (flag trashed)) (not ,shackra-query-mailing-lists))))
+			  (:name "Listas de correo" :key ?l :query ,(mu4e-make-query `(and (flag unread) (not (flag trashed)) ,shackra-query-mailing-lists)))
 			  (:name "Marcado ⛳" :key ?f :query ,(mu4e-make-query '(flag flagged)))
 			  (:name "Correos de hoy" :key ?t :query ,(mu4e-make-query '(date (today .. now))))
 			  (:name "Correos de ayer" :key ?y :query ,(mu4e-make-query '(not (date (today ..)))))))
