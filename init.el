@@ -615,3 +615,41 @@
 
 (leaf csv-mode
   :ensure t)
+
+(leaf treemacs
+  :ensure t
+  :commands (treemacs
+             treemacs-select-window
+             treemacs-bookmark
+             treemacs-find-file)
+  :bind
+  (:treemacs-mode-map
+   ([mouse-1] . treemacs-single-click-expand-action)
+   ("." . treemacs-toggle-show-dotfiles)
+   ("," . treemacs-copy-filename-at-point))
+  (:global-map
+   ("C-x t t" . treemacs)
+   ("C-x t f" . treemacs-find-file)
+   ("C-x t 1" . treemacs-delete-other-windows)
+   ("C-x t s" . treemacs-select-window))
+  :custom
+  (treemacs-width . 30)
+  (treemacs-follow-after-init . t)
+  (treemacs-is-never-other-window . t)
+  (treemacs-indentation . 2)
+  (treemacs-indentation-string . " ")
+  (treemacs-sorting . 'alphabetic-asc)
+  (treemacs-show-cursor . nil)
+  (treemacs-collapse-dirs . 3)
+  (treemacs-file-event-delay . 5000)
+  (treemacs-follow-recenter-distance . 0.1)
+  (treemacs-recenter-after-file-follow . t)
+  (treemacs-recenter-after-tag-follow . t)
+  (treemacs-display-in-side-window . t)
+  (treemacs-show-hidden-files . nil)
+  (treemacs-missing-project-action . 'remove)
+  (treemacs-user-mode-line-format . 'none)
+  :config
+  (treemacs-filewatch-mode t)
+  (treemacs-git-mode 'deferred)
+  (treemacs-tag-follow-mode t))
