@@ -128,7 +128,7 @@
 						  (:subject	. 92)))
   :config
   ;; (man "mu-query") -- para saber más sobre las consultas con mu
-  (setq shackra-query-one-of '(one-of "emacs-devel@gnu.org" "help-gnu-emacs@gnu.org" "mu-discuss@googlegroups.com"))
+  (setq shackra-query-one-of '(one-of "emacs-devel@gnu.org" "help-gnu-emacs@gnu.org" "mu-discuss@googlegroups.com" "golang-nuts@googlegroups.com" "python-list@python.org"))
   (setq shackra-query-mailing-lists `(contact ,shackra-query-one-of))
   (setq mu4e-bookmarks  `((:name "Sin leer" :key ?u :query ,(mu4e-make-query `(and (flag unread) (not (flag trashed)) (not ,shackra-query-mailing-lists))))
 			  (:name "Listas de correo" :key ?l :query ,(mu4e-make-query `(and (flag unread) (not (flag trashed)) ,shackra-query-mailing-lists)))
