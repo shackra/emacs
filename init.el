@@ -653,3 +653,14 @@
   (treemacs-filewatch-mode t)
   (treemacs-git-mode 'deferred)
   (treemacs-tag-follow-mode t))
+
+(leaf holo-layer
+  :disabled t
+  :require t
+  :ensure '(holo-layer :type git :host github :repo "manateelazycat/holo-layer" :files ("*.el" "*.py" "plugin" "resources" "icon_cache"))
+  :custom
+  (holo-layer-enable-cursor-animation . t)
+  (holo-layer-enable-type-animation . t)
+  (holo-layer-enable-indent-rainbow . t)
+  (holo-layer-type-animation-style . "flame")
+  :config (holo-layer-enable))
