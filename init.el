@@ -4,6 +4,28 @@
 (load-file (expand-file-name "extras/writer.el" emacs-backpack--base-backpack-dir))
 (load-file (expand-file-name "email.el" user-emacs-directory))
 
+(setq calendar-week-start-day 1
+      calendar-day-name-array ["domingo" "lunes" "martes" "miércoles"
+                               "jueves" "viernes" "sábado"]
+      calendar-month-name-array ["enero" "febrero" "marzo" "abril"
+				 "mayo" "junio" "julio" "agosto"
+				 "septiembre" "octubre" "noviembre"
+				 "diciembre"])
+
+(setq holiday-local-holidays
+      '((holiday-fixed 1 1 "Año Nuevo")
+        (holiday-fixed 4 11 "Día de Juan Santamaría")
+	(holiday-easter-etc -3 "Jueves Santo")
+	(holiday-easter-etc -2 "Viernes Santo")
+	(holiday-fixed 5 1 "Día Internacional del Trabajo")
+	(holiday-float 6 0 3 "Día del Padre")
+	(holiday-fixed 7 25 "Anexión del Partido de Nicoya")
+	(holiday-fixed 8 2 "Día de Virgen de los Ángeles")
+	(holiday-fixed 8 15 "Día de la Madre")
+	(holiday-fixed 9 15 "Independencia de Costa Rica")
+	(holiday-fixed 10 12 "Día de las Culturas")
+        (holiday-fixed 12 25 "Navidad")))
+
 ;; esconde la barra de menú
 (menu-bar-mode -1)
 
