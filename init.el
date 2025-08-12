@@ -777,24 +777,41 @@
 (leaf org-super-agenda
   :after (org)
   :ensure '(org-super-agenda :host github :repo "alphapapa/org-super-agenda")
+  :custom
+  (org-super-agenda-groups
+   '((:name "🔥 Urgente"
+            :deadline past
+            :face (:foreground "red" :weight bold))
+     (:name "⭐ Alta"
+            :priority "A"
+	    :schedule today)
+     (:name "📅 Hoy"
+            :scheduled today
+            :deadline today)
+     (:name "💤 Sin fecha"
+            :and (:not (:scheduled t) :not (:deadline t)))))
   :config
   (org-super-agenda-mode)
-  :custom
-  (org-super-agenda-groups . '(
-			       (:name "🔥 Hoy"
-				      :time-grid t
-				      :deadline past
-				      :deadline today
-				      :order 1
-				      :face (:foreground "red" :weight bold))
-			       (:name "⏭ Próximos 7 días"
-				      :deadline future
-				      :scheduled future
-				      :order 2)
-			       (:name "🫙 Sin fecha"
-				      :and (:not (:scheduled t) :not (:deadline t))
-				      :order 99
-				      :face (:foreground "gray" :slant italic)))))
+  (add-to-list 'org-agenda-custom-commands
+	       '("x" "Agenda por día con secciones"
+		  ((agenda ""
+			   ;; Un día a la vez → el día es la cabecera principal
+			   ((org-agenda-span 1)
+			    (org-agenda-start-day nil) ;; hoy
+			    (org-agenda-start-on-weekday nil)
+			    (org-agenda-overriding-header "📆 Agenda diaria")
+			    (org-super-agenda-groups org-super-agenda-groups)))
+		   (agenda ""
+			   ((org-agenda-span 1)
+			    (org-agenda-start-day "+1d") ;; mañana
+			    (org-agenda-overriding-header "📆 Mañana")
+			    (org-super-agenda-groups org-super-agenda-groups)))
+		   (agenda ""
+			   ((org-agenda-span 1)
+			    (org-agenda-start-day "+2d") ;; pasado mañana
+			    (org-agenda-overriding-header "📆 Pasado mañana")
+			    (org-super-agenda-groups org-super-agenda-groups))))))
+  )
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
