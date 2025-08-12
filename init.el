@@ -677,7 +677,8 @@
   :hook (org-mode-hook . visual-line-mode)
   :bind (:global-map
 	 ("C-c l s" . org-store-link)
-	 ("C-c l i" . org-insert-link-global))
+	 ("C-c l i" . org-insert-link-global)
+	 ("C-c a" . org-agenda))
   :custom
   (org-directory . "~/Documentos/org")
   (org-agenda-files . '("todoist.org"))
