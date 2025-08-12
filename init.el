@@ -104,26 +104,29 @@
 ;; me gustaría tener un tablero como en Doom
 (leaf dashboard
   :ensure t
-  :config
-  (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
-	dashboard-banner-logo-title "«Bendito el Señor, mi Roca,\nque adiestra mis manos para el combate,\nmis dedos para la pelea» — Salmo 143"
-	dashboard-startup-banner (expand-file-name "dashboard/sacred-heart.svg" user-emacs-directory)
-	dashboard-item-names '(("Recent Files:" .	"Archivos visitados recientemente:")
-			       ("Bookmarks:"    .	"Marcadores:")
-			       ("Projects:"	.	"Proyectos:")
-			       ("Registers:"	.	"Registros:"))
-	dashboard-item-shortcuts '((recents	.	"r")
-                                   (bookmarks	.	"m")
-                                   (projects	.	"p")
-                                   (registers	.	"e"))
-	dashboard-items '((projects		.	3)
-                          (bookmarks		.	3)
-			  (registers		.       3))
+  :custom
+  (dashboard-week-agenda	.	nil)
+  (dashboard-banner-logo-title	.	"«Bendito el Señor, mi Roca,\nque adiestra mis manos para el combate,\nmis dedos para la pelea» — Salmo 143")
+  (dashboard-startup-banner	.	`,(expand-file-name "dashboard/sacred-heart.svg" user-emacs-directory))
+  (dashboard-item-names . '(("Recent Files:"		.	"Archivos visitados recientemente:")
+			    ("Bookmarks:"		.	"Marcadores:")
+			    ("Projects:"		.	"Proyectos:")
+			    ("Registers:"		.	"Registros:")
+			    ("Agenda for today:"        .	"Agenda para hoy:")))
+  (dashboard-item-shortcuts . '((recents	.	"r")
+				(bookmarks	.	"m")
+				(projects	.	"p")
+				(registers	.	"e")))
+  (dashboard-items . '((agenda                  .       10)
+                       (bookmarks		.	3)
+		       (registers		.       3)))
 
-	dashboard-display-icons-p t
-	dashboard-icon-type 'nerd-icon
-	dashboard-set-heading-icons t
-	dashboard-set-file-icons t)
+  (dashboard-display-icons-p	.	t)
+  (dashboard-icon-type		.	'nerd-icon)
+  (dashboard-set-heading-icons	.	t)
+  (dashboard-set-file-icons	.	t)
+  :config
+  (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name)))
 
   (dashboard-setup-startup-hook)
   :defer-config
