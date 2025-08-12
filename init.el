@@ -664,3 +664,142 @@
   (holo-layer-enable-indent-rainbow . t)
   (holo-layer-type-animation-style . "flame")
   :config (holo-layer-enable))
+
+(leaf org-tidy
+  :ensure t
+  :hook (org-mode-hook . org-tidy-mode)
+  :custom
+  (org-tidy-top-property-style . 'invisible)
+  (org-tidy-properties-style . 'fringe))
+
+(leaf org
+  :ensure '(org :type built-in)
+  :hook (org-mode-hook . visual-line-mode)
+  :bind (:global-map
+	 ("C-c l s" . org-store-link)
+	 ("C-c l i" . org-insert-link-global))
+  :custom
+  (org-directory . "~/Documentos/org")
+  (org-agenda-files . '("todoist.org"))
+  (org-tag-list . '(
+		    (:startgroup) ;; que he usado en Todoist
+		    ("gastos"			.	?g)
+		    ("hogar"			.	?h)
+		    ("seguridad"		.	?s)
+		    ("bienestar-material"	.	?b)
+		    ("salud"			.	?a)
+		    ("estudio"			.	?e)
+		    ("salud-espiritual"		.	?c)
+		    ("secundarios"		.	?u)
+		    (:endgroup)
+		    (:newline)
+		    (:startgroup)
+		    ("leer"			.	?l)
+		    ("email"			.	?m)
+		    (:endgroup)))
+  (org-refile-targets . '((nil :maxlevel . 9) ;; https://www.reddit.com/r/emacs/comments/4366f9/comment/czg008y/
+                          (org-agenda-files :maxlevel . 9)))
+  (org-outline-path-complete-in-steps . nil) ;; Refile in a single go
+  (org-refile-use-outline-path . t) ;; Show full paths for refiling
+  (org-export-with-smart-quotes . t)
+  (org-todo-keywords . '((sequence "PENDIENTE(p)" "|" "TERMINADO(t!)" "CANCELADO(c@)")))
+  (org-todo-keyword-faces . '(("PENDIENTE" . "red") ("CANCELADO" . "purple") ("TERMINADO" . "green")))
+  (org-list-indent-offset . 2)
+  (org-todoist-api-token . `,(with-temp-buffer
+			       (insert-file-contents (getenv "EMACS_TODOIST_FILE_SECRET"))
+			       (buffer-string)))
+  (org-agenda-span . 'day)     ;; La vista diaria por defecto
+  (org-agenda-start-day . nil) ;; "nil" = hoy
+  (org-agenda-start-on-weekday . nil)
+  (org-agenda-skip-deadline-if-done . t)
+  (org-agenda-skip-scheduled-if-done . t)
+  (org-agenda-skip-timestamp-if-done . t)
+  (org-agenda-show-all-dates . t)
+  (org-agenda-prefix-format .
+			    '((agenda . " %i %?-12t% s")
+			      (todo   . " %i %-12:c")
+			      (tags   . " %i %-12:c")
+			      (search . " %i %-12:c")))
+  (org-agenda-sorting-strategy . '((agenda time-up priority-down category-keep)
+				   (todo priority-down category-keep)
+				   (tags priority-down category-keep)
+				   (search category-keep)))
+  (org-agenda-custom-commands . '(("t" "Agenda bonita"
+				   ((agenda "" ((org-agenda-span 1) ;; Hoy
+						(org-deadline-warning-days 0)))
+				    (agenda "" ((org-agenda-start-day "+1d") ;; Próximos 7 días
+						(org-agenda-span 7)
+						(org-agenda-overriding-header "\nPróximos 7 días\n")))
+				    (alltodo "" ((org-agenda-overriding-header "\nSin fecha")
+						 (org-agenda-skip-function
+						  '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))))
+  :config
+  (add-to-list 'org-export-backends 'md)
+  ;; Make org-open-at-point follow file links in the same window
+  (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file))
+
+(leaf org-todoist
+  :require t
+  :ensure '(org-todoist
+	    :host github
+	    :repo "lillenne/org-todoist"
+	    :branch "main"
+	    :files ("org-todoist.el"))
+  :custom
+  (org-todoist-todo-keyword . "PENDIENTE")
+  (org-todoist-done-keyword . "TERMINADO")
+  (org-todoist-deleted-keyword . "CANCELADO")
+  (org-todoist-delete-remote-items . t)
+  (org-todoist-extract-deleted . nil)
+  :config
+  (setq org-capture-templates
+	`(("s" "Todoist")
+          ;; Capture a TODO directly to the inbox
+          ("sq" "Bandeja de entrada" entry (file+olp ,(org-todoist-file) "Inbox" ,org-todoist--default-section-name) "* PENDIENTE %?")
+          ("si" "Bandeja de entrada" entry (file+olp ,(org-todoist-file) "Inbox" ,org-todoist--default-section-name) "* PENDIENTE %? %^G %^{EFFORT}p \nSCHEDULED: %^t")
+          ;; Capture to a specific project, section, and parent task, creating them if needed.
+          ;; Also prompts for tags, effort, task assignment, scheduled, and deadline times
+          ;; Projects are determined by projectile if possible, otherwise via an interactive prompt
+          ("ss" "Seleccionar proyecto" entry (function org-todoist-find-project-and-section) "* PENDIENTE %^{¿De qué trata la tarea?} %^G %^{EFFORT}p %(org-todoist-assign-task) %(progn (org-schedule nil) nil) %(progn (org-deadline nil) nil)\n%?")
+          ;; Capture a note to an ignored subtree
+          ("sn" "Notas de proyecto" entry (function org-todoist-project-notes) "* %?"))))
+
+(leaf org-modern
+  :after (org)
+  :ensure '(org-modern :host github :repo "minad/org-modern" :branch "main")
+  :custom
+  (org-auto-align-tags . nil)
+  (org-tags-column . 0)
+  (org-catch-invisible-edits . 'show-and-error)
+  (org-special-ctrl-a/e . t)
+  (org-insert-heading-respect-content . t)
+
+  ;; Org styling, hide markup etc.
+  (org-hide-emphasis-markers . t)
+  (org-pretty-entities . t)
+  (org-agenda-tags-column . 0)
+  (org-ellipsis . "…")
+  :hook
+  (org-mode-hook . org-modern-mode)
+  (org-agenda-finalize-hook . org-modern-agenda))
+
+(leaf org-modern-indent
+  :after (org)
+  :custom
+  (org-startup-indented . t)
+  :ensure '(org-modern-indent :host github :repo "jdtsmith/org-modern-indent")
+  :config
+  (add-hook 'org-mode-hook #'org-modern-indent-mode 90)) ; add late to hook
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values '((org-list-indent-offset . 2))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
