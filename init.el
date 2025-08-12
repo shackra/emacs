@@ -715,24 +715,6 @@
   (org-agenda-skip-scheduled-if-done . t)
   (org-agenda-skip-timestamp-if-done . t)
   (org-agenda-show-all-dates . t)
-  (org-agenda-prefix-format .
-			    '((agenda . " %i %?-12t% s")
-			      (todo   . " %i %-12:c")
-			      (tags   . " %i %-12:c")
-			      (search . " %i %-12:c")))
-  (org-agenda-sorting-strategy . '((agenda time-up priority-down category-keep)
-				   (todo priority-down category-keep)
-				   (tags priority-down category-keep)
-				   (search category-keep)))
-  (org-agenda-custom-commands . '(("t" "Agenda bonita"
-				   ((agenda "" ((org-agenda-span 1) ;; Hoy
-						(org-deadline-warning-days 0)))
-				    (agenda "" ((org-agenda-start-day "+1d") ;; Próximos 7 días
-						(org-agenda-span 7)
-						(org-agenda-overriding-header "\nPróximos 7 días\n")))
-				    (alltodo "" ((org-agenda-overriding-header "\nSin fecha")
-						 (org-agenda-skip-function
-						  '(org-agenda-skip-entry-if 'timestamp 'scheduled 'deadline))))))))
   :config
   (add-to-list 'org-export-backends 'md)
   ;; Make org-open-at-point follow file links in the same window
@@ -790,6 +772,28 @@
   :ensure '(org-modern-indent :host github :repo "jdtsmith/org-modern-indent")
   :config
   (add-hook 'org-mode-hook #'org-modern-indent-mode 90)) ; add late to hook
+
+(leaf org-super-agenda
+  :after (org)
+  :ensure '(org-super-agenda :host github :repo "alphapapa/org-super-agenda")
+  :config
+  (org-super-agenda-mode)
+  :custom
+  (org-super-agenda-groups . '(
+			       (:name "🔥 Hoy"
+				      :time-grid t
+				      :deadline past
+				      :deadline today
+				      :order 1
+				      :face (:foreground "red" :weight bold))
+			       (:name "⏭ Próximos 7 días"
+				      :deadline future
+				      :scheduled future
+				      :order 2)
+			       (:name "🫙 Sin fecha"
+				      :and (:not (:scheduled t) :not (:deadline t))
+				      :order 99
+				      :face (:foreground "gray" :slant italic)))))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
