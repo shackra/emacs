@@ -1,3 +1,35 @@
+(leaf compile-angel
+  :ensure t
+  :leaf-defer nil
+  :custom
+  (native-comp-async-query-on-exit . t)
+  (confirm-kill-processes . t)
+  ;; Set `compile-angel-verbose' to nil to disable compile-angel messages.
+  ;; (When set to nil, compile-angel won't show which file is being compiled.)
+  (compile-angel-verbose . t)
+  :config
+  (with-eval-after-load "savehist"
+    (push (concat "/" (file-name-nondirectory savehist-file))
+          compile-angel-excluded-files))
+
+  ;; Ensure that the value of `recentf-save-file` is updated before proceeding
+  (with-eval-after-load "recentf"
+    (push (concat "/" (file-name-nondirectory recentf-save-file))
+          compile-angel-excluded-files))
+
+  ;; Ensure that the value of `custom-file` is updated before proceeding
+  (with-eval-after-load "cus-edit"
+    (when (stringp custom-file)
+      (push (concat "/" (file-name-nondirectory custom-file))
+            compile-angel-excluded-files)))
+
+  ;; Uncomment the line below to compile automatically when an Elisp file is saved
+  (add-hook 'emacs-lisp-mode-hook #'compile-angel-on-save-local-mode)
+
+  ;; A global mode that compiles .el files before they are loaded
+  ;; using `load' or `require'.
+  (compile-angel-on-load-mode 1))
+
 (load-file (expand-file-name "emacs-backpack/init.el" user-emacs-directory))
 (load-file (expand-file-name "extras/base.el" emacs-backpack--base-backpack-dir))
 (load-file (expand-file-name "extras/dev.el" emacs-backpack--base-backpack-dir))
@@ -374,10 +406,10 @@
   (global-set-key [remap kill-whole-line] #'crux-kill-whole-line))
 
 (leaf just-ts-mode
-  :ensure t
-  :hook (after-init-hook . just-ts-mode-install-grammar))
+  :ensure t)
 
-(leaf typescript-ts-mode)
+(leaf typescript-ts-mode
+  :ensure t)
 
 (leaf svelte-mode
   :ensure t)
