@@ -870,6 +870,12 @@
 			    (org-super-agenda-groups org-super-agenda-groups))))))
   )
 
+;; TODO: TAB sangra la linea en lugar de mostrar candidatos de auto-complete
+;; TODO: Averiguar si es normal que poner el puntero en una función no muestre documentación
+(leaf haskell-mode
+  :ensure t
+  :hook (haskell-mode-hook . eglot-ensure))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
