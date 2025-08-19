@@ -279,6 +279,7 @@
 (with-eval-after-load 'eglot
   (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nixd")))
   (add-to-list 'eglot-server-programs '(css-ts-mode . ("gtkcsslanguageserver")))
+  (add-to-list 'eglot-server-programs '(python-ts-mode . ("ty" "server")))
   ;; activa eglot para modos mayores
   (dolist (hook '(js-mode-hook
 		  js-ts-mode-hook
