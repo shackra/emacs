@@ -153,7 +153,7 @@
   (setq project-vc-extra-root-markers
 	'("Cargo.toml" "compile_commands.json"
 	  "compile_flags.txt" "go.mod"
-	  "project.godot")))
+	  "project.godot" "pyproject.toml" "package.json")))
 
 ;; me gustaría tener un tablero como en Doom
 (leaf dashboard
