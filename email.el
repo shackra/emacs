@@ -13,6 +13,16 @@
   :require t
   :straight (mu4e-query :type git :host github :repo "mickeynp/mu4e-query"))
 
+(leaf mu4e-contrib
+  :preface
+  (defun shr-no-colourise-region (&rest ignore))
+  :custom
+  (mu4e-html2text-command . 'mu4e-shr2text)
+  (shr-color-visible-luminance-min . 60)
+  (shr-color-visible-distance-min . 5)
+  :advice
+  (:around shr-colorize-region shr-no-colourise-region))
+
 (leaf mu4e
   :preface
   (load-file "~/.emacs.d/email-utils.el")
