@@ -134,8 +134,7 @@
   (setq mu4e-bookmarks  `((:name "Sin leer" :key ?u :query ,(mu4e-make-query `(and (flag unread) (not (flag trashed)) (not ,shackra-query-mailing-lists))))
 			  (:name "Listas de correo" :key ?l :query ,(mu4e-make-query `(and (flag unread) (not (flag trashed)) ,shackra-query-mailing-lists)))
 			  (:name "Marcado" :key ?f :query ,(mu4e-make-query '(flag flagged)))
-			  (:name "Correos de hoy" :key ?t :query ,(mu4e-make-query '(date (today .. now))))
-			  (:name "Correos de ayer" :key ?y :query ,(mu4e-make-query '(not (date (today ..)))))))
+			  (:name "Correos de hoy" :key ?t :query ,(mu4e-make-query `(and (not (flag trashed)) (date (today .. now)) (not ,shackra-query-mailing-lists))))))
 
   (setq mu4e-contexts `(,(shackra/mu4e-easy-context
 			  :c-name "personal"
