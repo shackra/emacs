@@ -14,6 +14,26 @@
   :straight (mu4e-query :type git :host github :repo "mickeynp/mu4e-query"))
 
 (leaf mu4e
+  :preface
+  (load-file "~/.emacs.d/email-utils.el")
+
+  (defun mi/mu4e-push-mail-al-salir (&rest _args)
+    "Llama a mbsync --push --all al salir de mu4e."
+    (start-process-shell-command "mbsync-push" "*mbsync-push*"
+				 "mbsync --push --all"))
+
+  (defun my/mu4e~headers-human-date (msg)
+    "Mostrar fecha sin año si es del año actual; caso contrario, con año."
+    (let* ((date (mu4e-msg-field msg :date))
+           (tm   (decode-time date))
+           (cur  (decode-time (current-time)))
+           (day  (nth 3 tm))
+           (mon  (nth 4 tm))
+           (year (nth 5 tm))
+           (cyr  (nth 5 cur)))
+      (if (= year cyr)
+          (format-time-string mu4e-headers-time-format date)
+	(format-time-string mu4e-headers-date-format date))))
   ;; la mayoria de estos fueron tomados de mu4easy-mode
   :bind
   ("C-c u"	.	mu4e)
@@ -25,40 +45,11 @@
   (:mu4e-headers-mode-map
    ("M"		.	mu4e-headers-mark-all)
    ("N"		.	mu4e-headers-mark-all-unread-read))
-  :hook (mu4e-compose-mode-hook . shackra/mu4e-compose-goodies)
-  :preface
-  (cl-defmacro shackra/mu4e-easy-context (&key c-name maildir mail smtp
-					       (sent-action 'sent)
-					       (name "Jorge Javier Araya Navarro")
-					       (sig message-signature))
-    (let
-	((inbox      (concat "/" maildir "/Inbox"))
-	 (sent       (concat "/" maildir "/Sent"))
-	 (trash      (concat "/" maildir "/Trash"))
-	 (refile     (concat "/" maildir "/Archive"))
-	 (draft      (concat "/" maildir "/Drafts")))
-
-      `(make-mu4e-context
-	:name ,c-name
-	:match-func (lambda (msg)
-                      (when msg
-			(string-match-p (concat "^/" ,maildir "/")
-					(mu4e-message-field msg :maildir))))
-	:vars '((user-mail-address		.	,mail)
-		(user-full-name			.	,name)
-		(mu4e-sent-folder		.	,sent)
-		(mu4e-drafts-folder		.	,draft)
-		(mu4e-trash-folder		.	,trash)
-		(mu4e-refile-folder		.	,refile)
-		(mu4e-compose-signature		.	(concat ,sig))
-		(mu4e-sent-messages-behavior	.	,sent-action)
-		(message-signature		.	,sig)
-		(mu4e-maildir-shortcuts .
-					((,inbox   . ?i)
-					 (,sent    . ?s)
-					 (,trash   . ?t)
-					 (,refile  . ?a)
-					 (,draft   . ?d)))))))
+  :hook
+  (mu4e-compose-mode-hook . shackra/mu4e-compose-goodies)
+  :advice
+  (:override mu4e~headers-human-date my/mu4e~headers-human-date)
+  (:after mu4e-quit mi/mu4e-push-mail-al-salir)
   :custom
   (gnus-article-date-headers		.	'(combined-local-lapsed))
   ;; la mayoria de estos fueron tomados de mu4easy-mode
@@ -120,7 +111,7 @@
   (mu4e-headers-date-format		.	"%-d %b %Y") ; e.g., "3 mar 2024" (con año)
   (mu4e-headers-time-format		.	"%-d %b") ; e.g., "3 mar"
   ;; marcadores con consultas mu
-  
+
   ;; encabezados estilo gmail
   (mu4e-headers-fields			.	'((:human-date  . 12)
 						  (:flags	. 7)
@@ -135,7 +126,7 @@
 			  (:name "Marcado" :key ?f :query ,(mu4e-make-query '(flag flagged)))
 			  (:name "Correos de hoy" :key ?t :query ,(mu4e-make-query '(date (today .. now))))
 			  (:name "Correos de ayer" :key ?y :query ,(mu4e-make-query '(not (date (today ..)))))))
-  
+
   (setq mu4e-contexts `(,(shackra/mu4e-easy-context
 			  :c-name "personal"
 			  :maildir "principal"
@@ -155,30 +146,9 @@
 			  :mail "hey@jorgearaya.dev"
 			  :sig "Jorge Araya\nFreelance Software Engineer — https://jorgearaya.dev"
 			  :sent-action delete)))
-  
-  (add-to-list 'mu4e-view-actions '("Aplicar correo" . mu4e-action-git-apply-mbox) t)
 
-  (defun my/mu4e~headers-human-date (msg)
-    "Mostrar fecha sin año si es del año actual; caso contrario, con año."
-    (let* ((date (mu4e-msg-field msg :date))
-           (tm   (decode-time date))
-           (cur  (decode-time (current-time)))
-           (day  (nth 3 tm))
-           (mon  (nth 4 tm))
-           (year (nth 5 tm))
-           (cyr  (nth 5 cur)))
-      (if (= year cyr)
-          (format-time-string mu4e-headers-time-format date)
-	(format-time-string mu4e-headers-date-format date))))
-
-  (advice-add 'mu4e~headers-human-date :override #'my/mu4e~headers-human-date)
-
-  (defun mi/mu4e-push-mail-al-salir (&rest _args)
-    "Llama a mbsync --push --all al salir de mu4e."
-    (start-process-shell-command "mbsync-push" "*mbsync-push*"
-				 "mbsync --push --all"))
-
-  (advice-add 'mu4e-quit :after #'mi/mu4e-push-mail-al-salir)
+  (add-to-list 'mu4e-view-actions '("Git: Aplicar correo" . mu4e-action-git-apply-mbox) t)
+  (add-to-list 'mu4e-view-actions '("Ver en el navegador" . mu4e-action-view-in-browser) t)
 
   (setf (alist-get 'trash mu4e-marks)
 	'(:char ("d" . "▼")
