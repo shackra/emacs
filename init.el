@@ -6,7 +6,7 @@
   (confirm-kill-processes . t)
   ;; Set `compile-angel-verbose' to nil to disable compile-angel messages.
   ;; (When set to nil, compile-angel won't show which file is being compiled.)
-  (compile-angel-verbose . t)
+  (compile-angel-verbose . nil)
   :config
   (with-eval-after-load "savehist"
     (push (concat "/" (file-name-nondirectory savehist-file))
@@ -361,12 +361,6 @@
   :config
   (pdf-tools-install))
 
-;; borramos espacios en blanco de forma inteligente
-(leaf smart-hungry-delete
-  :ensure t
-  :bind (("<backspace>" . smart-hungry-delete-backward-char)
-         ("C-d" . smart-hungry-delete-forward-char)))
-
 ;; ajustes para C/C++
 (with-eval-after-load 'cc-mode
   ;; activa eglot
@@ -464,10 +458,14 @@
 
 (leaf lispy
   :straight '(lispy :type git :host github :repo "enzuru/lispy")
-  :hook ((emacs-lisp-mode-hook lisp-mode-hook lisp-interaction-mode-hook) . lispy-mode)
-  :config
-  ;; Opcional: Personalizaciones adicionales
-  (setq lispy-close-quotes-at-end-p t))
+  :hook ((emacs-lisp-mode-hook lisp-mode-hook lisp-interaction-mode-hook common-lisp-mode-hook) . lispy-mode)
+  :setq
+  (lispy-key-theme . '(special paredit c-digits))
+  (lispy-close-quotes-at-end-p . t)
+  (lispy-safe-copy . t)
+  (lispy-safe-delete . t)
+  (lispy-safe-paste . t)
+  (lispy-delete-sexp-from-within . nil))
 
 (leaf hl-todo
   :ensure t
@@ -739,7 +737,7 @@
 	 ("C-c a" . org-agenda))
   :custom
   (org-directory . "~/Documentos/org")
-  (org-agenda-files . '("todoist.org"))
+  (org-agenda-files . '("todo.org" "todoist.org"))
   (org-tag-list . '(
 		    (:startgroup) ;; que he usado en Todoist
 		    ("gastos"			.	?g)
@@ -764,9 +762,6 @@
   (org-todo-keywords . '((sequence "PENDIENTE(p)" "|" "TERMINADO(t!)" "CANCELADO(c@)")))
   (org-todo-keyword-faces . '(("PENDIENTE" . "red") ("CANCELADO" . "purple") ("TERMINADO" . "green")))
   (org-list-indent-offset . 2)
-  (org-todoist-api-token . `,(with-temp-buffer
-			       (insert-file-contents (getenv "EMACS_TODOIST_FILE_SECRET"))
-			       (buffer-string)))
   (org-agenda-span . 'day)     ;; La vista diaria por defecto
   (org-agenda-start-day . nil) ;; "nil" = hoy
   (org-agenda-start-on-weekday . nil)
@@ -780,6 +775,7 @@
   (setf (cdr (assoc 'file org-link-frame-setup)) 'find-file))
 
 (leaf org-todoist
+  :disabled t
   :require t
   :ensure '(org-todoist
 	    :host github
