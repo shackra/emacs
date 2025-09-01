@@ -127,14 +127,16 @@
 						  (:flags	. 7)
 						  (:from	. 30)
 						  (:subject	. 92)))
+  :setq
+  (shackra-query-one-of . '(one-of "emacs-devel@gnu.org" "help-gnu-emacs@gnu.org" "mu-discuss@googlegroups.com" "golang-nuts@googlegroups.com" "python-list@python.org"))
+  (shackra-query-mailing-lists . `(contact ,shackra-query-one-of))
+  (shackra-query-maildir-trash . '(or (flag trashed) (maildir ("/.*\\/Trash/"))))
   :config
   ;; (man "mu-query") -- para saber más sobre las consultas con mu
-  (setq shackra-query-one-of '(one-of "emacs-devel@gnu.org" "help-gnu-emacs@gnu.org" "mu-discuss@googlegroups.com" "golang-nuts@googlegroups.com" "python-list@python.org"))
-  (setq shackra-query-mailing-lists `(contact ,shackra-query-one-of))
-  (setq mu4e-bookmarks  `((:name "Sin leer" :key ?u :query ,(mu4e-make-query `(and (flag unread) (not (flag trashed)) (not ,shackra-query-mailing-lists))))
-			  (:name "Listas de correo" :key ?l :query ,(mu4e-make-query `(and (flag unread) (not (flag trashed)) ,shackra-query-mailing-lists)))
+  (setq mu4e-bookmarks  `((:name "Sin leer" :key ?u :query ,(mu4e-make-query `(and (flag unread) (not ,shackra-query-maildir-trash) (not ,shackra-query-mailing-lists))))
+			  (:name "Listas de correo" :key ?l :query ,(mu4e-make-query `(and (flag unread) (not ,shackra-query-maildir-trash) ,shackra-query-mailing-lists)))
 			  (:name "Marcado" :key ?f :query ,(mu4e-make-query '(flag flagged)))
-			  (:name "Correos de hoy" :key ?t :query ,(mu4e-make-query `(and (not (flag trashed)) (date (today .. now)) (not ,shackra-query-mailing-lists))))))
+			  (:name "Correos de hoy" :key ?t :query ,(mu4e-make-query `(and (date (today .. now)) (not ,shackra-query-mailing-lists))))))
 
   (setq mu4e-contexts `(,(shackra/mu4e-easy-context
 			  :c-name "personal"
