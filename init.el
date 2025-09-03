@@ -245,8 +245,8 @@
 ;; quiero que lo mostrado por `eldoc' aparezca en un `child-frame'
 (leaf eldoc-box
   :ensure t
-  :init
-  (setq eldoc-box-only-multi-line t)
+  :setq
+  (eldoc-box-only-multi-line . t)
   :hook (eglot-managed-mode-hook . eldoc-box-hover-at-point-mode))
 
 ;; quisiera que la posición del cursor sea recordado al visitar un
